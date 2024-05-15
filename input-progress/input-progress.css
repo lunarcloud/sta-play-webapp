@@ -1,5 +1,6 @@
 input-progress-internal {
     --progress-bar-color-fallback: #229bd8;
+
     position: relative;
     display: block;
     min-height: 1em;
@@ -23,15 +24,17 @@ input-progress-internal {
 
     & progress {
         color: var(--progress-bar-color, var(--progress-bar-color-fallback));
+
         &::-webkit-progress-value {
             background-color: var(--progress-bar-color, var(--progress-bar-color-fallback));
         }
+
         &::-moz-progress-bar {
             background-color: var(--progress-bar-color, var(--progress-bar-color-fallback));
         }
     }
 
-    & input[type=range] {
+    & input[type="range"] {
         appearance: none;
         color: black;
         opacity: 0;
@@ -46,7 +49,7 @@ input-progress-internal {
             aspect-ratio: 3/4;
             width: max(1em, 10%);
             border-radius: 20%;
-            background: var(--slider-thumb-color, hsla(0, 0%, 0%, 0.75));
+            background: var(--slider-thumb-color, hsl(0deg 0% 0% / 75%));
             cursor: pointer;
         }
         
@@ -54,7 +57,7 @@ input-progress-internal {
             aspect-ratio: 3/4;
             width: max(1em, 10%);
             border-radius: 20%;
-            background: var(--slider-thumb-color, hsla(0, 0%, 0%, 0.75));
+            background: var(--slider-thumb-color, hsl(0deg 0% 0% / 75%));
             cursor: pointer;
         }
     }

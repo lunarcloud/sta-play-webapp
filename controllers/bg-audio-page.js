@@ -1,4 +1,3 @@
-
 export default class BgAudioManager {
     /**
      * Whether the page audio is enabled.

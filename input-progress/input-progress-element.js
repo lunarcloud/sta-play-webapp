@@ -1,11 +1,9 @@
-
-
 export default class InputProgressElement extends HTMLElement {
-    static observedAttributes = ['value', 'max'];
-    
-    #inputEl;
-    #progressEl;
-    #dataEl;
+    static observedAttributes = ['value', 'max']
+
+    #inputEl
+    #progressEl
+    #dataEl
 
     /**
      * Constructor.
@@ -28,7 +26,7 @@ export default class InputProgressElement extends HTMLElement {
         this.#dataEl = document.createElement('data')
         this.#inputEl = document.createElement('input')
         this.#inputEl.type = 'range'
-        
+
         internalEl.appendChild(this.#progressEl)
         internalEl.appendChild(this.#dataEl)
         internalEl.appendChild(this.#inputEl)
@@ -45,14 +43,13 @@ export default class InputProgressElement extends HTMLElement {
         this.#inputEl.addEventListener('change', () => this.inputChanged())
     }
 
-    inputChanged() {
+    inputChanged () {
         this.#progressEl.value = parseInt(this.#inputEl.value)
         this.#dataEl.textContent = this.#inputEl.value
         this.setAttribute('value', this.#inputEl.value)
     }
 
-
-    attributeChangedCallback(name, oldValue, newValue) {
+    attributeChangedCallback (name, oldValue, newValue) {
         if (name in this.#inputEl)
             this.#inputEl[name] = newValue
 
@@ -66,17 +63,15 @@ export default class InputProgressElement extends HTMLElement {
             this.#progressEl.setAttribute(name, newValue)
 
         if (name === 'max') {
-            let actualVal = parseInt(this.#progressEl.getAttribute('value'))
-            let actualMax = parseInt(this.#progressEl.getAttribute('max'))
-            let oldMax = parseInt(oldValue)
-            if (actualVal > actualMax || actualVal == oldMax)
+            const actualVal = parseInt(this.#progressEl.getAttribute('value'))
+            const actualMax = parseInt(this.#progressEl.getAttribute('max'))
+            const oldMax = parseInt(oldValue)
+            if (actualVal > actualMax || actualVal === oldMax)
                 this.attributeChangedCallback('value', undefined, newValue)
-            
         }
 
         this.#dataEl.textContent = this.#inputEl.value
     }
-
 }
 
 // Register element

@@ -5,7 +5,9 @@
         "eslint-fix": "npx eslint --ignore-path .gitignore --ext .js . --fix",
         "eslint": "npx eslint --ignore-path .gitignore --ext .js .",
         "htmllint": "npx linthtml \"**/*.html\"",
+        "htmllint-fix": "npx linthtml \"**/*.html\" --fix",
         "csslint": "npx stylelint \"**/*.css\" --quiet-deprecation-warnings",
+        "csslint-fix": "npx stylelint \"**/*.css\" --quiet-deprecation-warnings --fix",
         "lint": "npm run eslint && npm run htmllint && npm run csslint",
         "serve": "serve"
     },
