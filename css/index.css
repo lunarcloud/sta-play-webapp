@@ -41,6 +41,19 @@ model-viewer {
     display: block;
 }
 
+#settings-btn {
+
+    position: absolute;
+    top: 1.5mm;
+    left: 1.5mm;
+    cursor: pointer;
+    user-select: none;
+
+    &:not(:active) {
+        color: black;
+    }
+}
+
 #mute-btn {
     z-index: 20;
     position: absolute;
