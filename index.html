@@ -24,11 +24,12 @@
             <a id="settings-btn">☰</a>
             <header>
                 <!-- linthtml-disable attr-name-style -->
-                <model-viewer id="ship-sideways" src="gltf/starfleet-generic.glb"
+                <model-viewer id="ship-sideways" src=""
                     alt="starship 3d model" loading="lazy"
                     interaction-prompt="none"
                     camera-controls 
                     camera-orbit="-90deg 90deg 0%"
+                    field-of-view="20deg"
                     shadow-intensity="0.5"
                     exposure="2"
                     zoom-sensitivity="0.25"
@@ -41,11 +42,12 @@
                         auto-rotate auto-rotate-delay="0" rotation-per-second="1deg"
                     -->
                 </model-viewer>
-                <model-viewer id="ship-top" src="gltf/starfleet-generic.glb"
+                <model-viewer id="ship-top" src=""
                     alt="starship 3d model" loading="lazy"
                     interaction-prompt="none"
                     camera-controls 
                     camera-orbit="90deg 0deg 0%"
+                    field-of-view="20deg"
                     shadow-intensity="0.5"
                     exposure="2"
                     zoom-sensitivity="0.25"
@@ -86,7 +88,18 @@
             </footer>
             <main>
                 <content>
-                    <traits></traits>
+                    <traits>
+                        <span>SCENE TRAITS: </span>
+                        <template>
+                            <trait>
+                                <span contenteditable="true">TBD</span>
+                                <button class="remove"
+                                        onclick="this.parentNode.parentNode.removeChild(this.parentNode)">
+                                        ⤫
+                                </button>
+                            </trait>
+                        </template>
+                    </traits>
                     <alert>
                         <h1>ALERT</h1><p>CONDITION: </p>
                     </alert>
@@ -133,7 +146,21 @@
                     </div>
                 </content>
                 <ul class="players">
-                    <li class="command" player-index="1"">
+                    <li class="command" player-index="1">
+                        <button class="remove"
+                                onclick="this.parentNode.parentNode.removeChild(this.parentNode)">
+                                ⤫
+                        </button> 
+                        <select class="department">
+                            <option title="command">🟥</option>
+                            <option title="medical">🟦</option>
+                            <option title="science">🟦</option>
+                            <option title="engineering">🟨</option>
+                            <option title="security">🟨</option>
+                            <option title="ops">🟨</option>
+                            <option title="other">🟪</option>
+                        </select>
+
                         <select class="rank">
                             <option selected title="Captain">⚫⚫⚫⚫</option>
                             <option title="Commander">⚫⚫⚫</option>
@@ -267,6 +294,26 @@
         <audio id="beep-cancel-audio" src="audio/423167__plasterbrain__minimalist-sci-fi-ui-cancel.mp3" preload></audio>
 
     </body>
+
+    <dialogs>
+        <dialog is="anim-dialog" id="settings-dialog">
+            <header>
+                Settings
+                <button class="close" role="button">⤫</button>
+            </header>
+            <main>
+                <p>Tip: <a href="https://support.google.com/chrome/answer/9658361" target="installPWA">Try installing this PWA</a>!</p>
+                <dl>
+                    <dt>Clear</dt>
+                    <dd>
+                        <button class="clear-ship">Ship</button>
+                        <button class="clear-all">Ship and Players</button>
+                    </dd>
+                </dl>
+            </main>
+        </dialog>
+    </dialogs>
+
     <script type="module" src="controllers/index.js"></script>
 
 </html>

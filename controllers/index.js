@@ -45,7 +45,11 @@ export default class IndexController {
         document.getElementById('extended-task-add').addEventListener('click', () => this.addExtendedTask())
         document.getElementById('player-add').addEventListener('click', () => this.addPlayer())
         document.getElementById('trait-add').addEventListener('click', () => this.addTrait())
-        document.getElementById('settings-btn').addEventListener('click', () => this.openSettings())
+
+        // Wire up the settings dialog
+        const settingsDialog = document.getElementById('settings-dialog')
+        if (settingsDialog instanceof HTMLDialogElement)
+            this.#setupSettings(settingsDialog)
 
         this.#loadDBInfo()
         this.#loadCacheData()
@@ -86,18 +90,33 @@ export default class IndexController {
         }
     }
 
+    /**
+     * Wire up all the settings
+     * @param {HTMLDialogElement} dialogEl settings dialog element
+     */
+    #setupSettings(dialogEl) {
+        document.getElementById('settings-btn').addEventListener('click', () => dialogEl.showModal())
+        dialogEl.querySelector('button.close').addEventListener('click', () => dialogEl.close())
+        dialogEl.querySelector('button.clear-ship').addEventListener('click', () => 
+            this.clearCache('ship').then(() => this.#loadCacheData())
+        )
+        dialogEl.querySelector('button.clear-all').addEventListener('click', () => 
+            this.clearCache().then(() => this.#loadCacheData())
+        )
+    }
+
     async #loadDBInfo() {
-        throw new Error('Method not implemented.')
+        console.error('Method not implemented.')
     }
 
     async #loadCacheData() {
         let dirHandle = await navigator.storage.getDirectory()
-        let defaultDir = await dirHandle.getDirectoryHandle('default', {create: true})
+        let shipDir = await dirHandle.getDirectoryHandle('ship', {create: true})
         let playersDir = await dirHandle.getDirectoryHandle('players', {create: true})
 
         // Load cached ship, if available
         try {
-            let handle = await defaultDir.getFileHandle('ship.glb', {create: false})
+            let handle = await shipDir.getFileHandle('ship.glb', {create: false})
             let shipFile = await handle.getFile()
             this.#setShipModel(URL.createObjectURL(shipFile))
         }
@@ -127,10 +146,6 @@ export default class IndexController {
                 playerEl.style.backgroundImage = `url('${IndexController.DefaultPlayerImages[i]}')`
             }
         }
-    }
-
-    openSettings() {
-        throw new Error('Method not implemented.')
     }
 
     /**
@@ -173,7 +188,12 @@ export default class IndexController {
     }
 
     addTrait() {
-        throw new Error('Method not implemented.')
+        const template = document.querySelector('traits template')
+        if (template instanceof HTMLTemplateElement === false)
+            return
+
+        const clone = document.importNode(template.content, true)
+        template.parentElement.insertBefore(clone, template)
     }
     
     addPlayer() {
@@ -185,7 +205,7 @@ export default class IndexController {
      * @param {File} modelFile  GLTF/GLB model file
      */
     async onShipModelDropped (modelFile) {
-        let cacheFile = await this.cacheFile(modelFile, 'ship.glb')
+        let cacheFile = await this.cacheFile(modelFile, 'ship.glb', 'ship')
         const url = URL.createObjectURL(cacheFile)
 
         this.#setShipModel(url)
@@ -234,6 +254,7 @@ export default class IndexController {
         if (folderName === undefined)
         {
             this.clearCache('default')
+            this.clearCache('ship')
             this.clearCache('players')
         }
         else

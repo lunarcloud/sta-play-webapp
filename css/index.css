@@ -28,7 +28,8 @@ body, h1, h2, h3, h4, h5, h6 {
     letter-spacing: 0.45mm;
 }
 
-a {
+decoration a,
+nav li > a {
     text-transform: uppercase;
     letter-spacing: 0.35mm;
 }
@@ -39,6 +40,51 @@ a {
 
 model-viewer {
     display: block;
+}
+
+dialog#settings-dialog {
+    --backdrop-color: hsla(0deg 0% 0% / 0.8);
+
+    padding: 0;
+    width: 80vw;
+    min-height: 40vh;
+    border: 1px solid #666;
+    background-color: #ccc;
+    border-radius: 8px;
+
+    &::backdrop {
+        background-color: var(--backdrop-color);
+    }
+
+    & main {
+        padding: 20px 12px;
+    }
+
+    & header {
+        user-select: none;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        font-size: 1.5em;
+        vertical-align: middle;
+        text-align: center;
+        color: white;
+        background-color: var(--backdrop-color);
+        border-bottom: 1px solid #666;
+
+        & button {
+            line-height: 1em;
+            color: var(--main-color-nav-text);
+            background-color: transparent;
+            border: 0 solid transparent;
+            outline: 0;
+            float: right;
+            display: block;
+            vertical-align: middle;
+            text-align: center;
+            cursor: pointer;
+        }
+    }    
 }
 
 #settings-btn {
@@ -73,6 +119,64 @@ model-viewer {
 
     &:not(.on) > .on {
         display: none;
+    }
+}
+
+extended-task {
+    display: inline-block;
+    position: relative;
+    background: #666;
+    padding: 4px; 
+    border-width: 6px; 
+    border-style: outset; 
+    border-color: black white white black;
+
+    & > .remove {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: min-content;
+        background-color: transparent;
+        border-color: transparent;
+        overflow: visible;
+    }
+
+    & > h1 {
+        font-size: normal;
+        margin: 0;
+        margin-bottom: 4px;
+        border-bottom: 4px solid #333;
+    }
+
+    input {
+        background: unset; 
+        color: unset;
+        width: fill-available; 
+        width: -webkit-fill-available;
+    }
+
+    select, option {
+        background: #333;
+        color: #ccc;
+    }
+
+    input, select {
+        border-radius: 4px;
+        border-width: 0;
+        outline: unset !important;
+    }
+
+    & dd:has(select) {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    dl {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        width: fit-content;
+        margin: 0;
     }
 }
 
@@ -290,64 +394,6 @@ decoration {
     }
 }
 
-extended-task {
-    display: inline-block;
-    position: relative;
-    background: #666;
-    padding: 4px; 
-    border-width: 6px; 
-    border-style: outset; 
-    border-color: black white white black;
-
-    & > .remove {
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: min-content;
-        background-color: transparent;
-        border-color: transparent;
-        overflow: visible;
-    }
-
-    & > h1 {
-        font-size: normal;
-        margin: 0;
-        margin-bottom: 4px;
-        border-bottom: 4px solid #333;
-    }
-
-    input {
-        background: unset; 
-        color: unset;
-        width: fill-available; 
-        width: -webkit-fill-available;
-    }
-
-    select, option {
-        background: #333;
-        color: #ccc;
-    }
-
-    input, select {
-        border-radius: 4px;
-        border-width: 0;
-        outline: unset !important;
-    }
-
-    & dd:has(select) {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-    }
-
-    dl {
-        display: grid;
-        grid-template-columns: auto 1fr;
-        width: fit-content;
-        margin: 0;
-    }
-}
-
 container#main {
     position: relative;
     z-index: 1;
@@ -369,7 +415,9 @@ container#main {
         grid-column: 1;
         display: flex;
         flex-wrap: nowrap;
-        gap: 0.25em;
+        gap: 0.25em;   
+        background: linear-gradient(90deg, hsl(0deg 0% 0%) 2%, hsl(273.6deg 17.48% 10%) 30%, hsl(273.6deg 17.48% 10%) 70%, hsl(0deg 0% 0%) 98%);
+
 
         & > model-viewer {
             flex: 1 1 49%;
@@ -464,7 +512,6 @@ container#main {
             margin: 1em 0;
             padding: 0;
 
-
             & li {
                 flex: 0 1 50mm;
                 border: 1mm solid black;
@@ -480,8 +527,56 @@ container#main {
                 background-position: center 5%;
                 text-align: center;
                 display: flex;
+                position: relative;
                 flex-direction: column-reverse;
                 text-shadow: 1px 1px 1px black;
+
+                & select {
+                    outline: none;
+                    text-align: start;
+                    border-color: transparent;
+    
+                    /* Get rid of the dropdown arrows */
+                    -moz-appearance: none;
+                    -webkit-appearance: none;
+                    appearance: none;
+                    background-image: none;
+                }
+    
+                & .department {
+                    position: absolute; 
+                    top: 0; 
+                    left: 0;
+                    text-align: left;
+                    font-size: 1em;
+                    background-color: transparent;
+                    padding: 0;
+                    margin: -1em;
+                    border-top-left-radius: 50%;
+                    
+                    &:not(:hover) {
+                        color: transparent;
+                    }
+                }
+
+                & button.remove {
+                    background-color: transparent;
+                    border: 0 solid transparent;
+                    border-radius: 50%;
+                    outline: none;
+                    font-size: 0.75em;
+                    font-weight: bolder;
+                    position: absolute; 
+                    top: -1.4em; 
+                    right: 0;
+
+                    &:hover {
+                        filter: drop-shadow(2px 4px 6px black);
+                    }
+                    &:active {
+                        filter: invert(1);
+                    }
+                }
 
                 & h2 {
                     margin: 0;
@@ -491,16 +586,7 @@ container#main {
                 }
 
                 & select.rank {
-                    outline: none;
-                    text-align: start;
                     background-color: hsl(0deg 0% 10%);
-                    border-color: transparent;
-
-                    /* Get ride of the dropdown arrow */
-                    -moz-appearance: none;
-                    -webkit-appearance: none;
-                    appearance: none;
-                    background-image: none;
                 }
 
                 & stress {
