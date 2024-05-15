@@ -376,11 +376,18 @@ container#main {
         grid-template-rows: 1fr auto;
         grid-gap: 2mm;
 
+        & traits {
+            width: fill-available;
+            width: -webkit-fill-available;
+            display: block;
+            position: relative;
+        }
+
         & alert {
             background-image: url('../img/red-alert.webp');
             color: #910200;
             background-size: cover;
-            width: 10em;
+            width: 60mm;
             aspect-ratio: 1.25;
             display: none;
             place-content: center center;
@@ -390,6 +397,7 @@ container#main {
             & > * {
                 margin: 0;
                 padding: 0;
+                font-size: 1em;
                 line-height: 0.9em;
             }
 
@@ -454,9 +462,9 @@ container#main {
                 font-size: 6mm;
                 aspect-ratio: 3/4;
                 background-color: #333;
-                background-size: cover;
+                background-size: contain;
                 background-repeat: no-repeat;
-                background-position: center center;
+                background-position: center 5%;
                 text-align: center;
                 display: flex;
                 flex-direction: column-reverse;
@@ -561,7 +569,6 @@ container#main {
                 border: 1mm solid black;
                 border-radius: 4mm;
                 font-size: 6mm;
-                height: fit-content;
 
 
                 & a {
@@ -570,6 +577,7 @@ container#main {
                     color: black !important;
                     padding: 4mm 0 4mm 4mm;
                     cursor: pointer;
+                    line-height: 1.2em;
                 }
 
                 &:hover {

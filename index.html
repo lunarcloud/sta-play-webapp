@@ -8,13 +8,13 @@
         <meta name="viewport" content="initial-scale=0.5, user-scalable=yes" />
         <meta name="theme-color" content="black">
 
-        <meta property="og:title" content="Sam Star Trek (Sci-fi Variant)">
-        <meta property="og:description" content="Sci-fi Interface variant for Sam's showcase website.">
-        <meta property="og:image" content="https://lunarcloud.github.io/img/pages/home-lcars.webp" />
+        <meta property="og:title" content="Star Trek Adventures: Play App">
+        <meta property="og:description" content="Player-Facing Screen for GM's running the Start Trek Adventures TTRPG">
+        <meta property="og:image" content="https://lunarcloud.github.io/img/icon.webp" />
 
         <link rel="manifest" href="./sta-play-webapp.webmanifest">
         <link rel="icon" type="image/x-icon" href="img/icon.webp">
-        <link rel="stylesheet" href="css/home-lcars.css">
+        <link rel="stylesheet" href="css/index.css">
         <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
         <script src="//unpkg.com/@ungap/custom-elements/es.js"></script> <!-- Safari polyfill -->
     </head>
@@ -58,22 +58,22 @@
                 <ul>
                     <li>
                         <a hover="audio" id="alert-toggle">
-                            ALERT
+                            Alert Cycle 
                         </a>
                     </li>
                     <li>
-                        <a hover="audio" href="#">
-                            Okuda
+                        <a hover="audio" id="player-add">
+                            ＋ Player
                         </a>
                     </li>
                     <li>
                         <a hover="audio" id="extended-task-add">
-                            New Tracker
+                            ＋ Tracker
                         </a>
                     </li>
                     <li>
-                        <a hover="audio" href="#">
-                            Wheaton
+                        <a hover="audio" id="trait-add">
+                            ＋ Trait
                         </a>
                     </li>
                     <li class="shipname" contenteditable="true">
@@ -85,9 +85,7 @@
             </footer>
             <main>
                 <content>
-                    <p contenteditable="true">
-                        The story so far...
-                    </p>
+                    <traits></traits>
                     <alert>
                         <h1>ALERT</h1><p>CONDITION: </p>
                     </alert>
@@ -127,6 +125,11 @@
                             </dl>
                         </extended-task>
                     </template>
+
+                    <div contenteditable="true">
+                        <h1>Story Notes</h1>
+                        <p>The story so far...</p>
+                    </div>
                 </content>
                 <ul class="players">
                     <li class="command" style="background-image: url('img/player/tos-movies.webp');">
@@ -136,7 +139,7 @@
                             <option title="Lieutenant Commander">⚫⚫⚪</option>
                             <option title="Lieutenant">⚫⚫</option>
                             <option title="Lieutenant Junior Grade">⚫⚪</option>
-                            <option title="Ensign">⚫⚫</option>
+                            <option title="Ensign">⚫</option>
                             <option title="Other">&nbsp;</option>
                         </select>
                         <stress>
@@ -153,7 +156,7 @@
                             <option title="Lieutenant Commander">⚫⚫⚪</option>
                             <option title="Lieutenant">⚫⚫</option>
                             <option title="Lieutenant Junior Grade">⚫⚪</option>
-                            <option title="Ensign">⚫⚫</option>
+                            <option title="Ensign">⚫</option>
                             <option title="Other">&nbsp;</option>
                         </select>
                         <stress>
@@ -170,7 +173,7 @@
                             <option selected title="Lieutenant Commander">⚫⚫⚪</option>
                             <option title="Lieutenant">⚫⚫</option>
                             <option title="Lieutenant Junior Grade">⚫⚪</option>
-                            <option title="Ensign">⚫⚫</option>
+                            <option title="Ensign">⚫</option>
                             <option title="Other">&nbsp;</option>
                         </select>
                         <stress>
@@ -204,7 +207,7 @@
                             <option title="Lieutenant Commander">⚫⚫⚪</option>
                             <option title="Lieutenant">⚫⚫</option>
                             <option title="Lieutenant Junior Grade">⚫⚪</option>
-                            <option title="Ensign">⚫⚫</option>
+                            <option title="Ensign">⚫</option>
                             <option selected title="Other">&nbsp;</option>
                         </select>
                         <stress>
