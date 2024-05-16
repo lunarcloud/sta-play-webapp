@@ -10,12 +10,41 @@ import { openDB, deleteDB, wrap, unwrap } from 'https://cdn.jsdelivr.net/npm/idb
  * @note From the IDB library
  */
 /**
- * @typedef {IDBTransaction & {
- *  store, done
-* }} IDBTransactionEntended
-* @note From the IDB library
-*/
+ * @typedef {IDBTransaction & {store, done}} IDBTransactionEntended
+ * @note From the IDB library
+ */
 
+/**
+ * @typedef {{ 
+ * id: number, 
+ * text: string, 
+ * shipname: string, 
+ * activeAlert: string }} GeneralDBRow
+ */
+/**
+ * @typedef {{ name: string }} NameDBRow
+ */
+/**
+ * @typedef {NameDBRow & { 
+ * resistance: number,
+ * complicationRange: number,
+ * attribute: string,
+ * department: string,
+ * progressTrack: number
+ * }} TrackerDBRow
+ */
+/**
+ * @typedef {NameDBRow & { 
+ * id: number,
+ * currentStress: number,
+ * maxStress: number,
+ * pips: string,
+ * group: string
+ * }} PlayerDBRow
+ */
+
+const dbName = 'STAPlayApp-Test'
+const dbVersion = 8
 
 const DefaultShipUrl = 'gltf/starfleet-generic.glb'
 
@@ -179,29 +208,23 @@ export default class IndexController {
     async #createDB(db) {
         if (db.objectStoreNames.contains('general')) {
             db.deleteObjectStore('general')
+            db.deleteObjectStore('traits')
             console.warn('cleared db for upgrade')
         }
         db.createObjectStore('general', {
             keyPath: 'id',
             autoIncrement: false
         });
-        this.#createTraitsStore(db)
-    }
-
-    /**
-     * @param {IDBDatabaseEntended} db
-     */
-    async #createTraitsStore(db) {
         const traitStore = db.createObjectStore('traits', {
             keyPath: 'id',
             autoIncrement: true
         });
-        traitStore.createIndex('text', 'text', { unique: true })
+        traitStore.createIndex('name', 'name', { unique: true })
     }
 
     async #loadDBInfo() {
         /** @type {IDBDatabaseEntended} db */
-        const db = await openDB('STAPlayApp-Test', 5, {
+        const db = await openDB(dbName, dbVersion, {
             upgrade: db => this.#createDB(db)
           });
         
@@ -212,60 +235,63 @@ export default class IndexController {
         document.getElementById('shipname').textContent = (generalInfo?.shipname ?? this.fallbackShipName).trim()
         document.getElementsByTagName('alert')[0].className = (generalInfo?.activeAlert ?? '').trim();
 
+        // remove existing traits
+        document.querySelectorAll('traits trait').forEach(el => el.parentNode.removeChild(el))
         // Get all traits
-        let traits = await db.getAllFromIndex('traits', 'text')
+        let traits = await db.getAll('traits')
         for (let trait of traits)
-            this.addTrait(trait.text)
+            this.addTrait(trait.name)
     }
 
     async deleteDB() {
-        await deleteDB('STAPlayApp-Test')
+        await deleteDB(dbName)
     }
 
     async saveDBInfo() {        
 
         /** @type {IDBDatabaseEntended} db */
-        const db = await openDB('STAPlayApp-Test', 5, {
+        const db = await openDB(dbName, dbVersion, {
             upgrade: db => this.#createDB(db)
-          })
+        })
         
-          await db.put('general', {
+        /** @type GeneralDBRow */
+        let info =  {
             id: 0, // Only One Row
             text: document.getElementById('general-text').innerHTML,
             shipname: document.getElementById('shipname').textContent.trim(),
             activeAlert: document.getElementsByTagName('alert')[0].className.trim(),
-          })
+        }
+        await db.put('general', info)
 
-        // clear traits
         {
             /** @type IDBTransactionEntended */
             // @ts-ignore
-            let tx = db.transaction("traits", 'readwrite');
-            let index = tx.store.index('text');
+            let transaction = db.transaction("traits", 'readwrite');
+
+            // clear traits
+            let index = transaction.store.index('name');
             let pdestroy = index.openCursor();
-            pdestroy.then(async cursor => {
+            await pdestroy.then(async cursor => {
                 while (cursor) {
                     cursor.delete();
                     cursor = await cursor.continue();
                 }
             })
-        }
 
-        // Add all current traits
-        {
-            /** @type IDBTransactionEntended */
-            // @ts-ignore
-            const tx = db.transaction('traits', 'readwrite');
-            const traits = new Set(
+            // Add all current traits
+            const traits = 
                 [...document.querySelectorAll('traits > trait > .name')]
                 .map(e => e.textContent.trim())
-            )
+                .filter((v, i, a) => a.indexOf(v) === i) // unique
             let adds = []
-            for (let trait of traits)
+            for (let trait of traits) {
+                /** @type NameDBRow */
+                let info = {name: trait}
                 adds.push(
-                    tx.store.add({ text: trait })
+                    transaction.store.add(info)
                 )
-            adds.push(tx.done)
+            }
+            adds.push(transaction.done)
             await Promise.all(adds)
           }
     }
@@ -367,8 +393,20 @@ export default class IndexController {
         template.parentElement.insertBefore(clone, template)
     }
     
-    addPlayer() {
-        throw new Error('Method not implemented.')
+    /**
+     * 
+     * @param {PlayerDBRow} info Player information
+     * @returns 
+     */
+    addPlayer(info) {
+        const template = document.querySelector('.players template')
+        if (template instanceof HTMLTemplateElement === false)
+            return
+
+        const clone = document.importNode(template.content, true)
+        if (typeof(name) === 'string')
+            clone.querySelector('.name').textContent = name
+        template.parentElement.insertBefore(clone, template)
     }
 
     /**

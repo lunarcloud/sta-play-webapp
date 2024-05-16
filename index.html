@@ -146,6 +146,41 @@
                     </div>
                 </content>
                 <ul class="players">
+                    <template id="player-template">
+                        <li class="command" player-index="1">
+                            <button class="remove"
+                                    onclick="this.parentNode.parentNode.removeChild(this.parentNode)">
+                                    ⤫
+                            </button> 
+                            <select class="department">
+                                <option title="command">🟥</option>
+                                <option title="medical">🟦</option>
+                                <option title="science">🟦</option>
+                                <option title="engineering">🟨</option>
+                                <option title="security">🟨</option>
+                                <option title="ops">🟨</option>
+                                <option title="other">🟪</option>
+                            </select>
+
+                            <select class="rank">
+                                <option selected title="Captain">⚫⚫⚫⚫</option>
+                                <option title="Commander">⚫⚫⚫</option>
+                                <option title="Lieutenant Commander">⚫⚫⚪</option>
+                                <option title="Lieutenant">⚫⚫</option>
+                                <option title="Lieutenant Junior Grade">⚫⚪</option>
+                                <option title="Ensign">⚫</option>
+                                <option title="Other">&nbsp;</option>
+                            </select>
+                            <stress>
+                                <input-progress value="8" max="8"></input-progress> 
+                                of 
+                                <input type="text" value="8" onchange="this.parentElement.querySelector('input-progress').setAttribute('max', this.value)">
+                            </stress>
+                            <h2 contenteditable="true">T'Yarn</h2>
+                        </li>
+                    </template>
+
+                    <!---->
                     <li class="command" player-index="1">
                         <button class="remove"
                                 onclick="this.parentNode.parentNode.removeChild(this.parentNode)">
@@ -245,6 +280,7 @@
                         </stress>
                         <h2>Ferne</h2>
                     </li>
+                    <!---->
                 </ul>
             </main>
 
