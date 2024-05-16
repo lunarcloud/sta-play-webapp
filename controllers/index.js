@@ -9,6 +9,12 @@ import { openDB, deleteDB, wrap, unwrap } from 'https://cdn.jsdelivr.net/npm/idb
  * }} IDBDatabaseEntended
  * @note From the IDB library
  */
+/**
+ * @typedef {IDBTransaction & {
+ *  store, done
+* }} IDBTransactionEntended
+* @note From the IDB library
+*/
 
 
 const DefaultShipUrl = 'gltf/starfleet-generic.glb'
@@ -36,10 +42,17 @@ export default class IndexController {
      */
     audioManager = new BgAudioManager()
 
+    fallbackText;
+    fallbackShipName;
+
     /**
      * Constructor.
      */
     constructor () {
+
+        // Get default to fallback to
+        this.fallbackText = document.getElementById('general-text').innerHTML
+        this.fallbackShipName = document.getElementById('shipname').innerHTML
 
         // Wire up audio
         const okAudio = document.getElementById('beep-ok-audio')
@@ -69,9 +82,30 @@ export default class IndexController {
         if (settingsDialog instanceof HTMLDialogElement)
             this.#setupSettings(settingsDialog)
 
+        // Load Images from Cache/Database
         this.#loadDBInfo()
         this.#loadCacheData()
 
+        // Wire up Saving the DB on page close
+        window.addEventListener("beforeunload", (event) => {
+            // Stop loading anything more in the DOM (like images)
+            window.stop();
+
+            // Setup a boolean used in the "sleep"
+            let canExit = false
+
+            this.saveDBInfo().finally(() => canExit = true)
+
+            // This nasty loop is because you can't actually 'await' the save
+            let start = new Date().getTime();
+            for (let i = 0; i < 1e7 && !canExit; i++) 
+                if ((new Date().getTime() - start) > 2000) {
+                    event.preventDefault()
+                    break;
+                }
+        }, { capture: true, passive: false, once: false });
+
+        // Setup Dropping 3D model of the Ship
         const modelViewers = document.getElementsByTagName('model-viewer')
         for (const viewer of modelViewers)
             IndexController.setupDragOnlyTarget(viewer, event => {
@@ -83,6 +117,7 @@ export default class IndexController {
                 return true
             })
 
+        // Support Dropping images of the Players
         const players = document.querySelectorAll('ul.players li')
         for (const player of players) 
             IndexController.setupDragOnlyTarget(player, event => {
@@ -124,54 +159,115 @@ export default class IndexController {
     #setupSettings(dialogEl) {
         document.getElementById('settings-btn').addEventListener('click', () => dialogEl.showModal())
         dialogEl.querySelector('button.close').addEventListener('click', () => dialogEl.close())
-        dialogEl.querySelector('button.clear-ship').addEventListener('click', () => 
-            this.clearCache('ship').then(() => this.#loadCacheData())
-        )
-        dialogEl.querySelector('button.clear-all').addEventListener('click', () => 
-            this.clearCache().then(() => this.#loadCacheData())
-        )
+        dialogEl.querySelector('button.clear-ship').addEventListener('click', async () => {
+            await this.clearCache('ship')
+            this.#loadCacheData()
+        })
+        dialogEl.querySelector('button.clear-player-images').addEventListener('click', async () => {
+            await this.clearCache('players')
+            this.#loadCacheData()
+        })
+        dialogEl.querySelector('button.clear-info').addEventListener('click', async () => {
+            await this.deleteDB()
+            this.#loadDBInfo()
+        })
     }
 
     /**
      * @param {IDBDatabaseEntended} db
      */
-    #createDB(db) {
+    async #createDB(db) {
         if (db.objectStoreNames.contains('general')) {
             db.deleteObjectStore('general')
             console.warn('cleared db for upgrade')
         }
-        const store = db.createObjectStore('general', {
+        db.createObjectStore('general', {
             keyPath: 'id',
             autoIncrement: false
         });
+        this.#createTraitsStore(db)
+    }
+
+    /**
+     * @param {IDBDatabaseEntended} db
+     */
+    async #createTraitsStore(db) {
+        const traitStore = db.createObjectStore('traits', {
+            keyPath: 'id',
+            autoIncrement: true
+        });
+        traitStore.createIndex('text', 'text', { unique: true })
     }
 
     async #loadDBInfo() {
         /** @type {IDBDatabaseEntended} db */
-        const db = await openDB('STAPlayApp-Test', 4, {
+        const db = await openDB('STAPlayApp-Test', 5, {
             upgrade: db => this.#createDB(db)
           });
         
-        let hasInfo = await db.count('general') !== 0
-        if (hasInfo) {
-            /** @type {object} */
-            let generalInfo = await db.get('general', 0)
-            document.getElementById('general-text').innerHTML = generalInfo.text;
-            document.getElementsByTagName('alert')[0].className = generalInfo.activeAlert;
-        }
+        let generalInfo = await db.count('general') !== 0 // has info 
+            ? /** @type {object} */ await db.get('general', 0)
+            : undefined       
+        document.getElementById('general-text').innerHTML = generalInfo?.text ?? this.fallbackText
+        document.getElementById('shipname').textContent = (generalInfo?.shipname ?? this.fallbackShipName).trim()
+        document.getElementsByTagName('alert')[0].className = (generalInfo?.activeAlert ?? '').trim();
+
+        // Get all traits
+        let traits = await db.getAllFromIndex('traits', 'text')
+        for (let trait of traits)
+            this.addTrait(trait.text)
     }
 
-    async saveDBInfo() {
+    async deleteDB() {
+        await deleteDB('STAPlayApp-Test')
+    }
+
+    async saveDBInfo() {        
+
         /** @type {IDBDatabaseEntended} db */
-        const db = await openDB('STAPlayApp-Test', 4, {
+        const db = await openDB('STAPlayApp-Test', 5, {
             upgrade: db => this.#createDB(db)
-          });
+          })
         
           await db.put('general', {
             id: 0, // Only One Row
             text: document.getElementById('general-text').innerHTML,
-            activeAlert: document.getElementsByTagName('alert')[0].classList[0],
-          });
+            shipname: document.getElementById('shipname').textContent.trim(),
+            activeAlert: document.getElementsByTagName('alert')[0].className.trim(),
+          })
+
+        // clear traits
+        {
+            /** @type IDBTransactionEntended */
+            // @ts-ignore
+            let tx = db.transaction("traits", 'readwrite');
+            let index = tx.store.index('text');
+            let pdestroy = index.openCursor();
+            pdestroy.then(async cursor => {
+                while (cursor) {
+                    cursor.delete();
+                    cursor = await cursor.continue();
+                }
+            })
+        }
+
+        // Add all current traits
+        {
+            /** @type IDBTransactionEntended */
+            // @ts-ignore
+            const tx = db.transaction('traits', 'readwrite');
+            const traits = new Set(
+                [...document.querySelectorAll('traits > trait > .name')]
+                .map(e => e.textContent.trim())
+            )
+            let adds = []
+            for (let trait of traits)
+                adds.push(
+                    tx.store.add({ text: trait })
+                )
+            adds.push(tx.done)
+            await Promise.all(adds)
+          }
     }
 
     async #loadCacheData() {
@@ -256,12 +352,18 @@ export default class IndexController {
         template.parentElement.insertBefore(clone, template)
     }
 
-    addTrait() {
+    /**
+     * Add trait element to the screen
+     * @param {string|undefined} name the name of the trait
+     */
+    addTrait(name = undefined) {
         const template = document.querySelector('traits template')
         if (template instanceof HTMLTemplateElement === false)
             return
 
         const clone = document.importNode(template.content, true)
+        if (typeof(name) === 'string')
+            clone.querySelector('trait > .name').textContent = name
         template.parentElement.insertBefore(clone, template)
     }
     

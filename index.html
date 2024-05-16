@@ -79,7 +79,7 @@
                             ＋ Trait
                         </a>
                     </li>
-                    <li class="shipname" contenteditable="true">
+                    <li id="shipname" class="shipname" contenteditable="true">
                         USS Winnipesaukee
                     </li>
                 </ul>
@@ -92,7 +92,7 @@
                         <span>SCENE TRAITS: </span>
                         <template>
                             <trait>
-                                <span contenteditable="true">TBD</span>
+                                <span class="name" contenteditable="true">TBD</span>
                                 <button class="remove"
                                         onclick="this.parentNode.parentNode.removeChild(this.parentNode)">
                                         ⤫
@@ -306,8 +306,9 @@
                 <dl>
                     <dt>Clear</dt>
                     <dd>
-                        <button class="clear-ship">Ship</button>
-                        <button class="clear-all">Ship and Players</button>
+                        <button class="clear-info">Info</button>
+                        <button class="clear-ship">Ship Model</button>
+                        <button class="clear-player-images">Player Images</button>
                     </dd>
                 </dl>
             </main>
