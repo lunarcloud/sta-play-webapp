@@ -20,6 +20,7 @@
         "eslint-plugin-jsdoc": "^46.9.0",
         "eslint-plugin-n": "^16.4.0",
         "eslint-plugin-promise": "^6.1.1",
+        "idb": "^8.0.0",
         "serve": "^14.2.1",
         "stylelint": "^16.0.2",
         "stylelint-config-standard": "^35.0.0"

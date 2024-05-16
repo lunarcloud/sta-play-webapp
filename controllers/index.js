@@ -1,5 +1,33 @@
 import BgAudioManager from './bg-audio-page.js'
 import '../input-progress/input-progress-element.js'
+// @ts-ignore
+import { openDB, deleteDB, wrap, unwrap } from 'https://cdn.jsdelivr.net/npm/idb@8/+esm';
+/**
+ * @typedef {IDBDatabase & {
+ *  get, getKey, getAll, getAllKeys, count, put, add, delete, clear,
+ *  getFromIndex, getKeyFromIndex, getAllFromIndex, getAllKeysFromIndex, countFromIndex
+ * }} IDBDatabaseEntended
+ * @note From the IDB library
+ */
+
+
+const DefaultShipUrl = 'gltf/starfleet-generic.glb'
+
+const DefaultPlayerImages = [
+    'img/player/voy.webp',
+    'img/player/ds9.webp',
+    'img/player/tng.webp',
+    'img/player/ent.webp',
+    'img/player/tos-movies.webp',
+    'img/player/tng-cadet.webp'
+]
+
+const AlertConditions = [
+    'condition-yellow',
+    'condition-red',
+    'condition-blue',
+    'condition-black'
+]
 
 export default class IndexController {
     /**
@@ -8,23 +36,12 @@ export default class IndexController {
      */
     audioManager = new BgAudioManager()
 
-    static DefaultShipUrl = 'gltf/starfleet-generic.glb'
-
-    static DefaultPlayerImages = [
-        'img/player/voy.webp',
-        'img/player/ds9.webp',
-        'img/player/tng.webp',
-        'img/player/ent.webp',
-        'img/player/tos-movies.webp',
-        'img/player/tng-cadet.webp'
-    ]
-
     /**
      * Constructor.
      */
     constructor () {
-        // Hook up hover buttons
 
+        // Wire up audio
         const okAudio = document.getElementById('beep-ok-audio')
         const cancelAudio = document.getElementById('beep-cancel-audio')
 
@@ -41,6 +58,7 @@ export default class IndexController {
         }
         this.audioManager.setupElements('a[hover]', buttonEffects, undefined, buttonEffects)
 
+        // Wire up buttons to their actions
         document.getElementById('alert-toggle').addEventListener('click', () => this.toggleAlerts())
         document.getElementById('extended-task-add').addEventListener('click', () => this.addExtendedTask())
         document.getElementById('player-add').addEventListener('click', () => this.addPlayer())
@@ -55,39 +73,48 @@ export default class IndexController {
         this.#loadCacheData()
 
         const modelViewers = document.getElementsByTagName('model-viewer')
-        for (const viewer of modelViewers) {
-            viewer.addEventListener('dragenter', event => event.preventDefault())
-            viewer.addEventListener('dragover', event => event.preventDefault())
-            viewer.addEventListener('dragleave', event => event.preventDefault())
-            viewer.addEventListener('drop', event => {
-                if (event instanceof DragEvent === false ||
-                     !event.dataTransfer.items?.[0].type.startsWith('model/gltf') ||
-                     !event.dataTransfer.files?.[0])
-                    return
-
+        for (const viewer of modelViewers)
+            IndexController.setupDragOnlyTarget(viewer, event => {
+                if (!event.dataTransfer.items?.[0].type.startsWith('model/gltf') ||
+                    !event.dataTransfer.files?.[0])
+                   return false
+                   
                 this.onShipModelDropped(event.dataTransfer.files?.[0])
-                event.preventDefault()
-                event.stopPropagation()
+                return true
             })
-        }
 
         const players = document.querySelectorAll('ul.players li')
-        for (const player of players) {
-            player.addEventListener('dragenter', event => event.preventDefault())
-            player.addEventListener('dragover', event => event.preventDefault())
-            player.addEventListener('dragleave', event => event.preventDefault())
-            player.addEventListener('drop', event => {
-                if (event instanceof DragEvent === false ||
-                    player instanceof HTMLElement === false ||
+        for (const player of players) 
+            IndexController.setupDragOnlyTarget(player, event => {
+                if (player instanceof HTMLElement === false ||
                     !event.dataTransfer.items?.[0].type.startsWith('image') ||
                     !event.dataTransfer.files?.[0])
-                    return
+                    return false
 
                 this.onPlayerImageDropped(player, event.dataTransfer.files?.[0])
-                event.preventDefault()
-                event.stopPropagation()
+                return true
             })
-        }
+    }
+
+    /**
+     * 
+     * @param {HTMLElement|any} el Element to set up drop but not drag for
+     * @param {function(DragEvent):boolean} onDrop 
+     */
+    static setupDragOnlyTarget(el, onDrop) {
+        if (el instanceof HTMLElement === false)
+            throw new Error("Cannot use 'el' as HTMLElement argument!")
+
+        el.addEventListener('dragenter', event => event.preventDefault())
+        el.addEventListener('dragover', event => event.preventDefault())
+        el.addEventListener('dragleave', event => event.preventDefault())
+        el.addEventListener('drop', event => {
+            if (event instanceof DragEvent === false || !onDrop(event))
+                return
+
+            event.preventDefault()
+            event.stopPropagation()
+        })
     }
 
     /**
@@ -105,8 +132,46 @@ export default class IndexController {
         )
     }
 
+    /**
+     * @param {IDBDatabaseEntended} db
+     */
+    #createDB(db) {
+        if (db.objectStoreNames.contains('general')) {
+            db.deleteObjectStore('general')
+            console.warn('cleared db for upgrade')
+        }
+        const store = db.createObjectStore('general', {
+            keyPath: 'id',
+            autoIncrement: false
+        });
+    }
+
     async #loadDBInfo() {
-        console.error('Method not implemented.')
+        /** @type {IDBDatabaseEntended} db */
+        const db = await openDB('STAPlayApp-Test', 4, {
+            upgrade: db => this.#createDB(db)
+          });
+        
+        let hasInfo = await db.count('general') !== 0
+        if (hasInfo) {
+            /** @type {object} */
+            let generalInfo = await db.get('general', 0)
+            document.getElementById('general-text').innerHTML = generalInfo.text;
+            document.getElementsByTagName('alert')[0].className = generalInfo.activeAlert;
+        }
+    }
+
+    async saveDBInfo() {
+        /** @type {IDBDatabaseEntended} db */
+        const db = await openDB('STAPlayApp-Test', 4, {
+            upgrade: db => this.#createDB(db)
+          });
+        
+          await db.put('general', {
+            id: 0, // Only One Row
+            text: document.getElementById('general-text').innerHTML,
+            activeAlert: document.getElementsByTagName('alert')[0].classList[0],
+          });
     }
 
     async #loadCacheData() {
@@ -123,7 +188,7 @@ export default class IndexController {
         catch (ex)
         {
             // fallback to default
-            this.#setShipModel(IndexController.DefaultShipUrl)
+            this.#setShipModel(DefaultShipUrl)
         }
 
         const playerEls = document.querySelectorAll('ul.players li')
@@ -143,7 +208,7 @@ export default class IndexController {
             catch (ex)
             {
                 // fallback to default
-                playerEl.style.backgroundImage = `url('${IndexController.DefaultPlayerImages[i]}')`
+                playerEl.style.backgroundImage = `url('${DefaultPlayerImages[i]}')`
             }
         }
     }
@@ -152,27 +217,31 @@ export default class IndexController {
      * Cycle between the alert types and none.
      */
     toggleAlerts () {
-        const alerts = document.querySelectorAll('alert')
-        for (const alert of alerts) {
-            if (alert.classList.contains('condition-yellow'))
-                alert.classList.replace('condition-yellow', 'condition-red')
-            else if (alert.classList.contains('condition-red'))
-                alert.classList.replace('condition-red', 'condition-blue')
-            else if (alert.classList.contains('condition-blue'))
-                alert.classList.replace('condition-blue', 'condition-black')
-            else if (alert.classList.contains('condition-black'))
-                alert.classList.remove('condition-black')
-            else
-                alert.classList.add('condition-yellow')
+        const alert = document.querySelector('alert')
+        if (alert instanceof HTMLElement === false) 
+            return
 
-            const alertAudioEl = document.getElementById('beep-ok-audio') // TODO actual alert sound! that loops
-            if (alertAudioEl instanceof HTMLAudioElement === false) return
-
-            if (alert.classList.contains('condition-red')) {
-                alertAudioEl.currentTime = 0
-                alertAudioEl.play()
-            } else alertAudioEl.pause() /// TODO?
+        const lastType = AlertConditions[AlertConditions.length - 1]
+        if (alert.classList.contains(lastType)) {
+            alert.classList.remove(lastType)
         }
+        else if (alert.className === "") {
+            alert.classList.add(AlertConditions[0])
+        }
+        else for (let i = 0; i < AlertConditions.length - 1; i++) {
+            if (alert.classList.contains(AlertConditions[i])) {
+                alert.classList.replace(AlertConditions[i], AlertConditions[i+1])
+                break;
+            }
+        }
+
+        const alertAudioEl = document.getElementById('beep-ok-audio') // TODO actual alert sound! that loops
+        if (alertAudioEl instanceof HTMLAudioElement === false) return
+
+        if (alert.classList.contains('condition-red')) {
+            alertAudioEl.currentTime = 0
+            alertAudioEl.play()
+        } else alertAudioEl.pause()
     }
 
     /**
