@@ -28,10 +28,24 @@ body, h1, h2, h3, h4, h5, h6 {
     letter-spacing: 0.45mm;
 }
 
+button.remove {
+    user-select: none;
+}
+
+select-only {
+    display: inline-block;
+    user-select: all;
+    visibility: visible;
+    overflow: hidden;
+    height: 1px;
+    width: 1px;
+}
+
 decoration a,
 nav li > a {
     text-transform: uppercase;
     letter-spacing: 0.35mm;
+    user-select: none;
 }
 
 *[contenteditable="true"] {
@@ -108,6 +122,7 @@ dialog#settings-dialog {
     font-size: 9mm;
     background-color: transparent;
     border-color: transparent;
+    user-select: none;
 
     &:hover {
         text-shadow: 0 1mm 4mm #fff6;
@@ -581,6 +596,7 @@ container#main {
                 text-shadow: 1px 1px 1px black;
 
                 & select {
+                    user-select: none;
                     outline: none;
                     text-align: start;
                     border-color: transparent;
@@ -592,10 +608,11 @@ container#main {
                     background-image: none;
                 }
     
-                & .department {
+                & .color {
                     position: absolute; 
                     top: 0; 
                     left: 0;
+                    z-index: 3;
                     text-align: left;
                     font-size: 1em;
                     background-color: transparent;
@@ -677,20 +694,13 @@ container#main {
                     padding: 4mm 0 4mm 4mm;
                 }
 
-                &.command {
-                    border-color: var(--trek-color-red);
-                }
-
-                &.science,
-                &.medical {
-                    border-color: var(--trek-color-blue);
-                }
-
-                &.ops,
-                &.operations,
-                &.security {
-                    border-color: var(--trek-color-orange);
-                }
+                /* Used to denote department, mostly */
+                &.border-red        { border-color: var(--trek-color-red); }
+                &.border-blue       { border-color: var(--trek-color-blue); }
+                &.border-yellow     { border-color: var(--trek-color-orange); }
+                &.border-black      { border-color: #222; }
+                &.border-white      { border-color: #bbb; }
+                &.border-brown      { border-color: var(--trek-color-peach); }
             }
         }
 

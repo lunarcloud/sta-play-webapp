@@ -145,29 +145,29 @@
                         <p>The story so far...</p>
                     </div>
                 </content>
+                <select-only>Players: </select-only>
                 <ul class="players">
                     <template id="player-template">
-                        <li class="command" player-index="1">
+                        <li class="border-brown" player-index="0">
                             <button class="remove"
                                     onclick="this.parentNode.parentNode.removeChild(this.parentNode)">
                                     ⤫
                             </button> 
-                            <select class="department">
-                                <option title="command">🟥</option>
-                                <option title="medical">🟦</option>
-                                <option title="science">🟦</option>
-                                <option title="engineering">🟨</option>
-                                <option title="security">🟨</option>
-                                <option title="ops">🟨</option>
-                                <option title="other">🟪</option>
+                            <select class="color">
+                                <option value="brown">🟫</option>
+                                <option value="red">🟥</option>
+                                <option value="blue">🟦</option>
+                                <option value="yellow">🟨</option>
+                                <option value="black">⬛</option>
+                                <option value="white">⬜</option>
                             </select>
 
                             <select class="rank">
-                                <option selected title="Captain">⚫⚫⚫⚫</option>
+                                <option title="Captain">⚫⚫⚫⚫</option>
                                 <option title="Commander">⚫⚫⚫</option>
                                 <option title="Lieutenant Commander">⚫⚫⚪</option>
                                 <option title="Lieutenant">⚫⚫</option>
-                                <option title="Lieutenant Junior Grade">⚫⚪</option>
+                                <option selected title="Lieutenant Junior Grade">⚫⚪</option>
                                 <option title="Ensign">⚫</option>
                                 <option title="Other">&nbsp;</option>
                             </select>
@@ -176,111 +176,9 @@
                                 of 
                                 <input type="text" value="8" onchange="this.parentElement.querySelector('input-progress').setAttribute('max', this.value)">
                             </stress>
-                            <h2 contenteditable="true">T'Yarn</h2>
+                            <h2 class="name" contenteditable="true">Name Here</h2>
                         </li>
                     </template>
-
-                    <!---->
-                    <li class="command" player-index="1">
-                        <button class="remove"
-                                onclick="this.parentNode.parentNode.removeChild(this.parentNode)">
-                                ⤫
-                        </button> 
-                        <select class="department">
-                            <option title="command">🟥</option>
-                            <option title="medical">🟦</option>
-                            <option title="science">🟦</option>
-                            <option title="engineering">🟨</option>
-                            <option title="security">🟨</option>
-                            <option title="ops">🟨</option>
-                            <option title="other">🟪</option>
-                        </select>
-
-                        <select class="rank">
-                            <option selected title="Captain">⚫⚫⚫⚫</option>
-                            <option title="Commander">⚫⚫⚫</option>
-                            <option title="Lieutenant Commander">⚫⚫⚪</option>
-                            <option title="Lieutenant">⚫⚫</option>
-                            <option title="Lieutenant Junior Grade">⚫⚪</option>
-                            <option title="Ensign">⚫</option>
-                            <option title="Other">&nbsp;</option>
-                        </select>
-                        <stress>
-                            <input-progress value="8" max="8"></input-progress> 
-                            of 
-                            <input type="text" value="8" onchange="this.parentElement.querySelector('input-progress').setAttribute('max', this.value)">
-                        </stress>
-                        <h2 contenteditable="true">T'Yarn</h2>
-                    </li>
-                    <li class="medical" player-index="2">
-                        <select class="rank">
-                            <option title="Captain">⚫⚫⚫⚫</option>
-                            <option selected title="Commander">⚫⚫⚫</option>
-                            <option title="Lieutenant Commander">⚫⚫⚪</option>
-                            <option title="Lieutenant">⚫⚫</option>
-                            <option title="Lieutenant Junior Grade">⚫⚪</option>
-                            <option title="Ensign">⚫</option>
-                            <option title="Other">&nbsp;</option>
-                        </select>
-                        <stress>
-                            <input-progress value="8" max="9"></input-progress> 
-                            of 
-                            <input type="text" value="9" onchange="this.parentElement.querySelector('input-progress').setAttribute('max', this.value)">
-                        </stress>
-                        <h2>Tara Fenn</h2>
-                    </li>
-                    <li class="command" player-index="3" >
-                        <select class="rank">
-                            <option title="Captain">⚫⚫⚫⚫</option>
-                            <option title="Commander">⚫⚫⚫</option>
-                            <option selected title="Lieutenant Commander">⚫⚫⚪</option>
-                            <option title="Lieutenant">⚫⚫</option>
-                            <option title="Lieutenant Junior Grade">⚫⚪</option>
-                            <option title="Ensign">⚫</option>
-                            <option title="Other">&nbsp;</option>
-                        </select>
-                        <stress>
-                            <input-progress value="8" max="8"></input-progress> 
-                            of 
-                            <input type="text" value="8" onchange="this.parentElement.querySelector('input-progress').setAttribute('max', this.value)">
-                        </stress>
-                        <h2>Hork</h2>
-                    </li>
-                    <li class="ops" player-index="4">
-                        <select class="rank">
-                            <option title="Captain">⚫⚫⚫⚫</option>
-                            <option title="Commander">⚫⚫⚫</option>
-                            <option title="Lieutenant Commander">⚫⚫⚪</option>
-                            <option title="Lieutenant">⚫⚫</option>
-                            <option title="Lieutenant Junior Grade">⚫⚪</option>
-                            <option selected title="Ensign">⚫⚫</option>
-                            <option title="Other">&nbsp;</option>
-                        </select>
-                        <stress>
-                            <input-progress value="8" max="8"></input-progress> 
-                            of 
-                            <input type="text" value="8" onchange="this.parentElement.querySelector('input-progress').setAttribute('max', this.value)">
-                        </stress>
-                        <h2>Joshua LeBlanc</h2>
-                    </li>
-                    <li class="science" player-index="5">
-                        <select class="rank">
-                            <option title="Captain">⚫⚫⚫⚫</option>
-                            <option title="Commander">⚫⚫⚫</option>
-                            <option title="Lieutenant Commander">⚫⚫⚪</option>
-                            <option title="Lieutenant">⚫⚫</option>
-                            <option title="Lieutenant Junior Grade">⚫⚪</option>
-                            <option title="Ensign">⚫</option>
-                            <option selected title="Other">&nbsp;</option>
-                        </select>
-                        <stress>
-                            <input-progress value="8" max="7"></input-progress> 
-                            of 
-                            <input type="text" value="7" onchange="this.parentElement.querySelector('input-progress').setAttribute('max', this.value)">
-                        </stress>
-                        <h2>Ferne</h2>
-                    </li>
-                    <!---->
                 </ul>
             </main>
 

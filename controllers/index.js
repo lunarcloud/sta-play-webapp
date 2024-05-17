@@ -2,6 +2,7 @@ import BgAudioManager from './bg-audio-page.js'
 import '../input-progress/input-progress-element.js'
 // @ts-ignore
 import { openDB, deleteDB, wrap, unwrap } from 'https://cdn.jsdelivr.net/npm/idb@8/+esm';
+
 /**
  * @typedef {IDBDatabase & {
  *  get, getKey, getAll, getAllKeys, count, put, add, delete, clear,
@@ -16,7 +17,7 @@ import { openDB, deleteDB, wrap, unwrap } from 'https://cdn.jsdelivr.net/npm/idb
 
 /**
  * @typedef {{ 
- * id: number, 
+ * id: number|undefined, 
  * text: string, 
  * shipname: string, 
  * activeAlert: string }} GeneralDBRow
@@ -25,7 +26,8 @@ import { openDB, deleteDB, wrap, unwrap } from 'https://cdn.jsdelivr.net/npm/idb
  * @typedef {{ name: string }} NameDBRow
  */
 /**
- * @typedef {NameDBRow & { 
+ * @typedef {NameDBRow & {
+ * id?: number, 
  * resistance: number,
  * complicationRange: number,
  * attribute: string,
@@ -34,23 +36,23 @@ import { openDB, deleteDB, wrap, unwrap } from 'https://cdn.jsdelivr.net/npm/idb
  * }} TrackerDBRow
  */
 /**
- * @typedef {NameDBRow & { 
- * id: number,
+ * @typedef {NameDBRow & {
+ * id?: number, 
  * currentStress: number,
  * maxStress: number,
  * pips: string,
- * group: string
+ * borderColor: string
  * }} PlayerDBRow
  */
 
 const dbName = 'STAPlayApp-Test'
-const dbVersion = 8
+const dbVersion = 10
 
 const DefaultShipUrl = 'gltf/starfleet-generic.glb'
 
 const DefaultPlayerImages = [
-    'img/player/voy.webp',
     'img/player/ds9.webp',
+    'img/player/voy.webp',
     'img/player/tng.webp',
     'img/player/ent.webp',
     'img/player/tos-movies.webp',
@@ -90,7 +92,7 @@ export default class IndexController {
         if (okAudio instanceof HTMLAudioElement === false || cancelAudio instanceof HTMLAudioElement === false)
             throw new Error('This page is wrong')
 
-        const buttonEffects = (evtName, el, muted) => {
+        const buttonEffects = (evtName, _el, muted) => {
             // Audio
             if (muted)
                 return
@@ -113,7 +115,7 @@ export default class IndexController {
 
         // Load Images from Cache/Database
         this.#loadDBInfo()
-        this.#loadCacheData()
+        this.#loadShipFromCache()
 
         // Wire up Saving the DB on page close
         window.addEventListener("beforeunload", (event) => {
@@ -134,7 +136,7 @@ export default class IndexController {
                 }
         }, { capture: true, passive: false, once: false });
 
-        // Setup Dropping 3D model of the Ship
+        // Setup Dropping 3D model on the Ship
         const modelViewers = document.getElementsByTagName('model-viewer')
         for (const viewer of modelViewers)
             IndexController.setupDragOnlyTarget(viewer, event => {
@@ -143,19 +145,6 @@ export default class IndexController {
                    return false
                    
                 this.onShipModelDropped(event.dataTransfer.files?.[0])
-                return true
-            })
-
-        // Support Dropping images of the Players
-        const players = document.querySelectorAll('ul.players li')
-        for (const player of players) 
-            IndexController.setupDragOnlyTarget(player, event => {
-                if (player instanceof HTMLElement === false ||
-                    !event.dataTransfer.items?.[0].type.startsWith('image') ||
-                    !event.dataTransfer.files?.[0])
-                    return false
-
-                this.onPlayerImageDropped(player, event.dataTransfer.files?.[0])
                 return true
             })
     }
@@ -190,11 +179,11 @@ export default class IndexController {
         dialogEl.querySelector('button.close').addEventListener('click', () => dialogEl.close())
         dialogEl.querySelector('button.clear-ship').addEventListener('click', async () => {
             await this.clearCache('ship')
-            this.#loadCacheData()
+            this.#loadShipFromCache()
         })
         dialogEl.querySelector('button.clear-player-images').addEventListener('click', async () => {
             await this.clearCache('players')
-            this.#loadCacheData()
+            this.#loadShipFromCache()
         })
         dialogEl.querySelector('button.clear-info').addEventListener('click', async () => {
             await this.deleteDB()
@@ -206,20 +195,26 @@ export default class IndexController {
      * @param {IDBDatabaseEntended} db
      */
     async #createDB(db) {
-        if (db.objectStoreNames.contains('general')) {
+        if (db.objectStoreNames.contains('general'))
             db.deleteObjectStore('general')
+        if (db.objectStoreNames.contains('traits'))
             db.deleteObjectStore('traits')
-            console.warn('cleared db for upgrade')
-        }
-        db.createObjectStore('general', {
-            keyPath: 'id',
-            autoIncrement: false
-        });
-        const traitStore = db.createObjectStore('traits', {
-            keyPath: 'id',
-            autoIncrement: true
-        });
+        if (db.objectStoreNames.contains('players'))
+            db.deleteObjectStore('players')
+        if (db.objectStoreNames.contains('trackers'))
+            db.deleteObjectStore('trackers')
+
+        console.warn('cleared db for upgrade')
+        db.createObjectStore('general', { keyPath: 'id', autoIncrement: false });
+
+        const traitStore = db.createObjectStore('traits', { keyPath: 'id', autoIncrement: true });
         traitStore.createIndex('name', 'name', { unique: true })
+
+        const playerStore = db.createObjectStore('players', { keyPath: 'id', autoIncrement: true });
+        playerStore.createIndex('name', 'name', { unique: false })
+
+        const trackerStore = db.createObjectStore('trackers', { keyPath: 'id', autoIncrement: true });
+        trackerStore.createIndex('name', 'name', { unique: true })
     }
 
     async #loadDBInfo() {
@@ -241,6 +236,20 @@ export default class IndexController {
         let traits = await db.getAll('traits')
         for (let trait of traits)
             this.addTrait(trait.name)
+
+        // remove existing players
+        document.querySelectorAll('.players li').forEach(el => el.parentNode.removeChild(el))
+        // Get all players
+        let players = await db.getAll('players')
+        for (let player of players)
+            this.addPlayer(player)
+
+        // remove existing trackers
+        document.querySelectorAll('extended-task').forEach(el => el.parentNode.removeChild(el))
+        // Get all trackers
+        let trackers = await db.getAll('trackers')
+        for (let tracker of trackers)
+            this.addExtendedTask(tracker)
     }
 
     async deleteDB() {
@@ -294,12 +303,93 @@ export default class IndexController {
             adds.push(transaction.done)
             await Promise.all(adds)
           }
+
+          {
+            /** @type IDBTransactionEntended */
+            // @ts-ignore
+            let transaction = db.transaction("players", 'readwrite');
+
+            // clear players
+            let index = transaction.store.index('name');
+            let pdestroy = index.openCursor();
+            await pdestroy.then(async cursor => {
+                while (cursor) {
+                    cursor.delete();
+                    cursor = await cursor.continue();
+                }
+            })
+
+            const players = [...document.querySelectorAll('.players > li')]
+                .map((/** @type HTMLLIElement */ e) => {
+                    let el = e
+                    /** @type HTMLSelectElement */
+                    const colorSelect = el.querySelector('select.color')
+                    /** @type HTMLSelectElement */
+                    const rankSelect = el.querySelector('select.rank')
+                    const inputProgress = el.querySelector('input-progress')
+                    /** @type PlayerDBRow */
+                    let info = {
+                        id: parseInt(el.getAttribute('player-index')),
+                        name: el.querySelector('.name').textContent,
+                        borderColor: colorSelect.value.trim(),
+                        pips: rankSelect.value,
+                        currentStress: parseInt(inputProgress.getAttribute('value')),
+                        maxStress: parseInt(inputProgress.getAttribute('max')),
+
+                    }
+                    return info
+                })
+            let adds = []
+            for (let info of players)
+                adds.push(
+                    transaction.store.add(info)
+                )
+            adds.push(transaction.done)
+            await Promise.all(adds)
+          }
+          return; // todo
+
+          {
+            /** @type IDBTransactionEntended */
+            // @ts-ignore
+            let transaction = db.transaction("trackers", 'readwrite');
+
+            // clear trackers
+            let index = transaction.store.index('name');
+            let pdestroy = index.openCursor();
+            await pdestroy.then(async cursor => {
+                while (cursor) {
+                    cursor.delete();
+                    cursor = await cursor.continue();
+                }
+            })
+
+            const trackers = [...document.querySelectorAll('extended-task')]
+                .map(e => {
+                    /** @type TrackerDBRow */
+                    let info = { // TODO
+                        name: undefined,
+                        attribute: undefined,
+                        department: undefined,
+                        resistance: undefined,
+                        complicationRange: undefined,
+                        progressTrack: undefined
+                    }
+                    return info
+                })
+            let adds = []
+            for (let info of trackers)
+                adds.push(
+                    transaction.store.add(info)
+                )
+            adds.push(transaction.done)
+            await Promise.all(adds)
+          }
     }
 
-    async #loadCacheData() {
+    async #loadShipFromCache() {
         let dirHandle = await navigator.storage.getDirectory()
         let shipDir = await dirHandle.getDirectoryHandle('ship', {create: true})
-        let playersDir = await dirHandle.getDirectoryHandle('players', {create: true})
 
         // Load cached ship, if available
         try {
@@ -312,27 +402,32 @@ export default class IndexController {
             // fallback to default
             this.#setShipModel(DefaultShipUrl)
         }
+    }
 
-        const playerEls = document.querySelectorAll('ul.players li')
-        for (const playerEl of playerEls)
-        {
-            if (playerEl instanceof HTMLElement === false)
-                return;
-            let i = playerEl.getAttribute('player-index');
+    /**
+     * Loads the image for the player
+     * @param {number} playerIndex player-index value
+     */
+    async #loadPlayerImageFromCache(playerIndex, playerEl) {
+        playerEl ??= document.querySelector(`player-${playerIndex}`)
+        if (playerEl instanceof HTMLElement === false)
+            throw new Error(`Player #${playerIndex} not found`)
 
-            // Load cached player image, if available
-            try {
-                let handle = await playersDir.getFileHandle(`${i}`, {create: false})
-                let playerFile = await handle.getFile()
-                const url = URL.createObjectURL(playerFile)
-                playerEl.style.backgroundImage = `url('${url}')`
-            }
-            catch (ex)
-            {
-                // fallback to default
-                playerEl.style.backgroundImage = `url('${DefaultPlayerImages[i]}')`
-            }
+        // Load cached player image, if available
+        try {
+            let dirHandle = await navigator.storage.getDirectory()
+            let playersDir = await dirHandle.getDirectoryHandle('players', {create: true})
+            let handle = await playersDir.getFileHandle(`${playerIndex}`, {create: false})
+            let playerFile = await handle.getFile()
+            const url = URL.createObjectURL(playerFile)
+            playerEl.style.backgroundImage = `url('${url}')`
         }
+        catch (ex)
+        {
+            // fallback to default
+            playerEl.style.backgroundImage = `url('${DefaultPlayerImages[((playerIndex - 1) % DefaultPlayerImages.length)]}')`
+        }
+
     }
 
     /**
@@ -368,13 +463,17 @@ export default class IndexController {
 
     /**
      * Add a new Combat / Extended task tracker to the page.
+     * @param {TrackerDBRow|undefined} info Player information
      */
-    addExtendedTask () {
+    addExtendedTask(info = undefined) {
         const template = document.getElementById('extended-task-template')
         if (template instanceof HTMLTemplateElement === false)
             return
 
         const clone = document.importNode(template.content, true)
+
+        // TODO
+
         template.parentElement.insertBefore(clone, template)
     }
 
@@ -394,19 +493,66 @@ export default class IndexController {
     }
     
     /**
-     * 
-     * @param {PlayerDBRow} info Player information
-     * @returns 
+     * Add a player to the players list
+     * @param {PlayerDBRow|undefined} info Player information
      */
-    addPlayer(info) {
+    addPlayer(info = undefined) {
         const template = document.querySelector('.players template')
         if (template instanceof HTMLTemplateElement === false)
             return
 
         const clone = document.importNode(template.content, true)
-        if (typeof(name) === 'string')
-            clone.querySelector('.name').textContent = name
+        /** @type HTMLLIElement */
+        let clonePlayer = clone.querySelector('li')
+        let playerIndex = document.querySelectorAll('.players li').length
+
+        if (typeof(info) !== 'undefined') {
+            clone.querySelector('.name').textContent = info.name
+            playerIndex = info.id
+            
+            clone.querySelector('stress > input-progress').setAttribute('value', `${info.currentStress}`)
+            clone.querySelector('stress > input-progress').setAttribute('max', `${info.maxStress}`)
+            clone.querySelector('stress > input').setAttribute('value', `${info.maxStress}`)
+
+            let rankSelect = clone.querySelector(`select.rank`)
+            if (rankSelect instanceof HTMLSelectElement)
+                rankSelect.value = info.pips
+
+            /** @type HTMLSelectElement */
+            const colorSelect = clone.querySelector(`select.color`)
+            colorSelect.value = info.borderColor.trim()
+        } 
+        
+        if (clonePlayer.style.backgroundImage.trim() === '') 
+            clonePlayer.style.backgroundImage = `url('${DefaultPlayerImages[playerIndex % DefaultPlayerImages.length]}')`
+        
+
+        clonePlayer.setAttribute('player-index', `${playerIndex}`)
+        const playerId = `player-${playerIndex}`
+        clonePlayer.id = playerId
+        
         template.parentElement.insertBefore(clone, template)
+        const newEl = document.getElementById(playerId)
+        
+        // Wire events
+        /** @type HTMLSelectElement */
+        const colorSelect = newEl.querySelector(`select.color`)
+        newEl.className = `border-${colorSelect.value}`
+        colorSelect.addEventListener('change', () => newEl.className = `border-${colorSelect.value}`)
+
+        // Get Image from cache (if not new)
+        if (typeof(info) !== 'undefined')
+            this.#loadPlayerImageFromCache(playerIndex, newEl)
+        
+        // Support Dropping images on the Player
+        IndexController.setupDragOnlyTarget(newEl, event => {
+            if (!event.dataTransfer.items?.[0].type.startsWith('image') ||
+                !event.dataTransfer.files?.[0])
+                return false
+
+            this.onPlayerImageDropped(newEl, event.dataTransfer.files?.[0])
+            return true
+        })
     }
 
     /**

@@ -1,4 +1,4 @@
-export default class InputProgressElement extends HTMLElement {
+export class InputProgressElement extends HTMLElement {
     static observedAttributes = ['value', 'max']
 
     #inputEl
@@ -76,3 +76,4 @@ export default class InputProgressElement extends HTMLElement {
 
 // Register element
 customElements.define('input-progress', InputProgressElement)
+export default InputProgressElement
