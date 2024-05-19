@@ -20,6 +20,7 @@ import { openDB, deleteDB, wrap, unwrap } from 'https://cdn.jsdelivr.net/npm/idb
  * id: number|undefined, 
  * text: string, 
  * shipname: string, 
+ * momentum: number,
  * activeAlert: string }} GeneralDBRow
  */
 /**
@@ -104,7 +105,7 @@ export default class IndexController {
 
         // Wire up buttons to their actions
         document.getElementById('alert-toggle').addEventListener('click', () => this.toggleAlerts())
-        document.getElementById('extended-task-add').addEventListener('click', () => this.addExtendedTask())
+        document.getElementById('task-tracker-add').addEventListener('click', () => this.addExtendedTask())
         document.getElementById('player-add').addEventListener('click', () => this.addPlayer())
         document.getElementById('trait-add').addEventListener('click', () => this.addTrait())
 
@@ -226,8 +227,15 @@ export default class IndexController {
         let generalInfo = await db.count('general') !== 0 // has info 
             ? /** @type {object} */ await db.get('general', 0)
             : undefined       
+        
+        
+        let momentumEl = document.getElementById('momentum-pool');
+        if (momentumEl instanceof HTMLInputElement === false)
+            throw new Error("page setup incorrectly!");
+
         document.getElementById('general-text').innerHTML = generalInfo?.text ?? this.fallbackText
         document.getElementById('shipname').textContent = (generalInfo?.shipname ?? this.fallbackShipName).trim()
+        momentumEl.value = generalInfo?.momentum ?? 0
         document.getElementsByTagName('alert')[0].className = (generalInfo?.activeAlert ?? '').trim();
 
         // remove existing traits
@@ -245,7 +253,7 @@ export default class IndexController {
             this.addPlayer(player)
 
         // remove existing trackers
-        document.querySelectorAll('extended-task').forEach(el => el.parentNode.removeChild(el))
+        document.querySelectorAll('task-tracker').forEach(el => el.parentNode.removeChild(el))
         // Get all trackers
         let trackers = await db.getAll('trackers')
         for (let tracker of trackers)
@@ -262,12 +270,17 @@ export default class IndexController {
         const db = await openDB(dbName, dbVersion, {
             upgrade: db => this.#createDB(db)
         })
-        
+
+        let momentumEl = document.getElementById('momentum-pool');
+        if (momentumEl instanceof HTMLInputElement === false)
+            throw new Error("page setup incorrectly!");
+
         /** @type GeneralDBRow */
         let info =  {
             id: 0, // Only One Row
             text: document.getElementById('general-text').innerHTML,
             shipname: document.getElementById('shipname').textContent.trim(),
+            momentum: parseInt(momentumEl.value),
             activeAlert: document.getElementsByTagName('alert')[0].className.trim(),
         }
         await db.put('general', info)
@@ -347,7 +360,6 @@ export default class IndexController {
             adds.push(transaction.done)
             await Promise.all(adds)
           }
-          return; // todo
 
           {
             /** @type IDBTransactionEntended */
@@ -364,16 +376,27 @@ export default class IndexController {
                 }
             })
 
-            const trackers = [...document.querySelectorAll('extended-task')]
+            const trackers = [...document.querySelectorAll('task-tracker')]
                 .map(e => {
+                    /** @type HTMLSelectElement */
+                    let attributeSelect = e.querySelector('.attribute')
+                    /** @type HTMLSelectElement */
+                    let departmentSelect = e.querySelector('.department')
+                    /** @type HTMLInputElement */
+                    let resistanceInput = e.querySelector('.resistance')
+                    /** @type HTMLInputElement */
+                    let complicationRangeInput = e.querySelector('.complication-range')
+                    /** @type HTMLInputElement */
+                    let progressInput = e.querySelector('.progress')
+
                     /** @type TrackerDBRow */
-                    let info = { // TODO
-                        name: undefined,
-                        attribute: undefined,
-                        department: undefined,
-                        resistance: undefined,
-                        complicationRange: undefined,
-                        progressTrack: undefined
+                    let info = {
+                        name: e.querySelector('.name').textContent,
+                        attribute: attributeSelect.value,
+                        department: departmentSelect.value,
+                        resistance: parseInt(resistanceInput.value),
+                        complicationRange: parseInt(complicationRangeInput.value),
+                        progressTrack: parseInt(progressInput.value)
                     }
                     return info
                 })
@@ -466,13 +489,33 @@ export default class IndexController {
      * @param {TrackerDBRow|undefined} info Player information
      */
     addExtendedTask(info = undefined) {
-        const template = document.getElementById('extended-task-template')
+        const template = document.getElementById('task-tracker-template')
         if (template instanceof HTMLTemplateElement === false)
             return
 
         const clone = document.importNode(template.content, true)
 
-        // TODO
+        clone.querySelector('.name').textContent = info.name
+
+        let attributeSelect = clone.querySelector('.attribute')
+        if (attributeSelect instanceof HTMLSelectElement)
+            attributeSelect.value = info.attribute
+
+        let departmentSelect = clone.querySelector('.department')
+        if (departmentSelect instanceof HTMLSelectElement)
+            departmentSelect.value = info.department
+
+        let resistanceInput = clone.querySelector('.resistance')
+        if (resistanceInput instanceof HTMLInputElement)
+            resistanceInput.value = `${info.resistance}`
+
+        let complicationRangeInput = clone.querySelector('.complication-range')
+        if (complicationRangeInput instanceof HTMLInputElement)
+            complicationRangeInput.value = `${info.complicationRange}`
+
+        let progressInput = clone.querySelector('.progress')
+        if (progressInput instanceof HTMLInputElement)
+            progressInput.value = `${info.progressTrack}`
 
         template.parentElement.insertBefore(clone, template)
     }

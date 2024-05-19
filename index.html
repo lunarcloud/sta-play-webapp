@@ -70,7 +70,7 @@
                         </a>
                     </li>
                     <li>
-                        <a hover="audio" id="extended-task-add">
+                        <a hover="audio" id="task-tracker-add">
                             ＋ Tracker
                         </a>
                     </li>
@@ -103,21 +103,21 @@
                     <alert>
                         <h1>ALERT</h1><p>CONDITION: </p>
                     </alert>
-                    <template id="extended-task-template">
-                        <extended-task>
+                    <template id="task-tracker-template">
+                        <task-tracker>
                             <button class="remove"
                                     onclick="this.parentNode.parentNode.removeChild(this.parentNode)">
                                     ⤫
                             </button>
-                            <h1 contenteditable="true">Combat / Extended Task</h1>
+                            <h1 class="name" contenteditable="true">Combat / Extended Task</h1>
                             <dl>
                                 <dt>Resistance</dt>
-                                <dd><input type="number" value="0"></dd>
+                                <dd><input class="resistance" type="number" value="0"></dd>
                                 <dt>Complication Range</dt>
-                                <dd><input type="number" value="0"></dd>
+                                <dd><input class="complication-range" type="number" value="0"></dd>
                                 <dt>Stats</dt>
                                 <dd>
-                                    <select>
+                                    <select class="attribute">
                                         <option>Control</option>
                                         <option>Fitness</option>
                                         <option>Presence</option>
@@ -125,7 +125,7 @@
                                         <option>Insight</option>
                                         <option>Reason</option>
                                     </select>
-                                    <select>
+                                    <select class="department">
                                         <option>Command</option>
                                         <option>Security</option>
                                         <option>Science</option>
@@ -135,9 +135,9 @@
                                     </select>
                                 </dd>
                                 <dt>Progress</dt>
-                                <dd><input type="number" value="3"></dd>
+                                <dd><input class="progress" type="number" value="3"></dd>
                             </dl>
-                        </extended-task>
+                        </task-tracker>
                     </template>
 
                     <div id="general-text" contenteditable="true">
@@ -217,7 +217,16 @@
                     <li><a>04-763457</a></li>
                     <li><a>05-176263</a></li>
                     <li><a>06-643268</a></li>
-                    <li><a>07-012903</a></li>
+                    <li>
+                        <a>
+                            <span style="font-size: 8mm; text-align: center;">
+                                <p>Momentum Pool</p>
+                                <input id="momentum-pool"
+                                type="number" min="0" max="6" value="0" 
+                                style="width: -webkit-fill-available; margin: 0; padding: 0; padding-left: 0.5em; text-align: center; background: unset; border: 1px solid #431818; outline: none;"></input>
+                            </span>
+                        </a>
+                    </li>
                     <li><a>08-148234</a></li>
                 </ul>
             </decoration>
