@@ -1,53 +1,6 @@
 import BgAudioManager from './bg-audio-page.js'
 import '../input-progress/input-progress-element.js'
-// @ts-ignore
-import { openDB, deleteDB, wrap, unwrap } from 'https://cdn.jsdelivr.net/npm/idb@8/+esm';
-
-/**
- * @typedef {IDBDatabase & {
- *  get, getKey, getAll, getAllKeys, count, put, add, delete, clear,
- *  getFromIndex, getKeyFromIndex, getAllFromIndex, getAllKeysFromIndex, countFromIndex
- * }} IDBDatabaseEntended
- * @note From the IDB library
- */
-/**
- * @typedef {IDBTransaction & {store, done}} IDBTransactionEntended
- * @note From the IDB library
- */
-
-/**
- * @typedef {{ 
- * id: number|undefined, 
- * text: string, 
- * shipname: string, 
- * momentum: number,
- * activeAlert: string }} GeneralDBRow
- */
-/**
- * @typedef {{ name: string }} NameDBRow
- */
-/**
- * @typedef {NameDBRow & {
- * id?: number, 
- * resistance: number,
- * complicationRange: number,
- * attribute: string,
- * department: string,
- * progressTrack: number
- * }} TrackerDBRow
- */
-/**
- * @typedef {NameDBRow & {
- * id?: number, 
- * currentStress: number,
- * maxStress: number,
- * pips: string,
- * borderColor: string
- * }} PlayerDBRow
- */
-
-const dbName = 'STAPlayApp-Test'
-const dbVersion = 10
+import {Database, GeneralInfo, PlayerInfo, TrackerInfo} from './database.js'
 
 const DefaultShipUrl = 'gltf/starfleet-generic.glb'
 
@@ -67,15 +20,21 @@ const AlertConditions = [
     'condition-black'
 ]
 
-export default class IndexController {
+export class IndexController {
     /**
      * Background Audio & Mute Manager
      * @type {BgAudioManager}
      */
     audioManager = new BgAudioManager()
 
-    fallbackText;
-    fallbackShipName;
+    dbLoadedCorrectly = false
+    
+    db = new Database()
+
+    fallbackText
+
+    fallbackShipName
+
 
     /**
      * Constructor.
@@ -187,196 +146,102 @@ export default class IndexController {
             this.#loadShipFromCache()
         })
         dialogEl.querySelector('button.clear-info').addEventListener('click', async () => {
-            await this.deleteDB()
+            await this.db.clear()
             this.#loadDBInfo()
         })
     }
 
     /**
-     * @param {IDBDatabaseEntended} db
+     * Load information from the database into the page
      */
-    async #createDB(db) {
-        if (db.objectStoreNames.contains('general'))
-            db.deleteObjectStore('general')
-        if (db.objectStoreNames.contains('traits'))
-            db.deleteObjectStore('traits')
-        if (db.objectStoreNames.contains('players'))
-            db.deleteObjectStore('players')
-        if (db.objectStoreNames.contains('trackers'))
-            db.deleteObjectStore('trackers')
-
-        console.warn('cleared db for upgrade')
-        db.createObjectStore('general', { keyPath: 'id', autoIncrement: false });
-
-        const traitStore = db.createObjectStore('traits', { keyPath: 'id', autoIncrement: true });
-        traitStore.createIndex('name', 'name', { unique: true })
-
-        const playerStore = db.createObjectStore('players', { keyPath: 'id', autoIncrement: true });
-        playerStore.createIndex('name', 'name', { unique: false })
-
-        const trackerStore = db.createObjectStore('trackers', { keyPath: 'id', autoIncrement: true });
-        trackerStore.createIndex('name', 'name', { unique: true })
-    }
-
     async #loadDBInfo() {
-        /** @type {IDBDatabaseEntended} db */
-        const db = await openDB(dbName, dbVersion, {
-            upgrade: db => this.#createDB(db)
-          });
-        
-        let generalInfo = await db.count('general') !== 0 // has info 
-            ? /** @type {object} */ await db.get('general', 0)
-            : undefined       
-        
+        let dbToken = await this.db.open()
+
+        let generalInfo = await this.db.getInfo(dbToken)
         
         let momentumEl = document.getElementById('momentum-pool');
         if (momentumEl instanceof HTMLInputElement === false)
             throw new Error("page setup incorrectly!");
 
         document.getElementById('general-text').innerHTML = generalInfo?.text ?? this.fallbackText
-        document.getElementById('shipname').textContent = (generalInfo?.shipname ?? this.fallbackShipName).trim()
-        momentumEl.value = generalInfo?.momentum ?? 0
+        document.getElementById('shipname').textContent = (generalInfo?.shipName ?? this.fallbackShipName).trim()
+        momentumEl.value = `${(generalInfo?.momentum ?? 0)}`
         document.getElementsByTagName('alert')[0].className = (generalInfo?.activeAlert ?? '').trim();
 
         // remove existing traits
         document.querySelectorAll('traits trait').forEach(el => el.parentNode.removeChild(el))
         // Get all traits
-        let traits = await db.getAll('traits')
+        let traits = await this.db.getTraits(dbToken)
         for (let trait of traits)
-            this.addTrait(trait.name)
+            this.addTrait(trait)
 
         // remove existing players
         document.querySelectorAll('.players li').forEach(el => el.parentNode.removeChild(el))
         // Get all players
-        let players = await db.getAll('players')
+        let players = await this.db.getPlayers(dbToken)
         for (let player of players)
             this.addPlayer(player)
 
         // remove existing trackers
         document.querySelectorAll('task-tracker').forEach(el => el.parentNode.removeChild(el))
         // Get all trackers
-        let trackers = await db.getAll('trackers')
+        let trackers = await this.db.getTrackers(dbToken)
         for (let tracker of trackers)
             this.addExtendedTask(tracker)
+
+        this.db.close(dbToken)
+        this.dbLoadedCorrectly = true
     }
 
-    async deleteDB() {
-        await deleteDB(dbName)
-    }
-
+    /**
+     * Save information from the page to the database
+     */
     async saveDBInfo() {        
+        if (!this.dbLoadedCorrectly)
+            return
 
-        /** @type {IDBDatabaseEntended} db */
-        const db = await openDB(dbName, dbVersion, {
-            upgrade: db => this.#createDB(db)
-        })
+        let dbToken = await this.db.open()
 
         let momentumEl = document.getElementById('momentum-pool');
         if (momentumEl instanceof HTMLInputElement === false)
             throw new Error("page setup incorrectly!");
 
-        /** @type GeneralDBRow */
-        let info =  {
-            id: 0, // Only One Row
-            text: document.getElementById('general-text').innerHTML,
-            shipname: document.getElementById('shipname').textContent.trim(),
-            momentum: parseInt(momentumEl.value),
-            activeAlert: document.getElementsByTagName('alert')[0].className.trim(),
-        }
-        await db.put('general', info)
+        await this.db.saveInfo(new GeneralInfo(
+            document.getElementById('general-text').innerHTML,
+            document.getElementById('shipname').textContent.trim(),
+            momentumEl.value,
+            document.getElementsByTagName('alert')[0].className.trim(),
+        ), dbToken)
 
-        {
-            /** @type IDBTransactionEntended */
-            // @ts-ignore
-            let transaction = db.transaction("traits", 'readwrite');
 
-            // clear traits
-            let index = transaction.store.index('name');
-            let pdestroy = index.openCursor();
-            await pdestroy.then(async cursor => {
-                while (cursor) {
-                    cursor.delete();
-                    cursor = await cursor.continue();
-                }
-            })
+        const traits = 
+            [...document.querySelectorAll('traits > trait > .name')]
+            .map(e => e.textContent.trim())
+            .filter((v, i, a) => a.indexOf(v) === i) // unique
+        await this.db.replaceTraits(traits, dbToken)
 
-            // Add all current traits
-            const traits = 
-                [...document.querySelectorAll('traits > trait > .name')]
-                .map(e => e.textContent.trim())
-                .filter((v, i, a) => a.indexOf(v) === i) // unique
-            let adds = []
-            for (let trait of traits) {
-                /** @type NameDBRow */
-                let info = {name: trait}
-                adds.push(
-                    transaction.store.add(info)
-                )
-            }
-            adds.push(transaction.done)
-            await Promise.all(adds)
-          }
-
-          {
-            /** @type IDBTransactionEntended */
-            // @ts-ignore
-            let transaction = db.transaction("players", 'readwrite');
-
-            // clear players
-            let index = transaction.store.index('name');
-            let pdestroy = index.openCursor();
-            await pdestroy.then(async cursor => {
-                while (cursor) {
-                    cursor.delete();
-                    cursor = await cursor.continue();
-                }
-            })
-
-            const players = [...document.querySelectorAll('.players > li')]
+        const players = [...document.querySelectorAll('.players > li')]
                 .map((/** @type HTMLLIElement */ e) => {
                     let el = e
                     /** @type HTMLSelectElement */
                     const colorSelect = el.querySelector('select.color')
                     /** @type HTMLSelectElement */
-                    const rankSelect = el.querySelector('select.rank')
-                    const inputProgress = el.querySelector('input-progress')
-                    /** @type PlayerDBRow */
-                    let info = {
-                        id: parseInt(el.getAttribute('player-index')),
-                        name: el.querySelector('.name').textContent,
-                        borderColor: colorSelect.value.trim(),
-                        pips: rankSelect.value,
-                        currentStress: parseInt(inputProgress.getAttribute('value')),
-                        maxStress: parseInt(inputProgress.getAttribute('max')),
-
-                    }
+                    const pipsSelect = el.querySelector('select.rank')
+                    const stressEl = el.querySelector('input-progress')
+                    
+                    let info = new PlayerInfo(
+                        parseInt(el.getAttribute('player-index')),
+                        el.querySelector('.name').textContent,
+                        parseInt(stressEl.getAttribute('value')),
+                        parseInt(stressEl.getAttribute('max')),
+                        pipsSelect.value,
+                        colorSelect.value.trim()
+                    )
                     return info
                 })
-            let adds = []
-            for (let info of players)
-                adds.push(
-                    transaction.store.add(info)
-                )
-            adds.push(transaction.done)
-            await Promise.all(adds)
-          }
+        await this.db.replacePlayers(players, dbToken)
 
-          {
-            /** @type IDBTransactionEntended */
-            // @ts-ignore
-            let transaction = db.transaction("trackers", 'readwrite');
-
-            // clear trackers
-            let index = transaction.store.index('name');
-            let pdestroy = index.openCursor();
-            await pdestroy.then(async cursor => {
-                while (cursor) {
-                    cursor.delete();
-                    cursor = await cursor.continue();
-                }
-            })
-
-            const trackers = [...document.querySelectorAll('task-tracker')]
+        const trackers = [...document.querySelectorAll('task-tracker')]
                 .map(e => {
                     /** @type HTMLSelectElement */
                     let attributeSelect = e.querySelector('.attribute')
@@ -389,25 +254,20 @@ export default class IndexController {
                     /** @type HTMLInputElement */
                     let progressInput = e.querySelector('.progress')
 
-                    /** @type TrackerDBRow */
-                    let info = {
-                        name: e.querySelector('.name').textContent,
-                        attribute: attributeSelect.value,
-                        department: departmentSelect.value,
-                        resistance: parseInt(resistanceInput.value),
-                        complicationRange: parseInt(complicationRangeInput.value),
-                        progressTrack: parseInt(progressInput.value)
-                    }
+                    
+                    let info = new TrackerInfo(
+                        e.querySelector('.name').textContent,
+                        attributeSelect.value,
+                        departmentSelect.value,
+                        progressInput.value,
+                        resistanceInput.value,
+                        complicationRangeInput.value
+                    )
                     return info
                 })
-            let adds = []
-            for (let info of trackers)
-                adds.push(
-                    transaction.store.add(info)
-                )
-            adds.push(transaction.done)
-            await Promise.all(adds)
-          }
+        await this.db.replaceTrackers(trackers, dbToken)
+
+        await this.db.close(dbToken)
     }
 
     async #loadShipFromCache() {
