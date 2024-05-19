@@ -15,7 +15,7 @@ import { openDB, deleteDB, wrap, unwrap } from 'https://cdn.jsdelivr.net/npm/idb
  */
 
 const DB_NAME = 'STAPlayApp'
-const DB_VERSION = 11
+const DB_VERSION = 1
 const STORE = {
     GENERAL: 'general',
     TRAITS: 'traits',
@@ -29,27 +29,32 @@ const INDEX = {
 
 export class GeneralInfo {
     /**
-     * @type number|undefined
+     * @type {number|undefined}
      */
     id 
 
     /**
-     * @type string
+     * @type {string}
      */
     text 
 
     /**
-     * @type string
+     * @type {string}
      */
-    shipName 
+    shipName
 
     /**
-     * @type number
+     * @type {File|undefined}
+     */
+    shipModel
+
+    /**
+     * @type {number}
      */
     momentum 
 
     /**
-     * @type string
+     * @type {string}
      */
     activeAlert
 
@@ -59,19 +64,21 @@ export class GeneralInfo {
      * @param {string} shipName name of the ship
      * @param {number|string} momentum amount of momentum in the player's pool
      * @param {string} activeAlert which alert is active
+     * @param {File} [shipModel=undefined] ship's 3D model
      */
-    constructor(text, shipName, momentum, activeAlert) {
+    constructor(text, shipName, momentum, activeAlert, shipModel = undefined) {
         this.id = 0
         this.text = text
         this.shipName = shipName
         this.momentum = typeof(momentum) === "number" ? momentum : parseInt(momentum)
         this.activeAlert = activeAlert
+        this.shipModel = shipModel
     }
 }
 
 export class NamedInfo {
     /**
-     * @type string
+     * @type {string}
      */
     name
 
@@ -86,27 +93,27 @@ export class NamedInfo {
 
 export class PlayerInfo extends NamedInfo {
     /**
-     * @type number|undefined
+     * @type {number|undefined}
      */
     id
 
     /**
-     * @type number
+     * @type {number}
      */
     currentStress
 
     /**
-     * @type number
+     * @type {number}
      */
     maxStress
 
     /**
-     * @type string
+     * @type {string}
      */
     pips
 
     /**
-     * @type string
+     * @type {string}
      */
     borderColor
     
@@ -131,27 +138,27 @@ export class PlayerInfo extends NamedInfo {
 
 export class TrackerInfo extends NamedInfo {
     /**
-     * @type number
+     * @type {number}
      */
     resistance
     
     /**
-     * @type number
+     * @type {number}
      */
     complicationRange
     
     /**
-     * @type string
+     * @type {string}
      */
     attribute
     
     /**
-     * @type string
+     * @type {string}
      */
     department
     
     /**
-     * @type number
+     * @type {number}
      */
     progressTrack
 
@@ -246,11 +253,18 @@ export class Database {
         db = typeof(db) === "undefined" 
             ? await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
             : wrap(db)
-        
-        /** @type {GeneralInfo|undefined} */ 
-        let generalInfo = await db.count(STORE.GENERAL) !== 0 // has info 
+         
+        let row = await db.count(STORE.GENERAL) !== 0 // has info 
             ? await db.get(STORE.GENERAL, 0)
             : undefined
+
+        /** @type {GeneralInfo|undefined} */
+        let generalInfo
+        if (typeof(row) !== 'undefined') {
+            
+            generalInfo = Object.create(GeneralInfo.prototype)
+            Object.assign(generalInfo, row)
+        }
         
         if (andClose) db.close()
         return generalInfo
@@ -285,9 +299,14 @@ export class Database {
             ? await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
             : wrap(db)
 
-        /** type PlayerInfo[] */
-        const data = await db.getAll(STORE.PLAYERS)
+        const rows = await db.getAll(STORE.PLAYERS)
         if (andClose) db.close()
+        /** @type {PlayerInfo[]} */
+        const data = rows.map(e => {
+            /** @type {PlayerInfo} */
+            let item = Object.create(PlayerInfo.prototype)
+            Object.assign(item, e)
+        })
         return data
     }
 
@@ -302,9 +321,14 @@ export class Database {
             ? await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
             : wrap(db)
 
-        /** type TrackerInfo[] */
-        const data = await db.getAll(STORE.TRACKERS)
+        const rows = await db.getAll(STORE.TRACKERS)
         if (andClose) db.close()
+        /** @type {TrackerInfo[]} */
+        const data = rows.map(e => {
+            /** @type {TrackerInfo} */
+            let item = Object.create(TrackerInfo.prototype)
+            Object.assign(item, e)
+        })
         return data
     }
 

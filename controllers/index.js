@@ -27,7 +27,7 @@ export class IndexController {
      */
     audioManager = new BgAudioManager()
 
-    dbLoadedCorrectly = false
+    safeToSaveDB = false
     
     db = new Database()
 
@@ -35,6 +35,15 @@ export class IndexController {
 
     fallbackShipName
 
+    /**
+     * @type {object|undefined}
+     */
+    shipModel = undefined
+
+    /**
+     * @type {Map<number, object>}
+     */
+    playerImages = new Map()
 
     /**
      * Constructor.
@@ -73,19 +82,18 @@ export class IndexController {
         if (settingsDialog instanceof HTMLDialogElement)
             this.#setupSettings(settingsDialog)
 
-        // Load Images from Cache/Database
-        this.#loadDBInfo()
-        this.#loadShipFromCache()
-
         // Wire up Saving the DB on page close
         window.addEventListener("beforeunload", (event) => {
+            if (!this.safeToSaveDB)
+                return
+
             // Stop loading anything more in the DOM (like images)
             window.stop();
 
             // Setup a boolean used in the "sleep"
             let canExit = false
 
-            this.saveDBInfo().finally(() => canExit = true)
+            this.saveData().finally(() => canExit = true)
 
             // This nasty loop is because you can't actually 'await' the save
             let start = new Date().getTime();
@@ -104,9 +112,16 @@ export class IndexController {
                     !event.dataTransfer.files?.[0])
                    return false
                    
-                this.onShipModelDropped(event.dataTransfer.files?.[0])
+                this.setShipModel(event.dataTransfer.files?.[0])
                 return true
             })
+        
+        // Load Info and Images from Database
+        try {
+            this.#loadData()
+        } catch (e) {
+            console.error(e)
+        }
     }
 
     /**
@@ -137,69 +152,62 @@ export class IndexController {
     #setupSettings(dialogEl) {
         document.getElementById('settings-btn').addEventListener('click', () => dialogEl.showModal())
         dialogEl.querySelector('button.close').addEventListener('click', () => dialogEl.close())
-        dialogEl.querySelector('button.clear-ship').addEventListener('click', async () => {
-            await this.clearCache('ship')
-            this.#loadShipFromCache()
-        })
-        dialogEl.querySelector('button.clear-player-images').addEventListener('click', async () => {
-            await this.clearCache('players')
-            this.#loadShipFromCache()
-        })
         dialogEl.querySelector('button.clear-info').addEventListener('click', async () => {
             await this.db.clear()
-            this.#loadDBInfo()
+            this.#loadData()
         })
     }
 
     /**
      * Load information from the database into the page
      */
-    async #loadDBInfo() {
+    async #loadData() {
         let dbToken = await this.db.open()
 
-        let generalInfo = await this.db.getInfo(dbToken)
-        
-        let momentumEl = document.getElementById('momentum-pool');
-        if (momentumEl instanceof HTMLInputElement === false)
-            throw new Error("page setup incorrectly!");
+        try {
+            let generalInfo = await this.db.getInfo(dbToken)
+            
+            let momentumEl = document.getElementById('momentum-pool');
+            if (momentumEl instanceof HTMLInputElement === false)
+                throw new Error("page setup incorrectly!");
 
-        document.getElementById('general-text').innerHTML = generalInfo?.text ?? this.fallbackText
-        document.getElementById('shipname').textContent = (generalInfo?.shipName ?? this.fallbackShipName).trim()
-        momentumEl.value = `${(generalInfo?.momentum ?? 0)}`
-        document.getElementsByTagName('alert')[0].className = (generalInfo?.activeAlert ?? '').trim();
+            document.getElementById('general-text').innerHTML = generalInfo?.text ?? this.fallbackText
+            document.getElementById('shipname').textContent = (generalInfo?.shipName ?? this.fallbackShipName).trim()
+            momentumEl.value = `${(generalInfo?.momentum ?? 0)}`
+            document.getElementsByTagName('alert')[0].className = (generalInfo?.activeAlert ?? '').trim();
+            this.setShipModel(generalInfo?.shipModel)
 
-        // remove existing traits
-        document.querySelectorAll('traits trait').forEach(el => el.parentNode.removeChild(el))
-        // Get all traits
-        let traits = await this.db.getTraits(dbToken)
-        for (let trait of traits)
-            this.addTrait(trait)
+            // remove existing traits
+            document.querySelectorAll('traits trait').forEach(el => el.parentNode.removeChild(el))
+            // Get all traits
+            let traits = await this.db.getTraits(dbToken)
+            for (let trait of traits)
+                this.addTrait(trait)
 
-        // remove existing players
-        document.querySelectorAll('.players li').forEach(el => el.parentNode.removeChild(el))
-        // Get all players
-        let players = await this.db.getPlayers(dbToken)
-        for (let player of players)
-            this.addPlayer(player)
+            // remove existing players
+            document.querySelectorAll('.players li').forEach(el => el.parentNode.removeChild(el))
+            // Get all players
+            let players = await this.db.getPlayers(dbToken)
+            for (let player of players)
+                this.addPlayer(player)
 
-        // remove existing trackers
-        document.querySelectorAll('task-tracker').forEach(el => el.parentNode.removeChild(el))
-        // Get all trackers
-        let trackers = await this.db.getTrackers(dbToken)
-        for (let tracker of trackers)
-            this.addExtendedTask(tracker)
+            // remove existing trackers
+            document.querySelectorAll('task-tracker').forEach(el => el.parentNode.removeChild(el))
+            // Get all trackers
+            let trackers = await this.db.getTrackers(dbToken)
+            for (let tracker of trackers)
+                this.addExtendedTask(tracker)
 
-        this.db.close(dbToken)
-        this.dbLoadedCorrectly = true
+            this.safeToSaveDB = true
+        } finally {
+            this.db.close(dbToken)
+        }
     }
 
     /**
      * Save information from the page to the database
      */
-    async saveDBInfo() {        
-        if (!this.dbLoadedCorrectly)
-            return
-
+    async saveData() {
         let dbToken = await this.db.open()
 
         let momentumEl = document.getElementById('momentum-pool');
@@ -211,6 +219,7 @@ export class IndexController {
             document.getElementById('shipname').textContent.trim(),
             momentumEl.value,
             document.getElementsByTagName('alert')[0].className.trim(),
+            this.shipModel
         ), dbToken)
 
 
@@ -268,23 +277,8 @@ export class IndexController {
         await this.db.replaceTrackers(trackers, dbToken)
 
         await this.db.close(dbToken)
-    }
 
-    async #loadShipFromCache() {
-        let dirHandle = await navigator.storage.getDirectory()
-        let shipDir = await dirHandle.getDirectoryHandle('ship', {create: true})
-
-        // Load cached ship, if available
-        try {
-            let handle = await shipDir.getFileHandle('ship.glb', {create: false})
-            let shipFile = await handle.getFile()
-            this.#setShipModel(URL.createObjectURL(shipFile))
-        }
-        catch (ex)
-        {
-            // fallback to default
-            this.#setShipModel(DefaultShipUrl)
-        }
+        this.safeToSaveDB = true
     }
 
     /**
@@ -464,14 +458,15 @@ export class IndexController {
      * Handler for new ship model drop
      * @param {File} modelFile  GLTF/GLB model file
      */
-    async onShipModelDropped (modelFile) {
-        let cacheFile = await this.cacheFile(modelFile, 'ship.glb', 'ship')
-        const url = URL.createObjectURL(cacheFile)
-
-        this.#setShipModel(url)
+    async setShipModel (modelFile) {
+        this.shipModel = modelFile
+        this.#updateShipSrc()
     }
 
-    #setShipModel(url) {
+    #updateShipSrc() {
+        const url = this.shipModel instanceof File 
+            ? URL.createObjectURL(this.shipModel)
+            : DefaultShipUrl
         const modelViewers = document.getElementsByTagName('model-viewer')
         for (const viewer of modelViewers) {
             if ('src' in viewer)
@@ -485,40 +480,24 @@ export class IndexController {
      * @param {File} imageFile          image to change player element background to
      */
     async onPlayerImageDropped (playerEl, imageFile) {
-        let cacheFile = await this.cacheFile(imageFile, `${playerEl.getAttribute('player-index')}`, 'players')
+        const newName = `${playerEl.getAttribute('player-index')}`
+
+        let dirHandle = await navigator.storage.getDirectory()
+        let dir = await dirHandle.getDirectoryHandle('players', {create: true})
+        let handle = await dir.getFileHandle(newName, {create: true})
+        let writeable = await handle.createWritable()
+        try {
+            await writeable.write(imageFile)
+        } finally {
+            await writeable.close()
+        }
+        let cacheFile = await handle.getFile()
         const url = URL.createObjectURL(cacheFile)
         playerEl.style.backgroundImage = `url('${url}')`
     }
-
-    /**
-     * Create and return a cached copy of a file
-     * @param {File} inputFile file to cache
-     * @param {string} newName filename for the cached copy
-     * @param {string} folderName Name of the sub-folder to store it in
-     * @returns cached file
-     */
-    async cacheFile(inputFile, newName = inputFile.name, folderName = 'default') {
-        let dirHandle = await navigator.storage.getDirectory()
-        let dir = await dirHandle.getDirectoryHandle(folderName, {create: true})
-        let handle = await dir.getFileHandle(newName, {create: true})
-        let writeable = await handle.createWritable()
-        await writeable.write(inputFile)
-        await writeable.close()
-
-        return await handle.getFile()
-    }
     
-    async clearCache(folderName = undefined) {
-        let dirHandle = await navigator.storage.getDirectory()
-
-        if (folderName === undefined)
-        {
-            this.clearCache('default')
-            this.clearCache('ship')
-            this.clearCache('players')
-        }
-        else
-            dirHandle.removeEntry(folderName, {recursive: true})
+    async clearPlayerImages() {
+        (await navigator.storage.getDirectory()).removeEntry('players', {recursive: true})
     }
 }
 

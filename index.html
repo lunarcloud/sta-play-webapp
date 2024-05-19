@@ -16,7 +16,7 @@
         <link rel="icon" type="image/x-icon" href="img/icon.webp">
         <link rel="stylesheet" href="css/index.css">
         <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-        <script src="//unpkg.com/@ungap/custom-elements/es.js"></script> <!-- Safari polyfill -->
+        <script src="https://unpkg.com/@ungap/custom-elements/es.js"></script> <!-- Safari polyfill -->
     </head>
 
     <body>
@@ -247,17 +247,15 @@
             <main>
                 <p>Tip: <a href="https://support.google.com/chrome/answer/9658361" target="installPWA">Try installing this PWA</a>!</p>
                 <dl>
-                    <dt>Clear</dt>
+                    <dt>Actions</dt>
                     <dd>
-                        <button class="clear-info">Info</button>
-                        <button class="clear-ship">Ship Model</button>
-                        <button class="clear-player-images">Player Images</button>
+                        <button class="clear-info">Clear Data</button>
                     </dd>
                 </dl>
             </main>
         </dialog>
     </dialogs>
 
-    <script type="module" src="controllers/index.js"></script>
+    <script type="module" src="controllers/index.js" crossorigin="anonymous"></script>
 
 </html>
