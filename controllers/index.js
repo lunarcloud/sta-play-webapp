@@ -495,27 +495,29 @@ export default class IndexController {
 
         const clone = document.importNode(template.content, true)
 
-        clone.querySelector('.name').textContent = info.name
+        if (typeof(info) !== 'undefined') {
+            clone.querySelector('.name').textContent = info.name
 
-        let attributeSelect = clone.querySelector('.attribute')
-        if (attributeSelect instanceof HTMLSelectElement)
-            attributeSelect.value = info.attribute
+            let attributeSelect = clone.querySelector('.attribute')
+            if (attributeSelect instanceof HTMLSelectElement)
+                attributeSelect.value = info.attribute
 
-        let departmentSelect = clone.querySelector('.department')
-        if (departmentSelect instanceof HTMLSelectElement)
-            departmentSelect.value = info.department
+            let departmentSelect = clone.querySelector('.department')
+            if (departmentSelect instanceof HTMLSelectElement)
+                departmentSelect.value = info.department
 
-        let resistanceInput = clone.querySelector('.resistance')
-        if (resistanceInput instanceof HTMLInputElement)
-            resistanceInput.value = `${info.resistance}`
+            let resistanceInput = clone.querySelector('.resistance')
+            if (resistanceInput instanceof HTMLInputElement)
+                resistanceInput.value = `${info.resistance}`
 
-        let complicationRangeInput = clone.querySelector('.complication-range')
-        if (complicationRangeInput instanceof HTMLInputElement)
-            complicationRangeInput.value = `${info.complicationRange}`
+            let complicationRangeInput = clone.querySelector('.complication-range')
+            if (complicationRangeInput instanceof HTMLInputElement)
+                complicationRangeInput.value = `${info.complicationRange}`
 
-        let progressInput = clone.querySelector('.progress')
-        if (progressInput instanceof HTMLInputElement)
-            progressInput.value = `${info.progressTrack}`
+            let progressInput = clone.querySelector('.progress')
+            if (progressInput instanceof HTMLInputElement)
+                progressInput.value = `${info.progressTrack}`
+        }
 
         template.parentElement.insertBefore(clone, template)
     }
