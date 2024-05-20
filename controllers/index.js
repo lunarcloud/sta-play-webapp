@@ -80,8 +80,10 @@ export class IndexController {
 
         // Wire up the settings dialog
         const settingsDialog = document.getElementById('settings-dialog')
-        if (settingsDialog instanceof HTMLDialogElement)
-            this.#setupSettings(settingsDialog)
+        if (settingsDialog instanceof HTMLDialogElement === false)
+            throw new Error('HTML setup incorrect!')
+
+        this.#setupSettings(settingsDialog)
 
         // Setup Dropping 3D model on the Ship
         const modelViewers = document.getElementsByTagName('model-viewer')
@@ -101,6 +103,18 @@ export class IndexController {
         } catch (e) {
             console.error(e)
         }
+
+        // Keyboard Shortcuts
+        window.addEventListener('keydown', e => {
+            if(e.ctrlKey && e.key == 's'){
+              e.preventDefault();
+              this.saveData()
+            }
+            else if (e.key == 'F1' || (e.ctrlKey && e.key == ',')) {
+                e.preventDefault();
+                settingsDialog.showModal()
+              }
+        });
     }
 
     /**
@@ -281,6 +295,7 @@ export class IndexController {
         await this.db.close(dbToken)
 
         this.safeToSaveDB = true
+        alert('Database Updated')
     }
 
     /**
