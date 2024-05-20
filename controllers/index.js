@@ -232,6 +232,7 @@ export class IndexController {
         const players = [...document.querySelectorAll('.players > li')]
                 .map((/** @type HTMLLIElement */ e) => {
                     let el = e
+                    let index = parseInt(el.getAttribute('player-index'))
                     /** @type HTMLSelectElement */
                     const colorSelect = el.querySelector('select.color')
                     /** @type HTMLSelectElement */
@@ -239,12 +240,13 @@ export class IndexController {
                     const stressEl = el.querySelector('input-progress')
                     
                     let info = new PlayerInfo(
-                        parseInt(el.getAttribute('player-index')),
+                        index,
                         el.querySelector('.name').textContent,
                         parseInt(stressEl.getAttribute('value')),
                         parseInt(stressEl.getAttribute('max')),
                         pipsSelect.value,
-                        colorSelect.value.trim()
+                        colorSelect.value.trim(),
+                        this.playerImages?.[index]
                     )
                     return info
                 })
@@ -420,6 +422,10 @@ export class IndexController {
             /** @type HTMLSelectElement */
             const colorSelect = clone.querySelector(`select.color`)
             colorSelect.value = info.borderColor.trim()
+
+            if (info.image instanceof File) {
+                this.setPlayerImage(clonePlayer, info.image)
+            }
         } 
         
         if (clonePlayer.style.backgroundImage.trim() === '') 
@@ -438,10 +444,6 @@ export class IndexController {
         const colorSelect = newEl.querySelector(`select.color`)
         newEl.className = `border-${colorSelect.value}`
         colorSelect.addEventListener('change', () => newEl.className = `border-${colorSelect.value}`)
-
-        // Get Image from cache (if not new)
-        if (typeof(info) !== 'undefined')
-            this.#loadPlayerImageFromCache(playerIndex, newEl)
         
         // Support Dropping images on the Player
         IndexController.setupDragOnlyTarget(newEl, event => {
@@ -449,7 +451,7 @@ export class IndexController {
                 !event.dataTransfer.files?.[0])
                 return false
 
-            this.onPlayerImageDropped(newEl, event.dataTransfer.files?.[0])
+            this.setPlayerImage(newEl, event.dataTransfer.files?.[0])
             return true
         })
     }
@@ -479,25 +481,16 @@ export class IndexController {
      * @param {HTMLElement} playerEl    player element to change the background of
      * @param {File} imageFile          image to change player element background to
      */
-    async onPlayerImageDropped (playerEl, imageFile) {
-        const newName = `${playerEl.getAttribute('player-index')}`
-
-        let dirHandle = await navigator.storage.getDirectory()
-        let dir = await dirHandle.getDirectoryHandle('players', {create: true})
-        let handle = await dir.getFileHandle(newName, {create: true})
-        let writeable = await handle.createWritable()
-        try {
-            await writeable.write(imageFile)
-        } finally {
-            await writeable.close()
-        }
-        let cacheFile = await handle.getFile()
-        const url = URL.createObjectURL(cacheFile)
+    async setPlayerImage (playerEl, imageFile) {
+        const index = playerEl.getAttribute('player-index')
+        this.playerImages[index] = imageFile
+        const url = URL.createObjectURL(imageFile)
         playerEl.style.backgroundImage = `url('${url}')`
     }
     
     async clearPlayerImages() {
-        (await navigator.storage.getDirectory()).removeEntry('players', {recursive: true})
+        (await navigator.storage.getDirectory())
+        .removeEntry('players', {recursive: true})
     }
 }
 

@@ -116,23 +116,30 @@ export class PlayerInfo extends NamedInfo {
      * @type {string}
      */
     borderColor
+
+    /**
+     * @type {File|undefined}
+     */
+    image
     
     /**
      * Create a Player info
-     * @param {number|string} id        player id
-     * @param {string} name             player character's name
-     * @param {number} currentStress    current stress value
-     * @param {number} maxStress        maximum stress value
-     * @param {string} pips             the pips text
-     * @param {string} borderColor      the color option text
+     * @param {number|string} id                    player id
+     * @param {string} name                         player character's name
+     * @param {number} currentStress                current stress value
+     * @param {number} maxStress                    maximum stress value
+     * @param {string} pips                         the pips text
+     * @param {string} borderColor                  the color option text
+     * @param {File|undefined} [image=undefined]    image of the player's character
      */
-    constructor(id, name, currentStress, maxStress, pips, borderColor) {
+    constructor(id, name, currentStress, maxStress, pips, borderColor, image = undefined) {
         super(name)
         this.id = typeof(id) === "number" ? id : parseInt(id)
         this.currentStress = typeof(currentStress) === "number" ? currentStress : parseInt(currentStress)
         this.maxStress = typeof(maxStress) === "number" ? maxStress : parseInt(maxStress)
         this.pips = pips
         this.borderColor = borderColor
+        this.image = image
     }  
 }
 
@@ -306,6 +313,7 @@ export class Database {
             /** @type {PlayerInfo} */
             let item = Object.create(PlayerInfo.prototype)
             Object.assign(item, e)
+            return item
         })
         return data
     }
@@ -328,6 +336,7 @@ export class Database {
             /** @type {TrackerInfo} */
             let item = Object.create(TrackerInfo.prototype)
             Object.assign(item, e)
+            return item
         })
         return data
     }
