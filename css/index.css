@@ -94,11 +94,18 @@ dialog#settings-dialog {
             outline: 0;
             float: right;
             display: block;
-            vertical-align: middle;
+            align-items: center;
             text-align: center;
             cursor: pointer;
         }
     }    
+}
+
+#save-btn,
+#settings-btn,
+#mute-btn {
+    cursor: pointer;
+    user-select: none;
 }
 
 #settings-btn {
@@ -106,8 +113,6 @@ dialog#settings-dialog {
     position: absolute;
     top: 1.5mm;
     left: 1.5mm;
-    cursor: pointer;
-    user-select: none;
 
     &:not(:active) {
         color: black;
@@ -122,7 +127,6 @@ dialog#settings-dialog {
     font-size: 9mm;
     background-color: transparent;
     border-color: transparent;
-    user-select: none;
 
     &:hover {
         text-shadow: 0 1mm 4mm #fff6;

@@ -76,33 +76,12 @@ export class IndexController {
         document.getElementById('task-tracker-add').addEventListener('click', () => this.addExtendedTask())
         document.getElementById('player-add').addEventListener('click', () => this.addPlayer())
         document.getElementById('trait-add').addEventListener('click', () => this.addTrait())
+        document.getElementById('save-btn').addEventListener('click', () => this.saveData())
 
         // Wire up the settings dialog
         const settingsDialog = document.getElementById('settings-dialog')
         if (settingsDialog instanceof HTMLDialogElement)
             this.#setupSettings(settingsDialog)
-
-        // Wire up Saving the DB on page close
-        window.addEventListener("beforeunload", (event) => {
-            if (!this.safeToSaveDB)
-                return
-
-            // Stop loading anything more in the DOM (like images)
-            window.stop();
-
-            // Setup a boolean used in the "sleep"
-            let canExit = false
-
-            this.saveData().finally(() => canExit = true)
-
-            // This nasty loop is because you can't actually 'await' the save
-            let start = new Date().getTime();
-            for (let i = 0; i < 1e7 && !canExit; i++) 
-                if ((new Date().getTime() - start) > 2000) {
-                    event.preventDefault()
-                    break;
-                }
-        }, { capture: true, passive: false, once: false });
 
         // Setup Dropping 3D model on the Ship
         const modelViewers = document.getElementsByTagName('model-viewer')
@@ -284,32 +263,6 @@ export class IndexController {
     }
 
     /**
-     * Loads the image for the player
-     * @param {number} playerIndex player-index value
-     */
-    async #loadPlayerImageFromCache(playerIndex, playerEl) {
-        playerEl ??= document.querySelector(`player-${playerIndex}`)
-        if (playerEl instanceof HTMLElement === false)
-            throw new Error(`Player #${playerIndex} not found`)
-
-        // Load cached player image, if available
-        try {
-            let dirHandle = await navigator.storage.getDirectory()
-            let playersDir = await dirHandle.getDirectoryHandle('players', {create: true})
-            let handle = await playersDir.getFileHandle(`${playerIndex}`, {create: false})
-            let playerFile = await handle.getFile()
-            const url = URL.createObjectURL(playerFile)
-            playerEl.style.backgroundImage = `url('${url}')`
-        }
-        catch (ex)
-        {
-            // fallback to default
-            playerEl.style.backgroundImage = `url('${DefaultPlayerImages[((playerIndex - 1) % DefaultPlayerImages.length)]}')`
-        }
-
-    }
-
-    /**
      * Cycle between the alert types and none.
      */
     toggleAlerts () {
@@ -422,19 +375,17 @@ export class IndexController {
             /** @type HTMLSelectElement */
             const colorSelect = clone.querySelector(`select.color`)
             colorSelect.value = info.borderColor.trim()
-
-            if (info.image instanceof File) {
-                this.setPlayerImage(clonePlayer, info.image)
-            }
         } 
         
-        if (clonePlayer.style.backgroundImage.trim() === '') 
-            clonePlayer.style.backgroundImage = `url('${DefaultPlayerImages[playerIndex % DefaultPlayerImages.length]}')`
-        
-
         clonePlayer.setAttribute('player-index', `${playerIndex}`)
         const playerId = `player-${playerIndex}`
         clonePlayer.id = playerId
+
+        if (info?.image instanceof File) 
+            this.setPlayerImage(clonePlayer, info.image)
+        else
+            clonePlayer.style.backgroundImage = `url('${DefaultPlayerImages[playerIndex % DefaultPlayerImages.length]}')`
+        
         
         template.parentElement.insertBefore(clone, template)
         const newEl = document.getElementById(playerId)
@@ -486,11 +437,6 @@ export class IndexController {
         this.playerImages[index] = imageFile
         const url = URL.createObjectURL(imageFile)
         playerEl.style.backgroundImage = `url('${url}')`
-    }
-    
-    async clearPlayerImages() {
-        (await navigator.storage.getDirectory())
-        .removeEntry('players', {recursive: true})
     }
 }
 
