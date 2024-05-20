@@ -239,7 +239,17 @@
     </body>
 
     <dialogs>
-        <dialog is="anim-dialog" id="settings-dialog">
+        <dialog id="welcome-dialog">
+            <header>
+                Welcome
+                <button class="close" role="button">⤫</button>
+            </header>
+            <main>
+                <p>TODO</p>
+            </main>
+        </dialog>
+
+        <dialog id="settings-dialog">
             <header>
                 Settings
                 <button class="close" role="button">⤫</button>
@@ -249,7 +259,7 @@
                 <dl>
                     <dt>Actions</dt>
                     <dd>
-                        <button class="clear-info">Clear Data</button>
+                        <button class="clear-info">Clear Database</button>
                     </dd>
                     <dl>Ship Model</dl>
                     <dd>
