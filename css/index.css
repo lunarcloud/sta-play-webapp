@@ -15,11 +15,15 @@
     --trek-color-periwinkle: #c18cf9;
 }
 
+
 html, body {
     overflow-x: unset; /* reset the common style of preventing x scrolling */
     min-height: unset;
 }
 
+html {
+    min-height: 250mm;
+}
 body {
     width: unset;
 }
@@ -249,7 +253,7 @@ decoration {
     left: 0;
     height: 100%; /* be as big as the container */
     width: 100%;
-    overflow: hidden;
+    overflow: visible;
 
     & > ul {
         margin: 0;
