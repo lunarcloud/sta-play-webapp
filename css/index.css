@@ -72,6 +72,15 @@ dialog#settings-dialog {
 
     & main {
         padding: 20px 12px;
+
+        & dl {
+            margin-top: 0.5em;
+            margin-bottom: 0;
+        }
+
+        & input[type=file] {
+            font-size: 0.6em;
+        }
     }
 
     & header {

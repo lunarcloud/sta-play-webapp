@@ -135,6 +135,27 @@ export class IndexController {
             await this.db.clear()
             this.#loadData()
         })
+
+        let fileSelectShip = dialogEl.querySelector('input.select-ship')
+        if (fileSelectShip instanceof HTMLInputElement === false)
+            throw new Error('Page setup incorrect')
+        dialogEl.querySelector('button.set-ship').addEventListener('click', () => {
+            this.setShipModel(fileSelectShip.files[0])
+        })
+
+        let fileSelectPlayer = dialogEl.querySelector('.player-image-upload input.select')
+        if (fileSelectPlayer instanceof HTMLInputElement === false)
+            throw new Error('Page setup incorrect')
+        let indexSelectPlayer = dialogEl.querySelector('.player-image-upload input.index')
+        if (indexSelectPlayer instanceof HTMLInputElement === false)
+            throw new Error('Page setup incorrect')
+
+        dialogEl.querySelector('.player-image-upload button.set').addEventListener('click', () => {
+            let index = parseInt(indexSelectPlayer.value) - 1 // convert 1-based to 0-based
+            let playerEl = document.querySelector(`.players li[player-index='${index}']`)
+            if (playerEl instanceof HTMLElement)
+                this.setPlayerImage(playerEl, fileSelectPlayer.files[0])
+        })
     }
 
     /**
@@ -405,6 +426,13 @@ export class IndexController {
             this.setPlayerImage(newEl, event.dataTransfer.files?.[0])
             return true
         })
+
+        // add player to the settings page selector
+        let settingsPlayerEl = document.querySelector('#settings-dialog .player-image-upload input.index')
+        if (settingsPlayerEl instanceof HTMLInputElement) {
+            if (parseInt(settingsPlayerEl.max) < playerIndex+1)
+                settingsPlayerEl.max = `${playerIndex+1}`
+        }
     }
 
     /**
