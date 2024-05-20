@@ -78,12 +78,19 @@ export class IndexController {
         document.getElementById('trait-add').addEventListener('click', () => this.addTrait())
         document.getElementById('save-btn').addEventListener('click', () => this.saveData())
 
+        // Wire up the welcome dialog
+        const welcomeDialog = document.getElementById('welcome-dialog')
+        if (welcomeDialog instanceof HTMLDialogElement === false)
+            throw new Error('HTML setup incorrect!')
+
+        welcomeDialog.querySelector('button.close').addEventListener('click', () => welcomeDialog.close())
+
         // Wire up the settings dialog
         const settingsDialog = document.getElementById('settings-dialog')
         if (settingsDialog instanceof HTMLDialogElement === false)
             throw new Error('HTML setup incorrect!')
 
-        this.#setupSettings(settingsDialog)
+        this.#setupSettings(settingsDialog, welcomeDialog)
 
         // Setup Dropping 3D model on the Ship
         const modelViewers = document.getElementsByTagName('model-viewer')
@@ -99,7 +106,10 @@ export class IndexController {
         
         // Load Info and Images from Database
         try {
-            this.#loadData()
+            this.#loadData().then(hadData => {
+                if (!hadData)
+                    welcomeDialog.showModal() // Show Welcome Dialog the first time
+            })
         } catch (e) {
             console.error(e)
         }
@@ -110,10 +120,14 @@ export class IndexController {
               e.preventDefault();
               this.saveData()
             }
-            else if (e.key == 'F1' || (e.ctrlKey && e.key == ',')) {
+            else if (e.key == 'F1' ) {
+                e.preventDefault();
+                welcomeDialog.showModal()
+            }
+            else if (e.ctrlKey && e.key == ',') {
                 e.preventDefault();
                 settingsDialog.showModal()
-              }
+            }
         });
     }
 
@@ -142,7 +156,7 @@ export class IndexController {
      * Wire up all the settings
      * @param {HTMLDialogElement} dialogEl settings dialog element
      */
-    #setupSettings(dialogEl) {
+    #setupSettings(dialogEl, welcomeDialogEl) {
         document.getElementById('settings-btn').addEventListener('click', () => dialogEl.showModal())
         dialogEl.querySelector('button.close').addEventListener('click', () => dialogEl.close())
         dialogEl.querySelector('button.clear-info').addEventListener('click', async () => {
@@ -170,10 +184,13 @@ export class IndexController {
             if (playerEl instanceof HTMLElement)
                 this.setPlayerImage(playerEl, fileSelectPlayer.files[0])
         })
+
+        dialogEl.querySelector('button.show-welcome').addEventListener('click', () => welcomeDialogEl.showModal())
     }
 
     /**
      * Load information from the database into the page
+     * @returns {Promise<boolean>} if there was info to load
      */
     async #loadData() {
         let dbToken = await this.db.open()
@@ -213,6 +230,7 @@ export class IndexController {
                 this.addExtendedTask(tracker)
 
             this.safeToSaveDB = true
+            return typeof(generalInfo) !== 'undefined'
         } finally {
             this.db.close(dbToken)
         }

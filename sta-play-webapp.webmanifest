@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/web-manifest-combined.json",
-  "name": "Star Trek Adventures : Play WebApp",
-  "short_name": "STA Play",
+  "name": "Play App for Star Trek Adventures",
+  "short_name": "Play STA",
   "description": "Display of the game for STA players",
   "theme_color": "#000000",
   "background_color": "#000000",

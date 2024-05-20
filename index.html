@@ -5,7 +5,7 @@
         <title>Sam Sarette | Home (Sci-fi)</title>
 
         <meta charset="utf-8">
-        <meta name="viewport" content="initial-scale=0.5, user-scalable=yes" />
+        <meta name="viewport" content="initial-scale=0.35, user-scalable=yes" />
         <meta name="theme-color" content="black">
 
         <meta property="og:title" content="Star Trek Adventures: Play App">
@@ -245,7 +245,57 @@
                 <button class="close" role="button">⤫</button>
             </header>
             <main>
-                <p>TODO</p>
+                <p>
+                    This is an unofficial, unaffiliated app for displaying game information for 
+                    players of the <a href="https://www.startrekttrpg.com/">Star Trek Adventures</a> game
+                    by Modiphius® Entertainment (links: <a href="https://modiphius.us/">US</a> / <a href="https://modiphius.net">UK</a>).
+                </p>
+                <p>
+                    There are buttons for saving your changes, adding new players/traits/trackers, and cycling through alert status.
+                </p>
+                <p>
+                    The starship's name can be edited and the 3D model can be changed (drag-and-drop a GLTF/GLB or use the settings dialog).
+                </p>
+                <p>
+                    The players can be customized:
+                    <ul>
+                        <li>department colors border (upper-left hidden selector)</li>
+                        <li>pips for rank</li>
+                        <li>current and maximum stress</li>
+                        <li>name</li>
+                        <li>photo (drag-and-drop an image or use the settings dialog)</li>
+                    </ul>
+                </p>
+                <p>
+                    This application saves locally, no server is involved. (It uses the browser's IndexDB technology)
+                </p>
+                <table>
+                    <thead>
+                        <th colspan="2">Keyboard Shortcuts</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Ctrl S</td>
+                            <td>Save Changes</td>
+                        </tr>
+                        <tr>
+                            <td>F1</td>
+                            <td>Show Welcome Screen</td>
+                        </tr>
+                        <tr>
+                            <td>Ctrl ,</td>
+                            <td>Open Settings</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>
+                    This application is licensed freely under 
+                    the <a href="https://github.com/lunarcloud/sta-play-webapp/blob/main/LICENSE">MIT License</a>
+                    for anyone to fork, fix, re-host, improve, or learn from.
+                </p>
+                <p>
+                    ©Sam Sarette 2024
+                </p>
             </main>
         </dialog>
 
@@ -260,6 +310,7 @@
                     <dt>Actions</dt>
                     <dd>
                         <button class="clear-info">Clear Database</button>
+                        <button class="show-welcome">Show Welcome Screen</button>
                     </dd>
                     <dl>Ship Model</dl>
                     <dd>
