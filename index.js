@@ -1,6 +1,6 @@
 import BgAudioManager from './js/bg-audio-page.js'
 import './components/input-progress/input-progress-element.js'
-import {Database, GeneralInfo, PlayerInfo, TrackerInfo} from './js/database.js'
+import { Database, GeneralInfo, PlayerInfo, TrackerInfo } from './js/database.js'
 import 'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js'
 
 const DefaultShipUrl = 'gltf/starfleet-generic.glb'
@@ -29,7 +29,7 @@ export class IndexController {
     audioManager = new BgAudioManager()
 
     safeToSaveDB = false
-    
+
     db = new Database()
 
     fallbackText
@@ -50,7 +50,6 @@ export class IndexController {
      * Constructor.
      */
     constructor () {
-
         // Get default to fallback to
         this.fallbackText = document.getElementById('general-text').innerHTML
         this.fallbackShipName = document.getElementById('shipname').innerHTML
@@ -96,15 +95,15 @@ export class IndexController {
         // Setup Dropping 3D model on the Ship
         const modelViewers = document.getElementsByTagName('model-viewer')
         for (const viewer of modelViewers)
-            IndexController.setupDragOnlyTarget(viewer, event => {
+            IndexController.setupDropOnly(viewer, event => {
                 if (!event.dataTransfer.items?.[0].type.startsWith('model/gltf') ||
                     !event.dataTransfer.files?.[0])
-                   return false
-                   
+                    return false
+
                 this.setShipModel(event.dataTransfer.files?.[0])
                 return true
             })
-        
+
         // Load Info and Images from Database
         try {
             this.#loadData().then(hadData => {
@@ -117,27 +116,25 @@ export class IndexController {
 
         // Keyboard Shortcuts
         window.addEventListener('keydown', e => {
-            if(e.ctrlKey && e.key == 's'){
-              e.preventDefault();
-              this.saveData()
-            }
-            else if (e.key == 'F1' ) {
-                e.preventDefault();
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault()
+                this.saveData()
+            } else if (e.key === 'F1') {
+                e.preventDefault()
                 welcomeDialog.showModal()
-            }
-            else if (e.ctrlKey && e.key == ',') {
-                e.preventDefault();
+            } else if (e.ctrlKey && e.key === ',') {
+                e.preventDefault()
                 settingsDialog.showModal()
             }
-        });
+        })
     }
 
     /**
-     * 
+     * Set an element up as a drop zone (not draggable).
      * @param {HTMLElement|any} el Element to set up drop but not drag for
-     * @param {function(DragEvent):boolean} onDrop 
+     * @param {function(DragEvent):boolean} onDrop  Action to perform within the drop event handler
      */
-    static setupDragOnlyTarget(el, onDrop) {
+    static setupDropOnly (el, onDrop) {
         if (el instanceof HTMLElement === false)
             throw new Error("Cannot use 'el' as HTMLElement argument!")
 
@@ -154,10 +151,11 @@ export class IndexController {
     }
 
     /**
-     * Wire up all the settings
-     * @param {HTMLDialogElement} dialogEl settings dialog element
+     * Wire up all the settings.
+     * @param {HTMLDialogElement} dialogEl          settings dialog element
+     * @param {HTMLDialogElement} welcomeDialogEl   the welcome dialog element
      */
-    #setupSettings(dialogEl, welcomeDialogEl) {
+    #setupSettings (dialogEl, welcomeDialogEl) {
         document.getElementById('settings-btn').addEventListener('click', () => dialogEl.showModal())
         dialogEl.querySelectorAll('button.close').forEach(el => el.addEventListener('click', () => dialogEl.close()))
         dialogEl.querySelector('button.clear-info').addEventListener('click', async () => {
@@ -165,23 +163,23 @@ export class IndexController {
             this.#loadData()
         })
 
-        let fileSelectShip = dialogEl.querySelector('input.select-ship')
+        const fileSelectShip = dialogEl.querySelector('input.select-ship')
         if (fileSelectShip instanceof HTMLInputElement === false)
             throw new Error('Page setup incorrect')
         dialogEl.querySelector('button.set-ship').addEventListener('click', () => {
             this.setShipModel(fileSelectShip.files[0])
         })
 
-        let fileSelectPlayer = dialogEl.querySelector('.player-image-upload input.select')
+        const fileSelectPlayer = dialogEl.querySelector('.player-image-upload input.select')
         if (fileSelectPlayer instanceof HTMLInputElement === false)
             throw new Error('Page setup incorrect')
-        let indexSelectPlayer = dialogEl.querySelector('.player-image-upload input.index')
+        const indexSelectPlayer = dialogEl.querySelector('.player-image-upload input.index')
         if (indexSelectPlayer instanceof HTMLInputElement === false)
             throw new Error('Page setup incorrect')
 
         dialogEl.querySelector('.player-image-upload button.set').addEventListener('click', () => {
-            let index = parseInt(indexSelectPlayer.value) - 1 // convert 1-based to 0-based
-            let playerEl = document.querySelector(`.players li[player-index='${index}']`)
+            const index = parseInt(indexSelectPlayer.value) - 1 // convert 1-based to 0-based
+            const playerEl = document.querySelector(`.players li[player-index='${index}']`)
             if (playerEl instanceof HTMLElement)
                 this.setPlayerImage(playerEl, fileSelectPlayer.files[0])
         })
@@ -193,45 +191,45 @@ export class IndexController {
      * Load information from the database into the page
      * @returns {Promise<boolean>} if there was info to load
      */
-    async #loadData() {
-        let dbToken = await this.db.open()
+    async #loadData () {
+        const dbToken = await this.db.open()
 
         try {
-            let generalInfo = await this.db.getInfo(dbToken)
-            
-            let momentumEl = document.getElementById('momentum-pool');
+            const generalInfo = await this.db.getInfo(dbToken)
+
+            const momentumEl = document.getElementById('momentum-pool')
             if (momentumEl instanceof HTMLInputElement === false)
-                throw new Error("page setup incorrectly!");
+                throw new Error('page setup incorrectly!')
 
             document.getElementById('general-text').innerHTML = generalInfo?.text ?? this.fallbackText
             document.getElementById('shipname').textContent = (generalInfo?.shipName ?? this.fallbackShipName).trim()
             momentumEl.value = `${(generalInfo?.momentum ?? 0)}`
-            document.getElementsByTagName('alert')[0].className = (generalInfo?.activeAlert ?? '').trim();
+            document.getElementsByTagName('alert')[0].className = (generalInfo?.activeAlert ?? '').trim()
             this.setShipModel(generalInfo?.shipModel)
 
             // remove existing traits
             document.querySelectorAll('traits trait').forEach(el => el.parentNode.removeChild(el))
             // Get all traits
-            let traits = await this.db.getTraits(dbToken)
-            for (let trait of traits)
+            const traits = await this.db.getTraits(dbToken)
+            for (const trait of traits)
                 this.addTrait(trait)
 
             // remove existing players
             document.querySelectorAll('.players li').forEach(el => el.parentNode.removeChild(el))
             // Get all players
-            let players = await this.db.getPlayers(dbToken)
-            for (let player of players)
+            const players = await this.db.getPlayers(dbToken)
+            for (const player of players)
                 this.addPlayer(player)
 
             // remove existing trackers
             document.querySelectorAll('task-tracker').forEach(el => el.parentNode.removeChild(el))
             // Get all trackers
-            let trackers = await this.db.getTrackers(dbToken)
-            for (let tracker of trackers)
+            const trackers = await this.db.getTrackers(dbToken)
+            for (const tracker of trackers)
                 this.addExtendedTask(tracker)
 
             this.safeToSaveDB = true
-            return typeof(generalInfo) !== 'undefined'
+            return typeof (generalInfo) !== 'undefined'
         } finally {
             this.db.close(dbToken)
         }
@@ -240,12 +238,12 @@ export class IndexController {
     /**
      * Save information from the page to the database
      */
-    async saveData() {
-        let dbToken = await this.db.open()
+    async saveData () {
+        const dbToken = await this.db.open()
 
-        let momentumEl = document.getElementById('momentum-pool');
+        const momentumEl = document.getElementById('momentum-pool')
         if (momentumEl instanceof HTMLInputElement === false)
-            throw new Error("page setup incorrectly!");
+            throw new Error('page setup incorrectly!')
 
         await this.db.saveInfo(new GeneralInfo(
             document.getElementById('general-text').innerHTML,
@@ -255,60 +253,58 @@ export class IndexController {
             this.shipModel
         ), dbToken)
 
-
-        const traits = 
+        const traits =
             [...document.querySelectorAll('traits > trait > .name')]
-            .map(e => e.textContent.trim())
-            .filter((v, i, a) => a.indexOf(v) === i) // unique
+                .map(e => e.textContent.trim())
+                .filter((v, i, a) => a.indexOf(v) === i) // unique
         await this.db.replaceTraits(traits, dbToken)
 
         const players = [...document.querySelectorAll('.players > li')]
-                .map((/** @type HTMLLIElement */ e) => {
-                    let el = e
-                    let index = parseInt(el.getAttribute('player-index'))
-                    /** @type HTMLSelectElement */
-                    const colorSelect = el.querySelector('select.color')
-                    /** @type HTMLSelectElement */
-                    const pipsSelect = el.querySelector('select.rank')
-                    const stressEl = el.querySelector('input-progress')
-                    
-                    let info = new PlayerInfo(
-                        index,
-                        el.querySelector('.name').textContent,
-                        parseInt(stressEl.getAttribute('value')),
-                        parseInt(stressEl.getAttribute('max')),
-                        pipsSelect.value,
-                        colorSelect.value.trim(),
-                        this.playerImages?.[index]
-                    )
-                    return info
-                })
+            .map((/** @type {HTMLLIElement} */ e) => {
+                const el = e
+                const index = parseInt(el.getAttribute('player-index'))
+                /** @type {HTMLSelectElement} */
+                const colorSelect = el.querySelector('select.color')
+                /** @type {HTMLSelectElement} */
+                const pipsSelect = el.querySelector('select.rank')
+                const stressEl = el.querySelector('input-progress')
+
+                const info = new PlayerInfo(
+                    index,
+                    el.querySelector('.name').textContent,
+                    parseInt(stressEl.getAttribute('value')),
+                    parseInt(stressEl.getAttribute('max')),
+                    pipsSelect.value,
+                    colorSelect.value.trim(),
+                    this.playerImages?.[index]
+                )
+                return info
+            })
         await this.db.replacePlayers(players, dbToken)
 
         const trackers = [...document.querySelectorAll('task-tracker')]
-                .map(e => {
-                    /** @type HTMLSelectElement */
-                    let attributeSelect = e.querySelector('.attribute')
-                    /** @type HTMLSelectElement */
-                    let departmentSelect = e.querySelector('.department')
-                    /** @type HTMLInputElement */
-                    let resistanceInput = e.querySelector('.resistance')
-                    /** @type HTMLInputElement */
-                    let complicationRangeInput = e.querySelector('.complication-range')
-                    /** @type HTMLInputElement */
-                    let progressInput = e.querySelector('.progress')
+            .map(e => {
+                /** @type {HTMLSelectElement} */
+                const attributeSelect = e.querySelector('.attribute')
+                /** @type {HTMLSelectElement} */
+                const departmentSelect = e.querySelector('.department')
+                /** @type {HTMLInputElement} */
+                const resistanceInput = e.querySelector('.resistance')
+                /** @type {HTMLInputElement} */
+                const complicationRangeInput = e.querySelector('.complication-range')
+                /** @type {HTMLInputElement} */
+                const progressInput = e.querySelector('.progress')
 
-                    
-                    let info = new TrackerInfo(
-                        e.querySelector('.name').textContent,
-                        attributeSelect.value,
-                        departmentSelect.value,
-                        progressInput.value,
-                        resistanceInput.value,
-                        complicationRangeInput.value
-                    )
-                    return info
-                })
+                const info = new TrackerInfo(
+                    e.querySelector('.name').textContent,
+                    attributeSelect.value,
+                    departmentSelect.value,
+                    progressInput.value,
+                    resistanceInput.value,
+                    complicationRangeInput.value
+                )
+                return info
+            })
         await this.db.replaceTrackers(trackers, dbToken)
 
         await this.db.close(dbToken)
@@ -322,20 +318,18 @@ export class IndexController {
      */
     toggleAlerts () {
         const alert = document.querySelector('alert')
-        if (alert instanceof HTMLElement === false) 
+        if (alert instanceof HTMLElement === false)
             return
 
         const lastType = AlertConditions[AlertConditions.length - 1]
         if (alert.classList.contains(lastType)) {
             alert.classList.remove(lastType)
-        }
-        else if (alert.className === "") {
+        } else if (alert.className === '') {
             alert.classList.add(AlertConditions[0])
-        }
-        else for (let i = 0; i < AlertConditions.length - 1; i++) {
+        } else for (let i = 0; i < AlertConditions.length - 1; i++) {
             if (alert.classList.contains(AlertConditions[i])) {
-                alert.classList.replace(AlertConditions[i], AlertConditions[i+1])
-                break;
+                alert.classList.replace(AlertConditions[i], AlertConditions[i + 1])
+                break
             }
         }
 
@@ -350,35 +344,35 @@ export class IndexController {
 
     /**
      * Add a new Combat / Extended task tracker to the page.
-     * @param {TrackerDBRow|undefined} info Player information
+     * @param {TrackerInfo|undefined} info Player information
      */
-    addExtendedTask(info = undefined) {
+    addExtendedTask (info = undefined) {
         const template = document.getElementById('task-tracker-template')
         if (template instanceof HTMLTemplateElement === false)
             return
 
         const clone = document.importNode(template.content, true)
 
-        if (typeof(info) !== 'undefined') {
+        if (typeof (info) !== 'undefined') {
             clone.querySelector('.name').textContent = info.name
 
-            let attributeSelect = clone.querySelector('.attribute')
+            const attributeSelect = clone.querySelector('.attribute')
             if (attributeSelect instanceof HTMLSelectElement)
                 attributeSelect.value = info.attribute
 
-            let departmentSelect = clone.querySelector('.department')
+            const departmentSelect = clone.querySelector('.department')
             if (departmentSelect instanceof HTMLSelectElement)
                 departmentSelect.value = info.department
 
-            let resistanceInput = clone.querySelector('.resistance')
+            const resistanceInput = clone.querySelector('.resistance')
             if (resistanceInput instanceof HTMLInputElement)
                 resistanceInput.value = `${info.resistance}`
 
-            let complicationRangeInput = clone.querySelector('.complication-range')
+            const complicationRangeInput = clone.querySelector('.complication-range')
             if (complicationRangeInput instanceof HTMLInputElement)
                 complicationRangeInput.value = `${info.complicationRange}`
 
-            let progressInput = clone.querySelector('.progress')
+            const progressInput = clone.querySelector('.progress')
             if (progressInput instanceof HTMLInputElement)
                 progressInput.value = `${info.progressTrack}`
         }
@@ -390,69 +384,70 @@ export class IndexController {
      * Add trait element to the screen
      * @param {string|undefined} name the name of the trait
      */
-    addTrait(name = undefined) {
+    addTrait (name = undefined) {
         const template = document.querySelector('traits template')
         if (template instanceof HTMLTemplateElement === false)
             return
 
         const clone = document.importNode(template.content, true)
-        if (typeof(name) === 'string')
+        if (typeof (name) === 'string')
             clone.querySelector('trait > .name').textContent = name
         template.parentElement.insertBefore(clone, template)
     }
-    
+
     /**
      * Add a player to the players list
-     * @param {PlayerDBRow|undefined} info Player information
+     * @param {PlayerInfo|undefined} info Player information
      */
-    addPlayer(info = undefined) {
+    addPlayer (info = undefined) {
         const template = document.querySelector('.players template')
         if (template instanceof HTMLTemplateElement === false)
             return
 
         const clone = document.importNode(template.content, true)
-        /** @type HTMLLIElement */
-        let clonePlayer = clone.querySelector('li')
+        /** @type {HTMLLIElement} */
+        const clonePlayer = clone.querySelector('li')
         let playerIndex = document.querySelectorAll('.players li').length
 
-        if (typeof(info) !== 'undefined') {
+        if (typeof (info) !== 'undefined') {
             clone.querySelector('.name').textContent = info.name
             playerIndex = info.id
-            
+
             clone.querySelector('stress > input-progress').setAttribute('value', `${info.currentStress}`)
             clone.querySelector('stress > input-progress').setAttribute('max', `${info.maxStress}`)
             clone.querySelector('stress > input').setAttribute('value', `${info.maxStress}`)
 
-            let rankSelect = clone.querySelector(`select.rank`)
+            const rankSelect = clone.querySelector('select.rank')
             if (rankSelect instanceof HTMLSelectElement)
                 rankSelect.value = info.pips
 
-            /** @type HTMLSelectElement */
-            const colorSelect = clone.querySelector(`select.color`)
-            colorSelect.value = info.borderColor.trim()
-        } 
-        
+            const colorSelect = clone.querySelector('select.color')
+            if (colorSelect instanceof HTMLSelectElement)
+                colorSelect.value = info.borderColor.trim()
+        }
+
         clonePlayer.setAttribute('player-index', `${playerIndex}`)
         const playerId = `player-${playerIndex}`
         clonePlayer.id = playerId
 
-        if (info?.image instanceof File) 
+        if (info?.image instanceof File)
             this.setPlayerImage(clonePlayer, info.image)
         else
             clonePlayer.style.backgroundImage = `url('${DefaultPlayerImages[playerIndex % DefaultPlayerImages.length]}')`
-        
-        
+
         template.parentElement.insertBefore(clone, template)
         const newEl = document.getElementById(playerId)
-        
+
         // Wire events
-        /** @type HTMLSelectElement */
-        const colorSelect = newEl.querySelector(`select.color`)
+        /** @type {HTMLSelectElement} */
+        const colorSelect = newEl.querySelector('select.color')
         newEl.className = `border-${colorSelect.value}`
-        colorSelect.addEventListener('change', () => newEl.className = `border-${colorSelect.value}`)
-        
+        colorSelect.addEventListener('change', () => {
+            newEl.className = `border-${colorSelect.value}`
+        })
+
         // Support Dropping images on the Player
-        IndexController.setupDragOnlyTarget(newEl, event => {
+        IndexController.setupDropOnly(newEl, event => {
             if (!event.dataTransfer.items?.[0].type.startsWith('image') ||
                 !event.dataTransfer.files?.[0])
                 return false
@@ -462,10 +457,10 @@ export class IndexController {
         })
 
         // add player to the settings page selector
-        let settingsPlayerEl = document.querySelector('#settings-dialog .player-image-upload input.index')
+        const settingsPlayerEl = document.querySelector('#settings-dialog .player-image-upload input.index')
         if (settingsPlayerEl instanceof HTMLInputElement) {
-            if (parseInt(settingsPlayerEl.max) < playerIndex+1)
-                settingsPlayerEl.max = `${playerIndex+1}`
+            if (parseInt(settingsPlayerEl.max) < playerIndex + 1)
+                settingsPlayerEl.max = `${playerIndex + 1}`
         }
     }
 
@@ -478,8 +473,8 @@ export class IndexController {
         this.#updateShipSrc()
     }
 
-    #updateShipSrc() {
-        const url = this.shipModel instanceof File 
+    #updateShipSrc () {
+        const url = this.shipModel instanceof File
             ? URL.createObjectURL(this.shipModel)
             : DefaultShipUrl
         const modelViewers = document.getElementsByTagName('model-viewer')
