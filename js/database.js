@@ -194,7 +194,7 @@ export class Database {
 
     /**
      * Open and return the database reference
-     * @returns {Promise<IDBDatabase>}    handle to the database
+     * @returns {Promise<IDBPDatabase>}    handle to the database
      */
     async open () {
         return await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
@@ -206,14 +206,6 @@ export class Database {
      */
     #upgrade (db) {
         this.#create(db) // currently, no fancy upgrade logic, just replace
-    }
-
-    /**
-     * Close the database reference
-     * @param {IDBPDatabase} db the database
-     */
-    close (db) {
-        db.close()
     }
 
     /**

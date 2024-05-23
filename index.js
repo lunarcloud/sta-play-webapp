@@ -231,7 +231,7 @@ export class IndexController {
             this.safeToSaveDB = true
             return typeof (generalInfo) !== 'undefined'
         } finally {
-            this.db.close(dbToken)
+            dbToken.close()
         }
     }
 
@@ -306,8 +306,7 @@ export class IndexController {
                 return info
             })
         await this.db.replaceTrackers(trackers, dbToken)
-
-        await this.db.close(dbToken)
+        dbToken.close()
 
         this.safeToSaveDB = true
         alert('Database Updated')
