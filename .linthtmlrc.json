@@ -37,7 +37,7 @@
 	"indent-style": "spaces",
 	"indent-width": 4,
 	"input-radio-req-name": true,
-	"input-req-label": true,
+	"input-req-label": false,
 	"line-no-trailing-whitespace": true,
 	"link-req-noopener": true,
 	"tag-bans": [

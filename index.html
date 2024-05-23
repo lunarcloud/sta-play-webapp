@@ -26,7 +26,7 @@
                 <model-viewer id="ship-sideways" src=""
                     alt="starship 3d model" loading="lazy"
                     interaction-prompt="none"
-                    camera-controls 
+                    camera-controls
                     camera-orbit="-90deg 90deg 0%"
                     field-of-view="20deg"
                     shadow-intensity="0.5"
@@ -35,16 +35,16 @@
                     powerPreference="low-power"
                     shadow-softness="1"
                     style="margin: 0 auto; min-width: 1px; height: 100%">
-                    <!-- Unused: 
-                        auto-rotate auto-rotate-delay="0" 
-                        orientation="15deg 0deg 45deg" 
+                    <!-- Unused:
+                        auto-rotate auto-rotate-delay="0"
+                        orientation="15deg 0deg 45deg"
                         auto-rotate auto-rotate-delay="0" rotation-per-second="1deg"
                     -->
                 </model-viewer>
                 <model-viewer id="ship-top" src=""
                     alt="starship 3d model" loading="lazy"
                     interaction-prompt="none"
-                    camera-controls 
+                    camera-controls
                     camera-orbit="90deg 0deg 0%"
                     field-of-view="20deg"
                     shadow-intensity="0.5"
@@ -60,7 +60,7 @@
                 <ul>
                     <li>
                         <a hover="audio" id="alert-toggle">
-                            Alert Cycle 
+                            Alert Cycle
                         </a>
                     </li>
                     <li>
@@ -151,7 +151,7 @@
                             <button class="remove"
                                     onclick="this.parentNode.parentNode.removeChild(this.parentNode)">
                                     ⤫
-                            </button> 
+                            </button>
                             <select class="color">
                                 <option value="brown">🟫</option>
                                 <option value="red">🟥</option>
@@ -171,8 +171,8 @@
                                 <option title="Other">&nbsp;</option>
                             </select>
                             <stress>
-                                <input-progress value="8" max="8"></input-progress> 
-                                of 
+                                <input-progress value="8" max="8"></input-progress>
+                                of
                                 <input type="text" value="8" onchange="this.parentElement.querySelector('input-progress').setAttribute('max', this.value)">
                             </stress>
                             <h2 class="name" contenteditable="true">Name Here</h2>
@@ -220,7 +220,7 @@
                             <span style="font-size: 8mm; text-align: center;">
                                 <p>Momentum Pool</p>
                                 <input id="momentum-pool"
-                                type="number" min="0" max="6" value="0" 
+                                type="number" min="0" max="6" value="0"
                                 style="width: -webkit-fill-available; margin: 0; padding: 0; padding-left: 0.5em; text-align: center; background: unset; border: 1px solid #431818; outline: none;"></input>
                             </span>
                         </a>
@@ -235,103 +235,102 @@
         <audio id="beep-ok-audio" src="audio/423167__plasterbrain__minimalist-sci-fi-ui-ok.mp3" preload></audio>
         <audio id="beep-cancel-audio" src="audio/423167__plasterbrain__minimalist-sci-fi-ui-cancel.mp3" preload></audio>
 
-    </body>
 
-    <dialogs>
-        <dialog id="welcome-dialog">
-            <header>
-                Welcome
-                <button class="close" role="button">⤫</button>
-            </header>
-            <main>
-                <p>
-                    This is an unofficial, unaffiliated app for displaying game information for 
-                    players of the <a href="https://www.startrekttrpg.com/">Star Trek Adventures</a> game
-                    by Modiphius® Entertainment (links: <a href="https://modiphius.us/">US</a> / <a href="https://modiphius.net">UK</a>).
-                </p>
-                <p>
-                    There are buttons for saving your changes, adding new players/traits/trackers, and cycling through alert status.
-                    You should see the momentum pool tracker on the left.
-                </p>
-                <p>
-                    The starship's name can be edited and the 3D model can be changed (drag-and-drop a GLTF/GLB or use the settings dialog).
-                </p>
-                <p>
-                    The players can be customized:
-                    <ul>
+        <dialogs>
+            <dialog id="welcome-dialog">
+                <header>
+                    Welcome
+                    <button class="close" role="button">⤫</button>
+                </header>
+                <main>
+                    <p>
+                        This is an unofficial, unaffiliated app for displaying game information for
+                        players of the <a href="https://www.startrekttrpg.com/">Star Trek Adventures</a> game
+                        by Modiphius® Entertainment (links: <a href="https://modiphius.us/">US</a> / <a href="https://modiphius.net">UK</a>).
+                    </p>
+                    <p>
+                        There are buttons for saving your changes, adding new players/traits/trackers, and cycling through alert status.
+                        You should see the momentum pool tracker on the left.
+                    </p>
+                    <p>
+                        The starship's name can be edited and the 3D model can be changed (drag-and-drop a GLTF/GLB or use the settings dialog).
+                    </p>
+                    <label>
+                        The players can be customized:
+                    </label>
+                    <ul style="margin-top: 0;">
                         <li>department colors border (upper-left hidden selector)</li>
                         <li>pips for rank</li>
                         <li>current and maximum stress</li>
                         <li>name</li>
                         <li>photo (drag-and-drop an image or use the settings dialog)</li>
                     </ul>
-                </p>
-                <p>
-                    This application saves locally, no server is involved. (It uses the browser's IndexDB technology)
-                </p>
-                <table>
-                    <thead>
-                        <th colspan="2">Keyboard Shortcuts</th>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Ctrl S</td>
-                            <td>Save Changes</td>
-                        </tr>
-                        <tr>
-                            <td>F1</td>
-                            <td>Show Welcome Screen</td>
-                        </tr>
-                        <tr>
-                            <td>Ctrl ,</td>
-                            <td>Open Settings</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <p>
-                    This application is licensed freely under 
-                    the <a href="https://github.com/lunarcloud/sta-play-webapp/blob/main/LICENSE">MIT License</a>
-                    for anyone to fork, fix, re-host, improve, or learn from.
-                </p>
-                <p>
-                    ©Sam Sarette 2024
-                </p>
-                <button class="close" role="button">Close</button>
-            </main>
-        </dialog>
+                    <p>
+                        This application saves locally, no server is involved. (It uses the browser's IndexDB technology)
+                    </p>
+                    <table>
+                        <thead>
+                            <th colspan="2">Keyboard Shortcuts</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Ctrl S</td>
+                                <td>Save Changes</td>
+                            </tr>
+                            <tr>
+                                <td>F1</td>
+                                <td>Show Welcome Screen</td>
+                            </tr>
+                            <tr>
+                                <td>Ctrl ,</td>
+                                <td>Open Settings</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>
+                        This application is licensed freely under
+                        the <a href="https://github.com/lunarcloud/sta-play-webapp/blob/main/LICENSE">MIT License</a>
+                        for anyone to fork, fix, re-host, improve, or learn from.
+                    </p>
+                    <p>
+                        ©Sam Sarette 2024
+                    </p>
+                    <button class="close" role="button">Close</button>
+                </main>
+            </dialog>
 
-        <dialog id="settings-dialog">
-            <header>
-                Settings
-                <button class="close" role="button">⤫</button>
-            </header>
-            <main>
-                <dl>
-                    <dt>Actions</dt>
-                    <dd>
-                        <button class="clear-info">Clear Database</button>
-                        <button class="show-welcome">Show Welcome Screen</button>
-                    </dd>
-                    <dl>Ship Model</dl>
-                    <dd>
-                        <input class="select-ship" type="file" accept=".gltf,.glb" />
-                        <br>
-                        <button class="set-ship">Update</button>
-                    </dd>
-                    <dt>Upload Player Image</dt>
-                    <dd class="player-image-upload">
-                        <input class="select" type="file" accept="image/*" />
-                        <br>
-                        Player 
-                        <input class="index" type="number" value="1" min="1" max="1">
-                        <button class="set">Update</button>
-                    </dd>
-                </dl>
-                <button class="close" role="button">Close</button>
-            </main>
-        </dialog>
-    </dialogs>
+            <dialog id="settings-dialog">
+                <header>
+                    Settings
+                    <button class="close" role="button">⤫</button>
+                </header>
+                <main>
+                    <dl>
+                        <dt>Actions</dt>
+                        <dd>
+                            <button class="clear-info">Clear Database</button>
+                            <button class="show-welcome">Show Welcome Screen</button>
+                        </dd>
+                        <dl>Ship Model</dl>
+                        <dd>
+                            <input class="select-ship" type="file" accept=".gltf,.glb" />
+                            <br>
+                            <button class="set-ship">Update</button>
+                        </dd>
+                        <dt>Upload Player Image</dt>
+                        <dd class="player-image-upload">
+                            <input class="select" type="file" accept="image/*" />
+                            <br>
+                            Player
+                            <input class="index" type="number" value="1" min="1" max="1">
+                            <button class="set">Update</button>
+                        </dd>
+                    </dl>
+                    <button class="close" role="button">Close</button>
+                </main>
+            </dialog>
+        </dialogs>
 
-    <script type="module" src="index.js" crossorigin="anonymous"></script>
-
+        <script type="module" src="index.js" crossorigin="anonymous"></script>
+    </body>
 </html>

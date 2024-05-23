@@ -4,7 +4,7 @@
 /* Variables */
 :root,
 ::backdrop {
-  --main-color-bg: hsl(200, 50%, 1%); /* nearly-black */
+  --main-color-bg: hsl(200deg 50% 1%); /* nearly-black */
   --main-color-text: #ddd;
   --main-font-body: "Okuda", sans-serif;
   --main-font-headers: "Okuda", sans-serif;
@@ -141,8 +141,7 @@ body {
     word-break: auto-phrase;
     hyphens: auto;
     color: var(--main-color-text);
-    background-color: var(--main-color-bg);
-    width: 100%; /* using [d]vw causes issues not seen with % */
+    background-color: var(--main-color-bg); /* using [d]vw causes issues not seen with % */
     text-rendering: optimizelegibility;
     font-family: var(--main-font-body);
     font-size: var(--main-font-size);
@@ -247,7 +246,7 @@ model-viewer {
 }
 
 dialogs > dialog {
-    --backdrop-color: hsla(0deg 0% 0% / 0.8);
+    --backdrop-color: hsla(0deg 0% 0% / 80%);
 
     padding: 0;
     width: 80vw;
@@ -259,8 +258,10 @@ dialogs > dialog {
     &#settings-dialog {
         max-width: 20em;
     }
+
     &#welcome-dialog {
         max-width: 38em;
+
         table {
             margin: 0 auto;
         }
@@ -278,7 +279,7 @@ dialogs > dialog {
             margin-bottom: 0;
         }
 
-        & input[type=file] {
+        & input[type="file"] {
             font-size: 0.6em;
         }
 
@@ -298,18 +299,21 @@ dialogs > dialog {
             border-collapse: collapse;
 
           & tr:not(:last-child) {
-            border-bottom: 1px solid #444444;
+            border-bottom: 1px solid #444;
           }
+
           & td {
             padding-right: 0.5em;
             padding-left: 0.25em;
           }
+
           & td:not(:first-child) {
-            border-left: 1px solid #444444;
+            border-left: 1px solid #444;
           }
 
           & thead {
-            border-bottom: 2px solid #444444;
+            border-bottom: 2px solid #444;
+
             & th {
                 font-weight: bold;
                 text-align: center;
@@ -346,7 +350,6 @@ dialogs > dialog {
 }
 
 #settings-btn {
-
     position: absolute;
     top: 1.5mm;
     left: 1.5mm;
@@ -881,6 +884,7 @@ decoration {
                     &:hover {
                         filter: drop-shadow(2px 4px 6px black);
                     }
+
                     &:active {
                         filter: invert(1);
                     }

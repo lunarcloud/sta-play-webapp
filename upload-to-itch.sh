@@ -16,4 +16,7 @@ cp -r js $EXPORT
 echo Uploading to Itch...
 butler -v push $EXPORT "samsarette/sta-play:web"
 
+echo Cleanup...
+rm -r $EXPORT
+
 echo Done.
