@@ -84,7 +84,7 @@ export class IndexController {
         if (welcomeDialog instanceof HTMLDialogElement === false)
             throw new Error('HTML setup incorrect!')
 
-        welcomeDialog.querySelector('button.close').addEventListener('click', () => welcomeDialog.close())
+        welcomeDialog.querySelectorAll('button.close').forEach(el => el.addEventListener('click', () => welcomeDialog.close()))
 
         // Wire up the settings dialog
         const settingsDialog = document.getElementById('settings-dialog')
@@ -159,7 +159,7 @@ export class IndexController {
      */
     #setupSettings(dialogEl, welcomeDialogEl) {
         document.getElementById('settings-btn').addEventListener('click', () => dialogEl.showModal())
-        dialogEl.querySelector('button.close').addEventListener('click', () => dialogEl.close())
+        dialogEl.querySelectorAll('button.close').forEach(el => el.addEventListener('click', () => dialogEl.close()))
         dialogEl.querySelector('button.clear-info').addEventListener('click', async () => {
             await this.db.clear()
             this.#loadData()

@@ -282,6 +282,17 @@ dialogs > dialog {
             font-size: 0.6em;
         }
 
+        & > *:has(+ button.close) {
+            border-bottom: 0.25em ridge var(--main-color-bg);
+            padding-bottom: 0.25em;
+            margin-bottom: 0.25em;
+        }
+
+        & > button.close {
+            display: block;
+            margin: 0 auto;
+        }
+
         & table {
             border: 1px solid black;
             border-collapse: collapse;
