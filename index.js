@@ -1,6 +1,7 @@
-import BgAudioManager from './bg-audio-page.js'
-import '../input-progress/input-progress-element.js'
-import {Database, GeneralInfo, PlayerInfo, TrackerInfo} from './database.js'
+import BgAudioManager from './js/bg-audio-page.js'
+import './components/input-progress/input-progress-element.js'
+import {Database, GeneralInfo, PlayerInfo, TrackerInfo} from './js/database.js'
+import 'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js'
 
 const DefaultShipUrl = 'gltf/starfleet-generic.glb'
 

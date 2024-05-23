@@ -14,8 +14,7 @@
 
         <link rel="manifest" href="./sta-play-webapp.webmanifest">
         <link rel="icon" type="image/x-icon" href="img/icon.webp">
-        <link rel="stylesheet" href="css/index.css">
-        <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+        <link rel="stylesheet" href="index.css">
         <script src="https://unpkg.com/@ungap/custom-elements/es.js"></script> <!-- Safari polyfill -->
     </head>
 
@@ -297,6 +296,7 @@
                 <p>
                     ©Sam Sarette 2024
                 </p>
+                <button class="close" role="button">Close</button>
             </main>
         </dialog>
 
@@ -328,10 +328,11 @@
                         <button class="set">Update</button>
                     </dd>
                 </dl>
+                <button class="close" role="button">Close</button>
             </main>
         </dialog>
     </dialogs>
 
-    <script type="module" src="controllers/index.js" crossorigin="anonymous"></script>
+    <script type="module" src="index.js" crossorigin="anonymous"></script>
 
 </html>

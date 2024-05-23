@@ -1,20 +1,102 @@
-@import url("./common.css");
 @import url('https://fonts.cdnfonts.com/css/okuda');
 
-:root {
-    --main-color-bg: black;
-    --main-color-text: #ccc;
-    --main-font-body: "Okuda", sans-serif;
-    --main-font-headers: "Okuda", sans-serif;
-    --main-font-size: 7mm;
-    --trek-color-red: #cb5449;
-    --trek-color-blue: #7a87f8;
-    --trek-color-orange: #ed822c;
-    --trek-color-peach: #f2af94;
-    --trek-color-magenta: #bc5196;
-    --trek-color-periwinkle: #c18cf9;
+
+/* Variables */
+:root,
+::backdrop {
+  --main-color-bg: hsl(0, 0%, 3%);
+  --main-color-text: #ddd;
+  --main-font-body: "Okuda", sans-serif;
+  --main-font-headers: "Okuda", sans-serif;
+  --shadow-color-text: hsl(180deg 25% 20%);
+  --dialog-color-backdrop: hsl(0deg 0% 0% / 70%);
+  --main-a-link-color: hsl(220deg 31% 41%);
+  --main-a-hover-color: hsl(220deg 49% 38%);
+  --main-a-active-color: hsl(220deg 38% 31%);
+  --main-a-visited-color: hsl(268deg 23% 42%);
+  --main-font-size: 7mm;
+  --void-bg: black;
+  --trek-color-red: #cb5449;
+  --trek-color-blue: #7a87f8;
+  --trek-color-orange: #ed822c;
+  --trek-color-peach: #f2af94;
+  --trek-color-magenta: #bc5196;
+  --trek-color-periwinkle: #c18cf9;
 }
 
+@media screen and (prefers-contrast: more) {
+  :root,
+  ::backdrop {
+    --main-color-bg: black;
+    --main-color-text: white;
+    --shadow-color-text: transparent;
+    --dialog-color-backdrop: hsl(0deg 0% 0% / 90%);
+  }
+}
+
+/* Animations */
+@media screen and (prefers-reduced-motion: no-preference) {
+  @keyframes fade-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+  @keyframes fade-out {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  @keyframes slide-in {
+    0% {
+      transform: translateY(-30px);
+      opacity: 0;
+    }
+
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-out {
+    0% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    100% {
+      transform: translateY(30px);
+      opacity: 0;
+    }
+  }
+
+  @keyframes wiggle {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(0deg); }
+    50% { transform: rotate(6deg); }
+    75% { transform: rotate(-6deg); }
+    100% { transform: rotate(0deg); }
+  }
+
+  @keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes tinypop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.005); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes bouncing {
+    0% { transform: translateY(0);}
+    50% { transform: translateY(5px); }
+    100% { transform: translateY(0); }
+  }
+}
+  
 
 html, body {
     overflow-x: unset; /* reset the common style of preventing x scrolling */
@@ -22,9 +104,48 @@ html, body {
 }
 
 html {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden auto;
+    height: fit-content;
+    height: -webkit-fill-available;
+    font-size: 14pt;
+    background-color: var(--main-color-bg);
     min-height: 250mm;
 }
+
+html:focus-within {
+  scroll-behavior: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:focus-within {
+    scroll-behavior: smooth;
+  }
+}
+
 body {
+    position: initial;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: unset;
+    margin: 0;
+    padding: 0;
+    overflow: auto auto;
+    overflow-wrap: anywhere;
+    word-break: auto-phrase;
+    hyphens: auto;
+    color: var(--main-color-text);
+    background-color: var(--main-color-bg);
+    width: 100%; /* using [d]vw causes issues not seen with % */
+    text-rendering: optimizelegibility;
+    font-family: var(--main-font-body);
+    font-size: var(--main-font-size);
     width: unset;
 }
 
@@ -32,8 +153,73 @@ body, h1, h2, h3, h4, h5, h6 {
     letter-spacing: 0.45mm;
 }
 
-button.remove {
+h1, h2, h3, h4, h5, h6{
+  font-family: var(--main-font-headers);
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.2rem;
+}
+
+h4 {
+  font-size: 1.1rem;
+}
+
+small {
+  font-size: 0.5em;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+a,
+a:any-link {
+  color: var(--main-a-link-color);
+}
+
+a:any-link:hover {
+  color: var(--main-a-hover-color);
+}
+
+a:any-link:active {
+  color: var(--main-a-active-color);
+}
+
+a:visited {
+  color: var(--main-a-visited-color);
+}
+
+dialog::backdrop {
+  background-color: var(--dialog-color-backdrop);
+}
+
+
+button,
+#save-btn,
+#settings-btn,
+#mute-btn {
     user-select: none;
+    
+    &:not(:disabled) {
+        cursor: pointer;
+    }
+}
+
+together {
+  display: inline;
+  white-space: nowrap;
 }
 
 select-only {
@@ -135,7 +321,7 @@ dialogs > dialog {
 
         & button {
             line-height: 1em;
-            color: var(--main-color-nav-text);
+            color: var(--main-color-text);
             background-color: transparent;
             border: 0 solid transparent;
             outline: 0;
@@ -146,13 +332,6 @@ dialogs > dialog {
             cursor: pointer;
         }
     }    
-}
-
-#save-btn,
-#settings-btn,
-#mute-btn {
-    cursor: pointer;
-    user-select: none;
 }
 
 #settings-btn {
@@ -355,7 +534,7 @@ decoration {
                 & li:nth-of-type(1)::after {
                     content: '';
                     z-index: -1;
-                    background-color: black;
+                    background-color: var(--main-color-bg);
                     height: 100%;
                     width: 30mm;
                     position: absolute;
@@ -460,7 +639,7 @@ decoration {
     }
 }
 
-container#main {
+#main {
     position: relative;
     z-index: 1;
     display: grid;
@@ -471,6 +650,7 @@ container#main {
     height: fit-content;
     min-height: calc(100dvh - 4mm);
     min-width: min-content;
+    max-width: 100%;
     padding-left: 36mm;
     grid-template-rows: 47mm 38mm 1fr;
     grid-template-columns: 1fr max(65mm, 20%);
@@ -482,7 +662,7 @@ container#main {
         display: flex;
         flex-wrap: nowrap;
         gap: 0.25em;   
-        background: linear-gradient(90deg, hsl(0deg 0% 0%) 2%, hsl(273.6deg 17.48% 10%) 30%, hsl(273.6deg 17.48% 10%) 70%, hsl(0deg 0% 0%) 98%);
+        background: linear-gradient(90deg, var(--main-color-bg) 2%, hsl(273.6deg 17.48% 10%) 30%, hsl(273.6deg 17.48% 10%) 70%, var(--main-color-bg) 98%);
 
 
         & > model-viewer {

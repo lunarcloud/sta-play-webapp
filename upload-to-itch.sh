@@ -5,14 +5,13 @@ EXPORT="$CURRENT_DIR/export/"
 echo Preparing...
 rm -r $EXPORT
 mkdir $EXPORT
-cp index.html $EXPORT
-cp sta-play-webapp.webmanifest $EXPORT
+cp index.* $EXPORT
+cp *.webmanifest $EXPORT
 cp -r audio $EXPORT
-cp -r controllers $EXPORT
-cp -r css $EXPORT
+cp -r components $EXPORT
 cp -r gltf $EXPORT
 cp -r img $EXPORT
-cp -r input-progress $EXPORT
+cp -r js $EXPORT
 
 echo Uploading to Itch...
 butler -v push $EXPORT "samsarette/sta-play:web"

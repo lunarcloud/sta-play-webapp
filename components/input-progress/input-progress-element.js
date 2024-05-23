@@ -16,7 +16,7 @@ export class InputProgressElement extends HTMLElement {
         // Apply external styles to the shadow DOM
         const linkElem = document.createElement('link')
         linkElem.setAttribute('rel', 'stylesheet')
-        linkElem.setAttribute('href', 'input-progress/input-progress.css')
+        linkElem.setAttribute('href', 'components/input-progress/input-progress.css')
 
         // Attach the created element to the shadow DOM
         shadow.appendChild(linkElem)
