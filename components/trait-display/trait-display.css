@@ -1,0 +1,37 @@
+
+trait-display-internal {
+    border-radius: 2mm;
+    padding: 1mm 3mm;
+    margin: 1mm;
+    position: relative;
+    background-color: var(--trait-bg-color, gray);
+
+    & > .name {
+        display: inline-block;
+        color: black;
+        outline: none;
+        border: none;
+        min-width: 6mm;
+        width: auto;
+        padding-block: 0;
+        padding-inline: 0 2mm;
+        font-family: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        background: unset;
+    }
+
+    & button.close {
+        cursor: pointer;
+        user-select: none;
+        position: absolute;
+        top: 0.5mm;
+        right: 0.5mm;
+        vertical-align: super;
+        font-size: 0.5em;
+        color: white;
+        background-color: transparent;
+        border: 0 solid transparent;
+        outline: 0;
+    }
+}

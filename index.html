@@ -58,29 +58,11 @@
             </header>
             <nav>
                 <ul>
-                    <li>
-                        <a hover="audio" id="alert-toggle">
-                            Alert Cycle
-                        </a>
-                    </li>
-                    <li>
-                        <a hover="audio" id="player-add">
-                            ＋ Player
-                        </a>
-                    </li>
-                    <li>
-                        <a hover="audio" id="task-tracker-add">
-                            ＋ Tracker
-                        </a>
-                    </li>
-                    <li>
-                        <a hover="audio" id="trait-add">
-                            ＋ Trait
-                        </a>
-                    </li>
-                    <li id="shipname" class="shipname" contenteditable="true">
-                        USS Winnipesaukee
-                    </li>
+                    <li><a hover="audio" id="alert-toggle">Alert Cycle</a></li>
+                    <li><a hover="audio" id="player-add">＋ Player</a></li>
+                    <li><a hover="audio" id="task-tracker-add">＋ Tracker</a></li>
+                    <li><a hover="audio" id="trait-add">＋ Trait</a></li>
+                    <li id="shipname" class="shipname" contenteditable="true">USS Winnipesaukee</li>
                 </ul>
             </nav>
             <footer>
@@ -89,19 +71,8 @@
                 <content>
                     <traits>
                         <span>SCENE TRAITS: </span>
-                        <template>
-                            <trait>
-                                <span class="name" contenteditable="true">TBD</span>
-                                <button class="remove"
-                                        onclick="this.parentNode.parentNode.removeChild(this.parentNode)">
-                                        ⤫
-                                </button>
-                            </trait>
-                        </template>
                     </traits>
-                    <alert>
-                        <h1>ALERT</h1><p>CONDITION: </p>
-                    </alert>
+                    <ship-alert color="red"></ship-alert>
                     <template id="task-tracker-template">
                         <task-tracker>
                             <button class="remove"

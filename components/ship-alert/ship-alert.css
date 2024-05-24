@@ -1,0 +1,36 @@
+
+ship-alert-internal {
+    background-image: url('../../img/red-alert.webp');
+    color: #910200; /* Base image is red */
+    background-size: cover;
+    display: inline-flex;
+    float: right;
+    width: 60mm;
+    aspect-ratio: 1.25;
+    place-content: center center;
+    align-items: center;
+    flex-flow: column nowrap;
+
+    & > * {
+        margin: 0;
+        padding: 0;
+        font-size: 1em;
+        line-height: 0.9em;
+    }
+
+    &.hidden {
+        display: none;
+    }
+
+    &.yellow {
+        filter: hue-rotate(65deg) brightness(3.5);
+    }
+
+    &.blue {
+        filter: hue-rotate(230deg) brightness(3);
+    }
+
+    &.black {
+        filter: hue-rotate(190deg) brightness(2);
+    }
+}

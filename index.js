@@ -1,7 +1,9 @@
 import BgAudioManager from './js/bg-audio-page.js'
 import './components/input-progress/input-progress-element.js'
+import './components/trait-display/trait-display-element.js'
 import { Database, GeneralInfo, PlayerInfo, TrackerInfo } from './js/database.js'
 import 'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js'
+import ShipAlertElement from './components/ship-alert/ship-alert-element.js'
 
 const DefaultShipUrl = 'gltf/starfleet-generic.glb'
 
@@ -12,13 +14,6 @@ const DefaultPlayerImages = [
     'img/player/ent.webp',
     'img/player/tos-movies.webp',
     'img/player/tng-cadet.webp'
-]
-
-const AlertConditions = [
-    'condition-yellow',
-    'condition-red',
-    'condition-blue',
-    'condition-black'
 ]
 
 export class IndexController {
@@ -72,11 +67,17 @@ export class IndexController {
         this.audioManager.setupElements('a[hover]', buttonEffects, undefined, buttonEffects)
 
         // Wire up buttons to their actions
-        document.getElementById('alert-toggle').addEventListener('click', () => this.toggleAlerts())
         document.getElementById('task-tracker-add').addEventListener('click', () => this.addExtendedTask())
         document.getElementById('player-add').addEventListener('click', () => this.addPlayer())
         document.getElementById('trait-add').addEventListener('click', () => this.addTrait())
         document.getElementById('save-btn').addEventListener('click', () => this.saveData())
+
+        const alertEl = document.getElementsByTagName('ship-alert')[0]
+        if (alertEl instanceof ShipAlertElement)
+            document.getElementById('alert-toggle').addEventListener('click', () => {
+            alertEl.cycle()
+        })
+
 
         // Wire up the welcome dialog
         const welcomeDialog = document.getElementById('welcome-dialog')
@@ -204,11 +205,11 @@ export class IndexController {
             document.getElementById('general-text').innerHTML = generalInfo?.text ?? this.fallbackText
             document.getElementById('shipname').textContent = (generalInfo?.shipName ?? this.fallbackShipName).trim()
             momentumEl.value = `${(generalInfo?.momentum ?? 0)}`
-            document.getElementsByTagName('alert')[0].className = (generalInfo?.activeAlert ?? '').trim()
+            document.getElementsByTagName('ship-alert')[0].setAttribute('color', (generalInfo?.activeAlert ?? '').trim())
             this.setShipModel(generalInfo?.shipModel)
 
             // remove existing traits
-            document.querySelectorAll('traits trait').forEach(el => el.parentNode.removeChild(el))
+            document.querySelectorAll('trait-display').forEach(el => el.parentNode.removeChild(el))
             // Get all traits
             const traits = await this.db.getTraits(dbToken)
             for (const trait of traits)
@@ -249,13 +250,13 @@ export class IndexController {
             document.getElementById('general-text').innerHTML,
             document.getElementById('shipname').textContent.trim(),
             momentumEl.value,
-            document.getElementsByTagName('alert')[0].className.trim(),
+            document.getElementsByTagName('ship-alert')[0].getAttribute('color'),
             this.shipModel
         ), dbToken)
 
         const traits =
-            [...document.querySelectorAll('traits > trait > .name')]
-                .map(e => e.textContent.trim())
+            [...document.querySelectorAll('traits trait-display')]
+                .map(e => e.getAttribute('text').trim())
                 .filter((v, i, a) => a.indexOf(v) === i) // unique
         await this.db.replaceTraits(traits, dbToken)
 
@@ -313,35 +314,6 @@ export class IndexController {
     }
 
     /**
-     * Cycle between the alert types and none.
-     */
-    toggleAlerts () {
-        const alert = document.querySelector('alert')
-        if (alert instanceof HTMLElement === false)
-            return
-
-        const lastType = AlertConditions[AlertConditions.length - 1]
-        if (alert.classList.contains(lastType)) {
-            alert.classList.remove(lastType)
-        } else if (alert.className === '') {
-            alert.classList.add(AlertConditions[0])
-        } else for (let i = 0; i < AlertConditions.length - 1; i++) {
-            if (alert.classList.contains(AlertConditions[i])) {
-                alert.classList.replace(AlertConditions[i], AlertConditions[i + 1])
-                break
-            }
-        }
-
-        const alertAudioEl = document.getElementById('beep-ok-audio') // TODO actual alert sound! that loops
-        if (alertAudioEl instanceof HTMLAudioElement === false) return
-
-        if (alert.classList.contains('condition-red')) {
-            alertAudioEl.currentTime = 0
-            alertAudioEl.play()
-        } else alertAudioEl.pause()
-    }
-
-    /**
      * Add a new Combat / Extended task tracker to the page.
      * @param {TrackerInfo|undefined} info Player information
      */
@@ -384,14 +356,12 @@ export class IndexController {
      * @param {string|undefined} name the name of the trait
      */
     addTrait (name = undefined) {
-        const template = document.querySelector('traits template')
-        if (template instanceof HTMLTemplateElement === false)
-            return
-
-        const clone = document.importNode(template.content, true)
+        let traitEl = document.createElement('trait-display')
         if (typeof (name) === 'string')
-            clone.querySelector('trait > .name').textContent = name
-        template.parentElement.insertBefore(clone, template)
+            traitEl.setAttribute('text', name)
+
+        const traitsEl = document.getElementsByTagName('traits')[0]
+        traitsEl.appendChild(traitEl)
     }
 
     /**

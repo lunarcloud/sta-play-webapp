@@ -707,105 +707,12 @@ decoration {
             border-bottom: 0.5mm solid white;
             margin-bottom: 1mm;
 
-            & trait {
-                color: black;
-                border-radius: 2mm;
-                padding: 1mm 3mm;
-                margin: 1mm;
-                position: relative;
-
-                & .name {
-                    padding-right: 2mm;
-                }
-
-                & button {
-                    position: absolute;
-                    top: 0.5mm;
-                    right: 0.5mm;
-                    vertical-align: super;
-                    font-size: 0.5em;
-                    color: white;
-                    background-color: transparent;
-                    border: 0 solid transparent;
-                    outline: 0;
-                }
-
-                &:nth-of-type(odd) {
-                    background-color: var(--trek-color-periwinkle);
-                }
-
-                &:nth-of-type(even) {
-                    background-color: var(--trek-color-red);
-                }
-
-                &:nth-of-type(2) {
-                    background-color: var(--trek-color-blue);
-                }
-
-                &:nth-of-type(3) {
-                    background-color: var(--trek-color-orange);
-                }
-
-                &:nth-of-type(4) {
-                    background-color: var(--trek-color-peach);
-                }
-            }
-        }
-
-        & alert {
-            background-image: url('../img/red-alert.webp');
-            color: #910200;
-            background-size: cover;
-            float: right;
-            width: 60mm;
-            aspect-ratio: 1.25;
-            display: none;
-            place-content: center center;
-            align-items: center;
-            flex-flow: column nowrap;
-
-            & > * {
-                margin: 0;
-                padding: 0;
-                font-size: 1em;
-                line-height: 0.9em;
-            }
-
-            &.condition-red,
-            &.condition-yellow,
-            &.condition-blue,
-            &.condition-black {
-                display: inline-flex;
-                color: #910200; /* Base image is red */
-            }
-
-
-            &.condition-red  > p::after {
-                content: 'RED';
-            }
-
-            &.condition-yellow {
-                filter: hue-rotate(65deg) brightness(3.5);
-
-                & > p::after {
-                    content: 'YELLOW';
-                }
-            }
-
-            &.condition-blue {
-                filter: hue-rotate(230deg) brightness(3);
-
-                & > p::after {
-                    content: 'BLUE';
-                }
-            }
-
-            &.condition-black {
-                filter: hue-rotate(190deg) brightness(2);
-
-                & > p::after {
-                    content: 'BLACK';
-                }
+            & trait-display {
+                &:nth-of-type(odd) { --trait-bg-color: var(--trek-color-periwinkle); }
+                &:nth-of-type(even) { --trait-bg-color: var(--trek-color-red); }
+                &:nth-of-type(2) { --trait-bg-color: var(--trek-color-blue); }
+                &:nth-of-type(3) { --trait-bg-color: var(--trek-color-orange); }
+                &:nth-of-type(4) { --trait-bg-color: var(--trek-color-peach); }
             }
         }
     
