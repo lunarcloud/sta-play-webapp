@@ -1,6 +1,8 @@
 import BgAudioManager from './js/bg-audio-page.js'
 import './components/input-progress/input-progress-element.js'
 import './components/trait-display/trait-display-element.js'
+import './components/welcome-dialog/welcome-dialog-element.js'
+import './components/settings-dialog/settings-dialog-element.js'
 import { Database, GeneralInfo, PlayerInfo, TrackerInfo } from './js/database.js'
 import 'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js'
 import ShipAlertElement from './components/ship-alert/ship-alert-element.js'
@@ -80,14 +82,12 @@ export class IndexController {
 
 
         // Wire up the welcome dialog
-        const welcomeDialog = document.getElementById('welcome-dialog')
+        const welcomeDialog = document.querySelector('dialog[is="welcome-dialog"]')
         if (welcomeDialog instanceof HTMLDialogElement === false)
-            throw new Error('HTML setup incorrect!')
-
-        welcomeDialog.querySelectorAll('button.close').forEach(el => el.addEventListener('click', () => welcomeDialog.close()))
+            throw new Error('Welcome dialog not setup!')
 
         // Wire up the settings dialog
-        const settingsDialog = document.getElementById('settings-dialog')
+        const settingsDialog = document.querySelector('dialog[is="settings-dialog"]')
         if (settingsDialog instanceof HTMLDialogElement === false)
             throw new Error('HTML setup incorrect!')
 
@@ -153,8 +153,8 @@ export class IndexController {
 
     /**
      * Wire up all the settings.
-     * @param {HTMLDialogElement} dialogEl          settings dialog element
-     * @param {HTMLDialogElement} welcomeDialogEl   the welcome dialog element
+     * @param {HTMLDialogElement} dialogEl                      settings dialog element
+     * @param {HTMLDialogElement|undefined} welcomeDialogEl   the welcome dialog element
      */
     #setupSettings (dialogEl, welcomeDialogEl) {
         document.getElementById('settings-btn').addEventListener('click', () => dialogEl.showModal())
@@ -185,7 +185,7 @@ export class IndexController {
                 this.setPlayerImage(playerEl, fileSelectPlayer.files[0])
         })
 
-        dialogEl.querySelector('button.show-welcome').addEventListener('click', () => welcomeDialogEl.showModal())
+        dialogEl.querySelector('button.show-welcome').addEventListener('click', () => welcomeDialogEl?.showModal())
     }
 
     /**
@@ -426,7 +426,7 @@ export class IndexController {
         })
 
         // add player to the settings page selector
-        const settingsPlayerEl = document.querySelector('#settings-dialog .player-image-upload input.index')
+        const settingsPlayerEl = document.querySelector('dialog[is="settings-dialog"] .player-image-upload input.index')
         if (settingsPlayerEl instanceof HTMLInputElement) {
             if (parseInt(settingsPlayerEl.max) < playerIndex + 1)
                 settingsPlayerEl.max = `${playerIndex + 1}`

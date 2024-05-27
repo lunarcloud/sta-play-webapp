@@ -19,188 +19,186 @@
     </head>
 
     <body>
-        <container id="main" class="page-fade">
-            <a id="settings-btn">☰</a>
-            <header>
-                <!-- linthtml-disable attr-name-style -->
-                <model-viewer id="ship-sideways" src=""
-                    alt="starship 3d model" loading="lazy"
-                    interaction-prompt="none"
-                    camera-controls
-                    camera-orbit="-90deg 90deg 0%"
-                    field-of-view="20deg"
-                    shadow-intensity="0.5"
-                    exposure="2"
-                    zoom-sensitivity="0.25"
-                    powerPreference="low-power"
-                    shadow-softness="1"
-                    style="margin: 0 auto; min-width: 1px; height: 100%">
-                    <!-- Unused:
-                        auto-rotate auto-rotate-delay="0"
-                        orientation="15deg 0deg 45deg"
-                        auto-rotate auto-rotate-delay="0" rotation-per-second="1deg"
-                    -->
-                </model-viewer>
-                <model-viewer id="ship-top" src=""
-                    alt="starship 3d model" loading="lazy"
-                    interaction-prompt="none"
-                    camera-controls
-                    camera-orbit="90deg 0deg 0%"
-                    field-of-view="20deg"
-                    shadow-intensity="0.5"
-                    exposure="2"
-                    zoom-sensitivity="0.25"
-                    powerPreference="low-power"
-                    shadow-softness="1"
-                    style="margin: 0 auto; min-width: 1px; height: 100%">
-                </model-viewer>
-                <!-- linthtml-enable attr-name-style -->
-            </header>
-            <nav>
-                <ul>
-                    <li><a hover="audio" id="alert-toggle">Alert Cycle</a></li>
-                    <li><a hover="audio" id="player-add">＋ Player</a></li>
-                    <li><a hover="audio" id="task-tracker-add">＋ Tracker</a></li>
-                    <li><a hover="audio" id="trait-add">＋ Trait</a></li>
-                    <li id="shipname" class="shipname" contenteditable="true">USS Winnipesaukee</li>
-                </ul>
-            </nav>
-            <footer>
-            </footer>
-            <main>
-                <content>
-                    <traits>
-                        <span>SCENE TRAITS: </span>
-                    </traits>
-                    <ship-alert color="red"></ship-alert>
-                    <template id="task-tracker-template">
-                        <task-tracker>
-                            <button class="remove"
-                                    onclick="this.parentNode.parentNode.removeChild(this.parentNode)">
-                                    ⤫
-                            </button>
-                            <h1 class="name" contenteditable="true">Combat / Extended Task</h1>
-                            <dl>
-                                <dt>Resistance</dt>
-                                <dd><input class="resistance" type="number" value="0"></dd>
-                                <dt>Complication Range</dt>
-                                <dd><input class="complication-range" type="number" value="0"></dd>
-                                <dt>Stats</dt>
-                                <dd>
-                                    <select class="attribute">
-                                        <option>Control</option>
-                                        <option>Fitness</option>
-                                        <option>Presence</option>
-                                        <option>Daring</option>
-                                        <option>Insight</option>
-                                        <option>Reason</option>
-                                    </select>
-                                    <select class="department">
-                                        <option>Command</option>
-                                        <option>Security</option>
-                                        <option>Science</option>
-                                        <option>Conn</option>
-                                        <option>Engineering</option>
-                                        <option>Medicine</option>
-                                    </select>
-                                </dd>
-                                <dt>Progress</dt>
-                                <dd><input class="progress" type="number" value="3"></dd>
-                            </dl>
-                        </task-tracker>
-                    </template>
 
-                    <div id="general-text" contenteditable="true">
-                        <h1>Story Notes</h1>
-                        <p>The story so far...</p>
-                    </div>
-                </content>
-                <select-only>Players: </select-only>
-                <ul class="players">
-                    <template id="player-template">
-                        <li class="border-brown" player-index="0">
-                            <button class="remove"
-                                    onclick="this.parentNode.parentNode.removeChild(this.parentNode)">
-                                    ⤫
-                            </button>
-                            <select class="color">
-                                <option value="brown">🟫</option>
-                                <option value="red">🟥</option>
-                                <option value="blue">🟦</option>
-                                <option value="yellow">🟨</option>
-                                <option value="black">⬛</option>
-                                <option value="white">⬜</option>
-                            </select>
+        <a id="settings-btn">☰</a>
+        <header>
+            <!-- linthtml-disable attr-name-style -->
+            <model-viewer id="ship-sideways" src=""
+                alt="starship 3d model" loading="lazy"
+                interaction-prompt="none"
+                camera-controls
+                camera-orbit="-90deg 90deg 0%"
+                field-of-view="20deg"
+                shadow-intensity="0.5"
+                exposure="2"
+                zoom-sensitivity="0.25"
+                powerPreference="low-power"
+                shadow-softness="1"
+                style="margin: 0 auto; min-width: 1px; height: 100%">
+                <!-- Unused:
+                    auto-rotate auto-rotate-delay="0"
+                    orientation="15deg 0deg 45deg"
+                    auto-rotate auto-rotate-delay="0" rotation-per-second="1deg"
+                -->
+            </model-viewer>
+            <model-viewer id="ship-top" src=""
+                alt="starship 3d model" loading="lazy"
+                interaction-prompt="none"
+                camera-controls
+                camera-orbit="90deg 0deg 0%"
+                field-of-view="20deg"
+                shadow-intensity="0.5"
+                exposure="2"
+                zoom-sensitivity="0.25"
+                powerPreference="low-power"
+                shadow-softness="1"
+                style="margin: 0 auto; min-width: 1px; height: 100%">
+            </model-viewer>
+            <!-- linthtml-enable attr-name-style -->
+        </header>
+        <nav>
+            <ul>
+                <li><a hover="audio" id="alert-toggle">Alert Cycle</a></li>
+                <li><a hover="audio" id="player-add">＋ Player</a></li>
+                <li><a hover="audio" id="task-tracker-add">＋ Tracker</a></li>
+                <li><a hover="audio" id="trait-add">＋ Trait</a></li>
+                <li id="shipname" class="shipname" contenteditable="true">USS Winnipesaukee</li>
+            </ul>
+        </nav>
+        <main>
+            <content>
+                <traits>
+                    <span>SCENE TRAITS: </span>
+                </traits>
+                <ship-alert color="red"></ship-alert>
+                <template id="task-tracker-template">
+                    <task-tracker>
+                        <button class="remove"
+                                onclick="this.parentNode.parentNode.removeChild(this.parentNode)">
+                                ⤫
+                        </button>
+                        <h1 class="name" contenteditable="true">Combat / Extended Task</h1>
+                        <dl>
+                            <dt>Resistance</dt>
+                            <dd><input class="resistance" type="number" value="0"></dd>
+                            <dt>Complication Range</dt>
+                            <dd><input class="complication-range" type="number" value="0"></dd>
+                            <dt>Stats</dt>
+                            <dd>
+                                <select class="attribute">
+                                    <option>Control</option>
+                                    <option>Fitness</option>
+                                    <option>Presence</option>
+                                    <option>Daring</option>
+                                    <option>Insight</option>
+                                    <option>Reason</option>
+                                </select>
+                                <select class="department">
+                                    <option>Command</option>
+                                    <option>Security</option>
+                                    <option>Science</option>
+                                    <option>Conn</option>
+                                    <option>Engineering</option>
+                                    <option>Medicine</option>
+                                </select>
+                            </dd>
+                            <dt>Progress</dt>
+                            <dd><input class="progress" type="number" value="3"></dd>
+                        </dl>
+                    </task-tracker>
+                </template>
 
-                            <select class="rank">
-                                <option title="Captain">⚫⚫⚫⚫</option>
-                                <option title="Commander">⚫⚫⚫</option>
-                                <option title="Lieutenant Commander">⚫⚫⚪</option>
-                                <option title="Lieutenant">⚫⚫</option>
-                                <option selected title="Lieutenant Junior Grade">⚫⚪</option>
-                                <option title="Ensign">⚫</option>
-                                <option title="Other">&nbsp;</option>
-                            </select>
-                            <stress>
-                                <input-progress value="8" max="8"></input-progress>
-                                of
-                                <input type="text" value="8" onchange="this.parentElement.querySelector('input-progress').setAttribute('max', this.value)">
-                            </stress>
-                            <h2 class="name" contenteditable="true">Name Here</h2>
-                        </li>
-                    </template>
-                </ul>
-            </main>
+                <div id="general-text" contenteditable="true">
+                    <h1>Story Notes</h1>
+                    <p>The story so far...</p>
+                </div>
+            </content>
+            <select-only>Players: </select-only>
+            <ul class="players">
+                <template id="player-template">
+                    <li class="border-brown" player-index="0">
+                        <button class="remove"
+                                onclick="this.parentNode.parentNode.removeChild(this.parentNode)">
+                                ⤫
+                        </button>
+                        <select class="color">
+                            <option value="brown">🟫</option>
+                            <option value="red">🟥</option>
+                            <option value="blue">🟦</option>
+                            <option value="yellow">🟨</option>
+                            <option value="black">⬛</option>
+                            <option value="white">⬜</option>
+                        </select>
 
-            <button id="mute-btn" title="Toggle Audio Mute">
-                <span class="off">🔊</span>
-                <span class="on">🔇</span>
-            </button>
+                        <select class="rank">
+                            <option title="Captain">⚫⚫⚫⚫</option>
+                            <option title="Commander">⚫⚫⚫</option>
+                            <option title="Lieutenant Commander">⚫⚫⚪</option>
+                            <option title="Lieutenant">⚫⚫</option>
+                            <option selected title="Lieutenant Junior Grade">⚫⚪</option>
+                            <option title="Ensign">⚫</option>
+                            <option title="Other">&nbsp;</option>
+                        </select>
+                        <stress>
+                            <input-progress value="8" max="8"></input-progress>
+                            of
+                            <input type="text" value="8" onchange="this.parentElement.querySelector('input-progress').setAttribute('max', this.value)">
+                        </stress>
+                        <h2 class="name" contenteditable="true">Name Here</h2>
+                    </li>
+                </template>
+            </ul>
+        </main>
 
-            <decoration class="page-fade">
-                <ul>
-                    <li class="upper-left">
-                        <a>Star Trek<br>Adventures</a>
-                    </li>
-                    <li class="upper-left curve-bottom-right">
-                        <a>02-452345</a>
-                        <ul>
-                            <li><a></a></li>
-                            <li><a></a></li>
-                            <li><a></a></li>
-                            <li><a></a></li>
-                            <li><a></a></li>
-                            <li><a></a></li>
-                        </ul>
-                    </li>
-                    <li class="curve-top-right">
-                        <a>03-563456</a>
-                        <ul>
-                            <li><a></a></li>
-                            <li><a></a></li>
-                            <li><a></a></li>
-                            <li><a></a></li>
-                            <li><a></a></li>
-                            <li><a></a></li>
-                        </ul>
-                    </li>
-                    <li><a id="save-btn" hover="audio">SAVE DATA 💾</a></li>
-                    <li><a>05-176263</a></li>
-                    <li>
-                        <a>
-                            <span style="font-size: 8mm; text-align: center;">
-                                <p>Momentum Pool</p>
-                                <input id="momentum-pool"
-                                type="number" min="0" max="6" value="0"
-                                style="width: -webkit-fill-available; margin: 0; padding: 0; padding-left: 0.5em; text-align: center; background: unset; border: 1px solid #431818; outline: none;"></input>
-                            </span>
-                        </a>
-                    </li>
-                    <li><a>06-643268</a></li>
-                    <li><a>08-148234</a></li>
-                </ul>
-            </decoration>
-        </container>
+        <button id="mute-btn" title="Toggle Audio Mute">
+            <span class="off">🔊</span>
+            <span class="on">🔇</span>
+        </button>
+
+        <decoration class="page-fade">
+            <ul>
+                <li class="upper-left">
+                    <a>Star Trek<br>Adventures</a>
+                </li>
+                <li class="upper-left curve-bottom-right">
+                    <a>02-452345</a>
+                    <ul>
+                        <li><a></a></li>
+                        <li><a></a></li>
+                        <li><a></a></li>
+                        <li><a></a></li>
+                        <li><a></a></li>
+                        <li><a></a></li>
+                    </ul>
+                </li>
+                <li class="curve-top-right">
+                    <a>03-563456</a>
+                    <ul>
+                        <li><a></a></li>
+                        <li><a></a></li>
+                        <li><a></a></li>
+                        <li><a></a></li>
+                        <li><a></a></li>
+                        <li><a></a></li>
+                    </ul>
+                </li>
+                <li><a id="save-btn" hover="audio">SAVE DATA 💾</a></li>
+                <li><a>05-176263</a></li>
+                <li>
+                    <a>
+                        <span style="font-size: 8mm; text-align: center;">
+                            <p>Momentum Pool</p>
+                            <input id="momentum-pool"
+                            type="number" min="0" max="6" value="0"
+                            style="width: -webkit-fill-available; margin: 0; padding: 0; padding-left: 0.5em; text-align: center; background: unset; border: 1px solid #431818; outline: none;"></input>
+                        </span>
+                    </a>
+                </li>
+                <li><a>06-643268</a></li>
+                <li><a>08-148234</a></li>
+            </ul>
+        </decoration>
+
 
         <audio id="bg-audio" src="audio/bass-pitch-brownian-noise.mp3" preload loop></audio>
         <audio id="beep-ok-audio" src="audio/423167__plasterbrain__minimalist-sci-fi-ui-ok.mp3" preload></audio>
@@ -208,98 +206,8 @@
 
 
         <dialogs>
-            <dialog id="welcome-dialog">
-                <header>
-                    Welcome
-                    <button class="close" role="button">⤫</button>
-                </header>
-                <main>
-                    <p>
-                        This is an unofficial, unaffiliated app for displaying game information for
-                        players of the <a href="https://www.startrekttrpg.com/">Star Trek Adventures</a> game
-                        by Modiphius® Entertainment (links: <a href="https://modiphius.us/">US</a> / <a href="https://modiphius.net">UK</a>).
-                    </p>
-                    <p>
-                        There are buttons for saving your changes, adding new players/traits/trackers, and cycling through alert status.
-                        You should see the momentum pool tracker on the left.
-                    </p>
-                    <p>
-                        The starship's name can be edited and the 3D model can be changed (drag-and-drop a GLTF/GLB or use the settings dialog).
-                    </p>
-                    <label>
-                        The players can be customized:
-                    </label>
-                    <ul style="margin-top: 0;">
-                        <li>department colors border (upper-left hidden selector)</li>
-                        <li>pips for rank</li>
-                        <li>current and maximum stress</li>
-                        <li>name</li>
-                        <li>photo (drag-and-drop an image or use the settings dialog)</li>
-                    </ul>
-                    <p>
-                        This application saves locally, no server is involved. (It uses the browser's IndexDB technology)
-                    </p>
-                    <table>
-                        <thead>
-                            <th colspan="2">Keyboard Shortcuts</th>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Ctrl S</td>
-                                <td>Save Changes</td>
-                            </tr>
-                            <tr>
-                                <td>F1</td>
-                                <td>Show Welcome Screen</td>
-                            </tr>
-                            <tr>
-                                <td>Ctrl ,</td>
-                                <td>Open Settings</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <p>
-                        This application is licensed freely under
-                        the <a href="https://github.com/lunarcloud/sta-play-webapp/blob/main/LICENSE">MIT License</a>
-                        for anyone to fork, fix, re-host, improve, or learn from.
-                    </p>
-                    <p>
-                        ©Sam Sarette 2024
-                    </p>
-                    <button class="close" role="button">Close</button>
-                </main>
-            </dialog>
-
-            <dialog id="settings-dialog">
-                <header>
-                    Settings
-                    <button class="close" role="button">⤫</button>
-                </header>
-                <main>
-                    <dl>
-                        <dt>Actions</dt>
-                        <dd>
-                            <button class="clear-info">Clear Database</button>
-                            <button class="show-welcome">Show Welcome Screen</button>
-                        </dd>
-                        <dl>Ship Model</dl>
-                        <dd>
-                            <input class="select-ship" type="file" accept=".gltf,.glb" />
-                            <br>
-                            <button class="set-ship">Update</button>
-                        </dd>
-                        <dt>Upload Player Image</dt>
-                        <dd class="player-image-upload">
-                            <input class="select" type="file" accept="image/*" />
-                            <br>
-                            Player
-                            <input class="index" type="number" value="1" min="1" max="1">
-                            <button class="set">Update</button>
-                        </dd>
-                    </dl>
-                    <button class="close" role="button">Close</button>
-                </main>
-            </dialog>
+            <dialog is="welcome-dialog"></dialog>
+            <dialog is="settings-dialog"></dialog>
         </dialogs>
 
         <script type="module" src="index.js" crossorigin="anonymous"></script>
