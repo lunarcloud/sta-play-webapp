@@ -12,7 +12,6 @@ const setup = async () => {
         this.querySelectorAll('button.close').forEach(el => el.addEventListener('click', () => this.close()))
       }
 
-      // Rest of element implementation...
     }
     customElements.define('settings-dialog', SettingsDialogElement, { extends: 'dialog' })
     globalThis.SettingsDialogElement = SettingsDialogElement
