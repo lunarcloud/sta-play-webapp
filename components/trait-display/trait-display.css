@@ -19,6 +19,7 @@ trait-display-internal {
         font-size: inherit;
         line-height: inherit;
         background: unset;
+        user-select: text;
     }
 
     & button.close {

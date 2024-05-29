@@ -1,8 +1,12 @@
 export class TraitDisplayElement extends HTMLElement {
-    static observedAttributes = ['text']
+
+    static get observedAttributes() {
+        return ['text']
+    }
 
     #textEl
-    #closeBtnEl
+    #removeBtnEl
+    #textElValueProperty
 
     /**
      * Constructor.
@@ -22,30 +26,43 @@ export class TraitDisplayElement extends HTMLElement {
 
         const internalEl = document.createElement('trait-display-internal')
         this.#textEl = document.createElement('span')
+
+        /** Handle differences in ContentEditable support between firefox and chrome */
+        let textElChangeEvent = 'input'
+        this.#textElValueProperty = 'textContent'
+        try {
+            this.#textEl.contentEditable = 'plaintext-only'
+        } catch {
+            this.#textEl = document.createElement('input')
+            textElChangeEvent = 'change'
+            this.#textElValueProperty = 'value'
+        }
         this.#textEl.textContent = 'TODO'
         this.#textEl.classList.add("name")
-        this.#textEl.contentEditable = "plaintext-only";
 
-        this.#closeBtnEl = document.createElement('button')
-        this.#closeBtnEl.classList.add("close")
-        this.#closeBtnEl.textContent = '⤫'
-        this.#closeBtnEl.addEventListener("click", () => this.remove());
+        this.#removeBtnEl = document.createElement('button')
+        this.#removeBtnEl.classList.add("close")
+        this.#removeBtnEl.textContent = '⤫'
+        this.#removeBtnEl.addEventListener("click", () => {
+            this.dispatchEvent(new Event('removed'))
+            this.remove()
+        });
         
 
         internalEl.appendChild(this.#textEl)
-        internalEl.appendChild(this.#closeBtnEl)
+        internalEl.appendChild(this.#removeBtnEl)
         shadow.appendChild(internalEl)
 
-        this.#textEl.addEventListener('input', (event) => {
-            this.setAttribute('text', this.#textEl.textContent)
-        })
+        this.#textEl.addEventListener(textElChangeEvent, _event => {
+            this.setAttribute('text', this.#textEl[this.#textElValueProperty])
+        }, { passive: true, capture: false })
     }
     
     attributeChangedCallback (name, _oldValue, newValue) {
         if (name !== 'text')
             return;
 
-        this.#textEl.textContent = newValue
+        this.#textEl[this.#textElValueProperty] = newValue
     }
 }
 

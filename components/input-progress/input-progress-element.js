@@ -1,5 +1,8 @@
 export class InputProgressElement extends HTMLElement {
-    static observedAttributes = ['value', 'max']
+
+    static get observedAttributes() {
+        return ['value', 'max']
+    }
 
     #inputEl
     #progressEl
@@ -10,6 +13,14 @@ export class InputProgressElement extends HTMLElement {
      */
     constructor () {
         super()
+
+        // Get initial values
+        let initialValue = parseInt(this.getAttribute('value'))
+        if (isNaN(initialValue))
+            initialValue = 10
+        let initialMax = parseInt(this.getAttribute('value'))
+        if (isNaN(initialMax))
+            initialMax = 10
 
         const shadow = this.attachShadow({ mode: 'open' })
 
@@ -24,6 +35,7 @@ export class InputProgressElement extends HTMLElement {
         const internalEl = document.createElement('input-progress-internal')
         this.#progressEl = document.createElement('progress')
         this.#dataEl = document.createElement('data')
+        this.#dataEl.textContent = `${initialValue}`
         this.#inputEl = document.createElement('input')
         this.#inputEl.type = 'range'
 
@@ -32,12 +44,11 @@ export class InputProgressElement extends HTMLElement {
         internalEl.appendChild(this.#inputEl)
         shadow.appendChild(internalEl)
 
-        // Setup initial values
         this.#inputEl.min = '0'
-        this.#inputEl.value = this.getAttribute('value')
-        this.#inputEl.max = this.getAttribute('max')
-        this.#progressEl.max = parseInt(this.getAttribute('max'))
-        this.inputChanged()
+        this.#inputEl.value = `${initialValue}`
+        this.#inputEl.max = `${initialMax}`
+        this.#progressEl.value = parseInt(this.#inputEl.value)
+        this.#progressEl.max = initialMax
 
         // Wire Events
         this.#inputEl.addEventListener('change', () => this.inputChanged())
@@ -47,6 +58,7 @@ export class InputProgressElement extends HTMLElement {
         this.#progressEl.value = parseInt(this.#inputEl.value)
         this.#dataEl.textContent = this.#inputEl.value
         this.setAttribute('value', this.#inputEl.value)
+        this.dispatchEvent(new Event('change'))
     }
 
     attributeChangedCallback (name, oldValue, newValue) {

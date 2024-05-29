@@ -1,9 +1,7 @@
 
 ship-alert-internal {
-    background-image: url('../../img/red-alert.webp');
-    color: #910200; /* Base image is red */
+    display: none; /* default to hidden */
     background-size: cover;
-    display: inline-flex;
     float: right;
     width: 60mm;
     aspect-ratio: 1.25;
@@ -18,8 +16,13 @@ ship-alert-internal {
         line-height: 0.9em;
     }
 
-    &.hidden {
-        display: none;
+    &.red,
+    &.yellow,
+    &.blue,
+    &.black {
+        display: inline-flex;
+        background-image: url('../../img/red-alert.webp');
+        color: #910200; /* Base image is red */
     }
 
     &.yellow {

@@ -67,10 +67,8 @@
         </nav>
         <main>
             <content>
-                <traits>
-                    <span>SCENE TRAITS: </span>
-                </traits>
-                <ship-alert color="red"></ship-alert>
+                <traits><span>SCENE TRAITS: </span></traits>
+                <ship-alert></ship-alert>
                 <template id="task-tracker-template">
                     <task-tracker>
                         <button class="remove"
@@ -107,47 +105,13 @@
                         </dl>
                     </task-tracker>
                 </template>
-
                 <div id="general-text" contenteditable="true">
                     <h1>Story Notes</h1>
                     <p>The story so far...</p>
                 </div>
             </content>
             <select-only>Players: </select-only>
-            <ul class="players">
-                <template id="player-template">
-                    <li class="border-brown" player-index="0">
-                        <button class="remove"
-                                onclick="this.parentNode.parentNode.removeChild(this.parentNode)">
-                                ⤫
-                        </button>
-                        <select class="color">
-                            <option value="brown">🟫</option>
-                            <option value="red">🟥</option>
-                            <option value="blue">🟦</option>
-                            <option value="yellow">🟨</option>
-                            <option value="black">⬛</option>
-                            <option value="white">⬜</option>
-                        </select>
-
-                        <select class="rank">
-                            <option title="Captain">⚫⚫⚫⚫</option>
-                            <option title="Commander">⚫⚫⚫</option>
-                            <option title="Lieutenant Commander">⚫⚫⚪</option>
-                            <option title="Lieutenant">⚫⚫</option>
-                            <option selected title="Lieutenant Junior Grade">⚫⚪</option>
-                            <option title="Ensign">⚫</option>
-                            <option title="Other">&nbsp;</option>
-                        </select>
-                        <stress>
-                            <input-progress value="8" max="8"></input-progress>
-                            of
-                            <input type="text" value="8" onchange="this.parentElement.querySelector('input-progress').setAttribute('max', this.value)">
-                        </stress>
-                        <h2 class="name" contenteditable="true">Name Here</h2>
-                    </li>
-                </template>
-            </ul>
+            <ul class="players"></ul>
         </main>
 
         <button id="mute-btn" title="Toggle Audio Mute">
@@ -188,9 +152,7 @@
                     <a>
                         <span style="font-size: 8mm; text-align: center;">
                             <p>Momentum Pool</p>
-                            <input id="momentum-pool"
-                            type="number" min="0" max="6" value="0"
-                            style="width: -webkit-fill-available; margin: 0; padding: 0; padding-left: 0.5em; text-align: center; background: unset; border: 1px solid #431818; outline: none;"></input>
+                            <input id="momentum-pool" type="number" min="0" max="6" value="0"></input>
                         </span>
                     </a>
                 </li>

@@ -3,20 +3,13 @@ import './components/input-progress/input-progress-element.js'
 import './components/trait-display/trait-display-element.js'
 import './components/welcome-dialog/welcome-dialog-element.js'
 import './components/settings-dialog/settings-dialog-element.js'
+import './components/player-display/player-display-element.js'
 import { Database, GeneralInfo, PlayerInfo, TrackerInfo } from './js/database.js'
 import 'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js'
 import ShipAlertElement from './components/ship-alert/ship-alert-element.js'
+import { setupDropOnly } from './js/drop-nodrag-setup.js'
 
 const DefaultShipUrl = 'gltf/starfleet-generic.glb'
-
-const DefaultPlayerImages = [
-    'img/player/ds9.webp',
-    'img/player/voy.webp',
-    'img/player/tng.webp',
-    'img/player/ent.webp',
-    'img/player/tos-movies.webp',
-    'img/player/tng-cadet.webp'
-]
 
 export class IndexController {
     /**
@@ -37,11 +30,6 @@ export class IndexController {
      * @type {object|undefined}
      */
     shipModel = undefined
-
-    /**
-     * @type {Map<number, object>}
-     */
-    playerImages = new Map()
 
     /**
      * Constructor.
@@ -96,7 +84,7 @@ export class IndexController {
         // Setup Dropping 3D model on the Ship
         const modelViewers = document.getElementsByTagName('model-viewer')
         for (const viewer of modelViewers)
-            IndexController.setupDropOnly(viewer, event => {
+            setupDropOnly(viewer, event => {
                 if (!event.dataTransfer.items?.[0].type.startsWith('model/gltf') ||
                     !event.dataTransfer.files?.[0])
                     return false
@@ -181,8 +169,8 @@ export class IndexController {
         dialogEl.querySelector('.player-image-upload button.set').addEventListener('click', () => {
             const index = parseInt(indexSelectPlayer.value) - 1 // convert 1-based to 0-based
             const playerEl = document.querySelector(`.players li[player-index='${index}']`)
-            if (playerEl instanceof HTMLElement)
-                this.setPlayerImage(playerEl, fileSelectPlayer.files[0])
+            if (playerEl instanceof PlayerDisplayElement)
+                playerEl.setImage(fileSelectPlayer.files[0])
         })
 
         dialogEl.querySelector('button.show-welcome').addEventListener('click', () => welcomeDialogEl?.showModal())
@@ -256,28 +244,23 @@ export class IndexController {
 
         const traits =
             [...document.querySelectorAll('traits trait-display')]
-                .map(e => e.getAttribute('text').trim())
+                .map(e => e.getAttribute('text')?.trim())
+                .filter(e => !!e)
                 .filter((v, i, a) => a.indexOf(v) === i) // unique
         await this.db.replaceTraits(traits, dbToken)
 
         const players = [...document.querySelectorAll('.players > li')]
-            .map((/** @type {HTMLLIElement} */ e) => {
-                const el = e
-                const index = parseInt(el.getAttribute('player-index'))
-                /** @type {HTMLSelectElement} */
-                const colorSelect = el.querySelector('select.color')
-                /** @type {HTMLSelectElement} */
-                const pipsSelect = el.querySelector('select.rank')
-                const stressEl = el.querySelector('input-progress')
-
+            .map((el) => {
+                if (el instanceof PlayerDisplayElement === false)
+                    return
                 const info = new PlayerInfo(
-                    index,
-                    el.querySelector('.name').textContent,
-                    parseInt(stressEl.getAttribute('value')),
-                    parseInt(stressEl.getAttribute('max')),
-                    pipsSelect.value,
-                    colorSelect.value.trim(),
-                    this.playerImages?.[index]
+                    parseInt(el.getAttribute('player-index')),
+                    el.getAttribute('name'),
+                    parseInt(el.getAttribute('current-stress')),
+                    parseInt(el.getAttribute('max-stress')),
+                    el.getAttribute('rank'),
+                    el.getAttribute('color'),
+                    el.imageFile
                 )
                 return info
             })
@@ -369,67 +352,44 @@ export class IndexController {
      * @param {PlayerInfo|undefined} info Player information
      */
     addPlayer (info = undefined) {
-        const template = document.querySelector('.players template')
-        if (template instanceof HTMLTemplateElement === false)
-            return
+        const playersEl = document.querySelector('.players')
+        const newPlayerEl = document.createElement('li', { is: 'player-display' })
+        if (newPlayerEl instanceof PlayerDisplayElement === false)
+            throw new Error('App incorrectly configured!')
 
-        const clone = document.importNode(template.content, true)
-        /** @type {HTMLLIElement} */
-        const clonePlayer = clone.querySelector('li')
         let playerIndex = document.querySelectorAll('.players li').length
 
         if (typeof (info) !== 'undefined') {
-            clone.querySelector('.name').textContent = info.name
             playerIndex = info.id
-
-            clone.querySelector('stress > input-progress').setAttribute('value', `${info.currentStress}`)
-            clone.querySelector('stress > input-progress').setAttribute('max', `${info.maxStress}`)
-            clone.querySelector('stress > input').setAttribute('value', `${info.maxStress}`)
-
-            const rankSelect = clone.querySelector('select.rank')
-            if (rankSelect instanceof HTMLSelectElement)
-                rankSelect.value = info.pips
-
-            const colorSelect = clone.querySelector('select.color')
-            if (colorSelect instanceof HTMLSelectElement)
-                colorSelect.value = info.borderColor.trim()
+            newPlayerEl.setAttribute('name', info.name)
+            newPlayerEl.setAttribute('current-stress', `${info.currentStress}`)
+            newPlayerEl.setAttribute('max-stress', `${info.maxStress}`)
+            newPlayerEl.setAttribute('rank', info.pips)
+            newPlayerEl.setAttribute('color', info.borderColor.trim())
         }
 
-        clonePlayer.setAttribute('player-index', `${playerIndex}`)
+        newPlayerEl.setAttribute('player-index', `${playerIndex}`)
         const playerId = `player-${playerIndex}`
-        clonePlayer.id = playerId
+        newPlayerEl.id = playerId
 
         if (info?.image instanceof File)
-            this.setPlayerImage(clonePlayer, info.image)
+            newPlayerEl.setImage(info.image)
         else
-            clonePlayer.style.backgroundImage = `url('${DefaultPlayerImages[playerIndex % DefaultPlayerImages.length]}')`
+            newPlayerEl.setDefaultImage()
 
-        template.parentElement.insertBefore(clone, template)
-        const newEl = document.getElementById(playerId)
-
-        // Wire events
-        /** @type {HTMLSelectElement} */
-        const colorSelect = newEl.querySelector('select.color')
-        newEl.className = `border-${colorSelect.value}`
-        colorSelect.addEventListener('change', () => {
-            newEl.className = `border-${colorSelect.value}`
-        })
-
-        // Support Dropping images on the Player
-        IndexController.setupDropOnly(newEl, event => {
-            if (!event.dataTransfer.items?.[0].type.startsWith('image') ||
-                !event.dataTransfer.files?.[0])
-                return false
-
-            this.setPlayerImage(newEl, event.dataTransfer.files?.[0])
-            return true
-        })
+        playersEl.appendChild(newPlayerEl)
 
         // add player to the settings page selector
         const settingsPlayerEl = document.querySelector('dialog[is="settings-dialog"] .player-image-upload input.index')
         if (settingsPlayerEl instanceof HTMLInputElement) {
             if (parseInt(settingsPlayerEl.max) < playerIndex + 1)
                 settingsPlayerEl.max = `${playerIndex + 1}`
+
+            newPlayerEl.addEventListener('removed', () => {
+                let playerCount = document.querySelectorAll('.players li').length
+                settingsPlayerEl.max = `${playerCount - 1}`
+                settingsPlayerEl.value = `1` // reset so it's not above max
+            })
         }
     }
 
@@ -453,17 +413,6 @@ export class IndexController {
         }
     }
 
-    /**
-     * Handler for new ship model drop
-     * @param {HTMLElement} playerEl    player element to change the background of
-     * @param {File} imageFile          image to change player element background to
-     */
-    async setPlayerImage (playerEl, imageFile) {
-        const index = playerEl.getAttribute('player-index')
-        this.playerImages[index] = imageFile
-        const url = URL.createObjectURL(imageFile)
-        playerEl.style.backgroundImage = `url('${url}')`
-    }
 }
 
 globalThis.App ??= { Page: undefined }

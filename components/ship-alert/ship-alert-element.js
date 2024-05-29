@@ -1,7 +1,9 @@
 
 export class ShipAlertElement extends HTMLElement {
-    static observedAttributes = ['color']
 
+    static get observedAttributes() {
+        return ['color']
+    }
 
     static Colors = [
         {
@@ -44,10 +46,10 @@ export class ShipAlertElement extends HTMLElement {
         // Attach the created element to the shadow DOM
         shadow.appendChild(linkElem)
 
+        let currentColor = this.getAttribute('color')
         this.#firstColorClass = ShipAlertElement.Colors[0].name.toLowerCase()
 
         this.#internalEl = document.createElement('ship-alert-internal')
-        this.#internalEl.className = this.#firstColorClass
 
         const titleEl = document.createElement('h1')
         titleEl.textContent = 'ALERT'
@@ -56,24 +58,27 @@ export class ShipAlertElement extends HTMLElement {
         conditionEl.textContent = 'CONDITION: '
 
         this.#colorEl = document.createElement('span')
-        this.#colorEl.textContent = this.#firstColorClass
         
         this.#internalEl.appendChild(titleEl)
         conditionEl.appendChild(this.#colorEl)
         this.#internalEl.appendChild(conditionEl)
         shadow.appendChild(this.#internalEl)
+
+        this.setColor(currentColor)
     }
     
     attributeChangedCallback (name, _oldValue, newValue) {
-        if (name !== 'color')
-            return;
+        if (name === 'color')
+            this.setColor(newValue)
+    }
 
+    setColor(color) {
         // Must be valid (null or in the list)
-        if (!!newValue && !ShipAlertElement.Colors.map(a=>a.name.toLowerCase()).includes(newValue.toLowerCase()))
+        if (!!color && !ShipAlertElement.Colors.map(a=>a.name.toLowerCase()).includes(color.toLowerCase()))
             return
 
-        this.#colorEl.textContent = newValue?.toUpperCase() ?? 'HIDDEN'
-        this.#internalEl.className = newValue?.toLowerCase() ?? 'hidden'
+        this.#colorEl.textContent = color?.toUpperCase() ?? 'HIDDEN'
+        this.#internalEl.className = color?.toLowerCase() ?? 'hidden'
     }
 
     /**
