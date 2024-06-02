@@ -11,6 +11,19 @@ export default class BgAudioManager {
      */
     bgAudio
 
+
+    /**
+     * Mute Button
+     * @type {HTMLButtonElement}
+     */
+    #muteBtn
+
+    /**
+     * Milliseconds to wait until another toggle is allowed
+     * @type {number}
+     */
+    #debounceAmount = 300
+
     /**
      * Constructor.
      */
@@ -21,6 +34,13 @@ export default class BgAudioManager {
             this.bgAudio = bgAudioEl
         else
             throw new Error("BG Audio isn't an audio element!")
+
+
+        const muteBtnEl = document.getElementById('mute-btn')
+        if (muteBtnEl instanceof HTMLButtonElement)
+            this.#muteBtn = muteBtnEl
+        else
+            throw new Error("Audio Mute isn't a button element!")
 
         this.bgAudio.pause() // prevents weirdness with navigation
 
@@ -36,11 +56,13 @@ export default class BgAudioManager {
 
         document.addEventListener('visibilitychange', () => this.pageVisibilityChanged())
 
-        document.getElementById('mute-btn')
-            .addEventListener('click', () => this.muteToggle(), { once: false, passive: true })
+        this.#muteBtn.addEventListener('click',
+            () => this.muteToggle(),
+            { once: false, passive: true })
 
-        document.getElementById('mute-btn')
-            .addEventListener('touchend', () => this.muteToggle(), { once: false, passive: true })
+        this.#muteBtn.addEventListener('touchend',
+            () => this.muteToggle(),
+            { once: false, passive: true })
     }
 
     /**
@@ -48,9 +70,15 @@ export default class BgAudioManager {
      * @param {boolean} value what to set mute to (defaults to toggle)
      */
     muteToggle (value = !this.muted) {
+        // Debounce
+        this.#muteBtn.setAttribute('disabled', '')
+        setTimeout(() => this.#muteBtn.removeAttribute('disabled'), this.#debounceAmount);
+
+        // Set Value
         this.muted = value
         localStorage.setItem('muted', value ? 'true' : 'false')
 
+        // Change audio state
         if (this.muted) {
             this.bgAudio.pause()
             speechSynthesis?.cancel()

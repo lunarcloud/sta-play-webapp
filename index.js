@@ -33,6 +33,12 @@ export class IndexController {
     shipModel = undefined
 
     /**
+     * Milliseconds to wait until another toggle is allowed
+     * @type {number}
+     */
+    #debounceAmount = 300
+
+    /**
      * Constructor.
      */
     constructor () {
@@ -61,7 +67,14 @@ export class IndexController {
         document.getElementById('task-tracker-add').addEventListener('click', () => this.addTaskTracker())
         document.getElementById('player-add').addEventListener('click', () => this.addPlayer())
         document.getElementById('trait-add').addEventListener('click', () => this.addTrait())
-        document.getElementById('save-btn').addEventListener('click', () => this.saveData())
+        let saveBtn = document.getElementById('save-btn')
+        saveBtn.addEventListener('click', () => {
+            // Debounce
+            saveBtn.setAttribute('disabled', '')
+            setTimeout(() => saveBtn.removeAttribute('disabled'), this.#debounceAmount);
+            // Do
+            this.saveData()
+        })
 
         const alertEl = document.getElementsByTagName('ship-alert')[0]
         if (alertEl instanceof ShipAlertElement)

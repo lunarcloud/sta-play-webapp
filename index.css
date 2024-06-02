@@ -4,24 +4,26 @@
 /* Variables */
 :root,
 ::backdrop {
-  --main-color-bg: hsl(200deg 50% 1%); /* nearly-black */
-  --main-color-text: #ddd;
-  --main-font-body: "Okuda", sans-serif;
-  --main-font-headers: "Okuda", sans-serif;
-  --shadow-color-text: hsl(180deg 25% 20%);
-  --dialog-color-backdrop: hsl(0deg 0% 0% / 70%);
-  --main-a-link-color: hsl(220deg 31% 41%);
-  --main-a-hover-color: hsl(220deg 49% 38%);
-  --main-a-active-color: hsl(220deg 38% 31%);
-  --main-a-visited-color: hsl(268deg 23% 42%);
-  --main-font-size: 7mm;
-  --void-bg: black;
-  --trek-color-red: #cb5449;
-  --trek-color-blue: #7a87f8;
-  --trek-color-orange: #ed822c;
-  --trek-color-peach: #f2af94;
-  --trek-color-magenta: #bc5196;
-  --trek-color-periwinkle: #c18cf9;
+    --main-color-bg: hsl(200deg 50% 1%); /* nearly-black */
+    --main-color-text: #ddd;
+    --nav-color-bg: var(--main-color-text);
+    --nav-color-text: var(--main-color-bg);
+    --main-font-body: "Okuda", sans-serif;
+    --main-font-headers: "Okuda", sans-serif;
+    --shadow-color-text: hsl(180deg 25% 20%);
+    --dialog-color-backdrop: hsl(0deg 0% 0% / 70%);
+    --main-a-link-color: hsl(220deg 31% 41%);
+    --main-a-hover-color: hsl(220deg 49% 38%);
+    --main-a-active-color: hsl(220deg 38% 31%);
+    --main-a-visited-color: hsl(268deg 23% 42%);
+    --main-font-size: 7mm;
+    --void-bg: black;
+    --trek-color-red: #cb5449;
+    --trek-color-blue: #7a87f8;
+    --trek-color-orange: #ed822c;
+    --trek-color-peach: #f2af94;
+    --trek-color-magenta: #bc5196;
+    --trek-color-periwinkle: #c18cf9;
 }
 
 @media screen and (prefers-contrast: more) {
@@ -350,14 +352,36 @@ dialogs > dialog {
     }
 }
 
-#settings-btn {
+#settings-btn,
+#save-btn,
+#momentum-section {
     position: absolute;
-    top: 2mm;
-    left: 4mm;
+    left: 3mm;
+    padding: 0 2mm;
+    font-size: 5mm;
+    text-transform: uppercase;
+    width: 26mm;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-start;
 
     &:not(:active) {
-        color: black;
+        color: var(--nav-color-text);
     }
+
+    & > symbol {
+        width: 1.5em;
+        padding-right: 0.5em;
+        text-align: end ;
+    }
+}
+
+#settings-btn {
+    top: 20mm;
+}
+
+#save-btn {
+    top: 30mm;
 }
 
 #mute-btn {
@@ -379,6 +403,36 @@ dialogs > dialog {
 
     &:not(.on) > .on {
         display: none;
+    }
+}
+
+#momentum-section {
+
+    top: 130mm;
+    flex-direction: column;
+
+    & > label,
+    & > input {
+        margin: 0;
+        padding: 0;
+        display: block;
+    }
+
+    & > label {
+        font-size: inherit;
+        font-weight: bold;
+        color: var(--nav-color-text);
+    }
+
+    & > input {
+        margin: 0;
+        padding: 0;
+        padding-left: 0.5em;
+        text-align: center;
+        background: unset;
+        border: 1px solid #431818;
+        outline: none;
+        font-size: 2em;
     }
 }
 
@@ -558,19 +612,6 @@ body {
         flex-direction: column;
         justify-content: flex-end;
         padding-bottom: 4mm;
-    }
-
-    & #momentum-pool {
-        width: -webkit-fill-available;
-        width: -moz-available;
-        width: fill-available;
-        margin: 0;
-        padding: 0;
-        padding-left: 0.5em;
-        text-align: center;
-        background: unset;
-        border: 1px solid #431818;
-        outline: none;
     }
 
     decoration {
