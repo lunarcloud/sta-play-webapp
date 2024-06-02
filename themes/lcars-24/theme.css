@@ -1,0 +1,259 @@
+@import url('../../fonts/pixelsagas.com/PS_Okuda/font.css');
+
+:root,
+::backdrop {
+    --main-color-bg: hsl(200deg 50% 1%); /* nearly-black */
+    --main-color-text: #ddd;
+    --nav-color-bg: var(--main-color-text);
+    --nav-color-text: var(--main-color-bg);
+    --main-font-body: "Okuda", sans-serif;
+    --main-font-headers: "Okuda", sans-serif;
+    --shadow-color-text: hsl(180deg 25% 20%);
+    --dialog-color-backdrop: hsl(0deg 0% 0% / 70%);
+    --main-a-link-color: hsl(220deg 31% 41%);
+    --main-a-hover-color: hsl(220deg 49% 38%);
+    --main-a-active-color: hsl(220deg 38% 31%);
+    --main-a-visited-color: hsl(268deg 23% 42%);
+    --main-font-size: 7mm;
+    --void-bg: black;
+    --min-decoration-height: 250mm;
+    --min-body-height: calc(20mm + var(--min-decoration-height));
+
+    --trek-color-1: #cb5449; /* red */
+    --trek-color-2: #7a87f8; /* blue */
+    --trek-color-3: #ed822c; /* orange */
+    --trek-color-4: #f2af94; /* peach */
+    --trek-color-5: #c18cf9; /* periwinkle */
+    --trek-color-6: #bc5196; /* magenta */
+
+    --player-color-red: var(--trek-color-1);
+    --player-color-blue: var(--trek-color-2);
+    --player-color-yellow: var(--trek-color-3);
+    --player-color-brown: var(--trek-color-4);
+    --player-color-black: #222;
+    --player-color-white: #bbb;
+}
+
+decoration {
+    z-index: -1;
+    position: absolute;
+    inset: 0;
+    padding: 0;
+    margin: 0 2mm;
+    min-height: 250mm;
+    height: 100%;
+    width: calc(100% - 4mm);
+    overflow: hidden visible;
+
+    &::-webkit-scrollbar {
+        width: 0px;
+        background-color: transparent;
+        color: transparent;
+        border: 0 solid transparent;
+        appearance: none;
+    }
+
+    & > ul {
+        margin: 0;
+        padding: 1mm;
+        display: flex;
+        flex-direction: column;
+        list-style: none;
+
+        /* last element should go to the bottom (minus margin) */
+        & > li:last-of-type {
+            position: absolute;
+            top: 242mm; /* height of everything else plus margin */
+            bottom: 2mm;
+            height: auto;
+        }
+
+        & li {
+            min-height: 20mm;
+            height: 35mm;
+            margin: 2mm 0;
+            display: flex;
+            flex-flow: row;
+            flex-wrap: nowrap;
+
+            & > ul {
+                margin: 0;
+                padding: 0;
+                display: flex;
+                flex-direction: row;
+                list-style: none;
+                width: 0; /* this (plus overflow:visible) is necessary to not grow the page's width */
+                position: relative;
+
+                & li {
+                    height: inherit;
+                    margin: 0 2mm;
+
+                    & a {
+                        width: 50mm;
+                    }
+                }
+            }
+
+            &:has(> a:hover) {
+                & > a:hover,
+                &::before,
+                & > ul > li:first-child a,
+                & > ul > li:first-child::before
+                {
+                    filter: brightness(1.25);
+                }
+            }
+
+            &:has(> ul > li:first-child a:hover) > a {
+                filter: brightness(1.25);
+            }
+
+            & a, a:link, a:visited {
+                display: flex;
+                flex-direction: column-reverse;
+                font-size: calc(var(--main-font-size) * 0.75);
+                width: 30mm;
+                text-decoration: none;
+                text-align: right;
+                color: black;
+                background-color: var(--trek-color-1);
+
+                &:hover {
+                    text-decoration: none;
+                    color: black;
+                }
+            }
+
+            &.upper-left a {
+                flex-direction: column;
+            }
+
+            &.curve-bottom-right, &.curve-top-right {
+                height: 20mm;
+
+                & > ul,
+                & ul > li:first-child {
+                    margin-left: 0 !important;
+                }
+
+                & li:nth-of-type(1) {
+                    width: 30mm;
+                }
+
+                & li:nth-of-type(1)::before {
+                    content: '';
+                    z-index: -2;
+                    height: 50%;
+                    width: 15mm;
+                    position: absolute;
+                    left: 0;
+                }
+
+                & li:nth-of-type(1)::after {
+                    content: '';
+                    z-index: -1;
+                    background-color: var(--main-color-bg);
+                    height: 100%;
+                    width: 30mm;
+                    position: absolute;
+                    left: 0;
+                    border-radius: 50%;
+                }
+
+                & li:last-of-type > a {
+                    width: 100vw;
+                    height: 50%;
+                }
+            }
+
+            &.curve-bottom-right {
+                & > a {
+                    border-bottom-left-radius: 100%;
+                }
+
+                & ul > li {
+                    align-items: flex-end;
+
+                    & a  {
+                        min-height: 0;
+                        height: 50%;
+                    }
+                }
+
+                & li:nth-of-type(2) a {
+                    background-color: var(--trek-color-3);
+                }
+
+                & li:nth-of-type(1) a {
+                    background-color: var(--trek-color-2);
+                    min-height: 0;
+                    height: 50%;
+                }
+
+                & li:nth-of-type(1)::before {
+                    background-color: var(--trek-color-2);
+                    bottom: 50%;
+                }
+
+                & li:nth-of-type(1)::after {
+                    bottom: 50%;
+                }
+
+                & li:last-of-type > a {
+                    background-color: var(--trek-color-1);
+                }
+            }
+
+            &.curve-top-right {
+                & > a {
+                    border-top-left-radius: 100%;
+                }
+
+                & li:nth-of-type(1) a {
+                    background-color: var(--trek-color-1);
+                    min-height: 0;
+                    height: 50%;
+                }
+
+                & li:nth-of-type(1)::before {
+                    background-color: var(--trek-color-1);
+                    top: 50%;
+                }
+
+                & li:nth-of-type(1)::after {
+                    top: 50%;
+                }
+
+                & li:nth-of-type(odd) a {
+                    min-height: 0;
+                    height: 50%;
+                }
+
+                & li:last-of-type > a {
+                    background-color: var(--trek-color-5);
+                }
+            }
+
+            &:nth-of-type(1) a {
+                background-color: var(--trek-color-5);
+            }
+
+            &:nth-of-type(2) a {
+                background-color: var(--trek-color-2);
+            }
+
+            &:nth-of-type(4) a {
+                background-color: var(--trek-color-3);
+            }
+
+            &:nth-of-type(5) a {
+                background-color: var(--trek-color-4);
+            }
+
+            &:nth-of-type(6) a {
+                background-color: var(--trek-color-2);
+            }
+        }
+    }
+}

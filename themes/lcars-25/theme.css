@@ -1,0 +1,21 @@
+@import url('../lcars-24/theme.css');
+
+:root,
+::backdrop {
+    --main-color-bg: hsl(200deg 50% 1%); /* nearly-black */
+    --void-bg: black;
+
+    --trek-color-1: #434f68;
+    --trek-color-2: #8e90a5;
+    --trek-color-3: #ef710a;
+    --trek-color-4: #cf2010;
+    --trek-color-5: #a896bc;
+    --trek-color-6: #453d42;
+
+    --player-color-red: #6a1a13;
+    --player-color-blue: #2e3e61;
+    --player-color-yellow: #a49947;
+    --player-color-brown: #6b4d2b;
+    --player-color-black: #3d3847;
+    --player-color-white: #c0b8cf;
+}

@@ -1,0 +1,20 @@
+@font-face {
+    font-family: "Okuda";
+    src: url("Okuda Bold Italic.otf");
+    font-style: italic;
+    font-weight: bold;
+}
+@font-face {
+    font-family: "Okuda";
+    src: url("Okuda Italic.otf");
+    font-style: italic;
+}
+@font-face {
+    font-family: "Okuda";
+    src: url("Okuda Bold.otf");
+    font-weight: bold;
+}
+ @font-face {
+    font-family: "Okuda";
+    src: url("Okuda.otf");
+}

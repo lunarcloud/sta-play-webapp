@@ -8,6 +8,7 @@ ship-alert-internal {
     place-content: center center;
     align-items: center;
     flex-flow: column nowrap;
+    text-shadow: -1px 1px 4px black;
 
     & > * {
         margin: 0;

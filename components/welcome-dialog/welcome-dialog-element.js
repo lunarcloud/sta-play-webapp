@@ -1,14 +1,12 @@
+import { loadElementFromFile } from "../../js/load-file-element.js"
 
 const setup = async () => {
-    const parser = new DOMParser()
-    const resp = await fetch('./components/welcome-dialog/welcome-dialog.html')
-    const html = await resp.text()
-    const template = parser.parseFromString(html, 'text/html').querySelector('dialog')
+    const dialogEl = await loadElementFromFile('./components/welcome-dialog/welcome-dialog.html', 'dialog')
 
     class WelcomeDialogElement extends HTMLDialogElement {
       constructor() {
         super()
-        this.innerHTML = template.innerHTML
+        this.innerHTML = dialogEl.innerHTML
         this.querySelectorAll('button.close').forEach(el => el.addEventListener('click', () => this.close()))
       }
 

@@ -9,6 +9,7 @@ import { Database, GeneralInfo, PlayerInfo, TrackerInfo } from './js/database.js
 import 'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js'
 import ShipAlertElement from './components/ship-alert/ship-alert-element.js'
 import { setupDropOnly } from './js/drop-nodrag-setup.js'
+import { loadElementFromFile } from './js/load-file-element.js'
 
 const DefaultShipUrl = 'gltf/starfleet-generic.glb'
 
@@ -42,6 +43,16 @@ export class IndexController {
      * Constructor.
      */
     constructor () {
+        // Theme
+        const themeEl = document.getElementsByTagName('theme')[0]
+        let theme = themeEl.getAttribute('value') ?? 'lcars-24'
+        loadElementFromFile(`./themes/${theme}/theme.html`, 'theme').then(el => themeEl.innerHTML = el.innerHTML)
+
+        const themeStyleLink = document.getElementById('theme-link')
+        if (themeStyleLink instanceof HTMLLinkElement === false)
+            throw new Error('Theme CSS link element is wrong/missing!')
+        themeStyleLink.href = `./themes/${theme}/theme.css`
+
         // Get default to fallback to
         this.fallbackText = document.getElementById('general-text').innerHTML
         this.fallbackShipName = document.getElementById('shipname').innerHTML
@@ -93,7 +104,7 @@ export class IndexController {
         if (settingsDialog instanceof HTMLDialogElement === false)
             throw new Error('HTML setup incorrect!')
 
-        this.#setupSettings(settingsDialog, welcomeDialog)
+        this.#setupSettings(settingsDialog, welcomeDialog, themeStyleLink)
 
         // Setup Dropping 3D model on the Ship
         const modelViewers = document.getElementsByTagName('model-viewer')
@@ -156,9 +167,10 @@ export class IndexController {
     /**
      * Wire up all the settings.
      * @param {HTMLDialogElement} dialogEl                      settings dialog element
-     * @param {HTMLDialogElement|undefined} welcomeDialogEl   the welcome dialog element
+     * @param {HTMLDialogElement|undefined} welcomeDialogEl     the welcome dialog element
+     * @param {HTMLLinkElement} themeStyleEl                    the theme style link element
      */
-    #setupSettings (dialogEl, welcomeDialogEl) {
+    #setupSettings (dialogEl, welcomeDialogEl, themeStyleEl) {
         document.getElementById('settings-btn').addEventListener('click', () => dialogEl.showModal())
         dialogEl.querySelectorAll('button.close').forEach(el => el.addEventListener('click', () => dialogEl.close()))
         dialogEl.querySelector('button.clear-info').addEventListener('click', async () => {
@@ -188,6 +200,18 @@ export class IndexController {
         })
 
         dialogEl.querySelector('button.show-welcome').addEventListener('click', () => welcomeDialogEl?.showModal())
+
+        // Setup Theme Selection
+        const themeEl = document.getElementsByTagName('theme')[0]
+        const themeSelectEl = document.getElementById('select-theme')
+        themeSelectEl.addEventListener('change', () => {
+            if (themeSelectEl instanceof HTMLSelectElement === false)
+                return;
+            let theme = themeSelectEl.value
+            themeEl.setAttribute('value', theme)
+            themeStyleEl.href = `./themes/${theme}/theme.css`
+            loadElementFromFile(`./themes/${theme}/theme.html`, 'theme').then(el => themeEl.innerHTML = el.innerHTML)
+        });
     }
 
     /**

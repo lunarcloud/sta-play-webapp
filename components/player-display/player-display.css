@@ -1,6 +1,6 @@
 li[is="player-display"] {
     border: 1mm solid black;
-    border: 1em solid var(--trek-color-peach);
+    border: 1em solid var(--trek-color-1);
     border-bottom-width: 0;
     border-right-width: 0;
     border-radius: 4mm 0 0;
@@ -115,11 +115,11 @@ li[is="player-display"] {
         padding: 4mm 0 4mm 4mm;
     }
 
-    /* Used to denote department, mostly */
-    /* &[color="brown"] */ border-color: var(--trek-color-peach);
-    &[color="red"]        { border-color: var(--trek-color-red); }
-    &[color="blue"]       { border-color: var(--trek-color-blue); }
-    &[color="yellow"]     { border-color: var(--trek-color-orange); }
-    &[color="black"]      { border-color: #222; }
-    &[color="white"]      { border-color: #bbb; }
+    /* Border color is used to denote department, mostly */
+    &[color="brown"]      { border-color: var(--player-color-brown, hsl(40, 36%, 21%)); }
+    &[color="red"]        { border-color: var(--player-color-red, red); }
+    &[color="blue"]       { border-color: var(--player-color-blue, blue); }
+    &[color="yellow"]     { border-color: var(--player-color-yellow, yellow); }
+    &[color="black"]      { border-color: var(--player-color-black, black); }
+    &[color="white"]      { border-color: var(--player-color-white, white); }
 }
