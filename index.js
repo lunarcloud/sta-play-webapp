@@ -119,9 +119,6 @@ export class IndexController {
 
         themeSelectEl.addEventListener('change', () => this.#useTheme(themeSelectEl.value));
 
-        const themeEl = document.getElementsByTagName('theme')[0]
-        this.#useTheme(themeEl.getAttribute('value') ?? 'lcars-24')
-
         // Load Info and Images from Database
         try {
             this.#loadData().then(hadData => {
