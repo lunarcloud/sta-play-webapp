@@ -383,62 +383,13 @@ dialogs > dialog {
 }
 
 task-tracker {
-    display: inline-block;
-    position: relative;
-    background: #666;
-    padding: 4px; 
-    border-width: 6px; 
-    border-style: outset; 
-    border-color: black white white black;
-
-    & > .remove {
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: min-content;
-        background-color: transparent;
-        border-color: transparent;
-        overflow: visible;
-    }
-
-    & > h1 {
-        font-size: 1.5rem;
-        margin: 0;
-        margin-bottom: 4px;
-        border-bottom: 4px solid #333;
-    }
-
-    input {
-        background: unset; 
-        color: unset;
-        width: -webkit-fill-available;
-        width: -moz-available;
-        width: fill-available;
-    }
-
-    select, option {
-        background: #333;
-        color: #ccc;
-    }
-
-    input, select {
-        border-radius: 4px;
-        border-width: 0;
-        outline: unset !important;
-    }
-
-    & dd:has(select) {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-    }
-
-    dl {
-        display: grid;
-        grid-template-columns: auto 1fr;
-        width: fit-content;
-        margin: 0;
-    }
+    --tracker-background-color: #666;
+    --tracker-border-width: 6px;
+    --tracker-border-style: outset;
+    --tracker-border-color: black white white black;
+    --tracker-title-separator-color: #333;
+    --tracker-select-background-color: #333;
+    --tracker-select-color: #ccc;
 }
 
 body {

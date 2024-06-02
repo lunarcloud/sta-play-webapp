@@ -4,6 +4,7 @@ import './components/trait-display/trait-display-element.js'
 import './components/welcome-dialog/welcome-dialog-element.js'
 import './components/settings-dialog/settings-dialog-element.js'
 import './components/player-display/player-display-element.js'
+import './components/task-tracker/task-tracker-element.js'
 import { Database, GeneralInfo, PlayerInfo, TrackerInfo } from './js/database.js'
 import 'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js'
 import ShipAlertElement from './components/ship-alert/ship-alert-element.js'
@@ -57,7 +58,7 @@ export class IndexController {
         this.audioManager.setupElements('a[hover]', buttonEffects, undefined, buttonEffects)
 
         // Wire up buttons to their actions
-        document.getElementById('task-tracker-add').addEventListener('click', () => this.addExtendedTask())
+        document.getElementById('task-tracker-add').addEventListener('click', () => this.addTaskTracker())
         document.getElementById('player-add').addEventListener('click', () => this.addPlayer())
         document.getElementById('trait-add').addEventListener('click', () => this.addTrait())
         document.getElementById('save-btn').addEventListener('click', () => this.saveData())
@@ -215,7 +216,7 @@ export class IndexController {
             // Get all trackers
             const trackers = await this.db.getTrackers(dbToken)
             for (const tracker of trackers)
-                this.addExtendedTask(tracker)
+                this.addTaskTracker(tracker)
 
             this.safeToSaveDB = true
             return typeof (generalInfo) !== 'undefined'
@@ -267,25 +268,17 @@ export class IndexController {
         await this.db.replacePlayers(players, dbToken)
 
         const trackers = [...document.querySelectorAll('task-tracker')]
-            .map(e => {
-                /** @type {HTMLSelectElement} */
-                const attributeSelect = e.querySelector('.attribute')
-                /** @type {HTMLSelectElement} */
-                const departmentSelect = e.querySelector('.department')
-                /** @type {HTMLInputElement} */
-                const resistanceInput = e.querySelector('.resistance')
-                /** @type {HTMLInputElement} */
-                const complicationRangeInput = e.querySelector('.complication-range')
-                /** @type {HTMLInputElement} */
-                const progressInput = e.querySelector('.progress')
+            .map(el => {
+                if (el instanceof TaskTrackerElement === false)
+                    return
 
                 const info = new TrackerInfo(
-                    e.querySelector('.name').textContent,
-                    attributeSelect.value,
-                    departmentSelect.value,
-                    progressInput.value,
-                    resistanceInput.value,
-                    complicationRangeInput.value
+                    el.getAttribute('name'),
+                    el.getAttribute('attribute'),
+                    el.getAttribute('department'),
+                    parseInt(el.getAttribute('progress')),
+                    parseInt(el.getAttribute('resistance')),
+                    parseInt(el.getAttribute('complication-range'))
                 )
                 return info
             })
@@ -300,38 +293,21 @@ export class IndexController {
      * Add a new Combat / Extended task tracker to the page.
      * @param {TrackerInfo|undefined} info Player information
      */
-    addExtendedTask (info = undefined) {
-        const template = document.getElementById('task-tracker-template')
-        if (template instanceof HTMLTemplateElement === false)
-            return
-
-        const clone = document.importNode(template.content, true)
+    addTaskTracker (info = undefined) {
+        const newTrackerEl = document.createElement('task-tracker' )
+        if (newTrackerEl instanceof TaskTrackerElement === false)
+            throw new Error('App incorrectly configured!')
 
         if (typeof (info) !== 'undefined') {
-            clone.querySelector('.name').textContent = info.name
-
-            const attributeSelect = clone.querySelector('.attribute')
-            if (attributeSelect instanceof HTMLSelectElement)
-                attributeSelect.value = info.attribute
-
-            const departmentSelect = clone.querySelector('.department')
-            if (departmentSelect instanceof HTMLSelectElement)
-                departmentSelect.value = info.department
-
-            const resistanceInput = clone.querySelector('.resistance')
-            if (resistanceInput instanceof HTMLInputElement)
-                resistanceInput.value = `${info.resistance}`
-
-            const complicationRangeInput = clone.querySelector('.complication-range')
-            if (complicationRangeInput instanceof HTMLInputElement)
-                complicationRangeInput.value = `${info.complicationRange}`
-
-            const progressInput = clone.querySelector('.progress')
-            if (progressInput instanceof HTMLInputElement)
-                progressInput.value = `${info.progressTrack}`
+            newTrackerEl.setAttribute('name', info.name)
+            newTrackerEl.setAttribute('attribute', info.attribute)
+            newTrackerEl.setAttribute('department', info.department)
+            newTrackerEl.setAttribute('resistance', `${info.resistance}`)
+            newTrackerEl.setAttribute('complication-range', `${info.complicationRange}`)
+            newTrackerEl.setAttribute('progress', `${info.progressTrack}`)
         }
 
-        template.parentElement.insertBefore(clone, template)
+        document.querySelector('task-trackers').appendChild(newTrackerEl)
     }
 
     /**

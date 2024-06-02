@@ -69,42 +69,7 @@
             <content>
                 <traits><span>SCENE TRAITS: </span></traits>
                 <ship-alert></ship-alert>
-                <template id="task-tracker-template">
-                    <task-tracker>
-                        <button class="remove"
-                                onclick="this.parentNode.parentNode.removeChild(this.parentNode)">
-                                ⤫
-                        </button>
-                        <h1 class="name" contenteditable="true">Combat / Extended Task</h1>
-                        <dl>
-                            <dt>Resistance</dt>
-                            <dd><input class="resistance" type="number" value="0"></dd>
-                            <dt>Complication Range</dt>
-                            <dd><input class="complication-range" type="number" value="0"></dd>
-                            <dt>Stats</dt>
-                            <dd>
-                                <select class="attribute">
-                                    <option>Control</option>
-                                    <option>Fitness</option>
-                                    <option>Presence</option>
-                                    <option>Daring</option>
-                                    <option>Insight</option>
-                                    <option>Reason</option>
-                                </select>
-                                <select class="department">
-                                    <option>Command</option>
-                                    <option>Security</option>
-                                    <option>Science</option>
-                                    <option>Conn</option>
-                                    <option>Engineering</option>
-                                    <option>Medicine</option>
-                                </select>
-                            </dd>
-                            <dt>Progress</dt>
-                            <dd><input class="progress" type="number" value="3"></dd>
-                        </dl>
-                    </task-tracker>
-                </template>
+                <task-trackers></task-trackers>
                 <div id="general-text" contenteditable="true">
                     <h1>Story Notes</h1>
                     <p>The story so far...</p>
