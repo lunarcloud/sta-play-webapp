@@ -73,16 +73,21 @@ export class TaskTrackerElement extends HTMLElement {
         });
 
         // name element
-        this.#nameEl = document.createElement('h1')
-        this.#nameEl.className = 'name'
         try {
+            this.#nameEl = document.createElement('h1')
             this.#nameEl.contentEditable = 'plaintext-only'
         } catch {
-            this.#nameEl.contentEditable = 'true'
+            this.#nameEl = document.createElement('input')
+            if (this.#nameEl instanceof HTMLInputElement)
+                this.#nameEl.type = 'text'
         }
+        this.#nameEl.className = 'name'
 
         this.#useAttrOrDefault(this.#nameEl, 'name', 'Combat / Extended Task')
-        this.#nameEl.addEventListener('input', _event => this.setAttribute('name', this.#nameEl.textContent));
+
+        this.#nameEl.addEventListener(
+            this.#nameEl instanceof HTMLInputElement ? 'change' : 'input',
+            _event => this.setAttribute('name', this.#nameEl instanceof HTMLInputElement ? this.#nameEl.value : this.#nameEl.textContent));
 
         // Data-List & Elements
         const listEl = document.createElement('dl')
