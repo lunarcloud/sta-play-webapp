@@ -14,7 +14,7 @@ import { openDB, deleteDB } from 'https://cdn.jsdelivr.net/npm/idb@8/+esm'
  */
 
 const DB_NAME = 'STAPlayApp'
-const DB_VERSION = 1
+const DB_VERSION = 2
 const STORE = {
     GENERAL: 'general',
     TRAITS: 'traits',
@@ -58,19 +58,26 @@ export class GeneralInfo {
     activeAlert
 
     /**
+     * @type {string}
+     */
+    theme
+
+    /**
      * Create a new General Info object
      * @param {string} text general screen text
      * @param {string} shipName name of the ship
      * @param {number|string} momentum amount of momentum in the player's pool
      * @param {string} activeAlert which alert is active
+     * @param {string} theme which theme is active
      * @param {File} [shipModel] ship's 3D model
      */
-    constructor (text, shipName, momentum, activeAlert, shipModel = undefined) {
+    constructor (text, shipName, momentum, activeAlert, theme, shipModel = undefined) {
         this.id = 0
         this.text = text
         this.shipName = shipName
         this.momentum = typeof (momentum) === 'number' ? momentum : parseInt(momentum)
         this.activeAlert = activeAlert
+        this.theme = theme
         this.shipModel = shipModel
     }
 }
