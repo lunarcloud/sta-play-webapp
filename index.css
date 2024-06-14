@@ -3,6 +3,7 @@
 ::backdrop {
     --main-color-bg: hsl(200deg 50% 1%); /* nearly-black */
     --main-color-text: #ddd;
+    --secondary-color-bg: hsl(273.6deg 17.48% 10%);  /* colored-nearly-black */
     --nav-color-bg: var(--main-color-text);
     --nav-color-text: var(--main-color-bg);
     --main-font-body: "Okuda", sans-serif;
@@ -16,12 +17,16 @@
     --main-font-size: 7mm;
     --void-bg: black;
 
+    --header-inner-bg: var(--secondary-color-bg);
+    --header-outer-bg: var(--main-color-bg);
+
     --trek-color-1: #cb5449;
     --trek-color-2: #7a87f8;
     --trek-color-3: #ed822c;
     --trek-color-4: #f2af94;
     --trek-color-5: #c18cf9;
     --trek-color-6: #bc5196;
+    --trek-color-highlight: var(--trek-color-3)
 
     --player-color-red: var(--trek-color-1);
     --player-color-blue: var(--trek-color-2);
@@ -238,7 +243,6 @@ dialogs > dialog {
     justify-content: flex-start;
     padding: 0;
     width: 80vw;
-    min-height: 40vh;
     max-height: 80dvh;
     border: 1px solid #666;
     background-color: #ccc;
@@ -267,6 +271,7 @@ dialogs > dialog {
     & main {
         padding: 20px 12px;
         overflow: auto;
+        min-height: 10vh;
 
         & dl {
             margin-top: 0.5em;
@@ -355,6 +360,18 @@ dialogs > dialog {
             }
         }
     }
+}
+
+#game-name {
+  position: absolute;
+  top: 3mm;
+  left: 3mm;
+  width: 30mm;
+  height: 18mm;
+  font-size: smaller;
+  text-align: end;
+  color: var(--nav-color-text);
+  font-family: var(--main-font-headers);
 }
 
 #settings-btn,
@@ -483,7 +500,16 @@ body {
         display: flex;
         flex-wrap: nowrap;
         gap: 0.25em;   
-        background: linear-gradient(90deg, var(--main-color-bg) 2%, hsl(273.6deg 17.48% 10%) 30%, hsl(273.6deg 17.48% 10%) 70%, var(--main-color-bg) 98%);
+
+        background: transparent;
+        background: linear-gradient(90deg,
+            hsla(0, 0%, 0%, 0.0) 0%,
+            var(--header-outer-bg) 10%,
+            var(--header-inner-bg) 30%,
+            var(--header-outer-bg) 50%,
+            var(--header-inner-bg) 70%,
+            var(--header-outer-bg) 90%,
+            hsla(0, 0%, 0%, 0.0) 100%);
 
 
         & > model-viewer {
@@ -549,11 +575,13 @@ body {
         display: flex;
         flex-direction: row-reverse;
         align-items: center;
+        margin-top: 4mm;
 
         & ul {
             list-style: none;
             display: flex;
             flex-wrap: wrap;
+            gap: 2mm;
             justify-content: flex-end;
             width: fit-content;
             margin: 0;
@@ -561,7 +589,6 @@ body {
 
             & li {
                 flex: 1 0 40%;
-                border: 1mm solid black;
                 border-radius: 4mm;
                 font-size: calc(var(--main-font-size) * 0.9);
 
@@ -569,7 +596,7 @@ body {
                 & a {
                     display: block;
                     text-decoration: none !important;
-                    color: black !important;
+                    color: var(--nav-color-text) !important;
                     padding: 4mm 0 4mm 4mm;
                     cursor: pointer;
                     line-height: 1.2em;
@@ -608,7 +635,7 @@ body {
                     color: white !important;
                     background-color: transparent !important;
                     padding: 3mm 0 3mm 3mm;
-                    border-color: var(--trek-color-6);
+                    border-color: var(--trek-color-highlight);
                     border-width: 1mm;
                     border-style: solid;
 

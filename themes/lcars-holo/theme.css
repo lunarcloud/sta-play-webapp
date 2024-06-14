@@ -1,0 +1,104 @@
+@import url('../lcars-24/theme.css');
+
+:root,
+::backdrop {
+    --main-color-bg: hsl(200, 20%, 27%); /* holographic or glass */
+    --secondary-color-bg: hsl(220, 58%, 18%);
+    --nav-color-text: hsl(251, 20%, 83%);
+    --void-bg: black;
+
+    --header-inner-bg: hsla(290, 43%, 33%, 0.4);
+    --header-outer-bg: hsla(0, 0%, 0%, 0.4);
+
+    --trek-color-1: hsl(240, 100%, 44%);
+    --trek-color-2: hsl(196, 74%, 61%);
+    --trek-color-3: hsl(249, 84%, 47%);
+    --trek-color-4: hsl(172, 55%, 37%);
+    --trek-color-5: hsl(287, 73%, 58%);
+    --trek-color-6: hsl(260, 58%, 32%);
+
+    --trek-color-highlight: var(--trek-color-5);
+
+    --player-color-opacity: 0.25;
+    --player-color-red: hsl(0, 58%, 52%, var(--player-color-opacity));
+    --player-color-blue: hsl(249, 84%, 47%, var(--player-color-opacity));
+    --player-color-yellow: hsl(50, 73%, 58%, var(--player-color-opacity));
+    --player-color-brown: hsl(23, 55%, 64%, var(--player-color-opacity));
+    --player-color-black: hsl(252, 5%, 21%, var(--player-color-opacity));
+    --player-color-white: hsl(248, 24%, 82%, var(--player-color-opacity));
+}
+
+li[is="player-display"] {
+    background-color: transparent !important;
+}
+
+task-tracker::part(internal) {
+
+    --tracker-background-color: hsla(284, 14%, 42%, 0.459);
+    --tracker-title-separator-color: hsla(253, 73%, 28%, 0.62);
+}
+
+body {
+  background: linear-gradient(45deg,
+    var(--main-color-bg),
+    var(--main-color-bg),
+    var(--void-bg),
+    var(--main-color-bg),
+    var(--main-color-bg),
+    var(--void-bg),
+    var(--main-color-bg),
+    var(--main-color-bg),
+    var(--void-bg),
+    var(--main-color-bg),
+    var(--main-color-bg),
+    var(--void-bg),
+    var(--main-color-bg));
+
+  background-size: 200% 200%;
+  animation: moveGradient 30s linear 0s infinite normal;
+}
+
+#momentum-pool {
+    color: var(--nav-color-text);
+}
+
+@keyframes moveGradient {
+    0% {background-position: 100% 0%}
+    100% {background-position: 0% 100%}
+}
+
+decoration > ul {
+    opacity: 0.25;
+}
+
+nav > ul {
+    filter: grayscale(0.3);
+}
+
+/* Because of transparency, replace the inner curves with angles */
+decoration > ul li {
+
+    &.curve-bottom-right, &.curve-top-right {
+        & li:nth-of-type(1)::before {
+            width: 0px;
+            border-width: 10mm 15mm 10mm 0mm;
+            border-style: solid;
+            background: unset !important;
+            border-color: transparent;
+        }
+
+        & li:nth-of-type(1)::after {
+            content: unset;
+        }
+    }
+    &.curve-bottom-right {
+        & li:nth-of-type(1)::before {
+            border-bottom-color: var(--trek-color-2);
+        }
+    }
+    &.curve-top-right {
+        & li:nth-of-type(1)::before {
+            border-top-color: var(--trek-color-1);
+        }
+    }
+}

@@ -189,7 +189,7 @@ export class IndexController {
 
         // Set elements
         themeEl.setAttribute('value', theme)
-        themeSelectEl.setAttribute('value', theme)
+        themeSelectEl.value = theme
 
         // Update Style and theme element contents
         themeStyleEl.href = `./themes/${theme}/theme.css`

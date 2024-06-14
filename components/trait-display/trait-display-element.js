@@ -25,6 +25,7 @@ export class TraitDisplayElement extends HTMLElement {
         shadow.appendChild(linkElem)
 
         const internalEl = document.createElement('trait-display-internal')
+        internalEl.setAttribute('part', 'internal')
         this.#textEl = document.createElement('span')
 
         /** Handle differences in ContentEditable support between firefox and chrome */

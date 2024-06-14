@@ -50,6 +50,7 @@ export class ShipAlertElement extends HTMLElement {
         this.#firstColorClass = ShipAlertElement.Colors[0].name.toLowerCase()
 
         this.#internalEl = document.createElement('ship-alert-internal')
+        this.#internalEl.setAttribute('part', 'internal')
 
         const titleEl = document.createElement('h1')
         titleEl.textContent = 'ALERT'

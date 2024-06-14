@@ -19,12 +19,12 @@
     --min-decoration-height: 250mm;
     --min-body-height: calc(20mm + var(--min-decoration-height));
 
-    --trek-color-1: #cb5449; /* red */
-    --trek-color-2: #7a87f8; /* blue */
-    --trek-color-3: #ed822c; /* orange */
-    --trek-color-4: #f2af94; /* peach */
-    --trek-color-5: #c18cf9; /* periwinkle */
-    --trek-color-6: #bc5196; /* magenta */
+    --trek-color-1: hsl(5, 56%, 54%); /* red */
+    --trek-color-2: hsl(234, 90%, 73%); /* blue */
+    --trek-color-3: hsl(27, 84%, 55%); /* orange */
+    --trek-color-4: hsl(17, 78%, 76%); /* peach */
+    --trek-color-5: hsl(269, 90%, 76%); /* periwinkle */
+    --trek-color-6: hsl(321, 44%, 53%); /* magenta */
 
     --trek-color-highlight: var(--trek-color-3);
 
@@ -32,9 +32,10 @@
     --player-color-blue: var(--trek-color-2);
     --player-color-yellow: var(--trek-color-3);
     --player-color-brown: var(--trek-color-4);
-    --player-color-black: #222;
-    --player-color-white: #bbb;
+    --player-color-black: hsl(0, 0%, 13%);
+    --player-color-white: hsl(0, 0%, 73%);
 }
+
 
 decoration {
     z-index: -1;
@@ -118,7 +119,7 @@ decoration {
                 width: 30mm;
                 text-decoration: none;
                 text-align: right;
-                color: black;
+                color: var(--nav-color-text);
                 background-color: var(--trek-color-1);
 
                 &:hover {

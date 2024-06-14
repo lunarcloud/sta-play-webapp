@@ -5,19 +5,22 @@
     --main-color-bg: hsl(200deg 50% 1%); /* nearly-black */
     --void-bg: black;
 
-    --trek-color-1: #434f68;
-    --trek-color-2: #8e90a5;
-    --trek-color-3: #ef710a;
-    --trek-color-4: #cf2010;
-    --trek-color-5: #a896bc;
-    --trek-color-6: #453d42;
+    --trek-color-1: hsl(221, 22%, 34%);
+    --trek-color-2: hsl(235, 11%, 60%);
+    --trek-color-3: hsl(27, 92%, 49%);
+    --trek-color-4: hsl(5, 86%, 44%);
+    --trek-color-5: hsl(268, 22%, 66%);
+    --trek-color-6: hsl(322, 6%, 25%);
+
+    --header-inner-bg: hsl(220, 14%, 16%);
+    --header-outer-bg: var(--main-color-bg);
 
     --trek-color-highlight: var(--trek-color-4);
 
-    --player-color-red: #6a1a13;
-    --player-color-blue: #2e3e61;
-    --player-color-yellow: #a49947;
-    --player-color-brown: #6b4d2b;
-    --player-color-black: #3d3847;
-    --player-color-white: #c0b8cf;
+    --player-color-red: hsl(5, 70%, 25%);
+    --player-color-blue: hsl(221, 36%, 28%);
+    --player-color-yellow: hsl(53, 40%, 46%);
+    --player-color-brown: hsl(32, 43%, 29%);
+    --player-color-black: hsl(260, 12%, 25%);
+    --player-color-white: hsl(261, 19%, 77%);
 }
