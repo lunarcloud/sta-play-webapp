@@ -198,6 +198,20 @@ export class IndexController {
     }
 
     /**
+     * Set the page's text to a particular gaem edition
+     * @param {1|2} edition   the number of the rules edition to use
+     */
+    #useEdition(edition) {
+        const editionSelectEl = document.getElementById('select-edition')
+        if (editionSelectEl instanceof HTMLSelectElement === false)
+            throw new Error('Theme selector element is wrong/missing!')
+        editionSelectEl.value = `${edition}`
+
+        document.body.classList.remove('edition-1', 'edition-2')
+        document.body.classList.add(`edition-${edition}`)
+    }
+
+    /**
      * Wire up all the settings.
      * @param {HTMLDialogElement} dialogEl                      settings dialog element
      * @param {HTMLDialogElement|undefined} welcomeDialogEl     the welcome dialog element
@@ -232,6 +246,15 @@ export class IndexController {
         })
 
         dialogEl.querySelector('button.show-welcome').addEventListener('click', () => welcomeDialogEl?.showModal())
+
+        // Setup Edition & Selection
+        const editionSelectEl = document.getElementById('select-edition')
+        if (editionSelectEl instanceof HTMLSelectElement === false)
+            throw new Error('Theme selector element is wrong/missing!')
+
+        editionSelectEl.addEventListener('change', () => {
+             this.#useEdition(editionSelectEl.value == '1' ? 1 : 2)
+        });
     }
 
     /**
@@ -248,11 +271,17 @@ export class IndexController {
             if (momentumEl instanceof HTMLInputElement === false)
                 throw new Error('page setup incorrectly!')
 
+            const editionSelectEl = document.getElementById('select-edition')
+            if (editionSelectEl instanceof HTMLSelectElement === false)
+                throw new Error('Theme selector element is wrong/missing!')
+
             document.getElementById('general-text').innerHTML = generalInfo?.text ?? this.fallbackText
             document.getElementById('shipname').textContent = (generalInfo?.shipName ?? this.fallbackShipName).trim()
             momentumEl.value = `${(generalInfo?.momentum ?? 0)}`
             document.getElementsByTagName('ship-alert')[0].setAttribute('color', (generalInfo?.activeAlert ?? '').trim())
             this.#useTheme(generalInfo?.theme ?? 'lcars-24')
+            this.#useEdition(generalInfo?.edition == 1 ? 1 : 2)
+
             this.setShipModel(generalInfo?.shipModel)
 
             // remove existing traits
@@ -293,12 +322,18 @@ export class IndexController {
         if (momentumEl instanceof HTMLInputElement === false)
             throw new Error('page setup incorrectly!')
 
+
+        const editionSelectEl = document.getElementById('select-edition')
+        if (editionSelectEl instanceof HTMLSelectElement === false)
+            throw new Error('Theme selector element is wrong/missing!')
+
         await this.db.saveInfo(new GeneralInfo(
             document.getElementById('general-text').innerHTML,
             document.getElementById('shipname').textContent.trim(),
             momentumEl.value,
             document.getElementsByTagName('ship-alert')[0].getAttribute('color'),
             document.getElementsByTagName('theme')[0].getAttribute('value'),
+            editionSelectEl.value === '1' ? 1 : 2,
             this.shipModel
         ), dbToken)
 

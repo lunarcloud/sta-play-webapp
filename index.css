@@ -466,6 +466,17 @@ body {
     grid-template-columns: 1fr max(65mm, 20%);
     grid-gap: 2mm;
 
+    /* Hide elements exclusive to the other edition */
+    span.edition-1, span.edition-2 {
+      display: contents;
+    }
+    &.edition-1 span.edition-2 {
+      display: none;
+    }
+    &.edition-2 span.edition-1 {
+      display: none;
+    }
+
     & header {
         grid-row: 1;
         grid-column: 1;
