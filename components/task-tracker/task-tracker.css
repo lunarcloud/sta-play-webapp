@@ -58,10 +58,68 @@ task-tracker-internal {
         gap: 4px;
     }
 
+    /* Hide what's not toggled visible */
+    dd.character .ship {
+        display: none;
+    }
+    dd.ship .character {
+        display: none;
+    }
+
     dl {
         display: grid;
         grid-template-columns: auto 1fr;
         width: fit-content;
         margin: 0;
+    }
+
+    .stats-toggle {
+        --border-radius-toggle: 0.125em;
+
+        display: block;
+        height: 1em;
+        width: 2.25em;
+        position: relative;
+        background-color: var(--tracker-select-background-color, #333);
+        border-radius: var(--border-radius-toggle);
+
+        & > * {
+            margin: 0;
+            width: 1em;
+            aspect-ratio: 1;
+        }
+
+        & input {
+            appearance: none;
+            background-color: var(--trek-color-highlight, #94242e);
+            border-radius: var(--border-radius-toggle);
+            position: absolute;
+            left: 0;
+            transition: left ease-out 50ms;
+            z-index: 0;
+
+            &:checked {
+                left: calc(100% - 1em);
+            }
+        }
+        & img {
+            position: relative;
+            z-index: 1;
+            user-select: none;
+            transition: filter ease-out 50ms;
+        }
+        & img.character {
+            float: inline-start;
+        }
+        & img.ship {
+            float: inline-end;
+        }
+
+        input:checked ~ img.character {
+            filter: invert(1);
+        }
+        input:not(:checked) ~ img.ship {
+            filter: invert(1);
+        }
     }
 }

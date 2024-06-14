@@ -15,6 +15,18 @@ const AttributeNames = [
 ]
 
 /**
+ * List of Ship Systems
+ */
+const SystemNames = [
+    'Communications',
+    'Engines',
+    'Structure',
+    'Computers',
+    'Sensors',
+    'Weapons'
+]
+
+/**
  * List of Character Departments (2e) / Disciplines (1e)
  */
 const DepartmentNames = [
@@ -35,6 +47,8 @@ export class TaskTrackerElement extends HTMLElement {
             'complication-range',
             'attribute',
             'department',
+            'ship-system',
+            'ship-department',
             'progress'
         ];
       }
@@ -45,6 +59,8 @@ export class TaskTrackerElement extends HTMLElement {
     #complicationRangeEl
     #attributeEl
     #departmentEl
+    #shipSystemEl
+    #shipDepartmentEl
     #progressEl
 
     /**
@@ -114,30 +130,44 @@ export class TaskTrackerElement extends HTMLElement {
 
         this.#addDataListItem(listEl, 'Complication Range', this.#complicationRangeEl)
 
-        // attribute element
-        this.#attributeEl = document.createElement('select')
-        this.#attributeEl.className = 'attribute'
-        for (let attributeName of AttributeNames) {
-            let attrOptionEl = document.createElement('option')
-            attrOptionEl.textContent = attributeName
-            this.#attributeEl.appendChild(attrOptionEl)
-        }
-        this.#useAttrOrDefault(this.#attributeEl, 'attribute', AttributeNames[0])
-        this.#attributeEl.addEventListener('change', _event => this.setAttribute('attribute', this.#attributeEl.value));
+        // Stats elemnts
+        let [attributeEl, departmentEl] = this.#createStatEls(true)
+        this.#attributeEl = attributeEl
+        this.#departmentEl = departmentEl
 
-        // department element
-        this.#departmentEl = document.createElement('select')
-        this.#departmentEl.className = 'department'
-        for (let departmentName of DepartmentNames) {
-            let depOptionEl = document.createElement('option')
-            depOptionEl.textContent = departmentName
-            this.#departmentEl.appendChild(depOptionEl)
-        }
-        this.#useAttrOrDefault(this.#departmentEl, 'department', DepartmentNames[0])
-        this.#departmentEl.addEventListener('change', _event => this.setAttribute('department', this.#departmentEl.value));
+        let [shipSystemEl, shipDepartmentEl] = this.#createStatEls(false)
+        this.#shipSystemEl = shipSystemEl
+        this.#shipDepartmentEl = shipDepartmentEl
 
         // add both attribute and department under the same heading
-        this.#addDataListItem(listEl, 'Stats', this.#attributeEl, this.#departmentEl)
+        let [listDtEl, listDdEl] = this.#addDataListItem(listEl, 'Stats',
+            this.#attributeEl, this.#departmentEl,
+            this.#shipSystemEl, this.#shipDepartmentEl)
+
+        // Allow Toggling between Character and Ship Stats
+        const statsToggleParentEl = document.createElement('label')
+        statsToggleParentEl.classList.add('stats-toggle')
+
+        const statsToggleSwitchEl = document.createElement('input')
+        statsToggleSwitchEl.type = 'checkbox'
+        listDdEl.classList.add('character') // start with character
+        statsToggleSwitchEl.addEventListener('change', () => {
+            listDdEl.classList.toggle('character')
+            listDdEl.classList.toggle('ship')
+        })
+
+        const statsCharacterIconEl = document.createElement('img')
+        statsCharacterIconEl.classList.add('character')
+        statsCharacterIconEl.src = 'img/vulcan-salute.svg'
+
+        const statsShipIconEl = document.createElement('img')
+        statsShipIconEl.classList.add('ship')
+        statsShipIconEl.src = 'img/starship-profile.svg'
+
+        statsToggleParentEl.appendChild(statsToggleSwitchEl)
+        statsToggleParentEl.appendChild(statsCharacterIconEl)
+        statsToggleParentEl.appendChild(statsShipIconEl)
+        listDtEl.appendChild(statsToggleParentEl)
 
         // progress element
         this.#progressEl = document.createElement('input')
@@ -159,10 +189,52 @@ export class TaskTrackerElement extends HTMLElement {
     }
 
     /**
+     * Create stats elements
+     * @param {boolean} isCharacter    whether this is for a character (or ship)
+     * @returns {[HTMLSelectElement, HTMLSelectElement]}
+     */
+    #createStatEls(isCharacter) {
+
+        const displayClass = isCharacter ? 'character' : 'ship'
+
+        // Big Number, Attribute or System, element
+        const bigStatAttr = isCharacter ? 'attribute' : 'ship-system'
+        const bigStatEl = document.createElement('select')
+        bigStatEl.classList.add(bigStatAttr, displayClass)
+
+        const names = isCharacter ? AttributeNames : SystemNames
+
+        for (let bigStatName of names) {
+            let optionEl = document.createElement('option')
+            optionEl.textContent = bigStatName
+            optionEl.value = bigStatName
+            bigStatEl.appendChild(optionEl)
+        }
+        this.#useAttrOrDefault(bigStatEl, bigStatAttr, names[0])
+        bigStatEl.addEventListener('change', _event => this.setAttribute(bigStatAttr, bigStatEl.value));
+
+        // Small Number, Department, element
+        const smallStatAttr = isCharacter ? 'department' : 'ship-department'
+        const smallStatEl = document.createElement('select')
+        smallStatEl.classList.add(smallStatAttr, displayClass)
+        for (let smallStatName of DepartmentNames) {
+            let optionEl = document.createElement('option')
+            optionEl.textContent = smallStatName
+            optionEl.value = smallStatName
+            smallStatEl.appendChild(optionEl)
+        }
+        this.#useAttrOrDefault(smallStatEl, smallStatAttr, DepartmentNames[0])
+        smallStatEl.addEventListener('change', _event => this.setAttribute(smallStatAttr, smallStatEl.value));
+
+        return [ bigStatEl, smallStatEl ]
+    }
+
+    /**
      * Add a new element to a list
      * @param {Element} listEl      list element to add to
      * @param {string} text         title text
      * @param {...Element} elements data elements
+     * @return {HTMLElement[]}      the dt and dd elements
      */
     #addDataListItem(listEl, text, ...elements)  {
         let listTextEl = document.createElement('dt')
@@ -173,6 +245,8 @@ export class TaskTrackerElement extends HTMLElement {
             listDataEl.appendChild(element)
         listEl.appendChild(listTextEl)
         listEl.appendChild(listDataEl)
+
+        return [listTextEl, listDataEl]
     }
 
     /**
@@ -183,7 +257,6 @@ export class TaskTrackerElement extends HTMLElement {
      */
     #useAttrOrDefault(innerEl, attribute, defaultValue) {
         let value = this.getAttribute(attribute) ?? defaultValue
-        //TODO this.setAttribute(attribute, value)
 
         if (innerEl instanceof HTMLInputElement || innerEl instanceof HTMLSelectElement)
             innerEl.value = value
@@ -217,6 +290,16 @@ export class TaskTrackerElement extends HTMLElement {
             case 'department':
                 if (!!this.#departmentEl.querySelector(`option[value="${newValue}"]`))
                     this.#departmentEl.value = newValue
+                return;
+
+            case 'ship-system':
+                if (!!this.#shipSystemEl.querySelector(`option[value="${newValue}"]`))
+                    this.#shipSystemEl.value = newValue
+                return;
+
+            case 'ship-department':
+                if (!!this.#shipDepartmentEl.querySelector(`option[value="${newValue}"]`))
+                    this.#shipDepartmentEl.value = newValue
                 return;
 
             case 'progress':

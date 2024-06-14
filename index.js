@@ -5,7 +5,10 @@ import './components/welcome-dialog/welcome-dialog-element.js'
 import './components/settings-dialog/settings-dialog-element.js'
 import './components/player-display/player-display-element.js'
 import './components/task-tracker/task-tracker-element.js'
-import { Database, GeneralInfo, PlayerInfo, TrackerInfo } from './js/database.js'
+import { Database } from './js/database/database.js'
+import { TrackerInfo } from './js/database/tracker-info.js'
+import { PlayerInfo } from './js/database/player-info.js'
+import { GeneralInfo } from './js/database/general-info.js'
 import 'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js'
 import ShipAlertElement from './components/ship-alert/ship-alert-element.js'
 import { setupDropOnly } from './js/drop-nodrag-setup.js'
@@ -370,6 +373,8 @@ export class IndexController {
                     el.getAttribute('name'),
                     el.getAttribute('attribute'),
                     el.getAttribute('department'),
+                    el.getAttribute('ship-system'),
+                    el.getAttribute('ship-department'),
                     parseInt(el.getAttribute('progress')),
                     parseInt(el.getAttribute('resistance')),
                     parseInt(el.getAttribute('complication-range'))
@@ -396,6 +401,8 @@ export class IndexController {
             newTrackerEl.setAttribute('name', info.name)
             newTrackerEl.setAttribute('attribute', info.attribute)
             newTrackerEl.setAttribute('department', info.department)
+            newTrackerEl.setAttribute('ship-system', info.shipSystem)
+            newTrackerEl.setAttribute('ship-department', info.shipDepartment)
             newTrackerEl.setAttribute('resistance', `${info.resistance}`)
             newTrackerEl.setAttribute('complication-range', `${info.complicationRange}`)
             newTrackerEl.setAttribute('progress', `${info.progressTrack}`)

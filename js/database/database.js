@@ -1,5 +1,9 @@
 // @ts-ignore
 import { openDB, deleteDB } from 'https://cdn.jsdelivr.net/npm/idb@8/+esm'
+import { GeneralInfo } from './general-info.js'
+import { NamedInfo } from './named-info.js'
+import { PlayerInfo } from './player-info.js'
+import { TrackerInfo } from './tracker-info.js'
 
 /**
  * @typedef {IDBDatabase & {
@@ -14,7 +18,7 @@ import { openDB, deleteDB } from 'https://cdn.jsdelivr.net/npm/idb@8/+esm'
  */
 
 const DB_NAME = 'STAPlayApp'
-const DB_VERSION = 3
+const DB_VERSION = 4
 const STORE = {
     GENERAL: 'general',
     TRAITS: 'traits',
@@ -24,181 +28,6 @@ const STORE = {
 const INDEX = {
     ID: 'id',
     NAME: 'name'
-}
-
-export class GeneralInfo {
-    /**
-     * @type {number|undefined}
-     */
-    id
-
-    /**
-     * @type {string}
-     */
-    text
-
-    /**
-     * @type {string}
-     */
-    shipName
-
-    /**
-     * @type {File|undefined}
-     */
-    shipModel
-
-    /**
-     * @type {number}
-     */
-    momentum
-
-    /**
-     * @type {string}
-     */
-    activeAlert
-
-    /**
-     * @type {string}
-     */
-    theme
-
-    /**
-     * @type {number}
-     */
-    edition
-
-    /**
-     * Create a new General Info object
-     * @param {string}          text            general screen text
-     * @param {string}          shipName        name of the ship
-     * @param {number|string}   [momentum]      amount of momentum in the player's pool
-     * @param {string}          [activeAlert]   which alert is active
-     * @param {string}          [theme]         which theme is active
-     * @param {1|2}             [edition]       which edition is active
-     * @param {File}            [shipModel]     ship's 3D model
-     */
-    constructor (text, shipName, momentum = 0, activeAlert = "", theme = "lcars-24", edition = 2, shipModel = undefined) {
-        this.id = 0
-        this.text = text
-        this.shipName = shipName
-        this.momentum = typeof (momentum) === 'number' ? momentum : parseInt(momentum)
-        this.activeAlert = activeAlert
-        this.theme = theme
-        this.edition = edition
-        this.shipModel = shipModel
-    }
-}
-
-export class NamedInfo {
-    /**
-     * @type {string}
-     */
-    name
-
-    /**
-     * Create a named info object
-     * @param {string} name the name
-     */
-    constructor (name) {
-        this.name = name
-    }
-}
-
-export class PlayerInfo extends NamedInfo {
-    /**
-     * @type {number|undefined}
-     */
-    id
-
-    /**
-     * @type {number}
-     */
-    currentStress
-
-    /**
-     * @type {number}
-     */
-    maxStress
-
-    /**
-     * @type {string}
-     */
-    pips
-
-    /**
-     * @type {string}
-     */
-    borderColor
-
-    /**
-     * @type {File|undefined}
-     */
-    image
-
-    /**
-     * Create a Player info
-     * @param {number|string} id                    player id
-     * @param {string} name                         player character's name
-     * @param {number} currentStress                current stress value
-     * @param {number} maxStress                    maximum stress value
-     * @param {string} pips                         the pips text
-     * @param {string} borderColor                  the color option text
-     * @param {File|undefined} [image]    image of the player's character
-     */
-    constructor (id, name, currentStress, maxStress, pips, borderColor, image = undefined) {
-        super(name)
-        this.id = typeof (id) === 'number' ? id : parseInt(id)
-        this.currentStress = typeof (currentStress) === 'number' ? currentStress : parseInt(currentStress)
-        this.maxStress = typeof (maxStress) === 'number' ? maxStress : parseInt(maxStress)
-        this.pips = pips
-        this.borderColor = borderColor
-        this.image = image
-    }
-}
-
-export class TrackerInfo extends NamedInfo {
-    /**
-     * @type {number}
-     */
-    resistance
-
-    /**
-     * @type {number}
-     */
-    complicationRange
-
-    /**
-     * @type {string}
-     */
-    attribute
-
-    /**
-     * @type {string}
-     */
-    department
-
-    /**
-     * @type {number}
-     */
-    progressTrack
-
-    /**
-     * Create a Combat/Extended Tracker Info
-     * @param {string} name                     the tracker's name
-     * @param {string} attribute                the applicable attribute
-     * @param {string} department               the applicable discipline/department
-     * @param {number|string} progressTrack     the amount left to progress through
-     * @param {number|string} resistance        the amount of resistance
-     * @param {number|string} complicationRange the complication range
-     */
-    constructor (name, attribute, department, progressTrack, resistance = 0, complicationRange = 0) {
-        super(name)
-        this.attribute = attribute
-        this.department = department
-        this.progressTrack = typeof (progressTrack) === 'number' ? progressTrack : parseInt(progressTrack)
-        this.resistance = typeof (resistance) === 'number' ? resistance : parseInt(resistance)
-        this.complicationRange = typeof (complicationRange) === 'number' ? complicationRange : parseInt(complicationRange)
-    }
 }
 
 export class Database {

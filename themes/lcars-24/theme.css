@@ -26,6 +26,8 @@
     --trek-color-5: #c18cf9; /* periwinkle */
     --trek-color-6: #bc5196; /* magenta */
 
+    --trek-color-highlight: var(--trek-color-3);
+
     --player-color-red: var(--trek-color-1);
     --player-color-blue: var(--trek-color-2);
     --player-color-yellow: var(--trek-color-3);

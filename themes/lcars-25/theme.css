@@ -12,6 +12,8 @@
     --trek-color-5: #a896bc;
     --trek-color-6: #453d42;
 
+    --trek-color-highlight: var(--trek-color-4);
+
     --player-color-red: #6a1a13;
     --player-color-blue: #2e3e61;
     --player-color-yellow: #a49947;
