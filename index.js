@@ -245,7 +245,7 @@ export class IndexController {
             const index = parseInt(indexSelectPlayer.value) - 1 // convert 1-based to 0-based
             const playerEl = document.querySelector(`.players li[player-index='${index}']`)
             if (playerEl instanceof PlayerDisplayElement)
-                playerEl.setImage(fileSelectPlayer.files[0])
+                playerEl.imageFile = fileSelectPlayer.files[0]
         })
 
         dialogEl.querySelector('button.show-welcome').addEventListener('click', () => welcomeDialogEl?.showModal())
@@ -328,22 +328,31 @@ export class IndexController {
 
         const editionSelectEl = document.getElementById('select-edition')
         if (editionSelectEl instanceof HTMLSelectElement === false)
+            throw new Error('Edition selector element is wrong/missing!')
+
+        const themeSelectEl = document.getElementById('select-theme')
+        if (themeSelectEl instanceof HTMLSelectElement === false)
             throw new Error('Theme selector element is wrong/missing!')
+
+        const shipAlertEl = document.getElementsByTagName('ship-alert')
+        if (shipAlertEl instanceof ShipAlertElement === false)
+            throw new Error('Ship alert element is wrong/missing!')
+
 
         await this.db.saveInfo(new GeneralInfo(
             document.getElementById('general-text').innerHTML,
             document.getElementById('shipname').textContent.trim(),
             momentumEl.value,
-            document.getElementsByTagName('ship-alert')[0].getAttribute('color'),
-            document.getElementsByTagName('theme')[0].getAttribute('value'),
+            shipAlertEl.color,
+            themeSelectEl.value,
             editionSelectEl.value === '1' ? 1 : 2,
             this.shipModel
         ), dbToken)
 
         const traits =
             [...document.querySelectorAll('traits trait-display')]
-                .map(e => e.getAttribute('text')?.trim())
-                .filter(e => !!e)
+                .map(el => (el instanceof TraitDisplayElement ? el.text : ''))
+                .filter(el => !!el)
                 .filter((v, i, a) => a.indexOf(v) === i) // unique
         await this.db.replaceTraits(traits, dbToken)
 
@@ -352,12 +361,12 @@ export class IndexController {
                 if (el instanceof PlayerDisplayElement === false)
                     return
                 const info = new PlayerInfo(
-                    parseInt(el.getAttribute('player-index')),
-                    el.getAttribute('name'),
-                    parseInt(el.getAttribute('current-stress')),
-                    parseInt(el.getAttribute('max-stress')),
-                    el.getAttribute('rank'),
-                    el.getAttribute('color'),
+                    el.playerIndex,
+                    el.name,
+                    el.currentStress,
+                    el.maxStress,
+                    el.rank,
+                    el.color,
                     el.imageFile
                 )
                 return info
@@ -370,14 +379,14 @@ export class IndexController {
                     return
 
                 const info = new TrackerInfo(
-                    el.getAttribute('name'),
-                    el.getAttribute('attribute'),
-                    el.getAttribute('department'),
-                    el.getAttribute('ship-system'),
-                    el.getAttribute('ship-department'),
-                    parseInt(el.getAttribute('progress')),
-                    parseInt(el.getAttribute('resistance')),
-                    parseInt(el.getAttribute('complication-range'))
+                    el.name,
+                    el.attribute,
+                    el.department,
+                    el.shipSystem,
+                    el.shipDepartment,
+                    el.progress,
+                    el.resistance,
+                    el.complicationRange
                 )
                 return info
             })
@@ -398,14 +407,14 @@ export class IndexController {
             throw new Error('App incorrectly configured!')
 
         if (typeof (info) !== 'undefined') {
-            newTrackerEl.setAttribute('name', info.name)
-            newTrackerEl.setAttribute('attribute', info.attribute)
-            newTrackerEl.setAttribute('department', info.department)
-            newTrackerEl.setAttribute('ship-system', info.shipSystem)
-            newTrackerEl.setAttribute('ship-department', info.shipDepartment)
-            newTrackerEl.setAttribute('resistance', `${info.resistance}`)
-            newTrackerEl.setAttribute('complication-range', `${info.complicationRange}`)
-            newTrackerEl.setAttribute('progress', `${info.progressTrack}`)
+            newTrackerEl.name = info.name
+            newTrackerEl.attribute = info.attribute
+            newTrackerEl.department = info.department
+            newTrackerEl.shipSystem = info.shipSystem
+            newTrackerEl.shipDepartment = info.shipDepartment
+            newTrackerEl.resistance = `${info.resistance}`
+            newTrackerEl.complicationRange = `${info.complicationRange}`
+            newTrackerEl.progress = `${info.progressTrack}`
         }
 
         document.querySelector('task-trackers').appendChild(newTrackerEl)
@@ -450,7 +459,7 @@ export class IndexController {
         newPlayerEl.id = playerId
 
         if (info?.image instanceof File)
-            newPlayerEl.setImage(info.image)
+            newPlayerEl.imageFile = info.image
         else
             newPlayerEl.setDefaultImage()
 

@@ -166,6 +166,10 @@ export class Database {
      * @param {IDBPDatabase|undefined} db the database (else we'll open a new one)
      */
     async saveInfo (info, db = undefined) {
+        if (!info.validate()) {
+            console.error("Invalid info, will not save!")
+        }
+
         const andClose = typeof (db) === 'undefined'
         db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
 
@@ -224,7 +228,14 @@ export class Database {
      * @param {IDBPDatabase|IDBDatabase} [db] the database
      */
     async replaceTrackers (trackers = [], db = undefined) {
-        this.#replaceData(STORE.TRACKERS, INDEX.NAME, trackers, db)
+
+        const validTrackers = trackers.filter(t => t.validate())
+        if (validTrackers.length !== trackers.length)
+        {
+            console.error("Invalid trackers provided: %o", trackers.filter(t => !t.validate()));
+        }
+
+        this.#replaceData(STORE.TRACKERS, INDEX.NAME, validTrackers, db)
     }
 
     /**

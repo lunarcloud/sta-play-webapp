@@ -264,50 +264,65 @@ export class TaskTrackerElement extends HTMLElement {
         else
             innerEl.textContent = value
     }
-
     
     attributeChangedCallback (name, _oldValue, newValue) {
-        switch (name) {
+        if (TaskTrackerElement.observedAttributes.includes(name))
+            this[name] = newValue
+    }
 
-            case 'name':
-                this.#nameEl.textContent = newValue
-                return;
-
-            case 'resistance':
-                if (!isNaN(parseInt(newValue)))
-                    this.#resistanceEl.value = newValue
-                return;
-
-            case 'complication-range':
-                if (!isNaN(parseInt(newValue)))
-                    this.#complicationRangeEl.value = newValue
-                return;
-
-            case 'attribute':
-                if (!!this.#attributeEl.querySelector(`option[value="${newValue}"]`))
-                    this.#attributeEl.value = newValue
-                return;
-
-            case 'department':
-                if (!!this.#departmentEl.querySelector(`option[value="${newValue}"]`))
-                    this.#departmentEl.value = newValue
-                return;
-
-            case 'ship-system':
-                if (!!this.#shipSystemEl.querySelector(`option[value="${newValue}"]`))
-                    this.#shipSystemEl.value = newValue
-                return;
-
-            case 'ship-department':
-                if (!!this.#shipDepartmentEl.querySelector(`option[value="${newValue}"]`))
-                    this.#shipDepartmentEl.value = newValue
-                return;
-
-            case 'progress':
-                if (!isNaN(parseInt(newValue)))
-                    this.#progressEl.value = newValue
-                return;
-        }
+    get name() {
+        return this.#nameEl.textContent
+    }
+    set name(value) {
+        this.#nameEl.textContent = value
+    }
+    get resistance() {
+        return this.#resistanceEl.value
+    }
+    set resistance(value) {
+        this.#resistanceEl.value = value
+    }
+    get complicationRange() {
+        return this.#complicationRangeEl.value
+    }
+    set complicationRange(value) {
+        if (!isNaN(parseInt(value)))
+            this.#complicationRangeEl.value = value
+    }
+    get progress() {
+        return this.#progressEl.value
+    }
+    set progress(value) {
+        if (!isNaN(parseInt(value)))
+            this.#progressEl.value = value
+    }
+    get attribute() {
+        return this.#attributeEl.value
+    }
+    set attribute(value) {
+        if (!!this.#attributeEl.querySelector(`option[value="${value}"]`))
+            this.#attributeEl.value = value
+    }
+    get department() {
+        return this.#departmentEl.value
+    }
+    set department(value) {
+        if (!!this.#departmentEl.querySelector(`option[value="${value}"]`))
+            this.#departmentEl.value = value
+    }
+    get shipSystem() {
+        return this.#shipSystemEl.value
+    }
+    set shipSystem(value) {
+        if (!!this.#shipSystemEl.querySelector(`option[value="${value}"]`))
+            this.#shipSystemEl.value = value
+    }
+    get shipDepartment() {
+        return this.#shipDepartmentEl.value
+    }
+    set shipDepartment(value) {
+        if (!!this.#shipDepartmentEl.querySelector(`option[value="${value}"]`))
+            this.#shipDepartmentEl.value = value
     }
 
 }

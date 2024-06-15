@@ -19,6 +19,7 @@
 
     --header-inner-bg: var(--secondary-color-bg);
     --header-outer-bg: var(--main-color-bg);
+    --header-edge-bg: transparent;
 
     --trek-color-1: #cb5449;
     --trek-color-2: #7a87f8;
@@ -381,6 +382,7 @@ dialogs > dialog {
     left: 3mm;
     padding: 0 2mm;
     font-size: calc(var(--main-font-size) * 0.66);
+    line-height: calc(var(--main-font-size) * 0.66);
     text-transform: uppercase;
     width: 26mm;
     display: flex;
@@ -503,13 +505,13 @@ body {
 
         background: transparent;
         background: linear-gradient(90deg,
-            hsla(0, 0%, 0%, 0.0) 0%,
-            var(--header-outer-bg) 10%,
-            var(--header-inner-bg) 30%,
-            var(--header-outer-bg) 50%,
-            var(--header-inner-bg) 70%,
-            var(--header-outer-bg) 90%,
-            hsla(0, 0%, 0%, 0.0) 100%);
+          var(--header-edge-bg) 0%,
+          var(--header-outer-bg) 10%,
+          var(--header-inner-bg) 30%,
+          var(--header-outer-bg) 50%,
+          var(--header-inner-bg) 70%,
+          var(--header-outer-bg) 90%,
+          var(--header-edge-bg) 100%);
 
 
         & > model-viewer {

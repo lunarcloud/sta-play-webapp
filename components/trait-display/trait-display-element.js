@@ -60,10 +60,16 @@ export class TraitDisplayElement extends HTMLElement {
     }
     
     attributeChangedCallback (name, _oldValue, newValue) {
-        if (name !== 'text')
-            return;
+        if (TraitDisplayElement.observedAttributes.includes(name))
+            this[name] = newValue
+    }
 
-        this.#textEl[this.#textElValueProperty] = newValue
+    get text() {
+        return this.#textEl[this.#textElValueProperty]
+    }
+
+    set text(newValue) {
+        this.#textEl[this.#textElValueProperty] = newValue.trim()
     }
 }
 

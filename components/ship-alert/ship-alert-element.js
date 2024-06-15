@@ -65,21 +65,26 @@ export class ShipAlertElement extends HTMLElement {
         this.#internalEl.appendChild(conditionEl)
         shadow.appendChild(this.#internalEl)
 
-        this.setColor(currentColor)
+        this.color = currentColor
     }
     
+
     attributeChangedCallback (name, _oldValue, newValue) {
-        if (name === 'color')
-            this.setColor(newValue)
+        if (ShipAlertElement.observedAttributes.includes(name))
+            this[name] = newValue
     }
 
-    setColor(color) {
+    get color() {
+        return this.#internalEl.className
+    }
+
+    set color(value) {
         // Must be valid (null or in the list)
-        if (!!color && !ShipAlertElement.Colors.map(a=>a.name.toLowerCase()).includes(color.toLowerCase()))
+        if (!!value && !ShipAlertElement.Colors.map(a=>a.name.toLowerCase()).includes(value.toLowerCase()))
             return
 
-        this.#colorEl.textContent = color?.toUpperCase() ?? 'HIDDEN'
-        this.#internalEl.className = color?.toLowerCase() ?? 'hidden'
+        this.#colorEl.textContent = value?.toUpperCase() ?? 'HIDDEN'
+        this.#internalEl.className = value?.toLowerCase() ?? 'hidden'
     }
 
     /**

@@ -60,4 +60,13 @@ export class GeneralInfo {
         this.edition = edition;
         this.shipModel = shipModel;
     }
+
+    validate() {
+        return typeof(this.id) === "number"
+            && typeof(this.text) === "string"
+            && this.momentum !== undefined
+            && typeof(this.activeAlert) === "string"
+            && typeof(this.theme) === "string"
+            && typeof(this.edition) === "number";
+    }
 }

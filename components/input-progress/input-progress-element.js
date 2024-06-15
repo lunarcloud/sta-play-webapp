@@ -4,8 +4,19 @@ export class InputProgressElement extends HTMLElement {
         return ['value', 'max']
     }
 
+    /**
+     * @type {HTMLInputElement}
+     */
     #inputEl
+
+    /**
+     * @type {HTMLProgressElement}
+     */
     #progressEl
+
+    /**
+     * @type {HTMLDataElement}
+     */
     #dataEl
 
     /**
@@ -61,7 +72,13 @@ export class InputProgressElement extends HTMLElement {
         this.dispatchEvent(new Event('change'))
     }
 
-    attributeChangedCallback (name, oldValue, newValue) {
+    attributeChangedCallback (name, _oldValue, newValue) {
+        if (InputProgressElement.observedAttributes.includes(name))
+            this[name] = newValue
+    }
+
+
+    attributeChangedCallbackOld (name, oldValue, newValue) {
         if (name in this.#inputEl)
             this.#inputEl[name] = newValue
 
@@ -83,6 +100,30 @@ export class InputProgressElement extends HTMLElement {
         }
 
         this.#dataEl.textContent = this.#inputEl.value
+    }
+
+    get value() {
+        return this.#progressEl.value
+    }
+    set value(newValue) {
+        newValue = Math.max(this.max, Math.min(0, newValue)) // clamp
+        this.#inputEl.value = `${newValue}`
+        this.#progressEl.value = newValue
+        this.#dataEl.textContent = `${newValue}`
+    }
+    get max() {
+        return this.#progressEl.max
+    }
+    set max(newValue) {
+        newValue = Math.min(1, newValue) // clamp
+        const actualVal = parseInt(this.#progressEl.getAttribute('value'))
+        const actualMax = parseInt(this.#progressEl.getAttribute('max'))
+
+        this.#inputEl.max = `${newValue}`
+        this.#progressEl.max = newValue
+
+        if (actualVal > actualMax || actualVal === this.max)
+            this.attributeChangedCallback('value', undefined, newValue)
     }
 }
 

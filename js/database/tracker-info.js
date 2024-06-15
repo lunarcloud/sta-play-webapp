@@ -58,4 +58,14 @@ export class TrackerInfo extends NamedInfo {
         this.resistance = typeof (resistance) === 'number' ? resistance : parseInt(resistance);
         this.complicationRange = typeof (complicationRange) === 'number' ? complicationRange : parseInt(complicationRange);
     }
+
+    validate() {
+        return typeof(this.attribute) === "string"
+            && typeof(this.department) === "string"
+            && typeof(this.shipSystem) === "string"
+            && typeof(this.shipDepartment) === "string"
+            && typeof(this.progressTrack) === "number"
+            && typeof(this.resistance) === "number"
+            && typeof(this.complicationRange) === "number";
+    }
 }

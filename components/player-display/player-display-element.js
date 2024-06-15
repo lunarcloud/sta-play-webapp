@@ -1,5 +1,6 @@
 import { setupDropOnly } from '../../js/drop-nodrag-setup.js'
 import '../input-progress/input-progress-element.js'
+import InputProgressElement from '../input-progress/input-progress-element.js'
 
 /**
  * Player Information Display
@@ -59,17 +60,40 @@ export class PlayerDisplayElement extends HTMLLIElement {
         ];
       }
 
+    /**
+     * @type {HTMLButtonElement}
+     */
     #removeBtnEl
+
+    /**
+     * @type {HTMLElement}
+     */
     #nameEl
+
+    /**
+     * @type {HTMLSelectElement}
+     */
     #colorSelect
+
+    /**
+     * @type {HTMLSelectElement}
+     */
     #rankSelect
+
+    /**
+     * @type {InputProgressElement}
+     */
     #currentStressEl
+
+    /**
+     * @type {HTMLInputElement}
+     */
     #maxStressEl
 
     /**
      * @type {File} Image file
      */
-    imageFile
+    #imageFile
 
     /**
      * Constructor.
@@ -142,7 +166,10 @@ export class PlayerDisplayElement extends HTMLLIElement {
 
         const stressEl = document.createElement('stress')
 
-        this.#currentStressEl = document.createElement('input-progress')
+        let currentStressEl = document.createElement('input-progress')
+        if (currentStressEl instanceof InputProgressElement === false)
+            throw new Error('Something went very wrong!')
+        this.#currentStressEl = currentStressEl
         this.#currentStressEl.setAttribute('value', `${currentStress}`)
         this.#currentStressEl.setAttribute('max', `${maxStress}`)
         this.#currentStressEl.addEventListener('change', _event =>
@@ -190,63 +217,101 @@ export class PlayerDisplayElement extends HTMLLIElement {
                 !event.dataTransfer.files?.[0])
                 return false
 
-            this.setImage(event.dataTransfer.files?.[0])
+            this.imageFile = event.dataTransfer.files?.[0]
             return true
         })
     }
 
-    
     attributeChangedCallback (name, _oldValue, newValue) {
-        switch (name) {
-            case 'player-index':
-                return;
-            case 'name':
-                this.#nameEl.textContent = newValue
-                return;
-            case 'color':
-                this.#colorSelect.value = newValue
-                return;
-            case 'rank':
-                let titleMatches = Pips.filter(e => e.title === newValue)
-                let pipMatches = Pips.filter(e => e.pips === newValue)
-                if (titleMatches.length > 0)
-                    this.setAttribute('rank', titleMatches[0].pips)
-                else if (pipMatches.length > 0)
-                    this.#rankSelect.value = pipMatches[0].pips
-                return;
-            case 'current-stress':
-                let newStress = parseInt(newValue)
-                if (isNaN(newStress))
-                    return
-                this.#currentStressEl.setAttribute('value', `${newStress}`)
-                return;
-            case 'max-stress':
-                let newMaxStress = parseInt(newValue)
-                if (isNaN(newMaxStress))
-                    return
-                this.#currentStressEl.setAttribute('max', `${newMaxStress}`)
-                this.#maxStressEl.setAttribute('value', `${newMaxStress}`)
-                return;
+        if (PlayerDisplayElement.observedAttributes.includes(name))
+            this[name] = newValue
+    }
+
+    get playerIndex() {
+        let i = parseInt(this.getAttribute('player-index'))
+        return isNaN(i) ? 0 : i
+    }
+    set playerIndex(value) {
+        this.setAttribute('player-index', `${value}`)
+    }
+
+    get name() {
+        return this.#nameEl.textContent
+    }
+    set name(value) {
+        this.#nameEl.textContent = value
+    }
+
+    get color() {
+        return this.#colorSelect.value
+    }
+    set color(value) {
+        this.#colorSelect.value = value
+    }
+
+    get rank() {
+        return this.#rankSelect.value
+    }
+
+    set rank(value) {
+        if (typeof(value) !== "string")
+            return
+        let titleMatches = Pips.filter(e => e.title === value)
+        let pipMatches = Pips.filter(e => e.pips === value)
+        if (titleMatches.length > 0)
+            this.setAttribute('rank', titleMatches[0].pips)
+        else if (pipMatches.length > 0)
+            this.#rankSelect.value = pipMatches[0].pips
+        return;
+    }
+
+    get currentStress() {
+        return this.#currentStressEl.value
+    }
+    set currentStress(value) {
+        switch (typeof(value)) {
+            case "number":
+                this.#currentStressEl.value = value
+                break;
+            case "string":
+                let newValue = parseInt(value)
+                if (typeof(newValue) === "number")
+                    this.#currentStressEl.value = newValue
+                break;
+        }
+    }
+    get maxStress() {
+        return this.#currentStressEl.max
+    }
+    set maxStress(value) {
+        switch (typeof(value)) {
+            case "number":
+                this.#currentStressEl.max = value
+                break;
+            case "string":
+                let newValue = parseInt(value)
+                if (typeof(newValue) === "number")
+                    this.#currentStressEl.max = newValue
+                break;
         }
     }
 
-    get index() {
-        let i = parseInt(this.getAttribute('player-index'))
-        return isNaN(i) ? 0 : i
+    get imageFile() {
+        return this.#imageFile
     }
 
     /**
      * Handler for new ship model drop
-     * @param {File} imageFile          image to change player element background to
+     * @param {File} file          image to change player element background to
      */
-    async setImage (imageFile) {
-        this.imageFile = imageFile
-        const url = URL.createObjectURL(imageFile)
+    set imageFile (file) {
+        this.#imageFile = file
+        const url = URL.createObjectURL(this.#imageFile)
         this.style.backgroundImage = `url('${url}')`
     }
 
     setDefaultImage() {
-        this.style.backgroundImage = `url('${DefaultPlayerImages[this.index % DefaultPlayerImages.length]}')`
+        this.style.backgroundImage = `url('${DefaultPlayerImages[this.playerIndex % DefaultPlayerImages.length]}')`
     }
 }
 
