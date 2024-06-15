@@ -3,7 +3,8 @@ task-tracker-internal {
     position: relative;
     padding: 4px;
     font-family: inherit;
-    background: var(--tracker-background-color, #666);
+    color: inherit;
+    background-color: var(--tracker-background-color, #666);
     border-width: var(--tracker-border-width, 6px);
     border-style: var(--tracker-border-style, outset);
     border-color: var(--tracker-border-color, black white white black);
@@ -52,10 +53,22 @@ task-tracker-internal {
         outline: unset !important;
     }
 
-    & dd:has(select) {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
+    & dt {
+        color: var(--tracker-dt-text-color, inherit);
+        background-color: var(--tracker-dt-background-color, unset);
+        border-bottom: 2px solid var(--tracker-dt-border-color, transparent);
+    }
+
+    & dd {
+        color: var(--tracker-dd-text-color, inherit);
+        background-color: var(--tracker-dd-background-color, unset);
+        border-bottom: 2px solid var(--tracker-dd-border-color, transparent);
+
+        &:has(select) {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
     }
 
     /* Hide what's not toggled visible */

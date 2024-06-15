@@ -27,7 +27,10 @@
     --trek-color-4: #f2af94;
     --trek-color-5: #c18cf9;
     --trek-color-6: #bc5196;
-    --trek-color-highlight: var(--trek-color-3)
+
+    --trek-color-highlight: var(--trek-color-3);
+    --ship-name-color: white;
+    --ship-name-color-bg: transparent;
 
     --player-color-red: var(--trek-color-1);
     --player-color-blue: var(--trek-color-2);
@@ -461,13 +464,17 @@ dialogs > dialog {
 }
 
 task-tracker {
-    --tracker-background-color: #666;
-    --tracker-border-width: 6px;
-    --tracker-border-style: outset;
-    --tracker-border-color: black white white black;
-    --tracker-title-separator-color: #333;
-    --tracker-select-background-color: #333;
-    --tracker-select-color: #ccc;
+  margin: 0.125em 0.25em;
+
+  &:part(internal) {
+      --tracker-background-color: #666;
+      --tracker-border-width: 6px;
+      --tracker-border-style: outset;
+      --tracker-border-color: black white white black;
+      --tracker-title-separator-color: #333;
+      --tracker-select-background-color: #333;
+      --tracker-select-color: #ccc;
+  }
 }
 
 body {
@@ -634,10 +641,10 @@ body {
                     letter-spacing: 0.35mm;
                     border-radius: 4mm;
                     text-decoration: none !important;
-                    color: white !important;
-                    background-color: transparent !important;
+                    color: var(--ship-name-color);
+                    background-color: var(--ship-name-color-bg) !important;
                     padding: 3mm 0 3mm 3mm;
-                    border-color: var(--trek-color-highlight);
+                    border-color: var(--ship-name-color-border, var(--trek-color-highlight));
                     border-width: 1mm;
                     border-style: solid;
 
