@@ -65,11 +65,11 @@ export class TraitDisplayElement extends HTMLElement {
     }
 
     get text() {
-        return this.#textEl[this.#textElValueProperty]
+        return this.#textEl[this.#textElValueProperty].trim()
     }
 
     set text(newValue) {
-        this.#textEl[this.#textElValueProperty] = newValue.trim()
+        this.#textEl[this.#textElValueProperty] = newValue
     }
 }
 
