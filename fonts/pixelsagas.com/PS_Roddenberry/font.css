@@ -1,0 +1,20 @@
+@font-face {
+    font-family: "Roddenberry";
+    src: url("Roddenberry Bold Italic.otf");
+    font-style: italic;
+    font-weight: bold;
+}
+@font-face {
+    font-family: "Roddenberry";
+    src: url("Roddenberry Italic.otf");
+    font-style: italic;
+}
+@font-face {
+    font-family: "Roddenberry";
+    src: url("Roddenberry Bold.otf");
+    font-weight: bold;
+}
+ @font-face {
+    font-family: "Roddenberry";
+    src: url("Roddenberry.otf");
+}
