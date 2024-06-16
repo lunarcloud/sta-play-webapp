@@ -334,7 +334,7 @@ export class IndexController {
         if (themeSelectEl instanceof HTMLSelectElement === false)
             throw new Error('Theme selector element is wrong/missing!')
 
-        const shipAlertEl = document.getElementsByTagName('ship-alert')
+        const shipAlertEl = document.getElementsByTagName('ship-alert')[0]
         if (shipAlertEl instanceof ShipAlertElement === false)
             throw new Error('Ship alert element is wrong/missing!')
 
