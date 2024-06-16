@@ -8,7 +8,7 @@ import './components/task-tracker/task-tracker-element.js'
 import { Database } from './js/database/database.js'
 import { TrackerInfo } from './js/database/tracker-info.js'
 import { PlayerInfo } from './js/database/player-info.js'
-import { GeneralInfo } from './js/database/general-info.js'
+import { GameInfo } from './js/database/game-info.js'
 import 'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js'
 import ShipAlertElement from './components/ship-alert/ship-alert-element.js'
 import { setupDropOnly } from './js/drop-nodrag-setup.js'
@@ -268,7 +268,7 @@ export class IndexController {
         const dbToken = await this.db.open()
 
         try {
-            const generalInfo = await this.db.getInfo(dbToken)
+            const generalInfo = await this.db.getGameInfo(dbToken)
 
             const momentumEl = document.getElementById('momentum-pool')
             if (momentumEl instanceof HTMLInputElement === false)
@@ -339,7 +339,8 @@ export class IndexController {
             throw new Error('Ship alert element is wrong/missing!')
 
 
-        await this.db.saveInfo(new GeneralInfo(
+        await this.db.saveGameInfo(new GameInfo(
+            "Default Game",
             document.getElementById('general-text').innerHTML,
             document.getElementById('shipname').textContent.trim(),
             momentumEl.value,

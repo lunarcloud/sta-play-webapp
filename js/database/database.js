@@ -1,6 +1,6 @@
 // @ts-ignore
 import { openDB, deleteDB } from 'https://cdn.jsdelivr.net/npm/idb@8/+esm'
-import { GeneralInfo } from './general-info.js'
+import { GameInfo } from './game-info.js'
 import { NamedInfo } from './named-info.js'
 import { PlayerInfo } from './player-info.js'
 import { TrackerInfo } from './tracker-info.js'
@@ -18,9 +18,10 @@ import { TrackerInfo } from './tracker-info.js'
  */
 
 const DB_NAME = 'STAPlayApp'
-const DB_VERSION = 4
+const DB_VERSION = 5
 const STORE = {
-    GENERAL: 'general',
+    GAMES: 'games',
+    SCENES: 'scenes',
     TRAITS: 'traits',
     PLAYERS: 'players',
     TRACKERS: 'trackers'
@@ -56,8 +57,8 @@ export class Database {
      * @param {IDBPDatabase} db the database
      */
     #create (db) {
-        if (db.objectStoreNames.contains(STORE.GENERAL))
-            db.deleteObjectStore(STORE.GENERAL)
+        if (db.objectStoreNames.contains(STORE.GAMES))
+            db.deleteObjectStore(STORE.GAMES)
         if (db.objectStoreNames.contains(STORE.TRAITS))
             db.deleteObjectStore(STORE.TRAITS)
         if (db.objectStoreNames.contains(STORE.PLAYERS))
@@ -66,7 +67,7 @@ export class Database {
             db.deleteObjectStore(STORE.TRACKERS)
 
         console.warn('cleared db for upgrade')
-        db.createObjectStore(STORE.GENERAL, { keyPath: INDEX.ID, autoIncrement: false })
+        db.createObjectStore(STORE.GAMES, { keyPath: INDEX.ID, autoIncrement: false })
 
         const traitStore = db.createObjectStore(STORE.TRAITS, { keyPath: INDEX.ID, autoIncrement: true })
         traitStore.createIndex(INDEX.NAME, INDEX.NAME, { unique: true })
@@ -79,22 +80,22 @@ export class Database {
     }
 
     /**
-     * Get the general info from the database
+     * Get the game info from the database
      * @param {IDBPDatabase|undefined} db           the database (else we'll open a new one)
-     * @returns {Promise<GeneralInfo|undefined>}    the general database information
+     * @returns {Promise<GameInfo|undefined>}       the general database information
      */
-    async getInfo (db = undefined) {
+    async getGameInfo (db = undefined) {
         const andClose = typeof (db) === 'undefined'
         db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
 
-        const row = await db.count(STORE.GENERAL) !== 0 // has info
-            ? await db.get(STORE.GENERAL, 0)
+        const row = await db.count(STORE.GAMES) !== 0 // has info
+            ? await db.get(STORE.GAMES, 0)
             : undefined
 
-        /** @type {GeneralInfo|undefined} */
+        /** @type {GameInfo|undefined} */
         let generalInfo
         if (typeof (row) !== 'undefined') {
-            generalInfo = Object.create(GeneralInfo.prototype)
+            generalInfo = Object.create(GameInfo.prototype)
             Object.assign(generalInfo, row)
         }
 
@@ -161,11 +162,11 @@ export class Database {
     }
 
     /**
-     * Get the general info from the database
-     * @param {GeneralInfo} info  data to save
+     * Get the game info from the database
+     * @param {GameInfo} info  data to save
      * @param {IDBPDatabase|undefined} db the database (else we'll open a new one)
      */
-    async saveInfo (info, db = undefined) {
+    async saveGameInfo (info, db = undefined) {
         if (!info.validate()) {
             console.error("Invalid info, will not save!")
         }
@@ -174,7 +175,7 @@ export class Database {
         db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
 
         info.id = 0 // enforce only a single row
-        db.put(STORE.GENERAL, info)
+        db.put(STORE.GAMES, info)
         if (andClose) db.close()
     }
 
