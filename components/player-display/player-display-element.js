@@ -1,6 +1,9 @@
 import { setupDropOnly } from '../../js/drop-nodrag-setup.js'
 import '../input-progress/input-progress-element.js'
 import InputProgressElement from '../input-progress/input-progress-element.js'
+import { snakeToCamel } from "../../js/string-utils.js";
+
+
 
 /**
  * Player Information Display
@@ -224,7 +227,7 @@ export class PlayerDisplayElement extends HTMLLIElement {
 
     attributeChangedCallback (name, _oldValue, newValue) {
         if (PlayerDisplayElement.observedAttributes.includes(name))
-            this[name] = newValue
+            this[snakeToCamel(name)] = newValue
     }
 
     get playerIndex() {
@@ -232,7 +235,8 @@ export class PlayerDisplayElement extends HTMLLIElement {
         return isNaN(i) ? 0 : i
     }
     set playerIndex(value) {
-        this.setAttribute('player-index', `${value}`)
+        if (this.getAttribute('player-index') !== `${value}`)
+            this.setAttribute('player-index', `${value}`)
     }
 
     get name() {
@@ -269,31 +273,24 @@ export class PlayerDisplayElement extends HTMLLIElement {
         return this.#currentStressEl.value
     }
     set currentStress(value) {
-        switch (typeof(value)) {
-            case "number":
-                this.#currentStressEl.value = value
-                break;
-            case "string":
-                let newValue = parseInt(value)
-                if (typeof(newValue) === "number")
-                    this.#currentStressEl.value = newValue
-                break;
-        }
+        if (isNaN(value))
+            return
+
+        if (this.#currentStressEl.max !== value)
+            this.#currentStressEl.value = value
     }
     get maxStress() {
         return this.#currentStressEl.max
     }
     set maxStress(value) {
-        switch (typeof(value)) {
-            case "number":
-                this.#currentStressEl.max = value
-                break;
-            case "string":
-                let newValue = parseInt(value)
-                if (typeof(newValue) === "number")
-                    this.#currentStressEl.max = newValue
-                break;
-        }
+        if (isNaN(value))
+            return
+
+        if (this.#currentStressEl.max !== value)
+            this.#currentStressEl.max = value
+
+        if (this.#maxStressEl.value !== `${value}`)
+            this.#maxStressEl.value = `${value}`
     }
 
     get imageFile() {

@@ -7,7 +7,7 @@ export class InputProgressElement extends HTMLElement {
     /**
      * @type {HTMLInputElement}
      */
-    #inputEl
+    #rangeEl
 
     /**
      * @type {HTMLProgressElement}
@@ -47,29 +47,25 @@ export class InputProgressElement extends HTMLElement {
         this.#progressEl = document.createElement('progress')
         this.#dataEl = document.createElement('data')
         this.#dataEl.textContent = `${initialValue}`
-        this.#inputEl = document.createElement('input')
-        this.#inputEl.type = 'range'
+        this.#rangeEl = document.createElement('input')
+        this.#rangeEl.type = 'range'
 
         internalEl.appendChild(this.#progressEl)
         internalEl.appendChild(this.#dataEl)
-        internalEl.appendChild(this.#inputEl)
+        internalEl.appendChild(this.#rangeEl)
         shadow.appendChild(internalEl)
 
-        this.#inputEl.min = '0'
-        this.#inputEl.value = `${initialValue}`
-        this.#inputEl.max = `${initialMax}`
-        this.#progressEl.value = parseInt(this.#inputEl.value)
+        this.#rangeEl.min = '0'
+        this.#rangeEl.value = `${initialValue}`
+        this.#rangeEl.max = `${initialMax}`
+        this.#progressEl.value = initialMax
         this.#progressEl.max = initialMax
 
         // Wire Events
-        this.#inputEl.addEventListener('change', () => this.inputChanged())
-    }
-
-    inputChanged () {
-        this.#progressEl.value = parseInt(this.#inputEl.value)
-        this.#dataEl.textContent = this.#inputEl.value
-        this.setAttribute('value', this.#inputEl.value)
-        this.dispatchEvent(new Event('change'))
+        this.#rangeEl.addEventListener('change', () => {
+            this.setAttribute('value', `${this.#rangeEl.value}`)
+            this.dispatchEvent(new Event('change'))
+        })
     }
 
     attributeChangedCallback (name, _oldValue, newValue) {
@@ -77,53 +73,33 @@ export class InputProgressElement extends HTMLElement {
             this[name] = newValue
     }
 
-
-    attributeChangedCallbackOld (name, oldValue, newValue) {
-        if (name in this.#inputEl)
-            this.#inputEl[name] = newValue
-
-        if (this.#inputEl.hasAttribute(name))
-            this.#inputEl.setAttribute(name, newValue)
-
-        if (name in this.#progressEl)
-            this.#progressEl[name] = newValue
-
-        if (this.#progressEl.hasAttribute(name))
-            this.#progressEl.setAttribute(name, newValue)
-
-        if (name === 'max') {
-            const actualVal = parseInt(this.#progressEl.getAttribute('value'))
-            const actualMax = parseInt(this.#progressEl.getAttribute('max'))
-            const oldMax = parseInt(oldValue)
-            if (actualVal > actualMax || actualVal === oldMax)
-                this.attributeChangedCallback('value', undefined, newValue)
-        }
-
-        this.#dataEl.textContent = this.#inputEl.value
-    }
-
     get value() {
         return this.#progressEl.value
     }
     set value(newValue) {
-        newValue = Math.max(this.max, Math.min(0, newValue)) // clamp
-        this.#inputEl.value = `${newValue}`
-        this.#progressEl.value = newValue
-        this.#dataEl.textContent = `${newValue}`
+        let intVal = parseInt(`${newValue}`)
+        newValue = Math.min(this.max, Math.max(0, intVal)) // clamp
+
+        this.#rangeEl.value = `${intVal}`
+        this.#progressEl.value = intVal
+        this.#dataEl.textContent = `${intVal}`
     }
+
     get max() {
         return this.#progressEl.max
     }
     set max(newValue) {
-        newValue = Math.min(1, newValue) // clamp
-        const actualVal = parseInt(this.#progressEl.getAttribute('value'))
-        const actualMax = parseInt(this.#progressEl.getAttribute('max'))
+        let intVal = parseInt(`${newValue}`)
+        intVal = Math.max(1, intVal) // clamp
 
-        this.#inputEl.max = `${newValue}`
-        this.#progressEl.max = newValue
+        const oldVal = parseInt(this.#progressEl.getAttribute('value'))
+        const oldMax = parseInt(this.#progressEl.getAttribute('max'))
 
-        if (actualVal > actualMax || actualVal === this.max)
-            this.attributeChangedCallback('value', undefined, newValue)
+        this.#rangeEl.max = `${intVal}`
+        this.#progressEl.max = intVal
+
+        if (oldVal > intVal || oldVal === oldMax)
+            this.value = intVal
     }
 }
 

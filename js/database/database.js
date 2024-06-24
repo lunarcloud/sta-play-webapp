@@ -18,7 +18,7 @@ import { TrackerInfo } from './tracker-info.js'
  */
 
 const DB_NAME = 'STAPlayApp'
-const DB_VERSION = 5
+const DB_VERSION = 6
 const STORE = {
     GAMES: 'games',
     SCENES: 'scenes',
@@ -67,7 +67,8 @@ export class Database {
             db.deleteObjectStore(STORE.TRACKERS)
 
         console.warn('cleared db for upgrade')
-        db.createObjectStore(STORE.GAMES, { keyPath: INDEX.ID, autoIncrement: false })
+        const gameStore = db.createObjectStore(STORE.GAMES, { keyPath: INDEX.ID, autoIncrement: false })
+        gameStore.createIndex(INDEX.NAME, INDEX.NAME, { unique: true })
 
         const traitStore = db.createObjectStore(STORE.TRAITS, { keyPath: INDEX.ID, autoIncrement: true })
         traitStore.createIndex(INDEX.NAME, INDEX.NAME, { unique: true })

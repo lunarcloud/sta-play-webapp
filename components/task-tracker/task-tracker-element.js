@@ -1,3 +1,6 @@
+
+import { snakeToCamel } from "../../js/string-utils.js";
+
 /**
  * Extended Task / Combat Tracking Widget
  */
@@ -267,7 +270,7 @@ export class TaskTrackerElement extends HTMLElement {
     
     attributeChangedCallback (name, _oldValue, newValue) {
         if (TaskTrackerElement.observedAttributes.includes(name))
-            this[name] = newValue
+            this[snakeToCamel(name)] = newValue
     }
 
     get name() {
