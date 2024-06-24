@@ -82,10 +82,11 @@ export class Database {
 
     /**
      * Get the game info from the database
-     * @param {IDBPDatabase|undefined} db           the database (else we'll open a new one)
+     * @param {string}  [name]                      the name of the game to load
+     * @param {IDBPDatabase|undefined} [db]         the database (else we'll open a new one)
      * @returns {Promise<GameInfo|undefined>}       the general database information
      */
-    async getGameInfo (db = undefined) {
+    async getGameInfo (name = "Default Game", db = undefined) {
         const andClose = typeof (db) === 'undefined'
         db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
 
@@ -106,10 +107,11 @@ export class Database {
 
     /**
      * Get the scene traits from the database
-     * @param {IDBPDatabase|undefined} db   the database (else we'll open a new one)
-     * @returns {Promise<string[]>}         the list of scene traits
+     * @param {string}  [name]                      the name of the game to filter by
+     * @param {IDBPDatabase|undefined} [db]         the database (else we'll open a new one)
+     * @returns {Promise<string[]>}                 the list of scene traits
      */
-    async getTraits (db = undefined) {
+    async getTraits (name = "Default Game", db = undefined) {
         const andClose = typeof (db) === 'undefined'
         db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
 
@@ -122,10 +124,11 @@ export class Database {
 
     /**
      * Get the players from the database
-     * @param {IDBPDatabase|undefined} db   the database (else we'll open a new one)
-     * @returns {Promise<PlayerInfo[]>}     the information for all players
+     * @param {string}  [name]                      the name of the game to filter by
+     * @param {IDBPDatabase|undefined} [db]         the database (else we'll open a new one)
+     * @returns {Promise<PlayerInfo[]>}             the information for all players
      */
-    async getPlayers (db = undefined) {
+    async getPlayers (name = "Default Game", db = undefined) {
         const andClose = typeof (db) === 'undefined'
         db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
 
@@ -143,10 +146,11 @@ export class Database {
 
     /**
      * Get the trackers from the database
-     * @param {IDBPDatabase|undefined} db   the database (else we'll open a new one)
-     * @returns {Promise<TrackerInfo[]>}    the information for all trackers
+     * @param {string}  [name]                      the name of the game to filter by
+     * @param {IDBPDatabase|undefined} [db]         the database (else we'll open a new one)
+     * @returns {Promise<TrackerInfo[]>}            the information for all trackers
      */
-    async getTrackers (db = undefined) {
+    async getTrackers (name = "Default Game", db = undefined) {
         const andClose = typeof (db) === 'undefined'
         db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
 
@@ -164,8 +168,8 @@ export class Database {
 
     /**
      * Get the game info from the database
-     * @param {GameInfo} info  data to save
-     * @param {IDBPDatabase|undefined} db the database (else we'll open a new one)
+     * @param {GameInfo} info                   data to save
+     * @param {IDBPDatabase|undefined} [db]     the database (else we'll open a new one)
      */
     async saveGameInfo (info, db = undefined) {
         if (!info.validate()) {
@@ -183,8 +187,8 @@ export class Database {
     /**
      * Replace data of a store in the database with new ones
      * @param {string} storeName                Name of the store
-     * @param {string} clearIndex               the name of the index to clear
-     * @param {any[]} data                      array of info to add
+     * @param {string} [clearIndex]             the name of the index to clear
+     * @param {any[]} [data]                    array of info to add
      * @param {IDBPDatabase|IDBDatabase} [db]   the database
      */
     async #replaceData (storeName, clearIndex = INDEX.NAME, data = [], db = undefined) {
@@ -216,8 +220,8 @@ export class Database {
 
     /**
      * Replace the traits in the database with new ones
-     * @param {string[]} traitNames     names of all the traits
-     * @param {IDBPDatabase|IDBDatabase} [db] the database
+     * @param {string[]} [traitNames]           names of all the traits
+     * @param {IDBPDatabase|IDBDatabase} [db]   the database
      */
     async replaceTraits (traitNames = [], db = undefined) {
         const traits = traitNames.map(e => new NamedInfo(e))
@@ -226,8 +230,8 @@ export class Database {
 
     /**
      * Replace the trackers in the database with new ones
-     * @param {TrackerInfo[]} trackers all the current tracker infos
-     * @param {IDBPDatabase|IDBDatabase} [db] the database
+     * @param {TrackerInfo[]} trackers          all the current tracker infos
+     * @param {IDBPDatabase|IDBDatabase} [db]   the database
      */
     async replaceTrackers (trackers = [], db = undefined) {
 
@@ -242,8 +246,8 @@ export class Database {
 
     /**
      * Replace the players in the database with new ones
-     * @param {PlayerInfo[]} players all the current player infos
-     * @param {IDBPDatabase|IDBDatabase} [db] the database
+     * @param {PlayerInfo[]} [players]          all the current player infos
+     * @param {IDBPDatabase|IDBDatabase} [db]   the database
      */
     async replacePlayers (players = [], db = undefined) {
         this.#replaceData(STORE.PLAYERS, INDEX.NAME, players, db)

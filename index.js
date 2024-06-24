@@ -262,13 +262,14 @@ export class IndexController {
 
     /**
      * Load information from the database into the page
-     * @returns {Promise<boolean>} if there was info to load
+     * @param {string}  [gameName]      the name of the game to load
+     * @returns {Promise<boolean>}      if there was info to load
      */
-    async #loadData () {
+    async #loadData (gameName = 'Default Game') {
         const dbToken = await this.db.open()
 
         try {
-            const generalInfo = await this.db.getGameInfo(dbToken)
+            const generalInfo = await this.db.getGameInfo(gameName, dbToken)
 
             const momentumEl = document.getElementById('momentum-pool')
             if (momentumEl instanceof HTMLInputElement === false)
@@ -278,6 +279,7 @@ export class IndexController {
             if (editionSelectEl instanceof HTMLSelectElement === false)
                 throw new Error('Theme selector element is wrong/missing!')
 
+            document.body.setAttribute('loaded-game-name', generalInfo.name)
             document.getElementById('general-text').innerHTML = generalInfo?.text ?? this.fallbackText
             document.getElementById('shipname').textContent = (generalInfo?.shipName ?? this.fallbackShipName).trim()
             momentumEl.value = `${(generalInfo?.momentum ?? 0)}`
@@ -290,21 +292,21 @@ export class IndexController {
             // remove existing traits
             document.querySelectorAll('trait-display').forEach(el => el.parentNode.removeChild(el))
             // Get all traits
-            const traits = await this.db.getTraits(dbToken)
+            const traits = await this.db.getTraits(generalInfo.name, dbToken)
             for (const trait of traits)
                 this.addTrait(trait)
 
             // remove existing players
             document.querySelectorAll('.players li').forEach(el => el.parentNode.removeChild(el))
             // Get all players
-            const players = await this.db.getPlayers(dbToken)
+            const players = await this.db.getPlayers(generalInfo.name, dbToken)
             for (const player of players)
                 this.addPlayer(player)
 
             // remove existing trackers
             document.querySelectorAll('task-tracker').forEach(el => el.parentNode.removeChild(el))
             // Get all trackers
-            const trackers = await this.db.getTrackers(dbToken)
+            const trackers = await this.db.getTrackers(generalInfo.name, dbToken)
             for (const tracker of trackers)
                 this.addTaskTracker(tracker)
 
@@ -325,7 +327,6 @@ export class IndexController {
         if (momentumEl instanceof HTMLInputElement === false)
             throw new Error('page setup incorrectly!')
 
-
         const editionSelectEl = document.getElementById('select-edition')
         if (editionSelectEl instanceof HTMLSelectElement === false)
             throw new Error('Edition selector element is wrong/missing!')
@@ -338,9 +339,10 @@ export class IndexController {
         if (shipAlertEl instanceof ShipAlertElement === false)
             throw new Error('Ship alert element is wrong/missing!')
 
+        const gameName = document.body.getAttribute('loaded-game-name') || 'Default Game'
 
         await this.db.saveGameInfo(new GameInfo(
-            "Default Game",
+            gameName,
             document.getElementById('general-text').innerHTML,
             document.getElementById('shipname').textContent.trim(),
             momentumEl.value,
