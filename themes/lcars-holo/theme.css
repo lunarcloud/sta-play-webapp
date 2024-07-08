@@ -1,31 +1,19 @@
-@import url('../lcars-24/theme.css');
+@import url('../lcars-late-24/theme.css');
 
 :root,
 ::backdrop {
     --main-color-bg: hsl(200, 20%, 27%); /* holographic or glass */
-    --secondary-color-bg: hsl(220, 58%, 18%);
     --nav-color-text: hsl(251, 20%, 83%);
-    --void-bg: black;
+    --player-color-opacity: 0.20;
+    --trait-color-opacity: 0.20;
+    --saturation-adjust: 20%;
 
-    --header-inner-bg: hsla(290, 43%, 33%, 0.4);
-    --header-outer-bg: hsla(0, 0%, 0%, 0.4);
-
-    --trek-color-1: hsl(240, 100%, 44%);
-    --trek-color-2: hsl(196, 74%, 61%);
-    --trek-color-3: hsl(249, 84%, 47%);
-    --trek-color-4: hsl(172, 55%, 37%);
-    --trek-color-5: hsl(287, 73%, 58%);
-    --trek-color-6: hsl(260, 58%, 32%);
-
-    --trek-color-highlight: var(--trek-color-5);
-
-    --player-color-opacity: 0.25;
-    --player-color-red: hsl(0, 58%, 52%, var(--player-color-opacity));
-    --player-color-blue: hsl(249, 84%, 47%, var(--player-color-opacity));
-    --player-color-yellow: hsl(50, 73%, 58%, var(--player-color-opacity));
-    --player-color-brown: hsl(23, 55%, 64%, var(--player-color-opacity));
-    --player-color-black: hsl(252, 5%, 21%, var(--player-color-opacity));
-    --player-color-white: hsl(248, 24%, 82%, var(--player-color-opacity));
+    --player-color-red: hsla(0, 58%, 52%, var(--player-color-opacity));
+    --player-color-blue: hsla(249, 84%, 47%, var(--player-color-opacity));
+    --player-color-yellow: hsla(50, 73%, 58%, var(--player-color-opacity));
+    --player-color-brown: hsla(23, 55%, 64%, var(--player-color-opacity));
+    --player-color-black: hsla(252, 5%, 21%, var(--player-color-opacity));
+    --player-color-white: hsla(248, 24%, 82%, var(--player-color-opacity));
 }
 
 li[is="player-display"] {
@@ -33,9 +21,19 @@ li[is="player-display"] {
 }
 
 task-tracker::part(internal) {
-
     --tracker-background-color: hsla(284, 14%, 42%, 0.459);
     --tracker-title-separator-color: hsla(253, 73%, 28%, 0.62);
+}
+
+/* normal trait colors, but translucent */
+trait-display {
+    --trait-color-opacity: 0.35;
+    --trek-color-1: hsla(240,   80%,    44%,    var(--trait-color-opacity));
+    --trek-color-2: hsla(196,   54%,    61%,    var(--trait-color-opacity));
+    --trek-color-3: hsla(249,   64%,    47%,    var(--trait-color-opacity));
+    --trek-color-4: hsla(172,   35%,    37%,    var(--trait-color-opacity));
+    --trek-color-5: hsla(287,   53%,    58%,    var(--trait-color-opacity));
+    --trek-color-6: hsla(260,   38%,    32%,    var(--trait-color-opacity));
 }
 
 body {
@@ -56,10 +54,6 @@ body {
 
   background-size: 200% 200%;
   animation: moveGradient 30s linear 0s infinite normal;
-}
-
-#momentum-pool {
-    color: var(--nav-color-text);
 }
 
 @keyframes moveGradient {

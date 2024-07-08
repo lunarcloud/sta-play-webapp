@@ -1,0 +1,41 @@
+@import url('../lcars-24/theme.css');
+
+:root,
+::backdrop {
+    --main-color-bg: hsl(200deg 50% 1%); /* nearly-black */
+    --secondary-color-bg: hsl(220, 58%, 18%);
+    --nav-color-text: var(--main-color-bg);
+    --void-bg: black;
+    --player-color-opacity: 1;
+    --trait-color-opacity: 1;
+    --saturation-adjust: -20%;
+
+    --header-inner-bg: hsla(290, 43%, 33%, 0.4);
+    --header-outer-bg: hsla(0, 0%, 0%, 0.4);
+
+    --trek-color-1: hsl(240,    calc(80% + var(--saturation-adjust)),   44%);
+    --trek-color-2: hsl(196,    calc(54%  + var(--saturation-adjust)),    61%);
+    --trek-color-3: hsl(249,    calc(64%  + var(--saturation-adjust)),    47%);
+    --trek-color-4: hsl(172,    calc(35%  + var(--saturation-adjust)),    37%);
+    --trek-color-5: hsl(287,    calc(53%  + var(--saturation-adjust)),    58%);
+    --trek-color-6: hsl(260,    calc(38%  + var(--saturation-adjust)),    32%);
+
+    --trek-color-highlight: var(--trek-color-5);
+
+    --player-color-red: hsla(0, 58%, 52%, var(--player-color-opacity));
+    --player-color-blue: hsla(249, 84%, 47%, var(--player-color-opacity));
+    --player-color-yellow: hsla(50, 73%, 58%, var(--player-color-opacity));
+    --player-color-brown: hsla(23, 55%, 64%, var(--player-color-opacity));
+    --player-color-black: hsla(252, 5%, 21%, var(--player-color-opacity));
+    --player-color-white: hsla(248, 24%, 82%, var(--player-color-opacity));
+}
+
+task-tracker::part(internal) {
+
+    --tracker-background-color: hsla(284, 14%, 42%, 1);
+    --tracker-title-separator-color: hsla(253, 73%, 28%, 1);
+}
+
+#momentum-pool {
+    color: var(--nav-color-text);
+}
