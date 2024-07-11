@@ -380,7 +380,8 @@ dialogs > dialog {
 
 #settings-btn,
 #save-btn,
-#momentum-section {
+#momentum-section,
+#threat-section {
     position: absolute;
     left: 3mm;
     padding: 0 2mm;
@@ -389,26 +390,28 @@ dialogs > dialog {
     text-transform: uppercase;
     width: 26mm;
     display: flex;
-    flex-direction: row-reverse;
-    justify-content: flex-start;
+    flex-direction: row;
+    justify-content: flex-end;
 
     &:not(:active) {
         color: var(--nav-color-text);
     }
 
+    & text {
+      padding-inline: 0.5em;
+    }
     & > symbol {
-        width: 1.5em;
-        padding-right: 0.5em;
-        text-align: end ;
+        width: 1.125em;
+        text-align: justify;
     }
 }
 
 #settings-btn {
-    top: 20mm;
+    top: 25mm;
 }
 
 #save-btn {
-    top: 30mm;
+    top: 32mm;
 }
 
 #mute-btn {
@@ -433,9 +436,9 @@ dialogs > dialog {
     }
 }
 
-#momentum-section {
 
-    top: 130mm;
+#momentum-section,
+#threat-section  {
     flex-direction: column;
 
     & > label,
@@ -450,17 +453,28 @@ dialogs > dialog {
         font-weight: bold;
         color: var(--nav-color-text);
     }
-
-    & > input {
-        margin: 0;
-        padding: 0;
-        padding-left: 0.5em;
-        text-align: center;
-        background: unset;
-        border: 1px solid #431818;
-        outline: none;
-        font-size: 2em;
+    & > label > input {
+      float: inline-end;
+      scale: 1.5;
     }
+}
+
+#threat-section {
+  top: 136mm;
+}
+#momentum-section {
+  top: 130mm;
+
+  & > input {
+    margin: 0;
+    padding: 0;
+    padding-left: 0.5em;
+    text-align: center;
+    background: unset;
+    border: 1px solid #431818;
+    outline: none;
+    font-size: 2em;
+  }
 }
 
 task-tracker {
@@ -493,14 +507,20 @@ body {
     grid-gap: 2mm;
 
     /* Hide elements exclusive to the other edition */
-    span.edition-1, span.edition-2 {
+    span.edition-1,
+    span.edition-captains-log,
+    span.edition-2 {
       display: contents;
     }
-    &.edition-1 span.edition-2 {
-      display: none;
-    }
-    &.edition-2 span.edition-1 {
-      display: none;
+
+    &.edition-1 .edition-2:not(.edition-1),
+    &.edition-1 .edition-captains-log:not(.edition-1),
+    &.edition-captains-log .edition-1:not(.edition-captains-log),
+    &.edition-captains-log .edition-2:not(.edition-captains-log),
+    &.edition-2 .edition-1:not(.edition-2),
+    &.edition-2 .edition-captains-log:not(.edition-2)
+    {
+      display: none !important;
     }
 
     & > header {

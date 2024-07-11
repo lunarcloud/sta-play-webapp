@@ -93,6 +93,12 @@ export class PlayerDisplayElement extends HTMLLIElement {
      */
     #maxStressEl
 
+
+    /**
+     * @type {HTMLImageElement}
+     */
+    #portraitEl
+
     /**
      * @type {File} Image file
      */
@@ -197,6 +203,9 @@ export class PlayerDisplayElement extends HTMLLIElement {
 
         this.#nameEl = document.createElement('h2')
         this.#nameEl.className = 'name'
+        this.#nameEl.setAttribute('autocomplete', 'false')
+        this.#nameEl.setAttribute('autocorrect', 'false')
+        this.#nameEl.setAttribute('spellcheck', 'false')
         this.#nameEl.textContent = currentName
         try {
             this.#nameEl.contentEditable = 'plaintext-only'
@@ -204,12 +213,20 @@ export class PlayerDisplayElement extends HTMLLIElement {
             this.#nameEl.contentEditable = 'true'
         }
 
+        this.#portraitEl = document.createElement('img')
+        this.#portraitEl.className = 'portrait'
+
+        let topAreaEl = document.createElement('div')
+        topAreaEl.className = 'top-area'
+        topAreaEl.appendChild(this.#portraitEl)
+        topAreaEl.appendChild(this.#nameEl)
+
         // Put them together
         this.appendChild(this.#removeBtnEl)
         this.appendChild(this.#colorSelect)
         this.appendChild(this.#rankSelect)
         this.appendChild(stressEl)
-        this.appendChild(this.#nameEl)
+        this.appendChild(topAreaEl)
 
         this.#nameEl.addEventListener('input', _event => {
             this.setAttribute('text', this.#nameEl.textContent)
@@ -303,12 +320,11 @@ export class PlayerDisplayElement extends HTMLLIElement {
      */
     set imageFile (file) {
         this.#imageFile = file
-        const url = URL.createObjectURL(this.#imageFile)
-        this.style.backgroundImage = `url('${url}')`
+        this.#portraitEl.src = URL.createObjectURL(this.#imageFile)
     }
 
     setDefaultImage() {
-        this.style.backgroundImage = `url('${DefaultPlayerImages[this.playerIndex % DefaultPlayerImages.length]}')`
+        this.#portraitEl.src = DefaultPlayerImages[this.playerIndex % DefaultPlayerImages.length]
     }
 }
 

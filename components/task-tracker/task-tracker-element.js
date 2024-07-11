@@ -101,6 +101,7 @@ export class TaskTrackerElement extends HTMLElement {
                 this.#nameEl.type = 'text'
         }
         this.#nameEl.className = 'name'
+        this.#nameEl.setAttribute('spellcheck', 'false')
 
         this.#useAttrOrDefault(this.#nameEl, 'name', 'Combat / Extended Task')
 

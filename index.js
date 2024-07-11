@@ -5,7 +5,7 @@ import './components/welcome-dialog/welcome-dialog-element.js'
 import './components/settings-dialog/settings-dialog-element.js'
 import './components/player-display/player-display-element.js'
 import './components/task-tracker/task-tracker-element.js'
-import { Database } from './js/database/database.js'
+import { Database, DefaultGameName } from './js/database/database.js'
 import { TrackerInfo } from './js/database/tracker-info.js'
 import { PlayerInfo } from './js/database/player-info.js'
 import { GameInfo } from './js/database/game-info.js'
@@ -202,15 +202,18 @@ export class IndexController {
 
     /**
      * Set the page's text to a particular gaem edition
-     * @param {1|2} edition   the number of the rules edition to use
+     * @param {string} edition   the number of the rules edition to use
      */
     #useEdition(edition) {
         const editionSelectEl = document.getElementById('select-edition')
         if (editionSelectEl instanceof HTMLSelectElement === false)
             throw new Error('Theme selector element is wrong/missing!')
-        editionSelectEl.value = `${edition}`
 
-        document.body.classList.remove('edition-1', 'edition-2')
+        if (['1', '2', 'captains-log'].includes(edition) === false)
+            edition = '2'
+
+        editionSelectEl.value = `${edition}`
+        document.body.classList.remove('edition-1', 'edition-2', 'edition-captains-log')
         document.body.classList.add(`edition-${edition}`)
     }
 
@@ -256,7 +259,7 @@ export class IndexController {
             throw new Error('Theme selector element is wrong/missing!')
 
         editionSelectEl.addEventListener('change', () => {
-             this.#useEdition(editionSelectEl.value == '1' ? 1 : 2)
+            this.#useEdition(editionSelectEl.value)
         });
     }
 
@@ -265,7 +268,7 @@ export class IndexController {
      * @param {string}  [gameName]      the name of the game to load
      * @returns {Promise<boolean>}      if there was info to load
      */
-    async #loadData (gameName = 'Default Game') {
+    async #loadData (gameName = DefaultGameName) {
         const dbToken = await this.db.open()
 
         try {
@@ -275,38 +278,48 @@ export class IndexController {
             if (momentumEl instanceof HTMLInputElement === false)
                 throw new Error('page setup incorrectly!')
 
+            const momentumToggleEl = document.getElementById('momentum-toggle')
+            if (momentumToggleEl instanceof HTMLInputElement === false)
+                throw new Error('page setup incorrectly!')
+
+            const threatToggleEl = document.getElementById('threat-toggle')
+            if (threatToggleEl instanceof HTMLInputElement === false)
+                throw new Error('page setup incorrectly!')
+
             const editionSelectEl = document.getElementById('select-edition')
             if (editionSelectEl instanceof HTMLSelectElement === false)
                 throw new Error('Theme selector element is wrong/missing!')
 
-            document.body.setAttribute('loaded-game-name', generalInfo.name)
+            document.body.setAttribute('loaded-game-name', generalInfo?.name ?? DefaultGameName)
             document.getElementById('general-text').innerHTML = generalInfo?.text ?? this.fallbackText
             document.getElementById('shipname').textContent = (generalInfo?.shipName ?? this.fallbackShipName).trim()
             momentumEl.value = `${(generalInfo?.momentum ?? 0)}`
+            momentumToggleEl.checked = generalInfo?.momentum > 0
+            threatToggleEl.checked = generalInfo?.threat > 0
             document.getElementsByTagName('ship-alert')[0].setAttribute('color', (generalInfo?.activeAlert ?? '').trim())
             this.#useTheme(generalInfo?.theme ?? 'lcars-24')
-            this.#useEdition(generalInfo?.edition == 1 ? 1 : 2)
+            this.#useEdition(generalInfo?.edition)
 
             this.setShipModel(generalInfo?.shipModel)
 
             // remove existing traits
             document.querySelectorAll('trait-display').forEach(el => el.parentNode.removeChild(el))
             // Get all traits
-            const traits = await this.db.getTraits(generalInfo.name, dbToken)
+            const traits = await this.db.getTraits(generalInfo?.name, dbToken)
             for (const trait of traits)
                 this.addTrait(trait)
 
             // remove existing players
             document.querySelectorAll('.players li').forEach(el => el.parentNode.removeChild(el))
             // Get all players
-            const players = await this.db.getPlayers(generalInfo.name, dbToken)
+            const players = await this.db.getPlayers(generalInfo?.name, dbToken)
             for (const player of players)
                 this.addPlayer(player)
 
             // remove existing trackers
             document.querySelectorAll('task-tracker').forEach(el => el.parentNode.removeChild(el))
             // Get all trackers
-            const trackers = await this.db.getTrackers(generalInfo.name, dbToken)
+            const trackers = await this.db.getTrackers(generalInfo?.name, dbToken)
             for (const tracker of trackers)
                 this.addTaskTracker(tracker)
 
@@ -327,6 +340,14 @@ export class IndexController {
         if (momentumEl instanceof HTMLInputElement === false)
             throw new Error('page setup incorrectly!')
 
+        const momentumToggleEl = document.getElementById('momentum-toggle')
+        if (momentumToggleEl instanceof HTMLInputElement === false)
+            throw new Error('page setup incorrectly!')
+
+        const threatToggleEl = document.getElementById('threat-toggle')
+        if (threatToggleEl instanceof HTMLInputElement === false)
+            throw new Error('page setup incorrectly!')
+
         const editionSelectEl = document.getElementById('select-edition')
         if (editionSelectEl instanceof HTMLSelectElement === false)
             throw new Error('Edition selector element is wrong/missing!')
@@ -339,16 +360,21 @@ export class IndexController {
         if (shipAlertEl instanceof ShipAlertElement === false)
             throw new Error('Ship alert element is wrong/missing!')
 
-        const gameName = document.body.getAttribute('loaded-game-name') || 'Default Game'
+        const gameName = document.body.getAttribute('loaded-game-name') || DefaultGameName
+
+        const momentumValue = editionSelectEl.value === 'captains-log'
+            ? momentumToggleEl.checked ? 1 : 0
+            : momentumEl.value
 
         await this.db.saveGameInfo(new GameInfo(
             gameName,
             document.getElementById('general-text').innerHTML,
             document.getElementById('shipname').textContent.trim(),
-            momentumEl.value,
+            momentumValue,
+            threatToggleEl.checked ? 1 : 0,
             shipAlertEl.color,
             themeSelectEl.value,
-            editionSelectEl.value === '1' ? 1 : 2,
+            editionSelectEl.value,
             this.shipModel
         ), dbToken)
 

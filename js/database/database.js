@@ -18,7 +18,7 @@ import { TrackerInfo } from './tracker-info.js'
  */
 
 const DB_NAME = 'STAPlayApp'
-const DB_VERSION = 6
+const DB_VERSION = 9
 const STORE = {
     GAMES: 'games',
     SCENES: 'scenes',
@@ -30,6 +30,8 @@ const INDEX = {
     ID: 'id',
     NAME: 'name'
 }
+
+export const DefaultGameName = 'Default Game'
 
 export class Database {
     async clear () {
@@ -86,7 +88,7 @@ export class Database {
      * @param {IDBPDatabase|undefined} [db]         the database (else we'll open a new one)
      * @returns {Promise<GameInfo|undefined>}       the general database information
      */
-    async getGameInfo (name = "Default Game", db = undefined) {
+    async getGameInfo (name = DefaultGameName, db = undefined) {
         const andClose = typeof (db) === 'undefined'
         db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
 
@@ -111,7 +113,7 @@ export class Database {
      * @param {IDBPDatabase|undefined} [db]         the database (else we'll open a new one)
      * @returns {Promise<string[]>}                 the list of scene traits
      */
-    async getTraits (name = "Default Game", db = undefined) {
+    async getTraits (name = DefaultGameName, db = undefined) {
         const andClose = typeof (db) === 'undefined'
         db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
 
@@ -128,7 +130,7 @@ export class Database {
      * @param {IDBPDatabase|undefined} [db]         the database (else we'll open a new one)
      * @returns {Promise<PlayerInfo[]>}             the information for all players
      */
-    async getPlayers (name = "Default Game", db = undefined) {
+    async getPlayers (name = DefaultGameName, db = undefined) {
         const andClose = typeof (db) === 'undefined'
         db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
 
@@ -150,7 +152,7 @@ export class Database {
      * @param {IDBPDatabase|undefined} [db]         the database (else we'll open a new one)
      * @returns {Promise<TrackerInfo[]>}            the information for all trackers
      */
-    async getTrackers (name = "Default Game", db = undefined) {
+    async getTrackers (name = DefaultGameName, db = undefined) {
         const andClose = typeof (db) === 'undefined'
         db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
 

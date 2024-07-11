@@ -25,7 +25,9 @@
             Star Trek
             <br>
             Adventures
-            <span class="edition-2">2E</span>
+            <div class="edition-1">1E</div>
+            <div class="edition-2">2E</div>
+            <div class="edition-captains-log">Captain's Log</div>
         </div>
 
         <!-- General Buttons -->
@@ -45,8 +47,18 @@
         </a>
 
         <div id="momentum-section">
-            <label for="momentum-pool">Momentum Pool</label>
-            <input id="momentum-pool" type="number" min="0" max="6" value="0"></input>
+            <label for="momentum-pool">
+                Momentum <span class="edition-1 edition-2">Pool</span>
+                <input class="edition-captains-log" id="momentum-toggle" type="checkbox"></input>
+            </label>
+            <input id="momentum-pool" class="edition-1 edition-2" type="number" min="0" max="6" value="0"></input>
+        </div>
+
+        <div id="threat-section" class="edition-captains-log">
+            <label>
+                Threat
+                <input id="threat-toggle" type="checkbox"></input>
+            </label>
         </div>
 
         <!-- Content -->
@@ -89,9 +101,9 @@
             <ul>
                 <li><a hover="audio" id="alert-toggle">Alert Cycle</a></li>
                 <li><a hover="audio" id="player-add">＋ Player</a></li>
-                <li><a hover="audio" id="task-tracker-add">＋ Tracker</a></li>
+                <li><a hover="audio" id="task-tracker-add" class="edition-1 edition-2">＋ Tracker</a></li>
                 <li><a hover="audio" id="trait-add">＋ Trait</a></li>
-                <li id="shipname" class="shipname" contenteditable="true">USS Winnipesaukee</li>
+                <li id="shipname" class="shipname" contenteditable="true" autocomplete="off" autocorrect="off" spellcheck="false">USS Winnipesaukee</li>
             </ul>
         </nav>
         <main>
