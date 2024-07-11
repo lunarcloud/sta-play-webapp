@@ -75,6 +75,7 @@ task-tracker-internal {
     dd.character .ship {
         display: none;
     }
+
     dd.ship .character {
         display: none;
     }
@@ -115,15 +116,18 @@ task-tracker-internal {
                 left: calc(100% - 1em);
             }
         }
+
         & img {
             position: relative;
             z-index: 1;
             user-select: none;
             transition: filter ease-out 50ms;
         }
+
         & img.character {
             float: inline-start;
         }
+
         & img.ship {
             float: inline-end;
         }
@@ -131,6 +135,7 @@ task-tracker-internal {
         input:checked ~ img.character {
             filter: invert(1);
         }
+
         input:not(:checked) ~ img.ship {
             filter: invert(1);
         }

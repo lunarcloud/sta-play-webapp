@@ -1,4 +1,4 @@
-export default class BgAudioManager {
+export class BgAudioManager {
     /**
      * Whether the page audio is enabled.
      * @type {boolean}
@@ -10,7 +10,6 @@ export default class BgAudioManager {
      * @type {HTMLAudioElement}
      */
     bgAudio
-
 
     /**
      * Mute Button
@@ -34,7 +33,6 @@ export default class BgAudioManager {
             this.bgAudio = bgAudioEl
         else
             throw new Error("BG Audio isn't an audio element!")
-
 
         const muteBtnEl = document.getElementById('mute-btn')
         if (muteBtnEl instanceof HTMLButtonElement)
@@ -72,7 +70,7 @@ export default class BgAudioManager {
     muteToggle (value = !this.muted) {
         // Debounce
         this.#muteBtn.setAttribute('disabled', '')
-        setTimeout(() => this.#muteBtn.removeAttribute('disabled'), this.#debounceAmount);
+        setTimeout(() => this.#muteBtn.removeAttribute('disabled'), this.#debounceAmount)
 
         // Set Value
         this.muted = value

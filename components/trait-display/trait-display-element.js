@@ -1,6 +1,5 @@
 export class TraitDisplayElement extends HTMLElement {
-
-    static get observedAttributes() {
+    static get observedAttributes () {
         return ['text']
     }
 
@@ -39,16 +38,15 @@ export class TraitDisplayElement extends HTMLElement {
             this.#textElValueProperty = 'value'
         }
         this.#textEl.textContent = 'TODO'
-        this.#textEl.classList.add("name")
+        this.#textEl.classList.add('name')
 
         this.#removeBtnEl = document.createElement('button')
-        this.#removeBtnEl.classList.add("close")
+        this.#removeBtnEl.classList.add('close')
         this.#removeBtnEl.textContent = '⤫'
-        this.#removeBtnEl.addEventListener("click", () => {
+        this.#removeBtnEl.addEventListener('click', () => {
             this.dispatchEvent(new Event('removed'))
             this.remove()
-        });
-        
+        })
 
         internalEl.appendChild(this.#textEl)
         internalEl.appendChild(this.#removeBtnEl)
@@ -58,17 +56,17 @@ export class TraitDisplayElement extends HTMLElement {
             this.setAttribute('text', this.#textEl[this.#textElValueProperty])
         }, { passive: true, capture: false })
     }
-    
+
     attributeChangedCallback (name, _oldValue, newValue) {
         if (TraitDisplayElement.observedAttributes.includes(name))
             this[name] = newValue
     }
 
-    get text() {
+    get text () {
         return this.#textEl[this.#textElValueProperty].trim()
     }
 
-    set text(newValue) {
+    set text (newValue) {
         this.#textEl[this.#textElValueProperty] = newValue
     }
 }
@@ -76,4 +74,3 @@ export class TraitDisplayElement extends HTMLElement {
 // Register element
 customElements.define('trait-display', TraitDisplayElement)
 globalThis.TraitDisplayElement = TraitDisplayElement
-export default TraitDisplayElement

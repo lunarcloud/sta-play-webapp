@@ -1,7 +1,5 @@
-
 export class ShipAlertElement extends HTMLElement {
-
-    static get observedAttributes() {
+    static get observedAttributes () {
         return ['color']
     }
 
@@ -46,7 +44,7 @@ export class ShipAlertElement extends HTMLElement {
         // Attach the created element to the shadow DOM
         shadow.appendChild(linkElem)
 
-        let currentColor = this.getAttribute('color')
+        const currentColor = this.getAttribute('color')
         this.#firstColorClass = ShipAlertElement.Colors[0].name.toLowerCase()
 
         this.#internalEl = document.createElement('ship-alert-internal')
@@ -59,7 +57,7 @@ export class ShipAlertElement extends HTMLElement {
         conditionEl.textContent = 'CONDITION: '
 
         this.#colorEl = document.createElement('span')
-        
+
         this.#internalEl.appendChild(titleEl)
         conditionEl.appendChild(this.#colorEl)
         this.#internalEl.appendChild(conditionEl)
@@ -67,20 +65,19 @@ export class ShipAlertElement extends HTMLElement {
 
         this.color = currentColor
     }
-    
 
     attributeChangedCallback (name, _oldValue, newValue) {
         if (ShipAlertElement.observedAttributes.includes(name))
             this[name] = newValue
     }
 
-    get color() {
+    get color () {
         return this.#internalEl.className
     }
 
-    set color(value) {
+    set color (value) {
         // Must be valid (null or in the list)
-        if (!!value && !ShipAlertElement.Colors.map(a=>a.name.toLowerCase()).includes(value.toLowerCase()))
+        if (!!value && !ShipAlertElement.Colors.map(a => a.name.toLowerCase()).includes(value.toLowerCase()))
             return
 
         this.#colorEl.textContent = value?.toUpperCase() ?? 'HIDDEN'
@@ -95,10 +92,8 @@ export class ShipAlertElement extends HTMLElement {
 
         if (this.#internalEl.classList.contains(lastType)) {
             this.removeAttribute('color')
-
         } else if (['', 'hidden'].includes(this.#internalEl.className)) {
             this.setAttribute('color', this.#firstColorClass)
-
         } else for (let i = 0; i < ShipAlertElement.Colors.length - 1; i++) {
             if (this.#internalEl.classList.contains(ShipAlertElement.Colors[i].name.toLowerCase())) {
                 this.setAttribute('color', ShipAlertElement.Colors[i + 1].name)
@@ -106,10 +101,8 @@ export class ShipAlertElement extends HTMLElement {
             }
         }
     }
-
 }
 
 // Register element
 customElements.define('ship-alert', ShipAlertElement)
 globalThis.ShipAlertElement = ShipAlertElement
-export default ShipAlertElement

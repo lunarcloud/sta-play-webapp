@@ -118,14 +118,13 @@ export class Database {
         return generalInfo
     }
 
-
     /**
      * Get the scene traits from the database
      * @param {number}  [gameId]                    the id of the game to filter by
      * @param {IDBPDatabase|undefined} [db]         the database (else we'll open a new one)
      * @returns {Promise<SceneInfo[]>}              the list of scenes
      */
-    async getScenes(gameId, db = undefined) {
+    async getScenes (gameId, db = undefined) {
         const andClose = typeof (db) === 'undefined'
         db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
 
@@ -210,7 +209,7 @@ export class Database {
      */
     async saveGameInfo (info, db = undefined) {
         if (!info.validate()) {
-            console.error("Invalid info, will not save!")
+            console.error('Invalid info, will not save!')
             return
         }
         const andClose = typeof (db) === 'undefined'
@@ -219,7 +218,7 @@ export class Database {
         if (info.id === undefined)
             delete info.id
 
-        let id = await db.put(STORE.GAMES, info)
+        const id = await db.put(STORE.GAMES, info)
         if (andClose) db.close()
         return id
     }
@@ -230,9 +229,9 @@ export class Database {
      * @param {IDBPDatabase|undefined} [db]     the database (else we'll open a new one)
      * @returns {Promise<number>} scene id
      */
-    async saveSceneInfo(info, db = undefined) {
+    async saveSceneInfo (info, db = undefined) {
         if (!info.validate()) {
-            console.error("Invalid info, will not save!")
+            console.error('Invalid info, will not save!')
             return
         }
         const andClose = typeof (db) === 'undefined'
@@ -241,7 +240,7 @@ export class Database {
         if (info.id === undefined)
             delete info.id
 
-        let id = await db.put(STORE.SCENES, info)
+        const id = await db.put(STORE.SCENES, info)
         if (andClose) db.close()
         return id
     }
@@ -289,11 +288,11 @@ export class Database {
      */
     async replaceTraits (sceneId, traitNames = [], db = undefined) {
         const traits = traitNames
-                        .map(e => {
-                            let info = new TraitInfo(sceneId, e)
-                            delete info.id
-                            return info
-                        })
+            .map(e => {
+                const info = new TraitInfo(sceneId, e)
+                delete info.id
+                return info
+            })
         this.#replaceData(STORE.TRAITS, INDEX.NAME, traits, db)
     }
 
@@ -303,11 +302,9 @@ export class Database {
      * @param {IDBPDatabase|IDBDatabase} [db]   the database
      */
     async replaceTrackers (trackers = [], db = undefined) {
-
         const validTrackers = trackers.filter(t => t.validate())
-        if (validTrackers.length !== trackers.length)
-        {
-            console.error("Invalid trackers provided: %o", trackers.filter(t => !t.validate()));
+        if (validTrackers.length !== trackers.length) {
+            console.error('Invalid trackers provided: %o', trackers.filter(t => !t.validate()))
             return
         }
 

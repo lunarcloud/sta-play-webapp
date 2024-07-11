@@ -1,5 +1,4 @@
-
-import { snakeToCamel } from "../../js/string-utils.js";
+import { snakeToCamel } from '../../js/string-utils.js'
 
 /**
  * Extended Task / Combat Tracking Widget
@@ -42,8 +41,7 @@ const DepartmentNames = [
 ]
 
 export class TaskTrackerElement extends HTMLElement {
-
-    static get observedAttributes() {
+    static get observedAttributes () {
         return [
             'name',
             'resistance',
@@ -53,8 +51,8 @@ export class TaskTrackerElement extends HTMLElement {
             'ship-system',
             'ship-department',
             'progress'
-        ];
-      }
+        ]
+    }
 
     #removeBtnEl
     #nameEl
@@ -84,12 +82,12 @@ export class TaskTrackerElement extends HTMLElement {
 
         // remove button ⤫
         this.#removeBtnEl = document.createElement('button')
-        this.#removeBtnEl.classList.add("remove")
+        this.#removeBtnEl.classList.add('remove')
         this.#removeBtnEl.textContent = '⤫'
-        this.#removeBtnEl.addEventListener("click", () => {
+        this.#removeBtnEl.addEventListener('click', () => {
             this.dispatchEvent(new Event('removed'))
             this.remove()
-        });
+        })
 
         // name element
         try {
@@ -107,7 +105,7 @@ export class TaskTrackerElement extends HTMLElement {
 
         this.#nameEl.addEventListener(
             this.#nameEl instanceof HTMLInputElement ? 'change' : 'input',
-            _event => this.setAttribute('name', this.#nameEl instanceof HTMLInputElement ? this.#nameEl.value : this.#nameEl.textContent));
+            _event => this.setAttribute('name', this.#nameEl instanceof HTMLInputElement ? this.#nameEl.value : this.#nameEl.textContent))
 
         // Data-List & Elements
         const listEl = document.createElement('dl')
@@ -119,7 +117,7 @@ export class TaskTrackerElement extends HTMLElement {
         this.#resistanceEl.min = '0'
         this.#resistanceEl.className = 'resistance'
         this.#useAttrOrDefault(this.#resistanceEl, 'resistance', '0')
-        this.#resistanceEl.addEventListener('change', _event => this.setAttribute('resistance', this.#resistanceEl.value));
+        this.#resistanceEl.addEventListener('change', _event => this.setAttribute('resistance', this.#resistanceEl.value))
 
         this.#addDataListItem(listEl, 'Resistance', this.#resistanceEl)
 
@@ -130,21 +128,21 @@ export class TaskTrackerElement extends HTMLElement {
         this.#complicationRangeEl.min = '0'
         this.#complicationRangeEl.className = 'complication-range'
         this.#useAttrOrDefault(this.#complicationRangeEl, 'complication-range', '0')
-        this.#complicationRangeEl.addEventListener('change', _event => this.setAttribute('complication-range', this.#complicationRangeEl.value));
+        this.#complicationRangeEl.addEventListener('change', _event => this.setAttribute('complication-range', this.#complicationRangeEl.value))
 
         this.#addDataListItem(listEl, 'Complication Range', this.#complicationRangeEl)
 
         // Stats elemnts
-        let [attributeEl, departmentEl] = this.#createStatEls(true)
+        const [attributeEl, departmentEl] = this.#createStatEls(true)
         this.#attributeEl = attributeEl
         this.#departmentEl = departmentEl
 
-        let [shipSystemEl, shipDepartmentEl] = this.#createStatEls(false)
+        const [shipSystemEl, shipDepartmentEl] = this.#createStatEls(false)
         this.#shipSystemEl = shipSystemEl
         this.#shipDepartmentEl = shipDepartmentEl
 
         // add both attribute and department under the same heading
-        let [listDtEl, listDdEl] = this.#addDataListItem(listEl, 'Stats',
+        const [listDtEl, listDdEl] = this.#addDataListItem(listEl, 'Stats',
             this.#attributeEl, this.#departmentEl,
             this.#shipSystemEl, this.#shipDepartmentEl)
 
@@ -180,12 +178,12 @@ export class TaskTrackerElement extends HTMLElement {
         this.#progressEl.min = '1'
         this.#progressEl.className = 'progress'
         this.#useAttrOrDefault(this.#progressEl, 'progress', '3')
-        this.#progressEl.addEventListener('change', _event => this.setAttribute('progress', this.#progressEl.value));
+        this.#progressEl.addEventListener('change', _event => this.setAttribute('progress', this.#progressEl.value))
 
         this.#addDataListItem(listEl, 'Progress', this.#progressEl)
 
         // Put it together
-        let internalEls = document.createElement('task-tracker-internal')
+        const internalEls = document.createElement('task-tracker-internal')
         internalEls.setAttribute('part', 'internal')
         internalEls.appendChild(this.#removeBtnEl)
         internalEls.appendChild(this.#nameEl)
@@ -196,10 +194,9 @@ export class TaskTrackerElement extends HTMLElement {
     /**
      * Create stats elements
      * @param {boolean} isCharacter    whether this is for a character (or ship)
-     * @returns {[HTMLSelectElement, HTMLSelectElement]}
+     * @returns {[HTMLSelectElement, HTMLSelectElement]} the two stats elements
      */
-    #createStatEls(isCharacter) {
-
+    #createStatEls (isCharacter) {
         const displayClass = isCharacter ? 'character' : 'ship'
 
         // Big Number, Attribute or System, element
@@ -209,29 +206,29 @@ export class TaskTrackerElement extends HTMLElement {
 
         const names = isCharacter ? AttributeNames : SystemNames
 
-        for (let bigStatName of names) {
-            let optionEl = document.createElement('option')
+        for (const bigStatName of names) {
+            const optionEl = document.createElement('option')
             optionEl.textContent = bigStatName
             optionEl.value = bigStatName
             bigStatEl.appendChild(optionEl)
         }
         this.#useAttrOrDefault(bigStatEl, bigStatAttr, names[0])
-        bigStatEl.addEventListener('change', _event => this.setAttribute(bigStatAttr, bigStatEl.value));
+        bigStatEl.addEventListener('change', _event => this.setAttribute(bigStatAttr, bigStatEl.value))
 
         // Small Number, Department, element
         const smallStatAttr = isCharacter ? 'department' : 'ship-department'
         const smallStatEl = document.createElement('select')
         smallStatEl.classList.add(smallStatAttr, displayClass)
-        for (let smallStatName of DepartmentNames) {
-            let optionEl = document.createElement('option')
+        for (const smallStatName of DepartmentNames) {
+            const optionEl = document.createElement('option')
             optionEl.textContent = smallStatName
             optionEl.value = smallStatName
             smallStatEl.appendChild(optionEl)
         }
         this.#useAttrOrDefault(smallStatEl, smallStatAttr, DepartmentNames[0])
-        smallStatEl.addEventListener('change', _event => this.setAttribute(smallStatAttr, smallStatEl.value));
+        smallStatEl.addEventListener('change', _event => this.setAttribute(smallStatAttr, smallStatEl.value))
 
-        return [ bigStatEl, smallStatEl ]
+        return [bigStatEl, smallStatEl]
     }
 
     /**
@@ -239,14 +236,14 @@ export class TaskTrackerElement extends HTMLElement {
      * @param {Element} listEl      list element to add to
      * @param {string} text         title text
      * @param {...Element} elements data elements
-     * @return {HTMLElement[]}      the dt and dd elements
+     * @returns {HTMLElement[]}      the dt and dd elements
      */
-    #addDataListItem(listEl, text, ...elements)  {
-        let listTextEl = document.createElement('dt')
+    #addDataListItem (listEl, text, ...elements) {
+        const listTextEl = document.createElement('dt')
         listTextEl.textContent = text
-        let listDataEl = document.createElement('dd')
+        const listDataEl = document.createElement('dd')
 
-        for (let element of elements)
+        for (const element of elements)
             listDataEl.appendChild(element)
         listEl.appendChild(listTextEl)
         listEl.appendChild(listDataEl)
@@ -260,78 +257,91 @@ export class TaskTrackerElement extends HTMLElement {
      * @param {string} attribute name of the attribute on this element
      * @param {string} defaultValue value if this element doesn't have a value set
      */
-    #useAttrOrDefault(innerEl, attribute, defaultValue) {
-        let value = this.getAttribute(attribute) ?? defaultValue
+    #useAttrOrDefault (innerEl, attribute, defaultValue) {
+        const value = this.getAttribute(attribute) ?? defaultValue
 
         if (innerEl instanceof HTMLInputElement || innerEl instanceof HTMLSelectElement)
             innerEl.value = value
         else
             innerEl.textContent = value
     }
-    
+
     attributeChangedCallback (name, _oldValue, newValue) {
         if (TaskTrackerElement.observedAttributes.includes(name))
             this[snakeToCamel(name)] = newValue
     }
 
-    get name() {
+    get name () {
         return this.#nameEl.textContent
     }
-    set name(value) {
+
+    set name (value) {
         this.#nameEl.textContent = value
     }
-    get resistance() {
+
+    get resistance () {
         return this.#resistanceEl.value
     }
-    set resistance(value) {
+
+    set resistance (value) {
         this.#resistanceEl.value = value
     }
-    get complicationRange() {
+
+    get complicationRange () {
         return this.#complicationRangeEl.value
     }
-    set complicationRange(value) {
+
+    set complicationRange (value) {
         if (!isNaN(parseInt(value)))
             this.#complicationRangeEl.value = value
     }
-    get progress() {
+
+    get progress () {
         return this.#progressEl.value
     }
-    set progress(value) {
+
+    set progress (value) {
         if (!isNaN(parseInt(value)))
             this.#progressEl.value = value
     }
-    get attribute() {
+
+    get attribute () {
         return this.#attributeEl.value
     }
-    set attribute(value) {
-        if (!!this.#attributeEl.querySelector(`option[value="${value}"]`))
+
+    set attribute (value) {
+        if (this.#attributeEl.querySelector(`option[value="${value}"]`))
             this.#attributeEl.value = value
     }
-    get department() {
+
+    get department () {
         return this.#departmentEl.value
     }
-    set department(value) {
-        if (!!this.#departmentEl.querySelector(`option[value="${value}"]`))
+
+    set department (value) {
+        if (this.#departmentEl.querySelector(`option[value="${value}"]`))
             this.#departmentEl.value = value
     }
-    get shipSystem() {
+
+    get shipSystem () {
         return this.#shipSystemEl.value
     }
-    set shipSystem(value) {
-        if (!!this.#shipSystemEl.querySelector(`option[value="${value}"]`))
+
+    set shipSystem (value) {
+        if (this.#shipSystemEl.querySelector(`option[value="${value}"]`))
             this.#shipSystemEl.value = value
     }
-    get shipDepartment() {
+
+    get shipDepartment () {
         return this.#shipDepartmentEl.value
     }
-    set shipDepartment(value) {
-        if (!!this.#shipDepartmentEl.querySelector(`option[value="${value}"]`))
+
+    set shipDepartment (value) {
+        if (this.#shipDepartmentEl.querySelector(`option[value="${value}"]`))
             this.#shipDepartmentEl.value = value
     }
-
 }
 
 // Register element
 customElements.define('task-tracker', TaskTrackerElement)
 globalThis.TaskTrackerElement = TaskTrackerElement
-export default TaskTrackerElement

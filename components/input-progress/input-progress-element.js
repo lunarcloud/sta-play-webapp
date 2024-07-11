@@ -1,6 +1,5 @@
 export class InputProgressElement extends HTMLElement {
-
-    static get observedAttributes() {
+    static get observedAttributes () {
         return ['value', 'max']
     }
 
@@ -73,11 +72,12 @@ export class InputProgressElement extends HTMLElement {
             this[name] = newValue
     }
 
-    get value() {
+    get value () {
         return this.#progressEl.value
     }
-    set value(newValue) {
-        let intVal = parseInt(`${newValue}`)
+
+    set value (newValue) {
+        const intVal = parseInt(`${newValue}`)
         newValue = Math.min(this.max, Math.max(0, intVal)) // clamp
 
         this.#rangeEl.value = `${intVal}`
@@ -85,10 +85,11 @@ export class InputProgressElement extends HTMLElement {
         this.#dataEl.textContent = `${intVal}`
     }
 
-    get max() {
+    get max () {
         return this.#progressEl.max
     }
-    set max(newValue) {
+
+    set max (newValue) {
         let intVal = parseInt(`${newValue}`)
         intVal = Math.max(1, intVal) // clamp
 
@@ -106,4 +107,3 @@ export class InputProgressElement extends HTMLElement {
 // Register element
 customElements.define('input-progress', InputProgressElement)
 globalThis.InputProgressElement = InputProgressElement
-export default InputProgressElement

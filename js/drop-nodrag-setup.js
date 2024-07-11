@@ -1,4 +1,3 @@
-
 /**
  * Set an element up as a drop zone (not draggable).
  * @param {HTMLElement|any} el Element to set up drop but not drag for

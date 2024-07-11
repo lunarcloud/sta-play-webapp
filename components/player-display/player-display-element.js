@@ -1,34 +1,30 @@
 import { setupDropOnly } from '../../js/drop-nodrag-setup.js'
-import '../input-progress/input-progress-element.js'
-import InputProgressElement from '../input-progress/input-progress-element.js'
-import { snakeToCamel } from "../../js/string-utils.js";
-
-
+import { InputProgressElement } from '../input-progress/input-progress-element.js'
+import { snakeToCamel } from '../../js/string-utils.js'
 
 /**
  * Player Information Display
  */
 
-
 const ColorSquares = [
-    {name: 'brown', text: '🟫'},
-    {name: 'red', text: '🟥'},
-    {name: 'blue', text: '🟦'},
-    {name: 'yellow', text: '🟨'},
-    {name: 'black', text: '⬛'},
-    {name: 'white', text: '⬜'}
+    { name: 'brown', text: '🟫' },
+    { name: 'red', text: '🟥' },
+    { name: 'blue', text: '🟦' },
+    { name: 'yellow', text: '🟨' },
+    { name: 'black', text: '⬛' },
+    { name: 'white', text: '⬜' }
 ]
 
 /**
  * Get the text for player rank pips
  * @param {number} solid amount of solid pips
  * @param {number} hollow amount of hollow pips
- * @returns text containing the solid, then hollow, pip symbols
+ * @returns {string} text containing the solid, then hollow, pip symbols
  */
-function PipText(solid, hollow) {
+function PipText (solid, hollow) {
     return ''
         .padStart(solid, '⚫')
-        .padEnd(solid+hollow, '⚪')
+        .padEnd(solid + hollow, '⚪')
 }
 
 const Pips = [
@@ -51,8 +47,7 @@ const DefaultPlayerImages = [
 ]
 
 export class PlayerDisplayElement extends HTMLLIElement {
-
-    static get observedAttributes() {
+    static get observedAttributes () {
         return [
             'player-index',
             'name',
@@ -60,8 +55,8 @@ export class PlayerDisplayElement extends HTMLLIElement {
             'rank',
             'current-stress',
             'max-stress'
-        ];
-      }
+        ]
+    }
 
     /**
      * @type {HTMLButtonElement}
@@ -93,7 +88,6 @@ export class PlayerDisplayElement extends HTMLLIElement {
      */
     #maxStressEl
 
-
     /**
      * @type {HTMLImageElement}
      */
@@ -122,12 +116,12 @@ export class PlayerDisplayElement extends HTMLLIElement {
 
         // remove button ⤫
         this.#removeBtnEl = document.createElement('button')
-        this.#removeBtnEl.classList.add("remove")
+        this.#removeBtnEl.classList.add('remove')
         this.#removeBtnEl.textContent = '⤫'
-        this.#removeBtnEl.addEventListener("click", () => {
+        this.#removeBtnEl.addEventListener('click', () => {
             this.dispatchEvent(new Event('removed'))
             this.remove()
-        });
+        })
 
         // select 'color'
         const currentColor = this.getAttribute('color') ?? 'brown'
@@ -136,14 +130,14 @@ export class PlayerDisplayElement extends HTMLLIElement {
         this.#colorSelect = document.createElement('select')
         this.#colorSelect.className = 'color'
         for (let i = 0; i < ColorSquares.length; i++) {
-            let optionEl = document.createElement('option')
+            const optionEl = document.createElement('option')
             optionEl.value = ColorSquares[i].name
             optionEl.textContent = ColorSquares[i].text
             if (currentColor === ColorSquares[i].name)
                 optionEl.selected = true
             this.#colorSelect.appendChild(optionEl)
         }
-        this.#colorSelect.addEventListener('change', _event => this.setAttribute('color', this.#colorSelect.value));
+        this.#colorSelect.addEventListener('change', _event => this.setAttribute('color', this.#colorSelect.value))
 
         // select 'rank'
         const currentRank = this.getAttribute('rank') ?? Pips[0].pips
@@ -152,15 +146,14 @@ export class PlayerDisplayElement extends HTMLLIElement {
         this.#rankSelect = document.createElement('select')
         this.#rankSelect.className = 'rank'
         for (let i = 0; i < Pips.length; i++) {
-            let optionEl = document.createElement('option')
+            const optionEl = document.createElement('option')
             optionEl.title = Pips[i].title
             optionEl.textContent = Pips[i].pips
             if ([Pips[i].pips, Pips[i].title].includes(currentRank))
                 optionEl.selected = true
             this.#rankSelect.appendChild(optionEl)
         }
-        this.#rankSelect.addEventListener('change', _event => this.setAttribute('rank', this.#rankSelect.value));
-
+        this.#rankSelect.addEventListener('change', _event => this.setAttribute('rank', this.#rankSelect.value))
 
         // stress input-progress of input max
         let currentStress = parseInt(this.getAttribute('current-stress'))
@@ -175,7 +168,7 @@ export class PlayerDisplayElement extends HTMLLIElement {
 
         const stressEl = document.createElement('stress')
 
-        let currentStressEl = document.createElement('input-progress')
+        const currentStressEl = document.createElement('input-progress')
         if (currentStressEl instanceof InputProgressElement === false)
             throw new Error('Something went very wrong!')
         this.#currentStressEl = currentStressEl
@@ -216,7 +209,7 @@ export class PlayerDisplayElement extends HTMLLIElement {
         this.#portraitEl = document.createElement('img')
         this.#portraitEl.className = 'portrait'
 
-        let topAreaEl = document.createElement('div')
+        const topAreaEl = document.createElement('div')
         topAreaEl.className = 'top-area'
         topAreaEl.appendChild(this.#portraitEl)
         topAreaEl.appendChild(this.#nameEl)
@@ -247,59 +240,64 @@ export class PlayerDisplayElement extends HTMLLIElement {
             this[snakeToCamel(name)] = newValue
     }
 
-    get playerIndex() {
-        let i = parseInt(this.getAttribute('player-index'))
+    get playerIndex () {
+        const i = parseInt(this.getAttribute('player-index'))
         return isNaN(i) ? 0 : i
     }
-    set playerIndex(value) {
+
+    set playerIndex (value) {
         if (this.getAttribute('player-index') !== `${value}`)
             this.setAttribute('player-index', `${value}`)
     }
 
-    get name() {
+    get name () {
         return this.#nameEl.textContent
     }
-    set name(value) {
+
+    set name (value) {
         this.#nameEl.textContent = value
     }
 
-    get color() {
+    get color () {
         return this.#colorSelect.value
     }
-    set color(value) {
+
+    set color (value) {
         this.#colorSelect.value = value
     }
 
-    get rank() {
+    get rank () {
         return this.#rankSelect.value
     }
 
-    set rank(value) {
-        if (typeof(value) !== "string")
+    set rank (value) {
+        if (typeof (value) !== 'string')
             return
-        let titleMatches = Pips.filter(e => e.title === value)
-        let pipMatches = Pips.filter(e => e.pips === value)
+        const titleMatches = Pips.filter(e => e.title === value)
+        const pipMatches = Pips.filter(e => e.pips === value)
         if (titleMatches.length > 0)
             this.setAttribute('rank', titleMatches[0].pips)
         else if (pipMatches.length > 0)
             this.#rankSelect.value = pipMatches[0].pips
-        return;
     }
 
-    get currentStress() {
+    get currentStress () {
         return this.#currentStressEl.value
     }
-    set currentStress(value) {
+
+    set currentStress (value) {
         if (isNaN(value))
             return
 
         if (this.#currentStressEl.max !== value)
             this.#currentStressEl.value = value
     }
-    get maxStress() {
+
+    get maxStress () {
         return this.#currentStressEl.max
     }
-    set maxStress(value) {
+
+    set maxStress (value) {
         if (isNaN(value))
             return
 
@@ -310,7 +308,7 @@ export class PlayerDisplayElement extends HTMLLIElement {
             this.#maxStressEl.value = `${value}`
     }
 
-    get imageFile() {
+    get imageFile () {
         return this.#imageFile
     }
 
@@ -323,7 +321,7 @@ export class PlayerDisplayElement extends HTMLLIElement {
         this.#portraitEl.src = URL.createObjectURL(this.#imageFile)
     }
 
-    setDefaultImage() {
+    setDefaultImage () {
         this.#portraitEl.src = DefaultPlayerImages[this.playerIndex % DefaultPlayerImages.length]
     }
 }
@@ -331,4 +329,3 @@ export class PlayerDisplayElement extends HTMLLIElement {
 // Register element
 customElements.define('player-display', PlayerDisplayElement, { extends: 'li' })
 globalThis.PlayerDisplayElement = PlayerDisplayElement
-export default PlayerDisplayElement

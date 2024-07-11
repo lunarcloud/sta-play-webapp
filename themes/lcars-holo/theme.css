@@ -2,18 +2,17 @@
 
 :root,
 ::backdrop {
-    --main-color-bg: hsl(200, 20%, 27%); /* holographic or glass */
-    --nav-color-text: hsl(251, 20%, 83%);
+    --main-color-bg: hsl(200deg 20% 27%); /* holographic or glass */
+    --nav-color-text: hsl(251deg 20% 83%);
     --player-color-opacity: 0.20;
     --trait-color-opacity: 0.20;
     --saturation-adjust: 20%;
-
-    --player-color-red: hsla(0, 58%, 52%, var(--player-color-opacity));
-    --player-color-blue: hsla(249, 84%, 47%, var(--player-color-opacity));
-    --player-color-yellow: hsla(50, 73%, 58%, var(--player-color-opacity));
-    --player-color-brown: hsla(23, 55%, 64%, var(--player-color-opacity));
-    --player-color-black: hsla(252, 5%, 21%, var(--player-color-opacity));
-    --player-color-white: hsla(248, 24%, 82%, var(--player-color-opacity));
+    --player-color-red: hsl(0deg 58% 52% / var(--player-color-opacity));
+    --player-color-blue: hsl(249deg 84% 47% / var(--player-color-opacity));
+    --player-color-yellow: hsl(50deg 73% 58% / var(--player-color-opacity));
+    --player-color-brown: hsl(23deg 55% 64% / var(--player-color-opacity));
+    --player-color-black: hsl(252deg 5% 21% / var(--player-color-opacity));
+    --player-color-white: hsl(248deg 24% 82% / var(--player-color-opacity));
 }
 
 li[is="player-display"] {
@@ -21,19 +20,19 @@ li[is="player-display"] {
 }
 
 task-tracker::part(internal) {
-    --tracker-background-color: hsla(284, 14%, 42%, 0.459);
-    --tracker-title-separator-color: hsla(253, 73%, 28%, 0.62);
+    --tracker-background-color: hsl(284deg 14% 42% / 45.9%);
+    --tracker-title-separator-color: hsl(253deg 73% 28% / 62%);
 }
 
 /* normal trait colors, but translucent */
 trait-display {
     --trait-color-opacity: 0.35;
-    --trek-color-1: hsla(240,   80%,    44%,    var(--trait-color-opacity));
-    --trek-color-2: hsla(196,   54%,    61%,    var(--trait-color-opacity));
-    --trek-color-3: hsla(249,   64%,    47%,    var(--trait-color-opacity));
-    --trek-color-4: hsla(172,   35%,    37%,    var(--trait-color-opacity));
-    --trek-color-5: hsla(287,   53%,    58%,    var(--trait-color-opacity));
-    --trek-color-6: hsla(260,   38%,    32%,    var(--trait-color-opacity));
+    --trek-color-1: hsl(240deg   80%    44% /    var(--trait-color-opacity));
+    --trek-color-2: hsl(196deg   54%    61% /    var(--trait-color-opacity));
+    --trek-color-3: hsl(249deg   64%    47% /    var(--trait-color-opacity));
+    --trek-color-4: hsl(172deg   35%    37% /    var(--trait-color-opacity));
+    --trek-color-5: hsl(287deg   53%    58% /    var(--trait-color-opacity));
+    --trek-color-6: hsl(260deg   38%    32% /    var(--trait-color-opacity));
 }
 
 body {
@@ -51,12 +50,11 @@ body {
     var(--main-color-bg),
     var(--void-bg),
     var(--main-color-bg));
-
   background-size: 200% 200%;
-  animation: moveGradient 30s linear 0s infinite normal;
+  animation: move-gradient 30s linear 0s infinite normal;
 }
 
-@keyframes moveGradient {
+@keyframes move-gradient {
     0% {background-position: 100% 0%}
     100% {background-position: 0% 100%}
 }
@@ -71,11 +69,10 @@ nav > ul {
 
 /* Because of transparency, replace the inner curves with angles */
 decoration > ul li {
-
     &.curve-bottom-right, &.curve-top-right {
         & li:nth-of-type(1)::before {
-            width: 0px;
-            border-width: 10mm 15mm 10mm 0mm;
+            width: 0;
+            border-width: 10mm 15mm 10mm 0;
             border-style: solid;
             background: unset !important;
             border-color: transparent;
@@ -85,11 +82,13 @@ decoration > ul li {
             content: unset;
         }
     }
+
     &.curve-bottom-right {
         & li:nth-of-type(1)::before {
             border-bottom-color: var(--trek-color-2);
         }
     }
+
     &.curve-top-right {
         & li:nth-of-type(1)::before {
             border-top-color: var(--trek-color-1);

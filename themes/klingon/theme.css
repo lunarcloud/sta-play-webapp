@@ -7,29 +7,25 @@
     --main-font-size: 6mm;
     --main-color-bg: hsl(200deg 50% 1%); /* nearly-black */
     --void-bg: black;
-
-    --trek-color-1: hsl(5, 86%, 44%);
-    --trek-color-2: hsl(65, 22%, 34%);
-    --trek-color-3: hsl(0, 0%, 39%);
-    --trek-color-4: hsl(5, 76%, 16%);
-    --trek-color-5: hsl(312, 21%, 24%);
-    --trek-color-6: hsl(15, 47%, 35%);
-
-    --header-inner-bg: hsl(0, 80%, 18%);
+    --trek-color-1: hsl(5deg 86% 44%);
+    --trek-color-2: hsl(65deg 22% 34%);
+    --trek-color-3: hsl(0deg 0% 39%);
+    --trek-color-4: hsl(5deg 76% 16%);
+    --trek-color-5: hsl(312deg 21% 24%);
+    --trek-color-6: hsl(15deg 47% 35%);
+    --header-inner-bg: hsl(0deg 80% 18%);
     --header-outer-bg: var(--main-color-bg);
     --header-edge-bg: var(--main-color-bg);
-
     --trek-color-highlight: var(--trek-color-1);
-    --ship-name-color:rgb(171, 113, 113);
-    --ship-name-color-bg: hsla(0, 0%, 0%, 0.799);
+    --ship-name-color:rgb(171 113 113);
+    --ship-name-color-bg: hsl(0deg 0% 0% / 79.9%);
     --ship-name-color-border: transparent;
-
-    --player-color-red: hsl(5, 70%, 25%);
-    --player-color-blue: hsl(221, 36%, 28%);
-    --player-color-yellow: hsl(53, 40%, 46%);
-    --player-color-brown: hsl(32, 43%, 29%);
-    --player-color-black: hsl(260, 12%, 25%);
-    --player-color-white: hsl(261, 19%, 77%);
+    --player-color-red: hsl(5deg 70% 25%);
+    --player-color-blue: hsl(221deg 36% 28%);
+    --player-color-yellow: hsl(53deg 40% 46%);
+    --player-color-brown: hsl(32deg 43% 29%);
+    --player-color-black: hsl(260deg 12% 25%);
+    --player-color-white: hsl(261deg 19% 77%);
 }
 
 
@@ -57,11 +53,13 @@ body {
         grid-column: 2;
         margin: 1mm;
     }
+
     & nav {
         grid-row: 3;
         grid-column: 3;
         margin-top: 0;
     }
+
     & > main {
         grid-row: 1;
         grid-column: 1 / 4;
@@ -84,7 +82,7 @@ body {
     text-align: center;
     font-size: 21px;
     color: black;
-    text-shadow: 1px 1px 0 rgb(79, 70, 70);
+    text-shadow: 1px 1px 0 rgb(79 70 70);
 
     & br {
         display: none;
@@ -93,7 +91,6 @@ body {
 
 #settings-btn {
     inset: unset;
-    width: unset;
     padding: unset;
     bottom: 38mm;
     left: 5mm;
@@ -104,7 +101,6 @@ body {
 #save-btn {
     inset: unset;
     padding: unset;
-    width: unset;
     bottom: 38mm;
     left: 35mm;
     width: 20mm;
@@ -131,25 +127,23 @@ body {
 #save-btn,
 #momentum-section
 {
-    background-color: hsla(0, 0%, 39%, 0.75);
+    background-color: hsl(0deg 0% 39% / 75%);
     border-radius: 4px;
     padding: 4px;
 }
 
 task-tracker::part(internal) {
-
     background-repeat: repeat;
     background-size: 240px;
     background-image: url('cc0-textures/diamond-plate-007-D.jpg');
     color: black;
     text-shadow: 0 0 2px #999;
 
-    --tracker-dt-background-color: hsla(0, 0%, 39%, 0.409);
-    --tracker-dt-border-color: hsl(0, 51%, 15%);
-
-    --tracker-dd-text-color: hsl(0, 0%, 89%);
-    --tracker-dd-background-color: hsl(0, 0%, 9%);
-    --tracker-dd-border-color: hsl(0, 51%, 15%);
+    --tracker-dt-background-color: hsl(0deg 0% 39% / 40.9%);
+    --tracker-dt-border-color: hsl(0deg 51% 15%);
+    --tracker-dd-text-color: hsl(0deg 0% 89%);
+    --tracker-dd-background-color: hsl(0deg 0% 9%);
+    --tracker-dd-border-color: hsl(0deg 51% 15%);
 }
 
 

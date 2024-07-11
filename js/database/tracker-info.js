@@ -1,5 +1,4 @@
-import { NamedInfo } from './named-info.js';
-
+import { NamedInfo } from './named-info.js'
 
 export class TrackerInfo extends NamedInfo {
     /**
@@ -11,37 +10,37 @@ export class TrackerInfo extends NamedInfo {
     /**
      * @type {number}
      */
-    resistance;
+    resistance
 
     /**
      * @type {number}
      */
-    complicationRange;
+    complicationRange
 
     /**
      * @type {string}
      */
-    attribute;
+    attribute
 
     /**
      * @type {string}
      */
-    department;
+    department
 
     /**
      * @type {string}
      */
-    shipSystem;
+    shipSystem
 
     /**
      * @type {string}
      */
-    shipDepartment;
+    shipDepartment
 
     /**
      * @type {number}
      */
-    progressTrack;
+    progressTrack
 
     /**
      * Create a Combat/Extended Tracker Info
@@ -55,26 +54,26 @@ export class TrackerInfo extends NamedInfo {
      * @param {number|string} resistance        the amount of resistance
      * @param {number|string} complicationRange the complication range
      */
-    constructor(game, name, attribute, department, shipSystem, shipDepartment, progressTrack, resistance = 0, complicationRange = 0) {
-        super(name);
+    constructor (game, name, attribute, department, shipSystem, shipDepartment, progressTrack, resistance = 0, complicationRange = 0) {
+        super(name)
         this.game = game
-        this.attribute = attribute;
-        this.department = department;
-        this.shipSystem = shipSystem;
-        this.shipDepartment = shipDepartment;
-        this.progressTrack = typeof (progressTrack) === 'number' ? progressTrack : parseInt(progressTrack);
-        this.resistance = typeof (resistance) === 'number' ? resistance : parseInt(resistance);
-        this.complicationRange = typeof (complicationRange) === 'number' ? complicationRange : parseInt(complicationRange);
+        this.attribute = attribute
+        this.department = department
+        this.shipSystem = shipSystem
+        this.shipDepartment = shipDepartment
+        this.progressTrack = typeof (progressTrack) === 'number' ? progressTrack : parseInt(progressTrack)
+        this.resistance = typeof (resistance) === 'number' ? resistance : parseInt(resistance)
+        this.complicationRange = typeof (complicationRange) === 'number' ? complicationRange : parseInt(complicationRange)
     }
 
-    validate() {
-        return typeof(this.game) === "number"
-            && typeof(this.attribute) === "string"
-            && typeof(this.department) === "string"
-            && typeof(this.shipSystem) === "string"
-            && typeof(this.shipDepartment) === "string"
-            && typeof(this.progressTrack) === "number"
-            && typeof(this.resistance) === "number"
-            && typeof(this.complicationRange) === "number";
+    validate () {
+        return typeof (this.game) === 'number' &&
+            typeof (this.attribute) === 'string' &&
+            typeof (this.department) === 'string' &&
+            typeof (this.shipSystem) === 'string' &&
+            typeof (this.shipDepartment) === 'string' &&
+            typeof (this.progressTrack) === 'number' &&
+            typeof (this.resistance) === 'number' &&
+            typeof (this.complicationRange) === 'number'
     }
 }

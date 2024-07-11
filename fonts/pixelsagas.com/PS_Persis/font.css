@@ -1,20 +1,23 @@
 @font-face {
-    font-family: "Persis";
+    font-family: Persis;
     src: url("Persis Bold Italic.otf");
     font-style: italic;
     font-weight: bold;
 }
+
 @font-face {
-    font-family: "Persis";
+    font-family: Persis;
     src: url("Persis Italic.otf");
     font-style: italic;
 }
+
 @font-face {
-    font-family: "Persis";
+    font-family: Persis;
     src: url("Persis Bold.otf");
     font-weight: bold;
 }
+
  @font-face {
-    font-family: "Persis";
+    font-family: Persis;
     src: url("Persis.otf");
 }

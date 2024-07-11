@@ -18,22 +18,19 @@
     --void-bg: black;
     --min-decoration-height: 250mm;
     --min-body-height: calc(20mm + var(--min-decoration-height));
-
-    --trek-color-1: hsl(5, 56%, 54%); /* red */
-    --trek-color-2: hsl(234, 90%, 73%); /* blue */
-    --trek-color-3: hsl(27, 84%, 55%); /* orange */
-    --trek-color-4: hsl(17, 78%, 76%); /* peach */
-    --trek-color-5: hsl(269, 90%, 76%); /* periwinkle */
-    --trek-color-6: hsl(321, 44%, 53%); /* magenta */
-
+    --trek-color-1: hsl(5deg 56% 54%); /* red */
+    --trek-color-2: hsl(234deg 90% 73%); /* blue */
+    --trek-color-3: hsl(27deg 84% 55%); /* orange */
+    --trek-color-4: hsl(17deg 78% 76%); /* peach */
+    --trek-color-5: hsl(269deg 90% 76%); /* periwinkle */
+    --trek-color-6: hsl(321deg 44% 53%); /* magenta */
     --trek-color-highlight: var(--trek-color-3);
-
     --player-color-red: var(--trek-color-1);
     --player-color-blue: var(--trek-color-2);
     --player-color-yellow: var(--trek-color-3);
     --player-color-brown: var(--trek-color-4);
-    --player-color-black: hsl(0, 0%, 13%);
-    --player-color-white: hsl(0, 0%, 73%);
+    --player-color-black: hsl(0deg 0% 13%);
+    --player-color-white: hsl(0deg 0% 73%);
 }
 
 
@@ -49,7 +46,7 @@ decoration {
     overflow: hidden visible;
 
     &::-webkit-scrollbar {
-        width: 0px;
+        width: 0;
         background-color: transparent;
         color: transparent;
         border: 0 solid transparent;

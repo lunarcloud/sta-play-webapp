@@ -16,22 +16,18 @@
     --main-a-visited-color: hsl(268deg 23% 42%);
     --main-font-size: 7mm;
     --void-bg: black;
-
     --header-inner-bg: var(--secondary-color-bg);
     --header-outer-bg: var(--main-color-bg);
     --header-edge-bg: transparent;
-
     --trek-color-1: #cb5449;
     --trek-color-2: #7a87f8;
     --trek-color-3: #ed822c;
     --trek-color-4: #f2af94;
     --trek-color-5: #c18cf9;
     --trek-color-6: #bc5196;
-
     --trek-color-highlight: var(--trek-color-3);
     --ship-name-color: white;
     --ship-name-color-bg: transparent;
-
     --player-color-red: var(--trek-color-1);
     --player-color-blue: var(--trek-color-2);
     --player-color-yellow: var(--trek-color-3);
@@ -117,10 +113,7 @@
 html {
     margin: 0;
     padding: 0;
-    font-size: 14pt;
-    background-color: var(--main-color-bg);
     hyphens: auto;
-    position: relative;
     min-height: 250mm;
     height: fit-content;
     position: relative;
@@ -243,6 +236,7 @@ model-viewer {
 
 dialogs > dialog {
     --backdrop-color: hsla(0deg 0% 0% / 80%);
+
     flex-direction: column;
     justify-content: flex-start;
     padding: 0;
@@ -342,7 +336,7 @@ dialogs > dialog {
 
     & footer {
         border-top: 0.25em ridge var(--main-color-bg);
-        padding: 0 0 4px 0;
+        padding: 0 0 4px;
         background-color: hsl(0deg 0% 8%);
 
         & > button.close {
@@ -359,6 +353,7 @@ dialogs > dialog {
             &:hover {
                 filter: hue-rotate(-10deg);
             }
+
             &:active {
                 filter: brightness(0.8);
             }
@@ -400,6 +395,7 @@ dialogs > dialog {
     & text {
       padding-inline: 0.5em;
     }
+
     & > symbol {
         width: 1.125em;
         text-align: justify;
@@ -453,6 +449,7 @@ dialogs > dialog {
         font-weight: bold;
         color: var(--nav-color-text);
     }
+
     & > label > input {
       float: inline-end;
       scale: 1.5;
@@ -462,6 +459,7 @@ dialogs > dialog {
 #threat-section {
   top: 136mm;
 }
+
 #momentum-section {
   top: 130mm;
 
@@ -529,7 +527,6 @@ body {
         display: flex;
         flex-wrap: nowrap;
         gap: 0.25em;   
-
         background: transparent;
         background: linear-gradient(90deg,
           var(--header-edge-bg) 0%,

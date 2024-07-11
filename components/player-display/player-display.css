@@ -132,7 +132,7 @@ li[is="player-display"] {
     }
 
     /* Border color is used to denote department, mostly */
-    &[color="brown"]      { border-color: var(--player-color-brown, hsl(40, 36%, 21%)); }
+    &[color="brown"]      { border-color: var(--player-color-brown, hsl(40deg 36% 21%)); }
     &[color="red"]        { border-color: var(--player-color-red, red); }
     &[color="blue"]       { border-color: var(--player-color-blue, blue); }
     &[color="yellow"]     { border-color: var(--player-color-yellow, yellow); }

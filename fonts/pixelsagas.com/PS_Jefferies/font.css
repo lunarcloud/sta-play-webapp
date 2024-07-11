@@ -1,20 +1,23 @@
 @font-face {
-    font-family: "Jefferies";
+    font-family: Jefferies;
     src: url("Jefferies Bold Italic.otf");
     font-style: italic;
     font-weight: bold;
 }
+
 @font-face {
-    font-family: "Jefferies";
+    font-family: Jefferies;
     src: url("Jefferies Italic.otf");
     font-style: italic;
 }
+
 @font-face {
-    font-family: "Jefferies";
+    font-family: Jefferies;
     src: url("Jefferies Bold.otf");
     font-weight: bold;
 }
+
  @font-face {
-    font-family: "Jefferies";
+    font-family: Jefferies;
     src: url("Jefferies.otf");
 }

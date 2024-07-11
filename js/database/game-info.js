@@ -1,43 +1,42 @@
-import { NamedInfo } from "./named-info.js";
+import { NamedInfo } from './named-info.js'
 
 export const DefaultGameName = 'Default Game'
 
 export class GameInfo extends NamedInfo {
-
     /**
      * @type {string}
      */
-    shipName;
+    shipName
 
     /**
      * @type {File|undefined}
      */
-    shipModel;
+    shipModel
 
     /**
      * @type {number}
      */
-    momentum;
+    momentum
 
     /**
      * @type {number}
      */
-    threat;
+    threat
 
     /**
      * @type {string}
      */
-    activeAlert;
+    activeAlert
 
     /**
      * @type {string}
      */
-    theme;
+    theme
 
     /**
      * @type {'1'|'2'|'captains-log'}
      */
-    edition;
+    edition
 
     /**
      * Create a new General Info object
@@ -51,42 +50,42 @@ export class GameInfo extends NamedInfo {
      * @param {string}              [edition]       which edition is active
      * @param {File}                [shipModel]     ship's 3D model
      */
-    constructor(id, name, shipName, momentum = 0, threat = 0, activeAlert = "", theme = "lcars-24", edition = '2', shipModel = undefined) {
-        super(name ?? DefaultGameName, id);
-        this.shipName = shipName;
-        this.momentum = typeof (momentum) === 'number' ? momentum : parseInt(momentum);
-        this.threat = typeof (threat) === 'number' ? threat : parseInt(threat);
-        this.activeAlert = activeAlert;
-        this.theme = theme;
-        this.setEdition(edition);
-        this.shipModel = shipModel;
+    constructor (id, name, shipName, momentum = 0, threat = 0, activeAlert = '', theme = 'lcars-24', edition = '2', shipModel = undefined) {
+        super(name ?? DefaultGameName, id)
+        this.shipName = shipName
+        this.momentum = typeof (momentum) === 'number' ? momentum : parseInt(momentum)
+        this.threat = typeof (threat) === 'number' ? threat : parseInt(threat)
+        this.activeAlert = activeAlert
+        this.theme = theme
+        this.setEdition(edition)
+        this.shipModel = shipModel
     }
 
     /**
      * Set Edition
-     * @param {string} value
+     * @param {string} value  edition specified
      */
-    setEdition(value) {
+    setEdition (value) {
         // Not done as a setter function because private members don't seem to save to db well
         switch (value) {
-            case '1':
-                this.edition = '1'
-                break;
-            case 'captains-log':
-                this.edition = 'captains-log'
-                break;
-            default:
-                this.edition = '2'
-                break;
+        case '1':
+            this.edition = '1'
+            break
+        case 'captains-log':
+            this.edition = 'captains-log'
+            break
+        default:
+            this.edition = '2'
+            break
         }
     }
 
-    validate() {
-        return typeof(this.name) === "string"
-            && this.momentum !== undefined
-            && this.threat !== undefined
-            && typeof(this.activeAlert) === "string"
-            && typeof(this.theme) === "string"
-            && ['1','2','captains-log'].includes(this.edition)
+    validate () {
+        return typeof (this.name) === 'string' &&
+            this.momentum !== undefined &&
+            this.threat !== undefined &&
+            typeof (this.activeAlert) === 'string' &&
+            typeof (this.theme) === 'string' &&
+            ['1', '2', 'captains-log'].includes(this.edition)
     }
 }

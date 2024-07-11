@@ -1,16 +1,16 @@
-import BgAudioManager from './js/bg-audio-page.js'
+import { BgAudioManager } from './js/bg-audio-page.js'
 import './components/input-progress/input-progress-element.js'
-import './components/trait-display/trait-display-element.js'
+import { TraitDisplayElement } from './components/trait-display/trait-display-element.js'
 import './components/welcome-dialog/welcome-dialog-element.js'
 import './components/settings-dialog/settings-dialog-element.js'
-import './components/player-display/player-display-element.js'
-import './components/task-tracker/task-tracker-element.js'
+import { PlayerDisplayElement } from './components/player-display/player-display-element.js'
+import { TaskTrackerElement } from './components/task-tracker/task-tracker-element.js'
 import { Database } from './js/database/database.js'
 import { TrackerInfo } from './js/database/tracker-info.js'
 import { PlayerInfo } from './js/database/player-info.js'
 import { DefaultGameName, GameInfo } from './js/database/game-info.js'
 import 'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js'
-import ShipAlertElement from './components/ship-alert/ship-alert-element.js'
+import { ShipAlertElement } from './components/ship-alert/ship-alert-element.js'
 import { setupDropOnly } from './js/drop-nodrag-setup.js'
 import { loadElementFromFile } from './js/load-file-element.js'
 import { SceneInfo } from './js/database/scene-info.js'
@@ -82,11 +82,11 @@ export class IndexController {
         document.getElementById('task-tracker-add').addEventListener('click', () => this.addTaskTracker())
         document.getElementById('player-add').addEventListener('click', () => this.addPlayer())
         document.getElementById('trait-add').addEventListener('click', () => this.addTrait())
-        let saveBtn = document.getElementById('save-btn')
+        const saveBtn = document.getElementById('save-btn')
         saveBtn.addEventListener('click', () => {
             // Debounce
             saveBtn.setAttribute('disabled', '')
-            setTimeout(() => saveBtn.removeAttribute('disabled'), this.#debounceAmount);
+            setTimeout(() => saveBtn.removeAttribute('disabled'), this.#debounceAmount)
             // Do
             this.saveData()
         })
@@ -94,9 +94,8 @@ export class IndexController {
         const alertEl = document.getElementsByTagName('ship-alert')[0]
         if (alertEl instanceof ShipAlertElement)
             document.getElementById('alert-toggle').addEventListener('click', () => {
-            alertEl.cycle()
-        })
-
+                alertEl.cycle()
+            })
 
         // Wire up the welcome dialog
         const welcomeDialog = document.querySelector('dialog[is="welcome-dialog"]')
@@ -131,7 +130,7 @@ export class IndexController {
         if (themeStyleEl instanceof HTMLLinkElement === false)
             throw new Error('Theme CSS link element is wrong/missing!')
 
-        themeSelectEl.addEventListener('change', () => this.#useTheme(themeSelectEl.value));
+        themeSelectEl.addEventListener('change', () => this.#useTheme(themeSelectEl.value))
 
         // Load Info and Images from Database
         try {
@@ -156,7 +155,6 @@ export class IndexController {
                 settingsDialog.showModal()
             }
         })
-
     }
 
     /**
@@ -184,7 +182,7 @@ export class IndexController {
      * Set the page to a particular theme
      * @param {string} theme name of the theme
      */
-    #useTheme(theme) {
+    #useTheme (theme) {
         // Get elements
         const themeSelectEl = document.getElementById('select-theme')
         if (themeSelectEl instanceof HTMLSelectElement === false)
@@ -215,7 +213,7 @@ export class IndexController {
      * Set the page's text to a particular gaem edition
      * @param {string} edition   the number of the rules edition to use
      */
-    #useEdition(edition) {
+    #useEdition (edition) {
         const editionSelectEl = document.getElementById('select-edition')
         if (editionSelectEl instanceof HTMLSelectElement === false)
             throw new Error('Theme selector element is wrong/missing!')
@@ -271,7 +269,7 @@ export class IndexController {
 
         editionSelectEl.addEventListener('change', () => {
             this.#useEdition(editionSelectEl.value)
-        });
+        })
     }
 
     /**
@@ -317,7 +315,7 @@ export class IndexController {
             let firstSceneInfo
 
             if (gameInfo !== undefined) {
-                let sceneInfos = await this.db.getScenes(this.currentGameId, dbToken)
+                const sceneInfos = await this.db.getScenes(this.currentGameId, dbToken)
                 firstSceneInfo = sceneInfos?.[0]
                 this.currentSceneId = firstSceneInfo?.id
                 document.getElementById('general-text').innerHTML = firstSceneInfo?.description ?? this.fallbackText
@@ -391,7 +389,7 @@ export class IndexController {
             ? momentumToggleEl.checked ? 1 : 0
             : momentumEl.value
 
-        let gameInfo = new GameInfo(
+        const gameInfo = new GameInfo(
             this.currentGameId,
             gameName,
             document.getElementById('shipname').textContent.trim(),
@@ -404,7 +402,7 @@ export class IndexController {
         )
         this.currentGameId = await this.db.saveGameInfo(gameInfo, dbToken)
 
-        let sceneInfo = new SceneInfo(
+        const sceneInfo = new SceneInfo(
             this.currentSceneId,
             this.currentGameId,
             undefined, // TODO title/name
@@ -422,7 +420,8 @@ export class IndexController {
         const players = [...document.querySelectorAll('.players > li')]
             .map((el) => {
                 if (el instanceof PlayerDisplayElement === false)
-                    return
+                    return null
+
                 const info = new PlayerInfo(
                     this.currentGameId,
                     el.playerIndex,
@@ -440,7 +439,7 @@ export class IndexController {
         const trackers = [...document.querySelectorAll('task-tracker')]
             .map(el => {
                 if (el instanceof TaskTrackerElement === false)
-                    return
+                    return null
 
                 const info = new TrackerInfo(
                     this.currentGameId,
@@ -467,7 +466,7 @@ export class IndexController {
      * @param {TrackerInfo|undefined} info Player information
      */
     addTaskTracker (info = undefined) {
-        const newTrackerEl = document.createElement('task-tracker' )
+        const newTrackerEl = document.createElement('task-tracker')
         if (newTrackerEl instanceof TaskTrackerElement === false)
             throw new Error('App incorrectly configured!')
 
@@ -490,7 +489,7 @@ export class IndexController {
      * @param {string|undefined} name the name of the trait
      */
     addTrait (name = undefined) {
-        let traitEl = document.createElement('trait-display')
+        const traitEl = document.createElement('trait-display')
         if (typeof (name) === 'string')
             traitEl.setAttribute('text', name)
 
@@ -537,9 +536,9 @@ export class IndexController {
                 settingsPlayerEl.max = `${playerIndex + 1}`
 
             newPlayerEl.addEventListener('removed', () => {
-                let playerCount = document.querySelectorAll('.players li').length
+                const playerCount = document.querySelectorAll('.players li').length
                 settingsPlayerEl.max = `${playerCount - 1}`
-                settingsPlayerEl.value = `1` // reset so it's not above max
+                settingsPlayerEl.value = '1' // reset so it's not above max
             })
         }
     }
@@ -563,7 +562,6 @@ export class IndexController {
                 viewer.src = url
         }
     }
-
 }
 
 globalThis.App ??= { Page: undefined }
