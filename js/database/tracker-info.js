@@ -3,6 +3,12 @@ import { NamedInfo } from './named-info.js';
 
 export class TrackerInfo extends NamedInfo {
     /**
+     * The id of the game it is for
+     * @type {number}
+     */
+    game
+
+    /**
      * @type {number}
      */
     resistance;
@@ -39,6 +45,7 @@ export class TrackerInfo extends NamedInfo {
 
     /**
      * Create a Combat/Extended Tracker Info
+     * @param {number} game                     the id of the game it is for
      * @param {string} name                     the tracker's name
      * @param {string} attribute                the applicable attribute
      * @param {string} department               the applicable discipline/department
@@ -48,8 +55,9 @@ export class TrackerInfo extends NamedInfo {
      * @param {number|string} resistance        the amount of resistance
      * @param {number|string} complicationRange the complication range
      */
-    constructor(name, attribute, department, shipSystem, shipDepartment, progressTrack, resistance = 0, complicationRange = 0) {
+    constructor(game, name, attribute, department, shipSystem, shipDepartment, progressTrack, resistance = 0, complicationRange = 0) {
         super(name);
+        this.game = game
         this.attribute = attribute;
         this.department = department;
         this.shipSystem = shipSystem;
@@ -60,7 +68,8 @@ export class TrackerInfo extends NamedInfo {
     }
 
     validate() {
-        return typeof(this.attribute) === "string"
+        return typeof(this.game) === "number"
+            && typeof(this.attribute) === "string"
             && typeof(this.department) === "string"
             && typeof(this.shipSystem) === "string"
             && typeof(this.shipDepartment) === "string"

@@ -1,9 +1,11 @@
 // @ts-ignore
 import { openDB, deleteDB } from 'https://cdn.jsdelivr.net/npm/idb@8/+esm'
-import { GameInfo } from './game-info.js'
+import { DefaultGameName, GameInfo } from './game-info.js'
 import { NamedInfo } from './named-info.js'
 import { PlayerInfo } from './player-info.js'
 import { TrackerInfo } from './tracker-info.js'
+import { TraitInfo } from './trait-info.js'
+import { SceneInfo } from './scene-info.js'
 
 /**
  * @typedef {IDBDatabase & {
@@ -18,7 +20,7 @@ import { TrackerInfo } from './tracker-info.js'
  */
 
 const DB_NAME = 'STAPlayApp'
-const DB_VERSION = 9
+const DB_VERSION = 13
 const STORE = {
     GAMES: 'games',
     SCENES: 'scenes',
@@ -28,10 +30,10 @@ const STORE = {
 }
 const INDEX = {
     ID: 'id',
-    NAME: 'name'
+    NAME: 'name',
+    GAME: 'game',
+    SCENE: 'scene'
 }
-
-export const DefaultGameName = 'Default Game'
 
 export class Database {
     async clear () {
@@ -67,19 +69,28 @@ export class Database {
             db.deleteObjectStore(STORE.PLAYERS)
         if (db.objectStoreNames.contains(STORE.TRACKERS))
             db.deleteObjectStore(STORE.TRACKERS)
+        if (db.objectStoreNames.contains(STORE.SCENES))
+            db.deleteObjectStore(STORE.SCENES)
 
         console.warn('cleared db for upgrade')
-        const gameStore = db.createObjectStore(STORE.GAMES, { keyPath: INDEX.ID, autoIncrement: false })
+        const gameStore = db.createObjectStore(STORE.GAMES, { keyPath: INDEX.ID, autoIncrement: true })
         gameStore.createIndex(INDEX.NAME, INDEX.NAME, { unique: true })
 
         const traitStore = db.createObjectStore(STORE.TRAITS, { keyPath: INDEX.ID, autoIncrement: true })
         traitStore.createIndex(INDEX.NAME, INDEX.NAME, { unique: true })
+        traitStore.createIndex(INDEX.SCENE, INDEX.SCENE, { unique: false })
 
         const playerStore = db.createObjectStore(STORE.PLAYERS, { keyPath: INDEX.ID, autoIncrement: true })
         playerStore.createIndex(INDEX.NAME, INDEX.NAME, { unique: false })
+        playerStore.createIndex(INDEX.GAME, INDEX.GAME, { unique: false })
 
         const trackerStore = db.createObjectStore(STORE.TRACKERS, { keyPath: INDEX.ID, autoIncrement: true })
         trackerStore.createIndex(INDEX.NAME, INDEX.NAME, { unique: true })
+        trackerStore.createIndex(INDEX.GAME, INDEX.GAME, { unique: false })
+
+        const sceneStore = db.createObjectStore(STORE.SCENES, { keyPath: INDEX.ID, autoIncrement: true })
+        sceneStore.createIndex(INDEX.NAME, INDEX.NAME, { unique: false })
+        sceneStore.createIndex(INDEX.GAME, INDEX.GAME, { unique: false })
     }
 
     /**
@@ -93,7 +104,7 @@ export class Database {
         db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
 
         const row = await db.count(STORE.GAMES) !== 0 // has info
-            ? await db.get(STORE.GAMES, 0)
+            ? await db.getFromIndex(STORE.GAMES, INDEX.NAME, name)
             : undefined
 
         /** @type {GameInfo|undefined} */
@@ -107,18 +118,41 @@ export class Database {
         return generalInfo
     }
 
+
     /**
      * Get the scene traits from the database
-     * @param {string}  [name]                      the name of the game to filter by
+     * @param {number}  [gameId]                    the id of the game to filter by
+     * @param {IDBPDatabase|undefined} [db]         the database (else we'll open a new one)
+     * @returns {Promise<SceneInfo[]>}              the list of scenes
+     */
+    async getScenes(gameId, db = undefined) {
+        const andClose = typeof (db) === 'undefined'
+        db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
+
+        const rows = await db.getAllFromIndex(STORE.SCENES, INDEX.GAME, gameId)
+        if (andClose) db.close()
+        /** @type {SceneInfo[]} */
+        const data = rows.map(e => {
+            /** @type {SceneInfo} */
+            const item = Object.create(SceneInfo.prototype)
+            Object.assign(item, e)
+            return item
+        })
+        return data
+    }
+
+    /**
+     * Get the scene traits from the database
+     * @param {number}  [sceneId]                   the id of the scene to filter by
      * @param {IDBPDatabase|undefined} [db]         the database (else we'll open a new one)
      * @returns {Promise<string[]>}                 the list of scene traits
      */
-    async getTraits (name = DefaultGameName, db = undefined) {
+    async getTraits (sceneId, db = undefined) {
         const andClose = typeof (db) === 'undefined'
         db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
 
         /** @type {NamedInfo[]} */
-        const rows = await db.getAll(STORE.TRAITS)
+        const rows = await db.getAllFromIndex(STORE.TRAITS, INDEX.SCENE, sceneId)
         const traits = rows.map(e => e.name)
         if (andClose) db.close()
         return traits
@@ -126,15 +160,15 @@ export class Database {
 
     /**
      * Get the players from the database
-     * @param {string}  [name]                      the name of the game to filter by
+     * @param {number}  [gameId]                    the id of the game to filter by
      * @param {IDBPDatabase|undefined} [db]         the database (else we'll open a new one)
      * @returns {Promise<PlayerInfo[]>}             the information for all players
      */
-    async getPlayers (name = DefaultGameName, db = undefined) {
+    async getPlayers (gameId, db = undefined) {
         const andClose = typeof (db) === 'undefined'
         db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
 
-        const rows = await db.getAll(STORE.PLAYERS)
+        const rows = await db.getAllFromIndex(STORE.PLAYERS, INDEX.GAME, gameId)
         if (andClose) db.close()
         /** @type {PlayerInfo[]} */
         const data = rows.map(e => {
@@ -148,15 +182,15 @@ export class Database {
 
     /**
      * Get the trackers from the database
-     * @param {string}  [name]                      the name of the game to filter by
+     * @param {number}  [gameId]                    the id of the game to filter by
      * @param {IDBPDatabase|undefined} [db]         the database (else we'll open a new one)
      * @returns {Promise<TrackerInfo[]>}            the information for all trackers
      */
-    async getTrackers (name = DefaultGameName, db = undefined) {
+    async getTrackers (gameId, db = undefined) {
         const andClose = typeof (db) === 'undefined'
         db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
 
-        const rows = await db.getAll(STORE.TRACKERS)
+        const rows = await db.getAllFromIndex(STORE.TRACKERS, INDEX.GAME, gameId)
         if (andClose) db.close()
         /** @type {TrackerInfo[]} */
         const data = rows.map(e => {
@@ -169,21 +203,47 @@ export class Database {
     }
 
     /**
-     * Get the game info from the database
+     * Save the game info to the database
      * @param {GameInfo} info                   data to save
      * @param {IDBPDatabase|undefined} [db]     the database (else we'll open a new one)
+     * @returns {Promise<number>} game id
      */
     async saveGameInfo (info, db = undefined) {
         if (!info.validate()) {
             console.error("Invalid info, will not save!")
+            return
         }
-
         const andClose = typeof (db) === 'undefined'
         db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
 
-        info.id = 0 // enforce only a single row
-        db.put(STORE.GAMES, info)
+        if (info.id === undefined)
+            delete info.id
+
+        let id = await db.put(STORE.GAMES, info)
         if (andClose) db.close()
+        return id
+    }
+
+    /**
+     * Save the scene info to the database
+     * @param {SceneInfo} info                   data to save
+     * @param {IDBPDatabase|undefined} [db]     the database (else we'll open a new one)
+     * @returns {Promise<number>} scene id
+     */
+    async saveSceneInfo(info, db = undefined) {
+        if (!info.validate()) {
+            console.error("Invalid info, will not save!")
+            return
+        }
+        const andClose = typeof (db) === 'undefined'
+        db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
+
+        if (info.id === undefined)
+            delete info.id
+
+        let id = await db.put(STORE.SCENES, info)
+        if (andClose) db.close()
+        return id
     }
 
     /**
@@ -213,8 +273,9 @@ export class Database {
 
         // Add all current traits
         const adds = []
-        for (const info of data)
+        for (const info of data) {
             adds.push(transaction.store.add(info))
+        }
         adds.push(transaction.done)
         await Promise.all(adds)
         if (andClose) db.close()
@@ -222,11 +283,17 @@ export class Database {
 
     /**
      * Replace the traits in the database with new ones
+     * @param {number}   sceneId                id of the scene
      * @param {string[]} [traitNames]           names of all the traits
      * @param {IDBPDatabase|IDBDatabase} [db]   the database
      */
-    async replaceTraits (traitNames = [], db = undefined) {
-        const traits = traitNames.map(e => new NamedInfo(e))
+    async replaceTraits (sceneId, traitNames = [], db = undefined) {
+        const traits = traitNames
+                        .map(e => {
+                            let info = new TraitInfo(sceneId, e)
+                            delete info.id
+                            return info
+                        })
         this.#replaceData(STORE.TRAITS, INDEX.NAME, traits, db)
     }
 
@@ -241,8 +308,10 @@ export class Database {
         if (validTrackers.length !== trackers.length)
         {
             console.error("Invalid trackers provided: %o", trackers.filter(t => !t.validate()));
+            return
         }
 
+        validTrackers.forEach(t => { if (t.id === undefined) delete t.id })
         this.#replaceData(STORE.TRACKERS, INDEX.NAME, validTrackers, db)
     }
 
@@ -252,6 +321,7 @@ export class Database {
      * @param {IDBPDatabase|IDBDatabase} [db]   the database
      */
     async replacePlayers (players = [], db = undefined) {
+        players.forEach(p => { if (p.id === undefined) delete p.id })
         this.#replaceData(STORE.PLAYERS, INDEX.NAME, players, db)
     }
 }

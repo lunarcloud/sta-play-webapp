@@ -5,14 +5,15 @@ import './components/welcome-dialog/welcome-dialog-element.js'
 import './components/settings-dialog/settings-dialog-element.js'
 import './components/player-display/player-display-element.js'
 import './components/task-tracker/task-tracker-element.js'
-import { Database, DefaultGameName } from './js/database/database.js'
+import { Database } from './js/database/database.js'
 import { TrackerInfo } from './js/database/tracker-info.js'
 import { PlayerInfo } from './js/database/player-info.js'
-import { GameInfo } from './js/database/game-info.js'
+import { DefaultGameName, GameInfo } from './js/database/game-info.js'
 import 'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js'
 import ShipAlertElement from './components/ship-alert/ship-alert-element.js'
 import { setupDropOnly } from './js/drop-nodrag-setup.js'
 import { loadElementFromFile } from './js/load-file-element.js'
+import { SceneInfo } from './js/database/scene-info.js'
 
 const DefaultShipUrl = 'gltf/starfleet-generic.glb'
 
@@ -30,6 +31,16 @@ export class IndexController {
     fallbackText
 
     fallbackShipName
+
+    /**
+     * @type {number|undefined}
+     */
+    currentGameId
+
+    /**
+     * @type {number|undefined}
+     */
+    currentSceneId
 
     /**
      * @type {object|undefined}
@@ -272,7 +283,7 @@ export class IndexController {
         const dbToken = await this.db.open()
 
         try {
-            const generalInfo = await this.db.getGameInfo(gameName, dbToken)
+            const gameInfo = await this.db.getGameInfo(gameName, dbToken)
 
             const momentumEl = document.getElementById('momentum-pool')
             if (momentumEl instanceof HTMLInputElement === false)
@@ -290,41 +301,55 @@ export class IndexController {
             if (editionSelectEl instanceof HTMLSelectElement === false)
                 throw new Error('Theme selector element is wrong/missing!')
 
-            document.body.setAttribute('loaded-game-name', generalInfo?.name ?? DefaultGameName)
-            document.getElementById('general-text').innerHTML = generalInfo?.text ?? this.fallbackText
-            document.getElementById('shipname').textContent = (generalInfo?.shipName ?? this.fallbackShipName).trim()
-            momentumEl.value = `${(generalInfo?.momentum ?? 0)}`
-            momentumToggleEl.checked = generalInfo?.momentum > 0
-            threatToggleEl.checked = generalInfo?.threat > 0
-            document.getElementsByTagName('ship-alert')[0].setAttribute('color', (generalInfo?.activeAlert ?? '').trim())
-            this.#useTheme(generalInfo?.theme ?? 'lcars-24')
-            this.#useEdition(generalInfo?.edition)
+            this.currentGameId = gameInfo?.id
+            document.body.setAttribute('loaded-game-name', gameInfo?.name ?? DefaultGameName)
+            document.getElementById('shipname').textContent = (gameInfo?.shipName ?? this.fallbackShipName).trim()
+            momentumEl.value = `${(gameInfo?.momentum ?? 0)}`
+            momentumToggleEl.checked = gameInfo?.momentum > 0
+            threatToggleEl.checked = gameInfo?.threat > 0
+            document.getElementsByTagName('ship-alert')[0].setAttribute('color', (gameInfo?.activeAlert ?? '').trim())
+            this.#useTheme(gameInfo?.theme ?? 'lcars-24')
+            this.#useEdition(gameInfo?.edition)
 
-            this.setShipModel(generalInfo?.shipModel)
+            this.setShipModel(gameInfo?.shipModel)
 
-            // remove existing traits
-            document.querySelectorAll('trait-display').forEach(el => el.parentNode.removeChild(el))
-            // Get all traits
-            const traits = await this.db.getTraits(generalInfo?.name, dbToken)
-            for (const trait of traits)
-                this.addTrait(trait)
+            /** @type {SceneInfo} */
+            let firstSceneInfo
 
-            // remove existing players
-            document.querySelectorAll('.players li').forEach(el => el.parentNode.removeChild(el))
-            // Get all players
-            const players = await this.db.getPlayers(generalInfo?.name, dbToken)
-            for (const player of players)
-                this.addPlayer(player)
+            if (gameInfo !== undefined) {
+                let sceneInfos = await this.db.getScenes(this.currentGameId, dbToken)
+                firstSceneInfo = sceneInfos?.[0]
+                this.currentSceneId = firstSceneInfo?.id
+                document.getElementById('general-text').innerHTML = firstSceneInfo?.description ?? this.fallbackText
 
-            // remove existing trackers
-            document.querySelectorAll('task-tracker').forEach(el => el.parentNode.removeChild(el))
-            // Get all trackers
-            const trackers = await this.db.getTrackers(generalInfo?.name, dbToken)
-            for (const tracker of trackers)
-                this.addTaskTracker(tracker)
+                // remove existing players
+                document.querySelectorAll('.players li').forEach(el => el.parentNode.removeChild(el))
+                // Get all players
+                const players = await this.db.getPlayers(gameInfo?.id, dbToken)
+                for (const player of players)
+                    this.addPlayer(player)
+
+                // remove existing trackers
+                document.querySelectorAll('task-tracker').forEach(el => el.parentNode.removeChild(el))
+                // Get all trackers
+                const trackers = await this.db.getTrackers(gameInfo?.id, dbToken)
+                for (const tracker of trackers)
+                    this.addTaskTracker(tracker)
+            }
+
+            if (firstSceneInfo !== undefined) {
+                // remove existing traits
+                document.querySelectorAll('trait-display').forEach(el => el.parentNode.removeChild(el))
+                // Get all traits
+                const traits = await this.db.getTraits(firstSceneInfo?.id, dbToken)
+                for (const trait of traits)
+                    this.addTrait(trait)
+            } else {
+                document.getElementById('general-text').innerHTML = this.fallbackText
+            }
 
             this.safeToSaveDB = true
-            return typeof (generalInfo) !== 'undefined'
+            return typeof (gameInfo) !== 'undefined'
         } finally {
             dbToken.close()
         }
@@ -366,9 +391,9 @@ export class IndexController {
             ? momentumToggleEl.checked ? 1 : 0
             : momentumEl.value
 
-        await this.db.saveGameInfo(new GameInfo(
+        let gameInfo = new GameInfo(
+            this.currentGameId,
             gameName,
-            document.getElementById('general-text').innerHTML,
             document.getElementById('shipname').textContent.trim(),
             momentumValue,
             threatToggleEl.checked ? 1 : 0,
@@ -376,20 +401,30 @@ export class IndexController {
             themeSelectEl.value,
             editionSelectEl.value,
             this.shipModel
-        ), dbToken)
+        )
+        this.currentGameId = await this.db.saveGameInfo(gameInfo, dbToken)
+
+        let sceneInfo = new SceneInfo(
+            this.currentSceneId,
+            this.currentGameId,
+            undefined, // TODO title/name
+            document.getElementById('general-text').innerHTML
+        )
+        this.currentSceneId = await this.db.saveSceneInfo(sceneInfo, dbToken)
 
         const traits =
             [...document.querySelectorAll('traits trait-display')]
                 .map(el => (el instanceof TraitDisplayElement ? el.text : ''))
                 .filter(el => !!el)
                 .filter((v, i, a) => a.indexOf(v) === i) // unique
-        await this.db.replaceTraits(traits, dbToken)
+        await this.db.replaceTraits(this.currentSceneId, traits, dbToken)
 
         const players = [...document.querySelectorAll('.players > li')]
             .map((el) => {
                 if (el instanceof PlayerDisplayElement === false)
                     return
                 const info = new PlayerInfo(
+                    this.currentGameId,
                     el.playerIndex,
                     el.name,
                     el.currentStress,
@@ -408,6 +443,7 @@ export class IndexController {
                     return
 
                 const info = new TrackerInfo(
+                    this.currentGameId,
                     el.name,
                     el.attribute,
                     el.department,
@@ -475,7 +511,7 @@ export class IndexController {
         let playerIndex = document.querySelectorAll('.players li').length
 
         if (typeof (info) !== 'undefined') {
-            playerIndex = info.id
+            playerIndex = info.playerNumber
             newPlayerEl.setAttribute('name', info.name)
             newPlayerEl.setAttribute('current-stress', `${info.currentStress}`)
             newPlayerEl.setAttribute('max-stress', `${info.maxStress}`)
