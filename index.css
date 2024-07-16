@@ -224,6 +224,10 @@ nav li > a {
     text-transform: uppercase;
     letter-spacing: 0.35mm;
     user-select: none;
+
+    &.squeeze, & .squeeze {
+      letter-spacing: 1px;
+    }
 }
 
 *[contenteditable="true"] {

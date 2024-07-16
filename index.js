@@ -1,5 +1,6 @@
 import { BgAudioManager } from './js/bg-audio-page.js'
 import './components/input-progress/input-progress-element.js'
+import './components/mission-tracker/mission-tracker-element.js'
 import { TraitDisplayElement } from './components/trait-display/trait-display-element.js'
 import './components/welcome-dialog/welcome-dialog-element.js'
 import './components/settings-dialog/settings-dialog-element.js'
@@ -299,6 +300,10 @@ export class IndexController {
             if (editionSelectEl instanceof HTMLSelectElement === false)
                 throw new Error('Theme selector element is wrong/missing!')
 
+            const missionTrackerEl = document.getElementsByTagName('mission-tracker')[0]
+            if (missionTrackerEl instanceof MissionTrackerElement === false)
+                throw new Error('Mission Tracker element is wrong/missing!')
+
             this.currentGameId = gameInfo?.id
             document.body.setAttribute('loaded-game-name', gameInfo?.name ?? DefaultGameName)
             document.getElementById('shipname').textContent = (gameInfo?.shipName ?? this.fallbackShipName).trim()
@@ -339,9 +344,15 @@ export class IndexController {
                 // remove existing traits
                 document.querySelectorAll('trait-display').forEach(el => el.parentNode.removeChild(el))
                 // Get all traits
-                const traits = await this.db.getTraits(firstSceneInfo?.id, dbToken)
+                const traits = await this.db.getTraits(firstSceneInfo.id, dbToken)
                 for (const trait of traits)
                     this.addTrait(trait)
+
+                if (firstSceneInfo.missionTrack.length >= 3) {
+                    missionTrackerEl.act1 = firstSceneInfo.missionTrack[0]
+                    missionTrackerEl.act2 = firstSceneInfo.missionTrack[1]
+                    missionTrackerEl.act3 = firstSceneInfo.missionTrack[2]
+                }
             } else {
                 document.getElementById('general-text').innerHTML = this.fallbackText
             }
@@ -383,6 +394,10 @@ export class IndexController {
         if (shipAlertEl instanceof ShipAlertElement === false)
             throw new Error('Ship alert element is wrong/missing!')
 
+        const missionTrackerEl = document.getElementsByTagName('mission-tracker')[0]
+        if (missionTrackerEl instanceof MissionTrackerElement === false)
+            throw new Error('Mission Tracker element is wrong/missing!')
+
         const gameName = document.body.getAttribute('loaded-game-name') || DefaultGameName
 
         const momentumValue = editionSelectEl.value === 'captains-log'
@@ -406,7 +421,12 @@ export class IndexController {
             this.currentSceneId,
             this.currentGameId,
             undefined, // TODO title/name
-            document.getElementById('general-text').innerHTML
+            document.getElementById('general-text').innerHTML,
+            [
+                missionTrackerEl.act1,
+                missionTrackerEl.act2,
+                missionTrackerEl.act3
+            ]
         )
         this.currentSceneId = await this.db.saveSceneInfo(sceneInfo, dbToken)
 

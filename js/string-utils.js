@@ -11,3 +11,12 @@ export function snakeToCamel (value) {
             .replace('_', '')
     )
 }
+
+/**
+ * Create a comma-separated list string
+ * @param {Array} values 
+ * @returns {string} csv
+ */
+export function toCSV (values) {
+    return values.join(',')
+}

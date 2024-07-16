@@ -1,0 +1,45 @@
+
+mission-tracker-internal {
+    display: inline-grid;
+    grid-template-columns: auto repeat(3, 1fr);
+    width: fill-available;
+    width: -webkit-fill-available;
+    max-width: 40em;
+
+    & .clear-mission-tracker {
+        border-radius: 0 50% 50% 0;
+        padding: 0 0.5em;
+        margin-inline-end: 2em;
+        color: var(--nav-color-text, unset);
+        background-color: var(--trek-color-1);
+        opacity: var(--trait-color-opacity, 1);
+    }
+
+    & act {
+        border-radius: 0.5em;
+        padding: 0 0.5em;
+        width: min-content;
+        display: inline-flex;
+
+        & select {
+            font-size: 1.4em;
+            background-color: transparent;
+            border-color: transparent;
+
+            &:focus-visible {
+                background-color: hsla(0, 0%, 20%, 0.3);
+                outline: unset;
+                border-radius: 0.5em;
+            }
+        }
+    }
+    & act:nth-of-type(1) {
+        background-color: var(--player-color-red, red);
+    }
+    & act:nth-of-type(2) {
+        background-color: var(--player-color-blue, blue);
+    }
+    & act:nth-of-type(3) {
+        background-color: var(--player-color-yellow, gold);
+    }
+}
