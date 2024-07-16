@@ -47,11 +47,13 @@ export class MissionTrackerElement extends HTMLElement {
         let clearBtnEl = document.createElement('button')
         clearBtnEl.className = 'clear-mission-tracker'
         clearBtnEl.type = "button"
-        clearBtnEl.textContent = '⌦'
         clearBtnEl.addEventListener('click', _ => {
             if (confirm('Are you sure you want to clear the mission tracker?') === true) 
                 this.clear()
         })
+        let clearBtnTextEl = document.createElement('div')
+        clearBtnTextEl.textContent = '⌦'
+        clearBtnEl.appendChild(clearBtnTextEl)
         internalEl.appendChild(clearBtnEl)
 
         for (let act = 1; act <= NUM_ACTS_PER_MISSION; act++) {

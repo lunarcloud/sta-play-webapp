@@ -5,14 +5,21 @@ mission-tracker-internal {
     width: fill-available;
     width: -webkit-fill-available;
     max-width: 40em;
+    font-size: 1em;
 
     & .clear-mission-tracker {
         border-radius: 0 50% 50% 0;
-        padding: 0 0.5em;
+        padding: 0 0.125em 0 0;
+        font-size: 1em;
         margin-inline-end: 2em;
         color: var(--nav-color-text, unset);
         background-color: var(--trek-color-1);
         opacity: var(--trait-color-opacity, 1);
+
+        & div {
+            position: relative;
+            top: 0.125em;
+        }
     }
 
     & act {
