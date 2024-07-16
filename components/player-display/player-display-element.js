@@ -167,6 +167,7 @@ export class PlayerDisplayElement extends HTMLLIElement {
         this.setAttribute('max-stress', `${maxStress}`)
 
         const stressEl = document.createElement('stress')
+        stressEl.classList.add('edition-1', 'edition-2')
 
         const currentStressEl = document.createElement('input-progress')
         if (currentStressEl instanceof InputProgressElement === false)
