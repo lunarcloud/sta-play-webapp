@@ -67,8 +67,12 @@ body {
         display: grid;
         grid-template-rows: 1fr auto;
 
-        & traits {
+        & traits, & mission-tracker {
             margin-bottom: 4mm;
+            border-bottom: 0;
+        }
+        & mission-tracker {
+            margin-top: 0;
         }
     }
 }
@@ -92,8 +96,8 @@ body {
 #settings-btn {
     inset: unset;
     padding: unset;
-    bottom: 38mm;
-    left: 5mm;
+    bottom: 28mm;
+    left: 3mm;
     width: 20mm;
     justify-content: space-evenly;
 }
@@ -101,8 +105,8 @@ body {
 #save-btn {
     inset: unset;
     padding: unset;
-    bottom: 38mm;
-    left: 35mm;
+    bottom: 28mm;
+    left: 30mm;
     width: 20mm;
     justify-content: space-evenly;
 }
@@ -111,21 +115,29 @@ body {
     inset: unset;
     width: unset;
     padding: unset;
-    bottom: 24mm;
-    left: 25mm;
+    bottom: 26mm;
+    left: 56mm;
 }
 
 
 #momentum-section {
     inset: unset;
     bottom: 2mm;
-    left: 1mm;
-    width: 65mm;
+    left: 3mm;
+    width: 63mm;
+}
+
+#threat-section {
+    inset: unset;
+    bottom: 12mm;
+    left: 3mm;
+    width: 63mm;
 }
 
 #settings-btn,
 #save-btn,
-#momentum-section
+#momentum-section,
+#threat-section
 {
     background-color: hsl(0deg 0% 39% / 75%);
     border-radius: 4px;

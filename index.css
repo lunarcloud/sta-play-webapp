@@ -560,7 +560,7 @@ body {
         grid-template-rows: 1fr auto;
         grid-gap: 2mm;
 
-        & traits {
+        & traits, & mission-tracker {
             width: -webkit-fill-available;
             width: -moz-available;
             width: fill-available;
