@@ -28,17 +28,33 @@ mission-tracker-internal {
         width: min-content;
         display: inline-flex;
 
-        & select {
-            font-size: 1.4em;
-            background-color: transparent;
-            border-color: transparent;
+        & div {
+            display: inline-grid;
+            position: relative;
 
-            &:focus-visible {
-                background-color: hsla(0, 0%, 20%, 0.3);
-                outline: unset;
-                border-radius: 0.5em;
+            & img {
+                position: absolute;
+                inset: 0;
+                width: 0.75em;
+                align-self: center;
+                padding-left: 0.35em;
+            }
+
+            & select {
+                font-size: 1.4em;
+                background-color: transparent;
+                border-color: transparent;
+                color: white;
+                position: relative;
+
+                &:focus-visible {
+                    background-color: hsla(0, 0%, 20%, 0.3);
+                    outline: unset;
+                    border-radius: 0.5em;
+                }
             }
         }
+
     }
     & act:nth-of-type(1) {
         background-color: var(--player-color-red, red);

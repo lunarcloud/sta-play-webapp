@@ -13,7 +13,7 @@ const NUM_SCENES_PER_ACT = 5
 /**
  * @type {Array<object>}
  */
-const SCENE_OUTCOMES = ['⮝', '✓', '✗']
+const SCENE_OUTCOMES = [' ', '✓', '✗']
 
 export class MissionTrackerElement extends HTMLElement {
     
@@ -62,14 +62,21 @@ export class MissionTrackerElement extends HTMLElement {
 
             for (let scene = 1; scene <= NUM_SCENES_PER_ACT; scene++) {
 
-                let sceneEl = document.createElement('select')
+                let sceneEl = document.createElement('div')
 
+
+                let iconEl = document.createElement('img')
+                iconEl.src = 'img/starfleet-delta-grey.webp'
+                sceneEl.appendChild(iconEl)
+
+                let successSelectEl = document.createElement('select')
                 for (let outcome of SCENE_OUTCOMES) {
                   let outcomeEl = document.createElement('option')
                   outcomeEl.text = outcome
                   outcomeEl.value = outcome
-                  sceneEl.appendChild(outcomeEl)
+                  successSelectEl.appendChild(outcomeEl)
                 }
+                sceneEl.appendChild(successSelectEl)
 
                 actEl.appendChild(sceneEl)
             }
