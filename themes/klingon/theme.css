@@ -73,6 +73,10 @@ body {
         }
         & mission-tracker {
             margin-top: 0;
+
+            &:part(internal) {
+                --mission-icon: url('../../img/klingon-embled-dark.webp');
+            }
         }
     }
 }

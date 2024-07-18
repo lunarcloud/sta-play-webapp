@@ -43,6 +43,7 @@ export class MissionTrackerElement extends HTMLElement {
         shadow.appendChild(linkElem)
 
         let internalEl = document.createElement('mission-tracker-internal')
+        internalEl.setAttribute('part', 'internal')
 
         let clearBtnEl = document.createElement('button')
         clearBtnEl.className = 'clear-mission-tracker'
@@ -63,11 +64,7 @@ export class MissionTrackerElement extends HTMLElement {
             for (let scene = 1; scene <= NUM_SCENES_PER_ACT; scene++) {
 
                 let sceneEl = document.createElement('div')
-
-
-                let iconEl = document.createElement('img')
-                iconEl.src = 'img/starfleet-delta-grey.webp'
-                sceneEl.appendChild(iconEl)
+                sceneEl.className = 'scene'
 
                 let successSelectEl = document.createElement('select')
                 for (let outcome of SCENE_OUTCOMES) {
