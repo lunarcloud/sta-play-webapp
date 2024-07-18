@@ -482,7 +482,7 @@ dialogs > dialog {
 task-tracker {
   margin: 0.125em 0.25em;
 
-  &:part(internal) {
+  &::part(internal) {
       --tracker-background-color: #666;
       --tracker-border-width: 6px;
       --tracker-border-style: outset;

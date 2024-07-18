@@ -65,6 +65,7 @@ export class MissionTrackerElement extends HTMLElement {
 
                 let sceneEl = document.createElement('div')
                 sceneEl.className = 'scene'
+                sceneEl.setAttribute('part', 'scene')
 
                 let successSelectEl = document.createElement('select')
                 for (let outcome of SCENE_OUTCOMES) {

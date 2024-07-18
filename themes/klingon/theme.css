@@ -74,8 +74,10 @@ body {
         & mission-tracker {
             margin-top: 0;
 
-            &:part(internal) {
-                --mission-icon: url('../../img/klingon-embled-dark.webp');
+            &::part(scene) {
+                background-image: url('../../img/klingon-embled-dark.webp');
+                background-size: 1.3em;
+                background-position: 0 center;
             }
         }
     }

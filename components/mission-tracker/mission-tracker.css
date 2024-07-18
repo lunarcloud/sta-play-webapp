@@ -1,8 +1,5 @@
 
-
 mission-tracker-internal {
-    --mission-icon: url('../../img/starfleet-delta-grey.webp');
-
     display: inline-grid;
     grid-template-columns: auto repeat(3, 1fr);
     width: fill-available;
@@ -34,7 +31,7 @@ mission-tracker-internal {
         & .scene {
             width: fit-content;
             height: fit-content;
-            background-image: var(--mission-icon);
+            background-image: url('../../img/starfleet-delta-grey.webp');
             background-size: 0.75em;
             background-position: 0.35em center;
             background-repeat: no-repeat;
