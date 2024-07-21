@@ -141,14 +141,16 @@ export class MissionTrackerElement extends HTMLElement {
      * @param {Array<string>} values 
      */
     #setActValue(act, values) {
+
+        let sceneEls = act.querySelectorAll('select')
+
         for (let i = 1; i <= values.length; i++) {
 
             let value = SCENE_OUTCOMES[0]
-            if ( SCENE_OUTCOMES.includes(values[i]))
+            if (SCENE_OUTCOMES.includes(values[i]))
                 value = values[i]
 
-            let sceneEl = act.children[i]
-
+            let sceneEl = sceneEls[i - 1]
             if (sceneEl instanceof HTMLSelectElement)
                 sceneEl.value = value
         }
