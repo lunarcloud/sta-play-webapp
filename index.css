@@ -546,10 +546,6 @@ body {
             flex: 1 1 49%;
         }
 
-        & h1 {
-            font-size: 12mm;
-            margin-top: 15mm;
-        }
     }
 
     & main {
@@ -566,10 +562,10 @@ body {
             width: fill-available;
             display: block;
             position: relative;
-            margin-top: 1mm;
-            padding-bottom: 2mm;
-            border-bottom: 0.5mm solid white;
-            margin-bottom: 1mm;
+            margin-top: 0.2em;
+            padding-bottom: 0.4em;
+            border-bottom: 0.1em solid white;
+            margin-bottom: 0.2em;
 
             & trait-display {
                 &:nth-of-type(odd) { --trait-bg-color: var(--trek-color-5); }
@@ -667,14 +663,14 @@ body {
                 &.shipname {
                     display: block;
                     text-transform: uppercase;
-                    letter-spacing: 0.35mm;
-                    border-radius: 4mm;
+                    letter-spacing: 0.1em;
+                    border-radius: 0.8em;
                     text-decoration: none !important;
                     color: var(--ship-name-color);
                     background-color: var(--ship-name-color-bg) !important;
-                    padding: 3mm 0 3mm 3mm;
+                    padding: 0.6em 0 0.6em 0.8em;
                     border-color: var(--ship-name-color-border, var(--trek-color-highlight));
-                    border-width: 1mm;
+                    border-width: 0.2em;
                     border-style: solid;
 
                     &:hover {
@@ -692,7 +688,7 @@ body {
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
-        padding-bottom: 4mm;
+        padding-bottom: 0.8em;
     }
 
     & theme {
