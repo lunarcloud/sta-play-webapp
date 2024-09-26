@@ -4,7 +4,6 @@ export const DefaultSceneName = 'Scene Notes'
 export const DefaultSceneDescription = 'The story so far...'
 
 export class SceneInfo extends NamedInfo {
-
     /**
      * The id of the game it is for
      * @type {number}
@@ -21,7 +20,7 @@ export class SceneInfo extends NamedInfo {
      * @type {Array<string>}
      */
     missionTrack
-    
+
     /**
      * Create a Player info
      * @param {number|undefined}    id              database entry id or undefined if new

@@ -14,8 +14,8 @@ export function snakeToCamel (value) {
 
 /**
  * Create a comma-separated list string
- * @param {Array} values 
- * @returns {string} csv
+ * @param {Array} values    items to concatenate
+ * @returns {string} csv    the items as comma-separated
  */
 export function toCSV (values) {
     return values.join(',')

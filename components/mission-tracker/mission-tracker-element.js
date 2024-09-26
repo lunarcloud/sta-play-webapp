@@ -1,4 +1,4 @@
-import { toCSV } from "../../js/string-utils.js"
+import { toCSV } from '../../js/string-utils.js'
 
 /**
  * @type {number}
@@ -16,7 +16,6 @@ const NUM_SCENES_PER_ACT = 5
 const SCENE_OUTCOMES = [' ', '✓', '✗']
 
 export class MissionTrackerElement extends HTMLElement {
-    
     static get observedAttributes () {
         return ['act1', 'act2', 'act3']
     }
@@ -29,7 +28,7 @@ export class MissionTrackerElement extends HTMLElement {
     /**
      * Constructor.
      */
-     constructor () {
+    constructor () {
         super()
 
         const shadow = this.attachShadow({ mode: 'open' })
@@ -42,37 +41,35 @@ export class MissionTrackerElement extends HTMLElement {
         // Attach the created element to the shadow DOM
         shadow.appendChild(linkElem)
 
-        let internalEl = document.createElement('mission-tracker-internal')
+        const internalEl = document.createElement('mission-tracker-internal')
         internalEl.setAttribute('part', 'internal')
 
-        let clearBtnEl = document.createElement('button')
+        const clearBtnEl = document.createElement('button')
         clearBtnEl.className = 'clear-mission-tracker'
-        clearBtnEl.type = "button"
+        clearBtnEl.type = 'button'
         clearBtnEl.addEventListener('click', _ => {
-            if (confirm('Are you sure you want to clear the mission tracker?') === true) 
+            if (confirm('Are you sure you want to clear the mission tracker?') === true)
                 this.clear()
         })
-        let clearBtnTextEl = document.createElement('div')
+        const clearBtnTextEl = document.createElement('div')
         clearBtnTextEl.textContent = '⌦'
         clearBtnEl.appendChild(clearBtnTextEl)
         internalEl.appendChild(clearBtnEl)
 
         for (let act = 1; act <= NUM_ACTS_PER_MISSION; act++) {
-
-            let actEl = document.createElement('act')
+            const actEl = document.createElement('act')
 
             for (let scene = 1; scene <= NUM_SCENES_PER_ACT; scene++) {
-
-                let sceneEl = document.createElement('div')
+                const sceneEl = document.createElement('div')
                 sceneEl.className = 'scene'
                 sceneEl.setAttribute('part', 'scene')
 
-                let successSelectEl = document.createElement('select')
-                for (let outcome of SCENE_OUTCOMES) {
-                  let outcomeEl = document.createElement('option')
-                  outcomeEl.text = outcome
-                  outcomeEl.value = outcome
-                  successSelectEl.appendChild(outcomeEl)
+                const successSelectEl = document.createElement('select')
+                for (const outcome of SCENE_OUTCOMES) {
+                    const outcomeEl = document.createElement('option')
+                    outcomeEl.text = outcome
+                    outcomeEl.value = outcome
+                    successSelectEl.appendChild(outcomeEl)
                 }
                 sceneEl.appendChild(successSelectEl)
 
@@ -85,9 +82,9 @@ export class MissionTrackerElement extends HTMLElement {
 
         shadow.appendChild(internalEl)
     }
-    
+
     attributeChangedCallback (name, _oldValue, newValue) {
-        if (InputProgressElement.observedAttributes.includes(name))
+        if (MissionTrackerElement.observedAttributes.includes(name))
             this[name] = newValue
     }
 
@@ -115,20 +112,20 @@ export class MissionTrackerElement extends HTMLElement {
         this.#setActValue(this.#actEls[3], newValue.split(','))
     }
 
-    clear() {
+    clear () {
         this.act1 = ',,,,'
         this.act2 = ',,,,'
         this.act3 = ',,,,'
     }
 
     /**
-     * 
-     * @param {HTMLElement} act 
-     * @returns {string} values 
+     * Get the value of an act
+     * @param {HTMLElement} act     which act
+     * @returns {string} values     the act's values
      */
-    #getActValue(act) {
-        let values = []
-        for (let sceneEl of act.children) {
+    #getActValue (act) {
+        const values = []
+        for (const sceneEl of act.children) {
             if ('value' in sceneEl)
                 values.push(sceneEl.value)
         }
@@ -136,21 +133,19 @@ export class MissionTrackerElement extends HTMLElement {
     }
 
     /**
-     * 
-     * @param {HTMLElement} act 
-     * @param {Array<string>} values 
+     * Set the value of an act
+     * @param {HTMLElement} act         which act
+     * @param {Array<string>} values    the act's values
      */
-    #setActValue(act, values) {
-
-        let sceneEls = act.querySelectorAll('select')
+    #setActValue (act, values) {
+        const sceneEls = act.querySelectorAll('select')
 
         for (let i = 1; i <= values.length; i++) {
-
             let value = SCENE_OUTCOMES[0]
             if (SCENE_OUTCOMES.includes(values[i]))
                 value = values[i]
 
-            let sceneEl = sceneEls[i - 1]
+            const sceneEl = sceneEls[i - 1]
             if (sceneEl instanceof HTMLSelectElement)
                 sceneEl.value = value
         }

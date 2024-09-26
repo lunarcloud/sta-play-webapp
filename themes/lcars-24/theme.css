@@ -131,6 +131,7 @@ decoration {
 
             &.curve-bottom-right, &.curve-top-right {
                 --curve-section-height: 3em;
+
                 height: var(--curve-section-height);
 
                 & > ul,

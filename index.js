@@ -1,6 +1,6 @@
 import { BgAudioManager } from './js/bg-audio-page.js'
 import './components/input-progress/input-progress-element.js'
-import './components/mission-tracker/mission-tracker-element.js'
+import { MissionTrackerElement } from './components/mission-tracker/mission-tracker-element.js'
 import { TraitDisplayElement } from './components/trait-display/trait-display-element.js'
 import './components/welcome-dialog/welcome-dialog-element.js'
 import './components/settings-dialog/settings-dialog-element.js'

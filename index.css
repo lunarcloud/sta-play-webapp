@@ -579,9 +579,11 @@ body {
         & > content {
           grid-row: 1;
         }
+
         & > select-only {
           grid-row: 2;
         }
+
         & > ul.players {
             grid-row: 3;
             list-style: none;
