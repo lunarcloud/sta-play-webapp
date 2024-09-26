@@ -3,7 +3,7 @@ ship-alert-internal {
     display: none; /* default to hidden */
     background-size: cover;
     float: right;
-    width: 60mm;
+    width: 9em;
     aspect-ratio: 1.25;
     place-content: center center;
     align-items: center;

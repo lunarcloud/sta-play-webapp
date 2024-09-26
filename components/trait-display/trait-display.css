@@ -1,8 +1,8 @@
 
 trait-display-internal {
-    border-radius: 2mm;
-    padding: 1mm 3mm;
-    margin: 1mm;
+    border-radius: 4px;
+    padding: 0.2em 0.4em;
+    margin: 0.2em;
     position: relative;
     background-color: var(--trait-bg-color, gray);
 
@@ -11,10 +11,10 @@ trait-display-internal {
         color: black;
         outline: none;
         border: none;
-        min-width: 6mm;
+        min-width: 1.2em;
         width: auto;
         padding-block: 0;
-        padding-inline: 0 2mm;
+        padding-inline: 0 0.6em;
         font-family: inherit;
         font-size: inherit;
         line-height: inherit;
@@ -26,8 +26,8 @@ trait-display-internal {
         cursor: pointer;
         user-select: none;
         position: absolute;
-        top: 0.5mm;
-        right: 0.5mm;
+        top: 0;
+        right: 0;
         vertical-align: super;
         font-size: 0.5em;
         color: white;

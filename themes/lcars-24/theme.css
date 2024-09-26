@@ -14,10 +14,10 @@
     --main-a-hover-color: hsl(220deg 49% 38%);
     --main-a-active-color: hsl(220deg 38% 31%);
     --main-a-visited-color: hsl(268deg 23% 42%);
-    --main-font-size: 7mm;
+    --main-font-size: 14pt;
     --void-bg: black;
-    --min-decoration-height: 250mm;
-    --min-body-height: calc(20mm + var(--min-decoration-height));
+    --min-decoration-height: 28em;
+    --min-body-height: calc(1em + var(--min-decoration-height));
     --trek-color-1: hsl(5deg 56% 54%); /* red */
     --trek-color-2: hsl(234deg 90% 73%); /* blue */
     --trek-color-3: hsl(27deg 84% 55%); /* orange */
@@ -39,10 +39,10 @@ decoration {
     position: absolute;
     inset: 0;
     padding: 0;
-    margin: 0 2mm;
-    min-height: 250mm;
+    margin: 0 0.2em;
+    min-height: var(--min-decoration-height);
     height: 100%;
-    width: calc(100% - 4mm);
+    width: calc(100% - 0.4em);
     overflow: hidden visible;
 
     &::-webkit-scrollbar {
@@ -55,7 +55,7 @@ decoration {
 
     & > ul {
         margin: 0;
-        padding: 1mm;
+        padding: 0.2em;
         display: flex;
         flex-direction: column;
         list-style: none;
@@ -63,15 +63,15 @@ decoration {
         /* last element should go to the bottom (minus margin) */
         & > li:last-of-type {
             position: absolute;
-            top: 242mm; /* height of everything else plus margin */
-            bottom: 2mm;
+            top: calc(var(--min-decoration-height) + 2.25em); /* height of everything else plus margin */
+            bottom: 0.4em;
             height: auto;
         }
 
         & li {
-            min-height: 20mm;
-            height: 35mm;
-            margin: 2mm 0;
+            min-height: 1em;
+            height: 4.25em;
+            margin: 0.2em 0;
             display: flex;
             flex-flow: row;
             flex-wrap: nowrap;
@@ -87,10 +87,10 @@ decoration {
 
                 & li {
                     height: inherit;
-                    margin: 0 2mm;
+                    margin: 0 0.2em;
 
                     & a {
-                        width: 50mm;
+                        width: 12em;
                     }
                 }
             }
@@ -113,7 +113,7 @@ decoration {
                 display: flex;
                 flex-direction: column-reverse;
                 font-size: calc(var(--main-font-size) * 0.75);
-                width: 30mm;
+                width: 8.25em;
                 text-decoration: none;
                 text-align: right;
                 color: var(--nav-color-text);
@@ -130,7 +130,8 @@ decoration {
             }
 
             &.curve-bottom-right, &.curve-top-right {
-                height: 20mm;
+                --curve-section-height: 3em;
+                height: var(--curve-section-height);
 
                 & > ul,
                 & ul > li:first-child {
@@ -138,14 +139,14 @@ decoration {
                 }
 
                 & li:nth-of-type(1) {
-                    width: 30mm;
+                    width: 4.5em;
                 }
 
                 & li:nth-of-type(1)::before {
                     content: '';
                     z-index: -2;
                     height: 50%;
-                    width: 15mm;
+                    width: calc(var(--curve-section-height) / 2);
                     position: absolute;
                     left: 0;
                 }
@@ -155,7 +156,7 @@ decoration {
                     z-index: -1;
                     background-color: var(--main-color-bg);
                     height: 100%;
-                    width: 30mm;
+                    width: var(--curve-section-height);
                     position: absolute;
                     left: 0;
                     border-radius: 50%;
