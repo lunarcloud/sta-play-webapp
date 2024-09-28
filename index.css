@@ -200,6 +200,8 @@ dialog::backdrop {
 button,
 #save-btn,
 #settings-btn,
+#font-up-btn,
+#font-down-btn,
 #mute-btn {
     user-select: none;
     
@@ -382,6 +384,8 @@ dialogs > dialog {
 
 #settings-btn,
 #save-btn,
+#font-up-btn,
+#font-down-btn,
 #momentum-section,
 #threat-section {
     position: absolute;
@@ -391,6 +395,7 @@ dialogs > dialog {
     font-size: calc(var(--main-font-size)* 0.8);
     line-height: calc(var(--main-font-size)* 0.8);
     text-transform: uppercase;
+
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
@@ -399,14 +404,21 @@ dialogs > dialog {
         color: var(--nav-color-text);
     }
 
-    & text {
-      padding-inline: 0.5em;
-    }
+}
 
-    & > symbol {
-        width: 1.125em;
-        text-align: justify;
-    }
+.text-n-symbol-btn {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+
+  & text {
+    padding-inline: 0.5em;
+  }
+
+  & > symbol {
+      width: 1.125em;
+      text-align: justify;
+  }
 }
 
 #settings-btn {
@@ -439,6 +451,20 @@ dialogs > dialog {
     }
 }
 
+
+#font-up-btn,
+#font-down-btn {
+  left: calc(var(--main-font-size)* 21);
+  width: calc(var(--main-font-size)* 8);
+}
+
+#font-up-btn {
+  top: calc(var(--main-font-size)* 6.9);
+}
+
+#font-down-btn {
+  top: calc(var(--main-font-size)* 8.9);
+}
 
 #momentum-section,
 #threat-section  {

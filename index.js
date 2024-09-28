@@ -92,6 +92,12 @@ export class IndexController {
             this.saveData()
         })
 
+        document.getElementById('font-up-btn').addEventListener('click',
+            () => this.#editFontSize(0.25))
+
+        document.getElementById('font-down-btn').addEventListener('click',
+            () => this.#editFontSize(-0.25))
+
         const alertEl = document.getElementsByTagName('ship-alert')[0]
         if (alertEl instanceof ShipAlertElement)
             document.getElementById('alert-toggle').addEventListener('click', () => {
@@ -177,6 +183,18 @@ export class IndexController {
             event.preventDefault()
             event.stopPropagation()
         })
+    }
+
+    /**
+     * Add to the existing font size
+     * @param {number} amount amount to add
+     */
+    #editFontSize(amount) {
+
+        var valueText = getComputedStyle(document.documentElement).getPropertyValue('--main-font-size')
+        var value = parseFloat(valueText)
+        value += amount;
+        document.documentElement.style.setProperty("--main-font-size", `${value}pt`);
     }
 
     /**
