@@ -2,6 +2,7 @@ task-tracker-internal {
     display: inline-block;
     position: relative;
     padding: 4px;
+    border-radius: 12px;
     font-family: inherit;
     color: inherit;
     background-color: var(--tracker-background-color, #666);
@@ -60,6 +61,11 @@ task-tracker-internal {
     }
 
     & dd {
+        font-size: 1.25rem;
+        margin-top: 0;
+        margin-bottom: 0;
+        margin-left: 0;
+        padding-left: 0.25em;
         color: var(--tracker-dd-text-color, inherit);
         background-color: var(--tracker-dd-background-color, unset);
         border-bottom: 2px solid var(--tracker-dd-border-color, transparent);
@@ -85,12 +91,41 @@ task-tracker-internal {
         grid-template-columns: auto 1fr;
         width: fit-content;
         margin: 0;
+        gap: 1px;
+
+        & dt.resistance,
+        & dt.complication-range,
+        & dt.progress {
+            grid-column: 1;
+        }
+        & dd.resistance,
+        & dd.complication-range,
+        & dd.progress {
+            grid-column: 2;
+        }
+        dt.stats,
+        dd.stats {
+            grid-column: 3;
+        }
+        dt.stats{
+            grid-row: 1;
+            min-width: 6em;
+            width: fill-available;
+            display: flex;
+            justify-content: space-between;
+        }
+        dd.stats{
+            grid-row: 2 / 4;
+            padding-left: 0;
+            background-color: unset;
+            border-bottom: 0 solid transparent;
+        }
     }
 
     .stats-toggle {
         --border-radius-toggle: 0.125em;
 
-        display: block;
+        display: inline-block;
         height: 1em;
         width: 2.25em;
         position: relative;

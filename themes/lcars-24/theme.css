@@ -33,6 +33,9 @@
     --player-color-white: hsl(0deg 0% 73%);
 }
 
+body, h1, h2, h3, h4, h5, h6 {
+    letter-spacing: 0.06em;
+}
 
 decoration {
     z-index: -1;

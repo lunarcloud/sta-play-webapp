@@ -4,7 +4,7 @@
 ::backdrop {
     --main-font-body: "Jefferies", sans-serif;
     --main-font-headers: "Jefferies", sans-serif;
-    --main-font-size: 6mm;
+    --main-font-size: 14pt;
     --main-color-bg: hsl(200deg 50% 1%); /* nearly-black */
     --void-bg: black;
     --trek-color-1: hsl(5deg 86% 44%);
@@ -26,6 +26,7 @@
     --player-color-brown: hsl(32deg 43% 29%);
     --player-color-black: hsl(260deg 12% 25%);
     --player-color-white: hsl(261deg 19% 77%);
+    --bottom-section-height: 40mm;
 }
 
 
@@ -45,7 +46,7 @@ body {
     padding-left: 2mm;
     padding-right: 2mm;
     padding-top: 1mm;
-    grid-template-rows: 1fr 6mm 52mm;
+    grid-template-rows: 1fr 6mm calc(var(--bottom-section-height) + 1mm);
     grid-template-columns: 65mm 1fr 85mm;
 
     & header {
@@ -88,7 +89,7 @@ body {
     inset: unset;
     padding: unset;
     width: 65mm;
-    bottom: 33mm;
+    bottom: calc(var(--bottom-section-height) - 11mm);
     left: 2mm;
     text-align: center;
     font-size: 21px;
@@ -103,7 +104,7 @@ body {
 #settings-btn {
     inset: unset;
     padding: unset;
-    bottom: 28mm;
+    bottom: calc(var(--bottom-section-height) - 20mm);
     left: 3mm;
     width: 20mm;
     justify-content: space-evenly;
@@ -112,7 +113,7 @@ body {
 #save-btn {
     inset: unset;
     padding: unset;
-    bottom: 28mm;
+    bottom: calc(var(--bottom-section-height) - 20mm);
     left: 30mm;
     width: 20mm;
     justify-content: space-evenly;
@@ -122,23 +123,25 @@ body {
     inset: unset;
     width: unset;
     padding: unset;
-    bottom: 26mm;
+    bottom: calc(var(--bottom-section-height) - 22mm);
     left: 56mm;
 }
 
 
 #momentum-section {
     inset: unset;
+    top: unset !important;
     bottom: 2mm;
     left: 3mm;
-    width: 63mm;
+    width: 31mm;
 }
 
 #threat-section {
     inset: unset;
-    bottom: 12mm;
-    left: 3mm;
-    width: 63mm;
+    top: unset !important;
+    bottom: 2mm;
+    left: 35mm;
+    width: 31mm;
 }
 
 #settings-btn,
@@ -149,6 +152,7 @@ body {
     background-color: hsl(0deg 0% 39% / 75%);
     border-radius: 4px;
     padding: 4px;
+    height: fit-content;
 }
 
 task-tracker::part(internal) {
@@ -185,7 +189,7 @@ decoration {
             bottom: 0;
             left: 0;
             right: 0;
-            height: 51mm;
+            height: var(--bottom-section-height);
             background-image: url('cc0-textures/diamond-plate-007-D.jpg');
         }
 

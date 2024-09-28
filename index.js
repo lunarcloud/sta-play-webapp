@@ -292,6 +292,10 @@ export class IndexController {
             if (momentumToggleEl instanceof HTMLInputElement === false)
                 throw new Error('page setup incorrectly!')
 
+            const threatEl = document.getElementById('threat-pool')
+            if (threatEl instanceof HTMLInputElement === false)
+                throw new Error('page setup incorrectly!')
+
             const threatToggleEl = document.getElementById('threat-toggle')
             if (threatToggleEl instanceof HTMLInputElement === false)
                 throw new Error('page setup incorrectly!')
@@ -309,6 +313,7 @@ export class IndexController {
             document.getElementById('shipname').textContent = (gameInfo?.shipName ?? this.fallbackShipName).trim()
             momentumEl.value = `${(gameInfo?.momentum ?? 0)}`
             momentumToggleEl.checked = gameInfo?.momentum > 0
+            threatEl.value = `${(gameInfo?.threat ?? 0)}`
             threatToggleEl.checked = gameInfo?.threat > 0
             document.getElementsByTagName('ship-alert')[0].setAttribute('color', (gameInfo?.activeAlert ?? '').trim())
             this.#useTheme(gameInfo?.theme ?? 'lcars-24')
@@ -378,6 +383,10 @@ export class IndexController {
         if (momentumToggleEl instanceof HTMLInputElement === false)
             throw new Error('page setup incorrectly!')
 
+        const threatEl = document.getElementById('threat-pool')
+        if (threatEl instanceof HTMLInputElement === false)
+            throw new Error('page setup incorrectly!')
+
         const threatToggleEl = document.getElementById('threat-toggle')
         if (threatToggleEl instanceof HTMLInputElement === false)
             throw new Error('page setup incorrectly!')
@@ -404,12 +413,16 @@ export class IndexController {
             ? momentumToggleEl.checked ? 1 : 0
             : momentumEl.value
 
+        const threatValue = editionSelectEl.value === 'captains-log'
+            ? threatToggleEl.checked ? 1 : 0
+            : threatEl.value
+
         const gameInfo = new GameInfo(
             this.currentGameId,
             gameName,
             document.getElementById('shipname').textContent.trim(),
             momentumValue,
-            threatToggleEl.checked ? 1 : 0,
+            threatValue,
             shipAlertEl.color,
             themeSelectEl.value,
             editionSelectEl.value,

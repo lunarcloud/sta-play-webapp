@@ -137,12 +137,10 @@ html:focus-within {
   }
 }
 
-body, h1, h2, h3, h4, h5, h6 {
-    letter-spacing: 0.06em;
-}
-
 h1, h2, h3, h4, h5, h6{
   font-family: var(--main-font-headers);
+  margin-top: 0.2em;
+  margin-bottom: 0.1em;
 }
 
 h1 {
@@ -163,6 +161,11 @@ h4 {
 
 small {
   font-size: 0.5em;
+}
+
+p {
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
 }
 
 input,
@@ -222,7 +225,6 @@ select-only {
 decoration a,
 nav li > a {
     text-transform: uppercase;
-    letter-spacing: 0.02em;
     user-select: none;
 
     &.squeeze, & .squeeze {
@@ -458,25 +460,30 @@ dialogs > dialog {
       float: inline-end;
       scale: 1.5;
     }
+
+    & > input {
+      margin: 0;
+      padding: 0;
+      padding-left: 0.5em;
+      text-align: center;
+      background: unset;
+      border: 1px solid #431818;
+      outline: none;
+      font-size: 2em;
+    }
 }
 
-#threat-section {
-  top: 35em;
+.edition-captains-log #threat-section {
+  top: 23em;
+}
+
+:not(.edition-captains-log) #threat-section {
+  top: 27em;
 }
 
 #momentum-section {
-  top: 33em;
+  top: 21em;
 
-  & > input {
-    margin: 0;
-    padding: 0;
-    padding-left: 0.5em;
-    text-align: center;
-    background: unset;
-    border: 1px solid #431818;
-    outline: none;
-    font-size: 2em;
-  }
 }
 
 task-tracker {
@@ -566,6 +573,7 @@ body {
             padding-bottom: 0.4em;
             border-bottom: 0.1em solid white;
             margin-bottom: 0.2em;
+            font-size: 1.25em;
 
             & trait-display {
                 &:nth-of-type(odd) { --trait-bg-color: var(--trek-color-5); }

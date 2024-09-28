@@ -101,7 +101,7 @@ export class TaskTrackerElement extends HTMLElement {
         this.#nameEl.className = 'name'
         this.#nameEl.setAttribute('spellcheck', 'false')
 
-        this.#useAttrOrDefault(this.#nameEl, 'name', 'Combat / Extended Task')
+        this.#useAttrOrDefault(this.#nameEl, 'name', '')
 
         this.#nameEl.addEventListener(
             this.#nameEl instanceof HTMLInputElement ? 'change' : 'input',
@@ -119,7 +119,7 @@ export class TaskTrackerElement extends HTMLElement {
         this.#useAttrOrDefault(this.#resistanceEl, 'resistance', '0')
         this.#resistanceEl.addEventListener('change', _event => this.setAttribute('resistance', this.#resistanceEl.value))
 
-        this.#addDataListItem(listEl, 'Resistance', this.#resistanceEl)
+        this.#addDataListItem(listEl, 'resistance', 'Resistance', this.#resistanceEl)
 
         // complication-range element
         this.#complicationRangeEl = document.createElement('input')
@@ -130,7 +130,7 @@ export class TaskTrackerElement extends HTMLElement {
         this.#useAttrOrDefault(this.#complicationRangeEl, 'complication-range', '0')
         this.#complicationRangeEl.addEventListener('change', _event => this.setAttribute('complication-range', this.#complicationRangeEl.value))
 
-        this.#addDataListItem(listEl, 'Complication Range', this.#complicationRangeEl)
+        this.#addDataListItem(listEl, 'complication-range', 'Complication Range', this.#complicationRangeEl)
 
         // Stats elemnts
         const [attributeEl, departmentEl] = this.#createStatEls(true)
@@ -142,7 +142,7 @@ export class TaskTrackerElement extends HTMLElement {
         this.#shipDepartmentEl = shipDepartmentEl
 
         // add both attribute and department under the same heading
-        const [listDtEl, listDdEl] = this.#addDataListItem(listEl, 'Stats',
+        const [listDtEl, listDdEl] = this.#addDataListItem(listEl, 'stats', 'Stats',
             this.#attributeEl, this.#departmentEl,
             this.#shipSystemEl, this.#shipDepartmentEl)
 
@@ -180,7 +180,7 @@ export class TaskTrackerElement extends HTMLElement {
         this.#useAttrOrDefault(this.#progressEl, 'progress', '3')
         this.#progressEl.addEventListener('change', _event => this.setAttribute('progress', this.#progressEl.value))
 
-        this.#addDataListItem(listEl, 'Progress', this.#progressEl)
+        this.#addDataListItem(listEl, 'progress', 'Progress', this.#progressEl)
 
         // Put it together
         const internalEls = document.createElement('task-tracker-internal')
@@ -234,14 +234,18 @@ export class TaskTrackerElement extends HTMLElement {
     /**
      * Add a new element to a list
      * @param {Element} listEl      list element to add to
+     * @param {string} name         class name
      * @param {string} text         title text
      * @param {...Element} elements data elements
      * @returns {HTMLElement[]}      the dt and dd elements
      */
-    #addDataListItem (listEl, text, ...elements) {
+    #addDataListItem (listEl, name, text, ...elements) {
         const listTextEl = document.createElement('dt')
         listTextEl.textContent = text
+        listTextEl.classList.add(name)
+
         const listDataEl = document.createElement('dd')
+        listDataEl.classList.add(name)
 
         for (const element of elements)
             listDataEl.appendChild(element)

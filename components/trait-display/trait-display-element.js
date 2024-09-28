@@ -37,7 +37,7 @@ export class TraitDisplayElement extends HTMLElement {
             textElChangeEvent = 'change'
             this.#textElValueProperty = 'value'
         }
-        this.#textEl.textContent = 'TODO'
+        this.#textEl.textContent = ' '
         this.#textEl.classList.add('name')
 
         this.#removeBtnEl = document.createElement('button')

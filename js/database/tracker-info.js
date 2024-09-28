@@ -68,10 +68,11 @@ export class TrackerInfo extends NamedInfo {
 
     validate () {
         return typeof (this.game) === 'number' &&
-            typeof (this.attribute) === 'string' &&
-            typeof (this.department) === 'string' &&
-            typeof (this.shipSystem) === 'string' &&
-            typeof (this.shipDepartment) === 'string' &&
+            typeof (this.name) === 'string' && this.name.length > 0 &&
+            typeof (this.attribute) === 'string' && this.attribute.length > 0 &&
+            typeof (this.department) === 'string' && this.department.length > 0 &&
+            typeof (this.shipSystem) === 'string' && this.shipSystem.length > 0 &&
+            typeof (this.shipDepartment) === 'string' && this.shipDepartment.length > 0 &&
             typeof (this.progressTrack) === 'number' &&
             typeof (this.resistance) === 'number' &&
             typeof (this.complicationRange) === 'number'
