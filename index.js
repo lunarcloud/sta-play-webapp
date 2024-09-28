@@ -246,6 +246,9 @@ export class IndexController {
         dialogEl.querySelector('button.set-ship').addEventListener('click', () => {
             this.setShipModel(fileSelectShip.files[0])
         })
+        dialogEl.querySelector('button.clear-ship').addEventListener('click', () => {
+            this.setShipModel(undefined)
+        })
 
         const fileSelectPlayer = dialogEl.querySelector('.player-image-upload input.select')
         if (fileSelectPlayer instanceof HTMLInputElement === false)
