@@ -238,6 +238,7 @@ nav li > a {
 
 model-viewer {
     display: block;
+    width: unset !important;
 }
 
 dialogs > dialog {
