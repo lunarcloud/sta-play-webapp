@@ -17,6 +17,21 @@
  * @property    {Array<FileMimeTypeOption>} [types]     list of file type options
  */
 
+
+
+/**
+ * Write text to file.
+ * @param {string} filename                     suggested filename
+ * @param {Blob} blobData                       data to write
+ */
+export async function saveBlob (filename, blobData) {
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blobData)
+    link.download = filename
+    link.click()
+    URL.revokeObjectURL(link.href)
+}
+
 /**
  * Write text to file, give user the option of location if possible.
  * @param {string} filename                     suggested filename
@@ -80,4 +95,14 @@ export async function saveBlobAs (filename, blobData, mimeOptions, startIn = 'do
 export async function saveTextAs (filename, text, typeOption) {
     const blobData = new Blob([text], { type: 'text/plain;charset=utf-8' })
     await saveBlobAs(filename, blobData, typeOption)
+}
+
+/**
+ * Write text to file.
+ * @param {string} filename     suggested filename
+ * @param {string} text         text to write
+ */
+export async function saveText (filename, text) {
+    const blobData = new Blob([text], { type: 'text/plain;charset=utf-8' })
+    await saveBlob(filename, blobData)
 }
