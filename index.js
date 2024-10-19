@@ -636,16 +636,15 @@ export class IndexController {
      * @param {string}  [gameName]      the name of the game to export
      */
     async export (gameName = undefined) {
-        gameName ??= document.body.getAttribute('loaded-game-name') || DefaultGameName
+        gameName ??= document.body.getAttribute('loaded-game-name') || 'Game'
+        let fileName = gameName === DefaultGameName ? `game.${Date.now()}` : gameName
         const file = await this.db.export(gameName)
+        const mimeOpts = {
+            description: 'STA Play Backup',
+            mimes: [{ 'application/staplay': '.staplay' }]
+        }
 
-        await saveBlobAs(
-            `${gameName}.${Date.now()}.staplay`,
-            file,
-            {
-                description: 'STA Play Backup',
-                mimes: [{ 'application/staplay': '.staplay' }]
-            })
+        await saveBlobAs( `${fileName}.staplay`, file, mimeOpts, 'downloads', true)
     }
 
     async import (backupFile) {
