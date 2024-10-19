@@ -66,7 +66,7 @@ export class TrackerInfo extends NamedInfo {
         this.complicationRange = typeof (complicationRange) === 'number' ? complicationRange : parseInt(complicationRange)
     }
 
-    static assign(obj) {
+    static assign (obj) {
         return new TrackerInfo(
             obj.game,
             obj.name,

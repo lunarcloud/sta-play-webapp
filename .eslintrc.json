@@ -16,7 +16,8 @@
         "jsdoc/no-undefined-types": [1, {
             "definedTypes": [
               "NodeListOf",
-              "FileSystemFileHandle"
+              "FileSystemFileHandle",
+              "JSZip"
             ]
           }]
     }

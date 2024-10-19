@@ -1,7 +1,6 @@
 import { GameInfo } from './game-info.js'
 import { PlayerInfo } from './player-info.js'
 import { TrackerInfo } from './tracker-info.js'
-import { TraitInfo } from './trait-info.js'
 import { SceneInfo } from './scene-info.js'
 
 /**
@@ -68,25 +67,24 @@ export class BackupData {
      * @returns {Promise<BackupData>} data
      */
     static async import (file) {
-        const zip = await (new JSZip()).loadAsync(file)
+        const zip = await (new globalThis.JSZip()).loadAsync(file)
         const jsonText = await zip.file(INFO_FILE_NAME).async('string')
 
         /**
          * convert the file
-         * @param {AppEncodedFileObject} fileInfo
+         * @param {AppEncodedFileObject} fileInfo   recorded file information
          * @returns {Promise<File>}  file reconstituted
          */
-        async function convertFile(fileInfo) {
-
-                let blob = await zip.file(fileInfo.reference).async('blob')
-                return new File(
-                    [blob],
-                    fileInfo.name,
-                    {
-                        lastModified: fileInfo.lastModified,
-                        type: fileInfo.type
-                    }
-                )
+        async function convertFile (fileInfo) {
+            const blob = await zip.file(fileInfo.reference).async('blob')
+            return new File(
+                [blob],
+                fileInfo.name,
+                {
+                    lastModified: fileInfo.lastModified,
+                    type: fileInfo.type
+                }
+            )
         }
 
         // re-hydrate the info
@@ -95,27 +93,24 @@ export class BackupData {
         // re-hydrate the files
         data.GameInfo.shipModel = await convertFile(data.GameInfo.shipModel)
 
-
-        let players = []
-        for (let player of data.Players) {
-
+        const players = []
+        for (const player of data.Players) {
             if (player.image)
                 player.image = await convertFile(player.image)
             players.push(PlayerInfo.assign(player))
         }
 
-        let scenes = []
-        let traits = new Map()
-        for (let scene of data.Scenes) {
+        const scenes = []
+        for (const scene of data.Scenes) {
             scenes.push(SceneInfo.assign(scene))
         }
 
-        let trackers = []
-        for (let tracker of data.Trackers) {
+        const trackers = []
+        for (const tracker of data.Trackers) {
             trackers.push(TrackerInfo.assign(tracker))
         }
 
-        let backupData = new BackupData(
+        const backupData = new BackupData(
             GameInfo.assign(data.GameInfo),
             players,
             scenes,

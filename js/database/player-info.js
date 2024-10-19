@@ -59,7 +59,7 @@ export class PlayerInfo extends NamedInfo {
         this.image = image
     }
 
-    static assign(obj) {
+    static assign (obj) {
         return new PlayerInfo(
             obj.game,
             obj.playerNumber,

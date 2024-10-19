@@ -61,7 +61,7 @@ export class GameInfo extends NamedInfo {
         this.shipModel = shipModel
     }
 
-    static assign(obj) {
+    static assign (obj) {
         return new GameInfo(
             obj.id,
             obj.name,

@@ -37,13 +37,13 @@ export class SceneInfo extends NamedInfo {
         this.missionTrack = missionTrack
     }
 
-    static assign(obj) {
+    static assign (obj) {
         return new SceneInfo(
             obj.id,
             obj.game,
             'name' in obj ? obj.name : DefaultSceneName,
             'description' in obj ? obj.description : DefaultSceneDescription,
-            'missionTrack' in obj ? obj.missionTrack : [],
+            'missionTrack' in obj ? obj.missionTrack : []
         )
     }
 
