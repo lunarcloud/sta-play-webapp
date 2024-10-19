@@ -59,6 +59,19 @@ export class PlayerInfo extends NamedInfo {
         this.image = image
     }
 
+    static assign(obj) {
+        return new PlayerInfo(
+            obj.game,
+            obj.playerNumber,
+            obj.name,
+            obj.currentStress,
+            obj.maxStress,
+            obj.pips,
+            obj.borderColor,
+            'image' in obj ? obj.image : undefined
+        )
+    }
+
     validate () {
         return typeof (this.game) === 'number' &&
             typeof (this.name) === 'string' &&

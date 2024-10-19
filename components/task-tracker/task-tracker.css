@@ -98,15 +98,18 @@ task-tracker-internal {
         & dt.progress {
             grid-column: 1;
         }
+
         & dd.resistance,
         & dd.complication-range,
         & dd.progress {
             grid-column: 2;
         }
+
         dt.stats,
         dd.stats {
             grid-column: 3;
         }
+
         dt.stats{
             grid-row: 1;
             min-width: 6em;
@@ -114,6 +117,7 @@ task-tracker-internal {
             display: flex;
             justify-content: space-between;
         }
+
         dd.stats{
             grid-row: 2 / 4;
             padding-left: 0;

@@ -10,6 +10,12 @@
         "lint": "npm run eslint && npm run htmllint && npm run csslint",
         "serve": "serve"
     },
+    "dependencies": {
+        "@google/model-viewer": "^3.5.0",
+        "file-saver": "^2.0.5",
+        "idb": "^8.0.0",
+        "jszip": "^3.10.1"
+    },
     "devDependencies": {
         "@linthtml/linthtml": "^0.9.5",
         "eslint": "^8.55.0",
@@ -19,7 +25,6 @@
         "eslint-plugin-jsdoc": "^46.9.0",
         "eslint-plugin-n": "^16.4.0",
         "eslint-plugin-promise": "^6.1.1",
-        "idb": "^8.0.0",
         "serve": "^14.2.1",
         "stylelint": "^16.0.2",
         "stylelint-config-standard": "^35.0.0"

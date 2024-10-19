@@ -395,7 +395,6 @@ dialogs > dialog {
     font-size: calc(var(--main-font-size)* 0.8);
     line-height: calc(var(--main-font-size)* 0.8);
     text-transform: uppercase;
-
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
@@ -565,6 +564,7 @@ body {
         background-color: transparent;
         color: transparent;
         border: 1px solid var(--trek-color-highlight);
+
         /* appearance: none; */
     }
 
@@ -582,6 +582,7 @@ body {
     &::-webkit-scrollbar-thumb:hover {
       background: #555;
     }
+
     &::-webkit-scrollbar-corner {
       background-color: transparent;
     }

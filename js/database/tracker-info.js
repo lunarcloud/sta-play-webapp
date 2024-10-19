@@ -66,6 +66,20 @@ export class TrackerInfo extends NamedInfo {
         this.complicationRange = typeof (complicationRange) === 'number' ? complicationRange : parseInt(complicationRange)
     }
 
+    static assign(obj) {
+        return new TrackerInfo(
+            obj.game,
+            obj.name,
+            obj.attribute,
+            obj.department,
+            obj.shipSystem,
+            obj.shipDepartment,
+            obj.progressTrack,
+            'resistance' in obj ? obj.resistance : 0,
+            'complicationRange' in obj ? obj.complicationRange : 0
+        )
+    }
+
     validate () {
         return typeof (this.game) === 'number' &&
             typeof (this.name) === 'string' && this.name.length > 0 &&

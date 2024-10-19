@@ -15,6 +15,8 @@ import { ShipAlertElement } from './components/ship-alert/ship-alert-element.js'
 import { setupDropOnly } from './js/drop-nodrag-setup.js'
 import { loadElementFromFile } from './js/load-file-element.js'
 import { SceneInfo } from './js/database/scene-info.js'
+import { saveBlobAs } from './js/save-file-utils.js'
+import { BackupData } from './js/database/backup-data.js'
 
 const DefaultShipUrl = 'gltf/starfleet-generic.glb'
 
@@ -189,12 +191,11 @@ export class IndexController {
      * Add to the existing font size
      * @param {number} amount amount to add
      */
-    #editFontSize(amount) {
-
-        var valueText = getComputedStyle(document.documentElement).getPropertyValue('--main-font-size')
-        var value = parseFloat(valueText)
-        value += amount;
-        document.documentElement.style.setProperty("--main-font-size", `${value}pt`);
+    #editFontSize (amount) {
+        const valueText = getComputedStyle(document.documentElement).getPropertyValue('--main-font-size')
+        let value = parseFloat(valueText)
+        value += amount
+        document.documentElement.style.setProperty('--main-font-size', `${value}pt`)
     }
 
     /**
@@ -256,6 +257,19 @@ export class IndexController {
         dialogEl.querySelector('button.clear-info').addEventListener('click', async () => {
             await this.db.clear()
             this.#loadData()
+        })
+        const importEl = dialogEl.querySelector('input.import-game-file')
+        if (importEl instanceof HTMLInputElement === false)
+            throw new Error('Page setup incorrect')
+
+        importEl.addEventListener('change', async () => {
+            if (importEl.files.length === 0)
+                return
+            await this.import(importEl.files[0])
+        })
+
+        dialogEl.querySelector('button.export-game').addEventListener('click', async () => {
+            await this.export()
         })
 
         const fileSelectShip = dialogEl.querySelector('input.select-ship')
@@ -616,7 +630,29 @@ export class IndexController {
                 viewer.src = url
         }
     }
+
+    /**
+     * Export information from the database to a file
+     * @param {string}  [gameName]      the name of the game to export
+     */
+    async export (gameName = undefined) {
+        gameName ??= document.body.getAttribute('loaded-game-name') || DefaultGameName
+        const file = await this.db.export(gameName)
+
+        await saveBlobAs(
+            `${gameName}.${Date.now()}.staplay`,
+            file,
+            {
+                description: 'STA Play Backup',
+                mimes: [{ 'application/staplay': '.staplay' }]
+            })
+    }
+
+    async import (backupFile) {
+        const backupData = await BackupData.import(backupFile)
+        await this.db.import(backupData)
+        await this.#loadData(backupData.GameInfo.name)
+    }
 }
 
-globalThis.App ??= { Page: undefined }
-globalThis.App.Page = new IndexController()
+globalThis.App = new IndexController()

@@ -6,6 +6,7 @@ import { PlayerInfo } from './player-info.js'
 import { TrackerInfo } from './tracker-info.js'
 import { TraitInfo } from './trait-info.js'
 import { SceneInfo } from './scene-info.js'
+import { BackupData } from './backup-data.js'
 
 /**
  * @typedef {IDBDatabase & {
@@ -95,16 +96,18 @@ export class Database {
 
     /**
      * Get the game info from the database
-     * @param {string}  [name]                      the name of the game to load
+     * @param {string|number}  [nameOrId]           the name of the game to load
      * @param {IDBPDatabase|undefined} [db]         the database (else we'll open a new one)
      * @returns {Promise<GameInfo|undefined>}       the general database information
      */
-    async getGameInfo (name = DefaultGameName, db = undefined) {
+    async getGameInfo (nameOrId = DefaultGameName, db = undefined) {
         const andClose = typeof (db) === 'undefined'
         db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
 
+        const index = typeof (nameOrId) === 'number' ? INDEX.ID : INDEX.NAME
+
         const row = await db.count(STORE.GAMES) !== 0 // has info
-            ? await db.getFromIndex(STORE.GAMES, INDEX.NAME, name)
+            ? await db.getFromIndex(STORE.GAMES, index, nameOrId)
             : undefined
 
         /** @type {GameInfo|undefined} */
@@ -320,5 +323,53 @@ export class Database {
     async replacePlayers (players = [], db = undefined) {
         players.forEach(p => { if (p.id === undefined) delete p.id })
         this.#replaceData(STORE.PLAYERS, INDEX.NAME, players, db)
+    }
+
+    /**
+     * Export the database info for a  game to a backup data object.
+     * @param {string|number}  [nameOrId]   the name of the game to load
+     * @param {IDBPDatabase} [db]           the database
+     * @returns {Promise<Blob>}       backup data
+     */
+    async export (nameOrId = DefaultGameName, db = undefined) {
+        const andClose = typeof (db) === 'undefined'
+        db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
+
+        const gameInfo = await this.getGameInfo(nameOrId, db)
+
+        const players = await this.getPlayers(gameInfo.id, db)
+        const trackers = await this.getTrackers(gameInfo.id, db)
+        const scenes = await this.getScenes(gameInfo.id, db)
+        const traits = new Map()
+
+        for (const scene of scenes)
+            traits[scene.id] = await this.getTraits(scene.id, db)
+
+        const data = new BackupData(gameInfo, players, scenes, trackers, traits)
+
+        if (andClose) db.close()
+        return data.getZip()
+    }
+
+    /**
+     * Import game data from a backup file.
+     * @param {BackupData} data backup to import
+     * @param {IDBPDatabase} [db]   the database
+     */
+    async import (data, db = undefined) {
+        const andClose = typeof (db) === 'undefined'
+        db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
+
+        // save the data
+        await this.saveGameInfo(data.GameInfo, db)
+        await this.replacePlayers(data.Players, db)
+        await this.replaceTrackers(data.Trackers, db)
+
+        for (const scene of data.Scenes) {
+            await this.saveSceneInfo(scene, db)
+            await this.replaceTraits(scene.id, data.Traits[scene.id], db)
+        }
+
+        if (andClose) db.close()
     }
 }

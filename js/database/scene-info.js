@@ -37,6 +37,16 @@ export class SceneInfo extends NamedInfo {
         this.missionTrack = missionTrack
     }
 
+    static assign(obj) {
+        return new SceneInfo(
+            obj.id,
+            obj.game,
+            'name' in obj ? obj.name : DefaultSceneName,
+            'description' in obj ? obj.description : DefaultSceneDescription,
+            'missionTrack' in obj ? obj.missionTrack : [],
+        )
+    }
+
     validate () {
         return typeof (this.game) === 'number' &&
             typeof (this.name) === 'string' &&

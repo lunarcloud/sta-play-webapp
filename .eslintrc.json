@@ -9,13 +9,14 @@
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
-    "ignorePatterns": ["**/lib/**/*.js"],
+    "ignorePatterns": ["**/lib/**/*.js", "jszip.*"],
     "rules": {
         "max-len": 0,
         "curly": 0,
         "jsdoc/no-undefined-types": [1, {
             "definedTypes": [
-              "NodeListOf"
+              "NodeListOf",
+              "FileSystemFileHandle"
             ]
           }]
     }

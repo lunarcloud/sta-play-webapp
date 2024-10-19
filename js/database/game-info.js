@@ -61,6 +61,20 @@ export class GameInfo extends NamedInfo {
         this.shipModel = shipModel
     }
 
+    static assign(obj) {
+        return new GameInfo(
+            obj.id,
+            obj.name,
+            obj.shipName,
+            'momentum' in obj ? obj.momentum : 0,
+            'threat' in obj ? obj.threat : 0,
+            'activeAlert' in obj ? obj.activeAlert : '',
+            'theme' in obj ? obj.theme : 'lcars-24',
+            'edition' in obj ? obj.edition : '2',
+            'shipModel' in obj ? obj.shipModel : undefined
+        )
+    }
+
     /**
      * Set Edition
      * @param {string} value  edition specified
