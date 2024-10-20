@@ -74,9 +74,13 @@ body {
             border-bottom: 0;
         }
 
+        & traits {
+            font-size: 1.25em;
+        }
+
         & mission-tracker {
             margin-top: 0;
-            font-size: 1.25em;
+            font-size: 1em;
 
             &::part(scene) {
                 background-image: url('../../img/klingon-embled-dark.webp');

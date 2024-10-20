@@ -629,6 +629,13 @@ body {
         grid-template-rows: 1fr 1px auto;
         grid-gap: 0.2em;
 
+        & mission-tracker {
+          font-size: 1.25em;
+        }
+        & traits {
+          font-size: 1.5em;
+        }
+
         & traits, & mission-tracker {
             width: -webkit-fill-available;
             width: -moz-available;
@@ -639,7 +646,6 @@ body {
             padding-bottom: 0.4em;
             border-bottom: 0.1em solid white;
             margin-bottom: 0.2em;
-            font-size: 1.5em;
 
             & trait-display {
                 &:nth-of-type(odd) { --trait-bg-color: var(--trek-color-5); }
