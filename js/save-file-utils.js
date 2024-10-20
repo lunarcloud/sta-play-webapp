@@ -65,6 +65,10 @@ export async function saveBlobAs (filename, blobData, mimeOptions, startIn = 'do
         if (ex.name === 'AbortError')
             return // user chose to cancel
 
+        if (ex.message.includes('already active')) {
+            throw ex
+        }
+
         console.warn('file picker method failed, falling back to link element with download attribute. ', ex)
 
         if (promptIfFallback)

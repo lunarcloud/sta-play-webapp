@@ -271,6 +271,15 @@ dialogs > dialog {
         }
     }
 
+    &[is="importing-dialog"] {
+      width: fit-content;
+
+      main {
+        padding: 1em;
+        min-height: unset;
+      }
+    }
+
     &::backdrop {
         background-color: var(--backdrop-color);
     }

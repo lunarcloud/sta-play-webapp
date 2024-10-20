@@ -4,6 +4,7 @@ import { MissionTrackerElement } from './components/mission-tracker/mission-trac
 import { TraitDisplayElement } from './components/trait-display/trait-display-element.js'
 import './components/welcome-dialog/welcome-dialog-element.js'
 import './components/settings-dialog/settings-dialog-element.js'
+import './components/importing-dialog/importing-dialog-element.js'
 import { PlayerDisplayElement } from './components/player-display/player-display-element.js'
 import { TaskTrackerElement } from './components/task-tracker/task-tracker-element.js'
 import { Database } from './js/database/database.js'
@@ -106,6 +107,11 @@ export class IndexController {
                 alertEl.cycle()
             })
 
+        // Check the importing dialog
+        const importingDialog = document.querySelector('dialog[is="importing-dialog"]')
+        if (importingDialog instanceof HTMLDialogElement === false)
+            throw new Error('Importing dialog not setup!')
+
         // Wire up the welcome dialog
         const welcomeDialog = document.querySelector('dialog[is="welcome-dialog"]')
         if (welcomeDialog instanceof HTMLDialogElement === false)
@@ -116,7 +122,7 @@ export class IndexController {
         if (settingsDialog instanceof HTMLDialogElement === false)
             throw new Error('HTML setup incorrect!')
 
-        this.#setupSettings(settingsDialog, welcomeDialog)
+        this.#setupSettings(settingsDialog, welcomeDialog, importingDialog)
 
         // Setup Dropping 3D model on the Ship
         const modelViewers = document.getElementsByTagName('model-viewer')
@@ -152,16 +158,35 @@ export class IndexController {
         }
 
         // Keyboard Shortcuts
-        window.addEventListener('keydown', e => {
-            if (e.ctrlKey && e.key === 's') {
-                e.preventDefault()
-                this.saveData()
-            } else if (e.key === 'F1') {
-                e.preventDefault()
-                welcomeDialog.showModal()
-            } else if (e.ctrlKey && e.key === ',') {
-                e.preventDefault()
-                settingsDialog.showModal()
+        let handlingInput = false
+        window.addEventListener('keydown', async (e) => {
+
+            if (handlingInput)
+                return
+            handlingInput = true
+            try {
+                if (e.ctrlKey && e.key === 'e') {
+                    e.preventDefault()
+                    await this.export()
+                } else if (e.ctrlKey && e.key === 'i') {
+                    e.preventDefault()
+                    let importEl = document.querySelector('input.import-game-file')
+                    if (importEl instanceof HTMLInputElement) {
+                        importEl.click()
+                    }
+                } else if (e.ctrlKey && e.key === 's') {
+                    e.preventDefault()
+                    await this.saveData()
+                } else if (e.key === 'F1') {
+                    e.preventDefault()
+                    welcomeDialog.showModal()
+                } else if (e.ctrlKey && e.key === ',') {
+                    e.preventDefault()
+                    settingsDialog.showModal()
+                }
+            }
+            finally {
+                handlingInput = false
             }
         })
     }
@@ -259,10 +284,11 @@ export class IndexController {
 
     /**
      * Wire up all the settings.
-     * @param {HTMLDialogElement} dialogEl                      settings dialog element
-     * @param {HTMLDialogElement|undefined} welcomeDialogEl     the welcome dialog element
+     * @param {HTMLDialogElement} dialogEl          settings dialog element
+     * @param {HTMLDialogElement} welcomeDialogEl   the welcome dialog element
+     * @param {HTMLDialogElement} importingDialog   the importing dialog element
      */
-    #setupSettings (dialogEl, welcomeDialogEl) {
+    #setupSettings (dialogEl, welcomeDialogEl, importingDialog) {
         document.getElementById('settings-btn').addEventListener('click', () => dialogEl.showModal())
         dialogEl.querySelectorAll('button.close').forEach(el => el.addEventListener('click', () => dialogEl.close()))
         dialogEl.querySelector('button.clear-info').addEventListener('click', async () => {
@@ -276,7 +302,10 @@ export class IndexController {
         importEl.addEventListener('change', async () => {
             if (importEl.files.length === 0)
                 return
+            importingDialog.showModal()
             await this.import(importEl.files[0])
+            importEl.value = null
+            importingDialog.close()
         })
 
         dialogEl.querySelector('button.export-game').addEventListener('click', async () => {
