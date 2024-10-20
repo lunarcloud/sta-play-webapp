@@ -296,7 +296,7 @@ export class Database {
                 delete info.id
                 return info
             })
-        this.#replaceData(STORE.TRAITS, INDEX.NAME, traits, db)
+        await this.#replaceData(STORE.TRAITS, INDEX.NAME, traits, db)
     }
 
     /**
@@ -312,7 +312,7 @@ export class Database {
         }
 
         validTrackers.forEach(t => { if (t.id === undefined) delete t.id })
-        this.#replaceData(STORE.TRACKERS, INDEX.NAME, validTrackers, db)
+        await this.#replaceData(STORE.TRACKERS, INDEX.NAME, validTrackers, db)
     }
 
     /**
@@ -322,7 +322,7 @@ export class Database {
      */
     async replacePlayers (players = [], db = undefined) {
         players.forEach(p => { if (p.id === undefined) delete p.id })
-        this.#replaceData(STORE.PLAYERS, INDEX.NAME, players, db)
+        await this.#replaceData(STORE.PLAYERS, INDEX.NAME, players, db)
     }
 
     /**
