@@ -492,7 +492,9 @@ dialogs > dialog {
       padding: 0;
       padding-left: 0.5em;
       text-align: center;
-      background: unset;
+      background: var(--secondary-color-bg);
+      color: var(--main-color-text);
+      text-shadow: 1px 1px 2px var(--shadow-color-text);
       border: 1px solid #431818;
       outline: none;
       font-size: 2em;
