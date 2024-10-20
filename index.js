@@ -561,6 +561,8 @@ export class IndexController {
         }
 
         document.querySelector('task-trackers').appendChild(newTrackerEl)
+
+        newTrackerEl.focus()
     }
 
     /**
@@ -574,6 +576,7 @@ export class IndexController {
 
         const traitsEl = document.getElementsByTagName('traits')[0]
         traitsEl.appendChild(traitEl)
+        traitEl.focus()
     }
 
     /**
@@ -620,6 +623,8 @@ export class IndexController {
                 settingsPlayerEl.value = '1' // reset so it's not above max
             })
         }
+
+        newPlayerEl.focus()
     }
 
     /**

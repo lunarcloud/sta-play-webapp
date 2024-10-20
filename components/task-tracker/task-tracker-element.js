@@ -344,6 +344,14 @@ export class TaskTrackerElement extends HTMLElement {
         if (this.#shipDepartmentEl.querySelector(`option[value="${value}"]`))
             this.#shipDepartmentEl.value = value
     }
+
+    /**
+     * [MDN Reference](https://developer.mozilla.org/docs/Web/API/HTMLElement/focus)
+     * @param {FocusOptions} [options]  An optional object for controlling aspects of the focusing process
+     */
+    focus(options) {
+        this.#nameEl.focus(options)
+    }
 }
 
 // Register element
