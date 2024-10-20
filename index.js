@@ -94,11 +94,11 @@ export class IndexController {
             this.saveData()
         })
 
-        document.getElementById('font-up-btn').addEventListener('click',
-            () => this.#editFontSize(0.25))
-
-        document.getElementById('font-down-btn').addEventListener('click',
-            () => this.#editFontSize(-0.25))
+        // load this device's last known font size
+        this.#loadFontSize()
+        // Wire up font size change buttons
+        document.getElementById('font-up-btn').addEventListener('click', () => this.#editFontSize(0.25))
+        document.getElementById('font-down-btn').addEventListener('click', () => this.#editFontSize(-0.25))
 
         const alertEl = document.getElementsByTagName('ship-alert')[0]
         if (alertEl instanceof ShipAlertElement)
@@ -187,6 +187,16 @@ export class IndexController {
         })
     }
 
+    #loadFontSize() {
+        const savedSize = localStorage.getItem('fontSize')
+
+        if (savedSize === null)
+            return
+
+        let value = parseFloat(savedSize)
+        document.documentElement.style.setProperty('--main-font-size', `${value}pt`)
+    }
+
     /**
      * Add to the existing font size
      * @param {number} amount amount to add
@@ -196,6 +206,7 @@ export class IndexController {
         let value = parseFloat(valueText)
         value += amount
         document.documentElement.style.setProperty('--main-font-size', `${value}pt`)
+        localStorage.setItem('fontSize', `${value}`)
     }
 
     /**
