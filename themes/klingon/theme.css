@@ -76,6 +76,7 @@ body {
 
         & mission-tracker {
             margin-top: 0;
+            font-size: 1.25em;
 
             &::part(scene) {
                 background-image: url('../../img/klingon-embled-dark.webp');
@@ -186,6 +187,7 @@ decoration {
             background-size: 240px;
         }
 
+        /* App Controls at bottom */
         & li:first-child {
             bottom: 0;
             left: 0;
@@ -194,8 +196,9 @@ decoration {
             background-image: url('cc0-textures/diamond-plate-007-D.jpg');
         }
 
+        /* Traits section at top */
         & li:nth-child(2) {
-            height: 10mm;
+            height: 12mm;
             left: 0;
             top: 0;
             right: 0;
