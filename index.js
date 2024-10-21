@@ -296,9 +296,19 @@ export class IndexController {
             if (importEl.files.length === 0)
                 return
             importingDialog.showModal()
-            await this.import(importEl.files[0])
-            importEl.value = null
-            importingDialog.close()
+            let file = importEl.files[0]
+            try {
+                if (!file.name.endsWith('.staplay'))
+                    throw new Error(`Not an 'staplay' game backup file`)
+                await this.import(file)
+            } catch (ex) {
+                if (ex instanceof Error)
+                    alert(`Could not import ${file.name} \n${ex.message}`)
+            }
+            finally {
+                importEl.value = null
+                importingDialog.close()
+            }
         })
 
         dialogEl.querySelector('button.export-game').addEventListener('click', async () => {
