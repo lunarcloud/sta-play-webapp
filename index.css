@@ -201,8 +201,7 @@ button,
 #save-btn,
 #settings-btn,
 #font-up-btn,
-#font-down-btn,
-#mute-btn {
+#font-down-btn {
     user-select: none;
     
     &:not(:disabled) {
@@ -435,30 +434,6 @@ dialogs > dialog {
 
 #save-btn {
     top: calc(var(--main-font-size) * 6.5);
-}
-
-
-#mute-btn {
-    z-index: 20;
-    position: absolute;
-    top: 6.25em;
-    font-size: calc(var(--main-font-size) * 1.2);
-    left: 0;
-    background-color: transparent;
-    border-color: transparent;
-    display: none;
-
-    &:hover {
-        text-shadow: 0 1mm 4mm #fff6;
-    }
-
-    &.on > .off {
-        display: none;
-    }
-
-    &:not(.on) > .on {
-        display: none;
-    }
 }
 
 
@@ -815,7 +790,7 @@ body.ship-fullscreen {
   min-height: 3em;
 
   main, header, footer, nav, theme,
-  #mute-btn, #font-up-btn, #font-down-btn, #save-btn, #settings-btn,
+  #font-up-btn, #font-down-btn, #save-btn, #settings-btn,
   #momentum-section, #threat-section {
     display: none;
   }

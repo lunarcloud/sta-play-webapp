@@ -7,7 +7,6 @@ rm -r $EXPORT
 mkdir $EXPORT
 cp index.* $EXPORT
 cp *.webmanifest $EXPORT
-cp -r audio $EXPORT
 cp -r components $EXPORT
 cp -r fonts $EXPORT
 cp -r gltf $EXPORT

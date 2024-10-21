@@ -31,27 +31,22 @@
         </div>
 
         <!-- General Buttons -->
-        <a id="settings-btn" hover="audio" class="text-n-symbol-btn">
+        <a id="settings-btn" class="text-n-symbol-btn">
             <text>Menu</text>
             <symbol>☰</symbol>
         </a>
 
-        <button id="mute-btn" title="Toggle Audio Mute">
-            <span class="off">🔊</span>
-            <span class="on">🔇</span>
-        </button>
-
-        <a id="save-btn" hover="audio" class="text-n-symbol-btn">
+        <a id="save-btn" class="text-n-symbol-btn">
             <text>Save</text>
             <symbol>💾</symbol>
         </a>
 
-        <a id="font-up-btn" hover="audio" class="text-n-symbol-btn">
+        <a id="font-up-btn" class="text-n-symbol-btn">
             <text>font</text>
             <symbol>++</symbol>
         </a>
 
-        <a id="font-down-btn" hover="audio" class="text-n-symbol-btn">
+        <a id="font-down-btn" class="text-n-symbol-btn">
             <text>font</text>
             <symbol>--</symbol>
         </a>
@@ -117,16 +112,16 @@
         </header>
         <nav>
             <ul>
-                <li><a hover="audio" id="alert-toggle">&emsp; Alert Cycle</a></li>
+                <li><a id="alert-toggle">&emsp; Alert Cycle</a></li>
                 <li>
-                    <a hover="audio" id="player-add">
+                    <a id="player-add">
                         ＋
                         <span class="edition-1 edition-2"> Player</span>
                         <span class="edition-captains-log"> Character</span>
                     </a>
                 </li>
-                <li><a hover="audio" id="task-tracker-add" class="edition-1 edition-2">＋ Tracker</a></li>
-                <li><a hover="audio" id="trait-add" class="edition-1 edition-2">＋ Trait</a></li>
+                <li><a id="task-tracker-add" class="edition-1 edition-2">＋ Tracker</a></li>
+                <li><a id="trait-add" class="edition-1 edition-2">＋ Trait</a></li>
                 <li id="shipname" class="shipname" contenteditable="true" autocomplete="off" autocorrect="off" spellcheck="false">USS Winnipesaukee</li>
             </ul>
         </nav>
@@ -146,11 +141,6 @@
         </main>
 
         <theme></theme>
-
-        <!-- Audio -->
-        <audio id="bg-audio" src="audio/bass-pitch-brownian-noise.mp3" preload loop></audio>
-        <audio id="beep-ok-audio" src="audio/423167__plasterbrain__minimalist-sci-fi-ui-ok.mp3" preload></audio>
-        <audio id="beep-cancel-audio" src="audio/423167__plasterbrain__minimalist-sci-fi-ui-cancel.mp3" preload></audio>
 
         <!-- Dialogs -->
         <dialogs>

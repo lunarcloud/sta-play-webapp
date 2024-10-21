@@ -1,4 +1,3 @@
-import { BgAudioManager } from './js/bg-audio-page.js'
 import './components/input-progress/input-progress-element.js'
 import { MissionTrackerElement } from './components/mission-tracker/mission-tracker-element.js'
 import { TraitDisplayElement } from './components/trait-display/trait-display-element.js'
@@ -22,11 +21,6 @@ import { BackupData } from './js/database/backup-data.js'
 const DefaultShipUrl = 'gltf/starfleet-generic.glb'
 
 export class IndexController {
-    /**
-     * Background Audio & Mute Manager
-     * @type {BgAudioManager}
-     */
-    audioManager = new BgAudioManager()
 
     safeToSaveDB = false
 
@@ -64,24 +58,6 @@ export class IndexController {
         // Get default to fallback to
         this.fallbackText = document.getElementById('general-text').innerHTML
         this.fallbackShipName = document.getElementById('shipname').innerHTML
-
-        // Wire up audio
-        const okAudio = document.getElementById('beep-ok-audio')
-        const cancelAudio = document.getElementById('beep-cancel-audio')
-
-        if (okAudio instanceof HTMLAudioElement === false || cancelAudio instanceof HTMLAudioElement === false)
-            throw new Error('This page is wrong')
-
-        const buttonEffects = (evtName, _el, muted) => {
-            // Audio
-            if (muted)
-                return
-            const audioEl = evtName === 'click' ? okAudio : cancelAudio
-            audioEl.currentTime = 0
-            audioEl.play()
-        }
-        this.audioManager.setupElements('a[hover]', buttonEffects, undefined, buttonEffects)
-        this.audioManager.muteToggle(true) // let's deprecate this audio
 
         // Wire up buttons to their actions
         document.getElementById('task-tracker-add').addEventListener('click', () => this.addTaskTracker())
