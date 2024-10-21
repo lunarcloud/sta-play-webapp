@@ -46,6 +46,26 @@ const DefaultPlayerImages = [
     'img/player/tng-cadet.webp'
 ]
 
+const AnonymousNames = [
+    'Jo Doe',
+    'Jane Doe',
+    'John Doe',
+    'Josh Doe',
+    'J\'lin Doe',
+    'J\'larr Doe',
+    'J\'Tag Doe',
+    'Jane Sh\'Doe',
+    'Jon Th\'Doe'
+]
+
+/**
+ * Get a random "X Doe" style anonymous name.
+ * @returns {string} name text
+ */
+function getAnonymousName () {
+    return AnonymousNames[Math.floor(Math.random() * AnonymousNames.length)]
+}
+
 export class PlayerDisplayElement extends HTMLLIElement {
     static get observedAttributes () {
         return [
@@ -192,7 +212,7 @@ export class PlayerDisplayElement extends HTMLLIElement {
         stressEl.appendChild(this.#maxStressEl)
 
         // h2 name contenteditable
-        const currentName = this.getAttribute('name') ?? 'Jo Doe'
+        const currentName = this.getAttribute('name') ?? getAnonymousName()
         this.setAttribute('name', currentName)
 
         this.#nameEl = document.createElement('h2')
@@ -332,6 +352,14 @@ export class PlayerDisplayElement extends HTMLLIElement {
      */
     focus (options) {
         this.#nameEl.focus(options)
+    }
+
+    /**
+     * Focus on this element and highlight the editable name text.
+     */
+    focusNameEdit () {
+        this.focus()
+        document.getSelection().setBaseAndExtent(this.#nameEl, 0, this.#nameEl, 1)
     }
 }
 

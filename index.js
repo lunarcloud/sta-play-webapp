@@ -658,7 +658,7 @@ export class IndexController {
             threatEl.value = `${threatValue + 2}`
         }
 
-        newPlayerEl.focus()
+        newPlayerEl.focusNameEdit()
     }
 
     /**
