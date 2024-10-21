@@ -111,6 +111,9 @@
                 style="margin: 0 auto; min-width: 1px; height: 100%">
             </model-viewer>
             <!-- linthtml-enable attr-name-style -->
+            <button id="ship-enter-fullscreen" class="fullscreen-btn">
+                <img src="img/fullscreen-icon.svg">
+            </button>
         </header>
         <nav>
             <ul>
@@ -155,6 +158,33 @@
             <dialog is="settings-dialog"></dialog>
             <dialog is="importing-dialog"></dialog>
         </dialogs>
+
+        <div id="fullscreen-ship">
+            <!-- linthtml-disable attr-name-style -->
+            <model-viewer id="ship-fullscreen" src=""
+                    alt="starship 3d model" loading="lazy"
+                    interaction-prompt="auto"
+                    interaction-prompt-threshold="15000"
+                    camera-controls
+                    auto-rotate-delay="400"
+                    camera-orbit="0deg 95deg 0%"
+                    field-of-view="30deg"
+                    min-field-of-view="1deg"
+                    max-field-of-view="180deg"
+                    shadow-intensity="0.5"
+                    exposure="1.5"
+                    zoom-sensitivity="1"
+                    shadow-softness="1"
+                    style="margin: 0 auto; min-width: 1px; height: 100%">
+            </model-viewer>
+            <!-- linthtml-enable attr-name-style -->
+            <button id="ship-leave-fullscreen" class="fullscreen-btn">
+                <img src="img/fullscreen-return-icon.svg">
+            </button>
+            <button id="ship-autorotate-fullscreen">
+                <img src="img/rotate-icon.svg">
+            </button>
+        </div>
 
         <script src="js/jszip.min.js"></script>
         <script type="module" src="index.js" crossorigin="anonymous"></script>

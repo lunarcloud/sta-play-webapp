@@ -124,6 +124,18 @@ export class IndexController {
 
         this.#setupSettings(settingsDialog, welcomeDialog, importingDialog)
 
+
+        // Setup Model-Viewer fullscreen view buttons
+        const enterShipFullscreenBtn = document.getElementById('ship-enter-fullscreen')
+        enterShipFullscreenBtn.addEventListener('click', () => document.body.classList.add('ship-fullscreen'))
+        const leaveShipFullscreenBtn = document.getElementById('ship-leave-fullscreen')
+        leaveShipFullscreenBtn.addEventListener('click', () => document.body.classList.remove('ship-fullscreen'))
+
+        // Setup fullscreen Model-Viewer rotate button
+        const rotateShipFullscreenBtn = document.getElementById('ship-autorotate-fullscreen')
+        const shipFullscreenViewer = document.getElementById('ship-fullscreen')
+        rotateShipFullscreenBtn.addEventListener('click', () => shipFullscreenViewer.toggleAttribute('auto-rotate'))
+
         // Setup Dropping 3D model on the Ship
         const modelViewers = document.getElementsByTagName('model-viewer')
         for (const viewer of modelViewers)

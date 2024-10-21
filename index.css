@@ -437,6 +437,7 @@ dialogs > dialog {
     top: calc(var(--main-font-size) * 6.5);
 }
 
+
 #mute-btn {
     z-index: 20;
     position: absolute;
@@ -601,6 +602,7 @@ body {
     & > header {
         grid-row: 1;
         grid-column: 1;
+        position: relative;
         display: flex;
         flex-wrap: nowrap;
         gap: 0.25em;   
@@ -776,4 +778,65 @@ body {
     & theme {
         position: unset;
     }
+}
+
+
+.fullscreen-btn,
+#ship-autorotate-fullscreen {
+  background-color: transparent;
+  outline: none;
+  border: none;
+  position: absolute;
+  display: flex;
+  right: 0;
+  bottom: 0;
+  padding: 2px;
+
+  &:hover {
+    background-color: rgb(255, 255, 255, 0.3);
+  }
+  & img {
+    height: 1em;
+    aspect-ratio: 1;
+  }
+}
+
+#fullscreen-ship {
+  display: none;
+}
+
+body.ship-fullscreen {
+  inset: 0;
+  min-width: 3em;
+  min-height: 3em;
+
+  main, header, footer, nav, theme,
+  #mute-btn, #font-up-btn, #font-down-btn, #save-btn, #settings-btn,
+  #momentum-section, #threat-section {
+    display: none;
+  }
+
+  #fullscreen-ship {
+    inset: 0;
+    position: fixed;
+    display: block;
+    background-color: black;
+
+    #ship-autorotate-fullscreen {
+      bottom: unset;
+      right: unset;
+      top: 1em;
+      left: 1em;
+    }
+
+    & .fullscreen-btn  {
+      bottom: unset;
+      top: 1em;
+      right: 1em;
+
+      & img {
+        transform: rotate(45deg);
+      }
+    }
+  }
 }
