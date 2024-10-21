@@ -26,6 +26,10 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
+      - name: Install ESLint Formatter
+        run: |
+          npm install @microsoft/eslint-formatter-sarif
+          
       - name: Lint JavaScript
         if: ${{ ! cancelled() }}
         run: npm run eslint
@@ -37,14 +41,9 @@ jobs:
       - name: Lint CSS
         if: ${{ ! cancelled() }}
         run: npm run csslint
-        
-
-      - name: Install ESLint Formatter
-        if: ${{ ! cancelled() }}
-        run: |
-          npm install @microsoft/eslint-formatter-sarif
-          
+                  
       - name: Run ESLint Again for analysis
+        if: ${{ ! cancelled() }}
         env:
           SARIF_ESLINT_IGNORE_SUPPRESSED: "true"
         run: npx eslint
@@ -53,6 +52,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload analysis results to GitHub
+        if: ${{ ! cancelled() }}
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: eslint-results.sarif
