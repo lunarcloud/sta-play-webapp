@@ -26,10 +26,6 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
-      - name: Install ESLint Formatter
-        run: |
-          npm install @microsoft/eslint-formatter-sarif
-          
       - name: Lint JavaScript
         if: ${{ ! cancelled() }}
         run: npm run eslint
@@ -42,9 +38,3 @@ jobs:
         if: ${{ ! cancelled() }}
         run: npm run csslint
         
-      - name: Run linters
-        if: ${{ ! cancelled() }}
-        uses: wearerequired/lint-action@v2
-        with:
-          eslint: true
-          stylelint: true
