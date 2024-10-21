@@ -81,6 +81,7 @@ export class IndexController {
             audioEl.play()
         }
         this.audioManager.setupElements('a[hover]', buttonEffects, undefined, buttonEffects)
+        this.audioManager.muteToggle(true) // let's deprecate this audio
 
         // Wire up buttons to their actions
         document.getElementById('task-tracker-add').addEventListener('click', () => this.addTaskTracker())
