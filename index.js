@@ -665,6 +665,13 @@ export class IndexController {
             })
         }
 
+        // Add 2 threat for the new player (if not just loading)
+        let threatEl = document.getElementById('threat-pool')
+        if (typeof (info) === 'undefined' && threatEl instanceof HTMLInputElement === true) {
+            let threatValue = parseInt(threatEl.value)
+            threatEl.value = `${threatValue + 2}`
+        }
+
         newPlayerEl.focus()
     }
 
