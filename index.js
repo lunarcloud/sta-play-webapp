@@ -134,7 +134,11 @@ export class IndexController {
         // Setup fullscreen Model-Viewer rotate button
         const rotateShipFullscreenBtn = document.getElementById('ship-autorotate-fullscreen')
         const shipFullscreenViewer = document.getElementById('ship-fullscreen')
-        rotateShipFullscreenBtn.addEventListener('click', () => shipFullscreenViewer.toggleAttribute('auto-rotate'))
+        rotateShipFullscreenBtn.addEventListener('click', () => {
+            shipFullscreenViewer.toggleAttribute('auto-rotate')
+            let interactionPrompt = shipFullscreenViewer.getAttribute('interaction-prompt') === 'auto'
+            shipFullscreenViewer.setAttribute('interaction-prompt', interactionPrompt ? 'none' : 'auto')
+        })
 
         // Setup Dropping 3D model on the Ship
         const modelViewers = document.getElementsByTagName('model-viewer')
