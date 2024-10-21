@@ -395,6 +395,12 @@ export class IndexController {
             if (missionTrackerEl instanceof MissionTrackerElement === false)
                 throw new Error('Mission Tracker element is wrong/missing!')
 
+            // Clear screen
+            document.querySelectorAll('trait-display').forEach(el => el.parentNode.removeChild(el))
+            document.querySelectorAll('.players li').forEach(el => el.parentNode.removeChild(el))
+            document.querySelectorAll('task-tracker').forEach(el => el.parentNode.removeChild(el))
+            this.setShipModel(null)
+
             this.currentGameId = gameInfo?.id
             document.body.setAttribute('loaded-game-name', gameInfo?.name ?? DefaultGameName)
             document.getElementById('shipname').textContent = (gameInfo?.shipName ?? this.fallbackShipName).trim()
@@ -417,15 +423,11 @@ export class IndexController {
                 this.currentSceneId = firstSceneInfo?.id
                 document.getElementById('general-text').innerHTML = firstSceneInfo?.description ?? this.fallbackText
 
-                // remove existing players
-                document.querySelectorAll('.players li').forEach(el => el.parentNode.removeChild(el))
                 // Get all players
                 const players = await this.db.getPlayers(gameInfo?.id, dbToken)
                 for (const player of players)
                     this.addPlayer(player)
 
-                // remove existing trackers
-                document.querySelectorAll('task-tracker').forEach(el => el.parentNode.removeChild(el))
                 // Get all trackers
                 const trackers = await this.db.getTrackers(gameInfo?.id, dbToken)
                 for (const tracker of trackers)
@@ -433,8 +435,6 @@ export class IndexController {
             }
 
             if (firstSceneInfo !== undefined) {
-                // remove existing traits
-                document.querySelectorAll('trait-display').forEach(el => el.parentNode.removeChild(el))
                 // Get all traits
                 const traits = await this.db.getTraits(firstSceneInfo.id, dbToken)
                 for (const trait of traits)
