@@ -28,12 +28,15 @@ jobs:
   
       - name: Lint JavaScript
         run: npm run eslint
+        if: ${{ ! cancelled() }}
   
       - name: Lint HTML
         run: npm run htmllint
+        if: ${{ ! cancelled() }}
   
       - name: Lint CSS
         run: npm run csslint
+        if: ${{ ! cancelled() }}
         
 
       - name: Install ESLint Formatter
