@@ -796,9 +796,12 @@ body {
     background-color: rgb(255, 255, 255, 0.3);
   }
   & img {
-    height: 1em;
     aspect-ratio: 1;
   }
+}
+
+header .fullscreen-btn img {
+  height: 1em;
 }
 
 #fullscreen-ship {
@@ -822,20 +825,28 @@ body.ship-fullscreen {
     display: block;
     background-color: black;
 
-    #ship-autorotate-fullscreen {
+    & #ship-autorotate-fullscreen {
       bottom: unset;
       right: unset;
-      top: 1em;
-      left: 1em;
+      left: 2mm;
     }
 
     & .fullscreen-btn  {
       bottom: unset;
-      top: 1em;
-      right: 1em;
+      right: 2mm;
 
       & img {
         transform: rotate(45deg);
+      }
+    }
+
+    & #ship-autorotate-fullscreen,
+    & .fullscreen-btn {
+      top: 2mm;
+
+      & img {
+        height: 8mm;
+        height: max(8mm, 1em);
       }
     }
   }
