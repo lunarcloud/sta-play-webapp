@@ -610,6 +610,7 @@ body {
         & mission-tracker {
           font-size: 1.25em;
         }
+
         & traits {
           font-size: 1.5em;
         }
@@ -769,8 +770,9 @@ body {
   padding: 2px;
 
   &:hover {
-    background-color: rgb(255, 255, 255, 0.3);
+    background-color: rgb(255 255 255 / 30%);
   }
+
   & img {
     aspect-ratio: 1;
   }

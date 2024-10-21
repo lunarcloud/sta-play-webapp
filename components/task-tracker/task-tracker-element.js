@@ -349,7 +349,7 @@ export class TaskTrackerElement extends HTMLElement {
      * [MDN Reference](https://developer.mozilla.org/docs/Web/API/HTMLElement/focus)
      * @param {FocusOptions} [options]  An optional object for controlling aspects of the focusing process
      */
-    focus(options) {
+    focus (options) {
         this.#nameEl.focus(options)
     }
 }

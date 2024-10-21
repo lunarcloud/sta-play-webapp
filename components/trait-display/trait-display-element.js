@@ -74,7 +74,7 @@ export class TraitDisplayElement extends HTMLElement {
      * [MDN Reference](https://developer.mozilla.org/docs/Web/API/HTMLElement/focus)
      * @param {FocusOptions} [options]  An optional object for controlling aspects of the focusing process
      */
-    focus(options) {
+    focus (options) {
         this.#textEl.focus(options)
     }
 }

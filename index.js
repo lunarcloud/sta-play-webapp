@@ -21,7 +21,6 @@ import { BackupData } from './js/database/backup-data.js'
 const DefaultShipUrl = 'gltf/starfleet-generic.glb'
 
 export class IndexController {
-
     safeToSaveDB = false
 
     db = new Database()
@@ -101,7 +100,6 @@ export class IndexController {
 
         this.#setupSettings(settingsDialog, welcomeDialog, importingDialog)
 
-
         // Setup Model-Viewer fullscreen view buttons
         const enterShipFullscreenBtn = document.getElementById('ship-enter-fullscreen')
         enterShipFullscreenBtn.addEventListener('click', () => document.body.classList.add('ship-fullscreen'))
@@ -113,7 +111,7 @@ export class IndexController {
         const shipFullscreenViewer = document.getElementById('ship-fullscreen')
         rotateShipFullscreenBtn.addEventListener('click', () => {
             shipFullscreenViewer.toggleAttribute('auto-rotate')
-            let interactionPrompt = shipFullscreenViewer.getAttribute('interaction-prompt') === 'auto'
+            const interactionPrompt = shipFullscreenViewer.getAttribute('interaction-prompt') === 'auto'
             shipFullscreenViewer.setAttribute('interaction-prompt', interactionPrompt ? 'none' : 'auto')
         })
 
@@ -153,7 +151,6 @@ export class IndexController {
         // Keyboard Shortcuts
         let handlingInput = false
         window.addEventListener('keydown', async (e) => {
-
             if (handlingInput)
                 return
             handlingInput = true
@@ -163,7 +160,7 @@ export class IndexController {
                     await this.export()
                 } else if (e.ctrlKey && e.key === 'i') {
                     e.preventDefault()
-                    let importEl = document.querySelector('input.import-game-file')
+                    const importEl = document.querySelector('input.import-game-file')
                     if (importEl instanceof HTMLInputElement) {
                         importEl.click()
                     }
@@ -177,8 +174,7 @@ export class IndexController {
                     e.preventDefault()
                     settingsDialog.showModal()
                 }
-            }
-            finally {
+            } finally {
                 handlingInput = false
             }
         })
@@ -205,13 +201,13 @@ export class IndexController {
         })
     }
 
-    #loadFontSize() {
+    #loadFontSize () {
         const savedSize = localStorage.getItem('fontSize')
 
         if (savedSize === null)
             return
 
-        let value = parseFloat(savedSize)
+        const value = parseFloat(savedSize)
         document.documentElement.style.setProperty('--main-font-size', `${value}pt`)
     }
 
@@ -296,16 +292,15 @@ export class IndexController {
             if (importEl.files.length === 0)
                 return
             importingDialog.showModal()
-            let file = importEl.files[0]
+            const file = importEl.files[0]
             try {
                 if (!file.name.endsWith('.staplay'))
-                    throw new Error(`Not an 'staplay' game backup file`)
+                    throw new Error('Not an \'staplay\' game backup file')
                 await this.import(file)
             } catch (ex) {
                 if (ex instanceof Error)
                     alert(`Could not import ${file.name} \n${ex.message}`)
-            }
-            finally {
+            } finally {
                 importEl.value = null
                 importingDialog.close()
             }
@@ -657,9 +652,9 @@ export class IndexController {
         }
 
         // Add 2 threat for the new player (if not just loading)
-        let threatEl = document.getElementById('threat-pool')
+        const threatEl = document.getElementById('threat-pool')
         if (typeof (info) === 'undefined' && threatEl instanceof HTMLInputElement === true) {
-            let threatValue = parseInt(threatEl.value)
+            const threatValue = parseInt(threatEl.value)
             threatEl.value = `${threatValue + 2}`
         }
 
@@ -692,14 +687,14 @@ export class IndexController {
      */
     async export (gameName = undefined) {
         gameName ??= document.body.getAttribute('loaded-game-name') || 'Game'
-        let fileName = gameName === DefaultGameName ? `game.${Date.now()}` : gameName
+        const fileName = gameName === DefaultGameName ? `game.${Date.now()}` : gameName
         const file = await this.db.export(gameName)
         const mimeOpts = {
             description: 'STA Play Backup',
             mimes: [{ 'application/staplay': '.staplay' }]
         }
 
-        await saveBlobAs( `${fileName}.staplay`, file, mimeOpts, 'downloads', true)
+        await saveBlobAs(`${fileName}.staplay`, file, mimeOpts, 'downloads', true)
     }
 
     async import (backupFile) {

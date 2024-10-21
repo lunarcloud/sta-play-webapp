@@ -17,7 +17,8 @@
             "definedTypes": [
               "NodeListOf",
               "FileSystemFileHandle",
-              "JSZip"
+              "JSZip",
+              "FocusOptions"
             ]
           }]
     }

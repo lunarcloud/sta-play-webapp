@@ -17,8 +17,6 @@
  * @property    {Array<FileMimeTypeOption>} [types]     list of file type options
  */
 
-
-
 /**
  * Write text to file.
  * @param {string} filename                     suggested filename
@@ -38,6 +36,7 @@ export async function saveBlob (filename, blobData) {
  * @param {Blob} blobData                       data to write
  * @param {FileMimeTypeOption} mimeOptions      MIME type info options
  * @param {StartPathType}  [startIn]            Where to start the save-as dialog from
+ * @param {boolean} [promptIfFallback]             whether to prompt for filename if falling back to old save method
  */
 export async function saveBlobAs (filename, blobData, mimeOptions, startIn = 'downloads', promptIfFallback = false) {
     if (blobData instanceof Blob === false)
