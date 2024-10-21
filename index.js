@@ -93,6 +93,11 @@ export class IndexController {
         if (welcomeDialog instanceof HTMLDialogElement === false)
             throw new Error('Welcome dialog not setup!')
 
+        if (!localStorage.getItem('welcomed-once')) {
+            welcomeDialog.showModal() // Show Welcome Dialog the first time
+            localStorage.setItem('welcomed-once', 'true')
+        }
+
         // Wire up the settings dialog
         const settingsDialog = document.querySelector('dialog[is="settings-dialog"]')
         if (settingsDialog instanceof HTMLDialogElement === false)
@@ -139,14 +144,8 @@ export class IndexController {
         themeSelectEl.addEventListener('change', () => this.#useTheme(themeSelectEl.value))
 
         // Load Info and Images from Database
-        try {
-            this.#loadData().then(hadData => {
-                if (!hadData)
-                    welcomeDialog.showModal() // Show Welcome Dialog the first time
-            })
-        } catch (e) {
-            console.error(e)
-        }
+        this.#loadData()
+            .catch(e => console.error(e))
 
         // Keyboard Shortcuts
         let handlingInput = false
