@@ -26,34 +26,34 @@
     --player-color-brown: hsl(32deg 43% 29%);
     --player-color-black: hsl(260deg 12% 25%);
     --player-color-white: hsl(261deg 19% 77%);
-    --bottom-section-height: 40mm;
+    --bottom-section-height: 8em;
 }
 
 
 nav > ul li {
     border-radius: 2px !important;
-    border: 1mm outset black;
+    border: 0.25em outset black;
 }
 
 html {
-    min-height: 150mm;
+    min-height: 30em;
     min-width: fit-content;
     width: 100vw;
     height: fit-content;
 }
 
 body {
-    padding-left: 2mm;
-    padding-right: 2mm;
-    padding-top: 1mm;
-    grid-template-rows: 1fr calc(var(--bottom-section-height) + 1mm);
-    grid-template-columns: 65mm 1fr 70mm;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    padding-top: 0.25em;
+    grid-template-rows: 1fr calc(var(--bottom-section-height) + 0.25em);
+    grid-template-columns: 13em 1fr 14em;
     gap: 0;
 
     & header {
         grid-row: 2;
         grid-column: 2;
-        margin: 1mm;
+        margin: 0.25em;
     }
 
     & nav {
@@ -70,7 +70,7 @@ body {
         grid-template-rows: 1fr auto;
 
         & traits, & mission-tracker {
-            margin-bottom: 4mm;
+            margin-bottom: 1em;
             border-bottom: 0;
         }
 
@@ -94,11 +94,11 @@ body {
 #game-name {
     inset: unset;
     padding: unset;
-    width: 65mm;
-    bottom: calc(var(--bottom-section-height) - 11mm);
-    left: 2mm;
+    width: 13em;
+    bottom: calc(var(--bottom-section-height) - 2em);
+    left: 0.5em;
     text-align: center;
-    font-size: 21px;
+    font-size: 1em;
     color: black;
     text-shadow: 1px 1px 0 rgb(79 70 70);
 
@@ -107,58 +107,73 @@ body {
     }
 }
 
-#settings-btn {
+#settings-btn,
+#save-btn,
+#font-up-btn,
+#font-down-btn {
     inset: unset;
     padding: unset;
-    bottom: calc(var(--bottom-section-height) - 20mm);
-    left: 3mm;
-    width: 20mm;
+    width: 5em;
     justify-content: space-evenly;
 }
 
+#settings-btn,
+#font-up-btn {
+    bottom: calc(var(--bottom-section-height) - 2em);
+}
+
+#font-down-btn,
 #save-btn {
-    inset: unset;
-    padding: unset;
-    bottom: calc(var(--bottom-section-height) - 20mm);
-    left: 30mm;
-    width: 20mm;
-    justify-content: space-evenly;
+    bottom: calc(var(--bottom-section-height) - 3.5em);
+}
+
+#save-btn,
+#settings-btn {
+    left: 0.6em;
+}
+
+#font-up-btn,
+#font-down-btn   {
+    left: 10.6em;
 }
 
 #mute-btn {
     inset: unset;
     width: unset;
     padding: unset;
-    bottom: calc(var(--bottom-section-height) - 22mm);
-    left: 56mm;
+    bottom: calc(var(--bottom-section-height) - 20.5em);
+    left: 11.2em;
 }
 
-
-#momentum-section {
-    inset: unset;
-    top: unset !important;
-    bottom: 2mm;
-    left: 3mm;
-    width: 31mm;
-}
-
+#momentum-section,
 #threat-section {
     inset: unset;
     top: unset !important;
-    bottom: 2mm;
-    left: 35mm;
-    width: 31mm;
+    bottom: 0.5em;
+    width: 7em;
+}
+
+#momentum-section {
+    left: 0.6em;
+}
+
+#threat-section {
+    left: 8.6em;
 }
 
 #settings-btn,
 #save-btn,
 #momentum-section,
-#threat-section
+#threat-section,
+#font-up-btn,
+#font-down-btn
 {
     background-color: hsl(0deg 0% 39% / 75%);
     border-radius: 4px;
     padding: 4px;
     height: fit-content;
+    border: 2px solid #2412127d;
+    border-top: 2px solid black;
 }
 
 task-tracker::part(internal) {
@@ -184,7 +199,7 @@ decoration {
         & li {
             z-index: -1;
             position: absolute;
-            border: 1mm inset white;
+            border: 0.25em inset white;
             background-color: gray;
             background-image: url('cc0-textures/metal-024.jpg');
             background-repeat: repeat;
@@ -202,7 +217,7 @@ decoration {
 
         /* Traits section at top */
         & li:nth-child(2) {
-            height: 12mm;
+            height: 2em;
             left: 0;
             top: 0;
             right: 0;
