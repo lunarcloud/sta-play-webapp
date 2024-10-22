@@ -1,16 +1,17 @@
 import './components/input-progress/input-progress-element.js'
-import { MissionTrackerElement } from './components/mission-tracker/mission-tracker-element.js'
-import { TraitDisplayElement } from './components/trait-display/trait-display-element.js'
+import './lib/three.module.min.js'
+import './lib/model-viewer.min.js'
 import './components/welcome-dialog/welcome-dialog-element.js'
 import './components/settings-dialog/settings-dialog-element.js'
 import './components/importing-dialog/importing-dialog-element.js'
+import { MissionTrackerElement } from './components/mission-tracker/mission-tracker-element.js'
+import { TraitDisplayElement } from './components/trait-display/trait-display-element.js'
 import { PlayerDisplayElement } from './components/player-display/player-display-element.js'
 import { TaskTrackerElement } from './components/task-tracker/task-tracker-element.js'
 import { Database } from './js/database/database.js'
 import { TrackerInfo } from './js/database/tracker-info.js'
 import { PlayerInfo } from './js/database/player-info.js'
 import { DefaultGameName, GameInfo } from './js/database/game-info.js'
-import 'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js'
 import { ShipAlertElement } from './components/ship-alert/ship-alert-element.js'
 import { setupDropOnly } from './js/drop-nodrag-setup.js'
 import { loadElementFromFile } from './js/load-file-element.js'
@@ -93,10 +94,12 @@ export class IndexController {
         if (welcomeDialog instanceof HTMLDialogElement === false)
             throw new Error('Welcome dialog not setup!')
 
-        if (!localStorage.getItem('welcomed-once')) {
-            welcomeDialog.showModal() // Show Welcome Dialog the first time
-            localStorage.setItem('welcomed-once', 'true')
-        }
+        setTimeout(() => {
+            if (!localStorage.getItem('welcomed-once')) {
+                welcomeDialog.showModal() // Show Welcome Dialog the first time
+                localStorage.setItem('welcomed-once', 'true')
+            }
+        })
 
         // Wire up the settings dialog
         const settingsDialog = document.querySelector('dialog[is="settings-dialog"]')

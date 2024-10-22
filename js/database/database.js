@@ -1,5 +1,5 @@
 // @ts-ignore
-import { openDB, deleteDB } from 'https://cdn.jsdelivr.net/npm/idb@8/+esm'
+import { openDB, deleteDB } from '../../lib/idb.js'
 import { DefaultGameName, GameInfo } from './game-info.js'
 import { NamedInfo } from './named-info.js'
 import { PlayerInfo } from './player-info.js'

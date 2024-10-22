@@ -8,11 +8,12 @@
         "csslint": "npx stylelint \"**/*.css\" --quiet-deprecation-warnings",
         "csslint-fix": "npx stylelint \"**/*.css\" --quiet-deprecation-warnings --fix",
         "lint": "npm run eslint && npm run htmllint && npm run csslint",
-        "serve": "serve"
+        "serve": "serve",
+        "copy-deps": "sh copy-deps.sh"
     },
     "dependencies": {
         "@google/model-viewer": "^3.5.0",
-        "file-saver": "^2.0.5",
+        "@ungap/custom-elements": "^1.3.0",
         "idb": "^8.0.0",
         "jszip": "^3.10.1"
     },
