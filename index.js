@@ -1,6 +1,4 @@
 import './components/input-progress/input-progress-element.js'
-import './lib/three.module.min.js'
-import './lib/model-viewer.min.js'
 import './components/welcome-dialog/welcome-dialog-element.js'
 import './components/settings-dialog/settings-dialog-element.js'
 import './components/importing-dialog/importing-dialog-element.js'
@@ -18,6 +16,7 @@ import { loadElementFromFile } from './js/load-file-element.js'
 import { SceneInfo } from './js/database/scene-info.js'
 import { saveBlobAs } from './js/save-file-utils.js'
 import { BackupData } from './js/database/backup-data.js'
+import './lib/model-viewer.min.js'
 
 const DefaultShipUrl = 'gltf/starfleet-generic.glb'
 
@@ -387,7 +386,6 @@ export class IndexController {
             document.querySelectorAll('trait-display').forEach(el => el.parentNode.removeChild(el))
             document.querySelectorAll('.players li').forEach(el => el.parentNode.removeChild(el))
             document.querySelectorAll('task-tracker').forEach(el => el.parentNode.removeChild(el))
-            this.setShipModel(null)
 
             this.currentGameId = gameInfo?.id
             document.body.setAttribute('loaded-game-name', gameInfo?.name ?? DefaultGameName)
@@ -399,8 +397,6 @@ export class IndexController {
             document.getElementsByTagName('ship-alert')[0].setAttribute('color', (gameInfo?.activeAlert ?? '').trim())
             this.#useTheme(gameInfo?.theme ?? 'lcars-24')
             this.#useEdition(gameInfo?.edition)
-
-            this.setShipModel(gameInfo?.shipModel)
 
             /** @type {SceneInfo} */
             let firstSceneInfo
@@ -436,6 +432,8 @@ export class IndexController {
             } else {
                 document.getElementById('general-text').innerHTML = this.fallbackText
             }
+
+            this.setShipModel(gameInfo?.shipModel)
 
             this.safeToSaveDB = true
             return typeof (gameInfo) !== 'undefined'
