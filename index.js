@@ -588,7 +588,9 @@ export class IndexController {
 
         document.querySelector('task-trackers').appendChild(newTrackerEl)
 
-        newTrackerEl.focus()
+        // if completely new tracker, focus on renaming
+        if (typeof (info) === 'undefined')
+            newTrackerEl.focus()
     }
 
     /**
@@ -602,7 +604,10 @@ export class IndexController {
 
         const traitsEl = document.getElementsByTagName('traits')[0]
         traitsEl.appendChild(traitEl)
-        traitEl.focus()
+
+        // if completely new trait, focus on renaming
+        if (typeof (name) === 'undefined')
+            traitEl.focus()
     }
 
     /**
@@ -657,7 +662,9 @@ export class IndexController {
             threatEl.value = `${threatValue + 2}`
         }
 
-        newPlayerEl.focusNameEdit()
+        // if completely new player, focus on renaming
+        if (typeof (info) === 'undefined')
+            newPlayerEl.focusNameEdit()
     }
 
     /**
