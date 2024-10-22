@@ -1,5 +1,6 @@
 
 trait-display-internal {
+    display: inline-block;
     border-radius: 4px;
     padding: 0.2em 0.4em;
     margin: 0.2em;

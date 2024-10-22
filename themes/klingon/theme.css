@@ -137,14 +137,6 @@ body {
     left: 10.6em;
 }
 
-#mute-btn {
-    inset: unset;
-    width: unset;
-    padding: unset;
-    bottom: calc(var(--bottom-section-height) - 20.5em);
-    left: 11.2em;
-}
-
 #momentum-section,
 #threat-section {
     inset: unset;
