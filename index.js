@@ -98,7 +98,7 @@ export class IndexController {
                 welcomeDialog.showModal() // Show Welcome Dialog the first time
                 localStorage.setItem('welcomed-once', 'true')
             }
-        })
+        }, 1)
 
         // Wire up the settings dialog
         const settingsDialog = document.querySelector('dialog[is="settings-dialog"]')
