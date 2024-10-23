@@ -7,8 +7,8 @@
         "htmllint": "npx linthtml \"**/*.html\"",
         "csslint": "npx stylelint \"**/*.css\" --quiet-deprecation-warnings",
         "csslint-fix": "npx stylelint \"**/*.css\" --quiet-deprecation-warnings --fix",
-        "lint": "npm run eslint && npm run htmllint && npm run csslint",
-        "lint-fix": "npm run eslint-fix && npm run htmllint && npm run csslint-fix",
+        "lint": "npm run eslint; npm run htmllint; npm run csslint;  npm run svglint",
+        "lint-fix": "npm run eslint-fix; npm run htmllint; npm run csslint-fix",
         "serve": "serve",
         "copy-deps": "sh copy-deps.sh"
     },
