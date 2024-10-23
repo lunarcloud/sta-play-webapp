@@ -16,9 +16,6 @@ npm run copy-deps
 npm serve
 ```
 
-### Windows Users
-Copy-deps doesn't currently work on the windows command-line, so use git bash or WSL or just read copy-deps.sh and do that manually.
-
 ## Code Quality Tools
 The project has linters for the HTML, CSS, and JavaScript all setup and configured.
 Simply run `npm run lint-fix` to run all of them in "fix what you can automatically" mode.
