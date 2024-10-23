@@ -1,5 +1,7 @@
-# Logs
 lib
+*.bak
+
+# Logs
 logs
 *.log
 npm-debug.log*

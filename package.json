@@ -19,7 +19,7 @@
         "jszip": "^3.10.1"
     },
     "devDependencies": {
-        "@linthtml/linthtml": "^0.9.5",
+        "@linthtml/linthtml": "^0.9.6",
         "eslint": "^8.55.0",
         "eslint-config-standard": "^17.1.0",
         "eslint-plugin-editorconfig": "^4.0.3",
@@ -28,6 +28,7 @@
         "eslint-plugin-n": "^16.4.0",
         "eslint-plugin-promise": "^6.1.1",
         "serve": "^14.2.1",
+        "shx": "^0.3.4",
         "stylelint": "^16.0.2",
         "stylelint-config-standard": "^35.0.0"
     }

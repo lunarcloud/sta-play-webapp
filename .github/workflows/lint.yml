@@ -10,8 +10,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  eslint:
-    name: Run eslint scanning
+  lint:
+    name: Run Code Quality Checks
     runs-on: ubuntu-latest
     permissions:
       contents: read

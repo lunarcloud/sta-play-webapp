@@ -9,7 +9,7 @@
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
-    "ignorePatterns": ["**/lib/**/*.js", "jszip.*"],
+    "ignorePatterns": ["**/lib/**/*.js"],
     "rules": {
         "max-len": 0,
         "curly": 0,
