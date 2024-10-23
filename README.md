@@ -7,7 +7,7 @@ Play App for Star Trek Adventures
 [![GitHub top language](https://img.shields.io/github/languages/top/lunarcloud/sta-play-webapp)](https://github.com/lunarcloud/sta-play-webapp/pulse)
 [![environment](https://img.shields.io/badge/env-Browser-green)](https://developer.mozilla.org/en-US/docs/Glossary/Browser)
 
-A client-side JavaScript module one can import to add good gamepad support to web-powered games or other gamepad-powered web applications.
+A utility for GMs running a game of Star Trek Adventures TTRPG or players of the Captain's Log Solo RPG to display high-level player information during a game session.
 
 ## Development Setup
 ```sh
