@@ -33,15 +33,12 @@
     --traits-display-width: 12em;
     --controls-height: 10em;
     --ship-display-height: 8em;
-
     --ship-display-col-1: 1;
     --ship-display-col-2: 2;
     --ship-display-row: 1;
-
     --main-content-col-start: 1;
     --main-content-col-end: 4;
     --main-content-row: 2;
-
     --controls-1-col: 1;
     --controls-2-col: 2;
     --controls-row: 3;
@@ -85,7 +82,6 @@ body:not(.edition-captains-log) {
 body.edition-captains-log {
     --controls-height: 7.5em;
     --mission-tracker-height: 2.75em;
-
     --main-content-row: 3;
     --controls-row: 4;
 
@@ -168,6 +164,7 @@ decoration {
             &:nth-of-type(2) {
                 bottom: 4em;
             }
+
             &:nth-of-type(3) {
                 bottom: 7em;
             }
@@ -180,6 +177,7 @@ decoration {
             & dot {
                 background-color: var(--trek-color-1);
             }
+
             & sub-box {
                 background-color: var(--trek-color-3);
             }
@@ -192,8 +190,10 @@ decoration {
             & dot {
                 background-color: var(--trek-color-3);
             }
+
             & sub-box {
                 background-color: var(--trek-color-1);
+
                 &:nth-of-type(2) {
                     background-color: var(--trek-color-2);
                 }
@@ -207,11 +207,14 @@ decoration {
             & dot {
                 background-color: var(--trek-color-4);
             }
+
             & sub-box {
                 background-color: var(--trek-color-5);
+
                 &:nth-of-type(2) {
                     background-color: var(--trek-color-4);
                 }
+
                 &:nth-of-type(3) {
                     background-color: var(--trek-color-1);
                 }
@@ -225,6 +228,7 @@ decoration {
             & dot {
                 background-color: var(--trek-color-5);
             }
+
             & sub-box {
                 background-color: var(--trek-color-6);
             }
@@ -237,6 +241,7 @@ decoration {
             & dot {
                 background-color: var(--trek-color-6);
             }
+
             & sub-box {
                 background-color: var(--trek-color-1);
             }
@@ -249,6 +254,7 @@ decoration {
             & dot {
                 background-color: var(--trek-color-6);
             }
+
             & sub-box {
                 background-color: var(--trek-color-2);
             }
@@ -269,7 +275,6 @@ body {
     & header {
         grid-row: var(--ship-display-row);
         grid-column: var(--ship-display-col-1) / calc(1 + var(--ship-display-col-2));
-
         gap: 2em;
         margin: 0.75em 0.25em 0.25em 1.75em;
 
@@ -286,7 +291,7 @@ body {
     & nav {
         grid-row: var(--controls-row);
         grid-column: var(--controls-2-col);
-        padding: 0em 0.25em 0em 1.75em;
+        padding: 0 0.25em 0 1.75em;
         margin: auto;
         justify-content: space-evenly;
         padding-top: 0.75em;
@@ -406,9 +411,11 @@ body {
 #font-up-btn,
 #font-down-btn {
     justify-content: center;
+
     & text {
         padding-inline: 0.25em;
     }
+
     & symbol {
         letter-spacing: 0.25em;
         width: fit-content;
