@@ -46,6 +46,7 @@
 
 ship-alert, li[is="player-display"] {
     font-family: Okuda, sans-serif;
+
     --main-font-headers: "Okuda", sans-serif;
 }
 
