@@ -5,7 +5,7 @@
 ::backdrop {
     --main-font-body: "Persis", sans-serif;
     --main-font-headers: "Persis", sans-serif;
-    --main-font-size: 12pt;
+    --main-font-size: 10pt;
     --main-color-bg: hsl(200deg 50% 1%); /* nearly-black */
     --void-bg: black;
     --trek-color-1: hsl(221deg 22% 34%);
@@ -47,7 +47,7 @@
     --controls-row: 3;
 }
 
-ship-alert {
+ship-alert, .players {
     font-family: Okuda, sans-serif;
 }
 
@@ -76,6 +76,12 @@ body, decoration {
     min-height: 30em;
 }
 
+body:not(.edition-captains-log) {
+    & ul > li > a {
+        line-height: 2.25em;
+    }
+}
+
 body.edition-captains-log {
     --controls-height: 7.5em;
     --mission-tracker-height: 2.75em;
@@ -91,7 +97,7 @@ body.edition-captains-log {
     & mission-tracker {
         position: absolute;
         bottom: unset;
-        left: 1em;
+        left: 1.25em;
         right: unset;
         top: calc(var(--ship-display-height) - 1em);
         height: 1.5em;
@@ -124,18 +130,20 @@ decoration {
     display: grid;
     position: absolute;
 
-    box {
+    & box {
         display: block;
         z-index: -100;
         position: relative;
-        border: 1mm inset white;
-        background-color: transparent;
+        border: 0.125em inset white;
+        border-left-width: 1em;
+        background-color: #223;
         background-repeat: repeat;
         background-size: 240px;
         margin-top: 0.5em;
         margin-left: 0.5em;
 
         & dot {
+            z-index: -99;
             display: block;
             border-radius: 50%;
             border: 0.125em solid #999;
@@ -144,15 +152,36 @@ decoration {
             aspect-ratio: 1;
             position: absolute;
             top: -0.5em;
-            left: -0.5em;
+            left: -1.5em;
+        }
+
+        & sub-box {
+            z-index: -98;
+            height: 2em;
+            aspect-ratio: 0.5;
+            display: block;
+            position: absolute;
+            left: -1.25em;
+            bottom: 1em;
+            border: 1px solid black;
+
+            &:nth-of-type(2) {
+                bottom: 4em;
+            }
+            &:nth-of-type(3) {
+                bottom: 7em;
+            }
         }
 
         &:first-child {
             grid-row: var(--ship-display-row);
             grid-column: var(--ship-display-col-1);
 
-            dot {
+            & dot {
                 background-color: var(--trek-color-1);
+            }
+            & sub-box {
+                background-color: var(--trek-color-3);
             }
         }
 
@@ -160,8 +189,14 @@ decoration {
             grid-row: var(--ship-display-row);
             grid-column: var(--ship-display-col-2);
 
-            dot {
+            & dot {
                 background-color: var(--trek-color-3);
+            }
+            & sub-box {
+                background-color: var(--trek-color-1);
+                &:nth-of-type(2) {
+                    background-color: var(--trek-color-2);
+                }
             }
         }
 
@@ -169,8 +204,17 @@ decoration {
             grid-row: var(--main-content-row);
             grid-column: var(--main-content-col-start) / var(--main-content-col-end);
 
-            dot {
+            & dot {
                 background-color: var(--trek-color-4);
+            }
+            & sub-box {
+                background-color: var(--trek-color-5);
+                &:nth-of-type(2) {
+                    background-color: var(--trek-color-4);
+                }
+                &:nth-of-type(3) {
+                    background-color: var(--trek-color-1);
+                }
             }
         }
 
@@ -178,8 +222,11 @@ decoration {
             grid-row: var(--controls-row);
             grid-column: var(--controls-1-col);
 
-            dot {
+            & dot {
                 background-color: var(--trek-color-5);
+            }
+            & sub-box {
+                background-color: var(--trek-color-6);
             }
         }
 
@@ -187,8 +234,11 @@ decoration {
             grid-row: var(--controls-row);
             grid-column: var(--controls-2-col);
 
-            dot {
+            & dot {
                 background-color: var(--trek-color-6);
+            }
+            & sub-box {
+                background-color: var(--trek-color-1);
             }
         }
 
@@ -196,8 +246,11 @@ decoration {
             grid-row: 2;
             grid-column: 1 / 3;
 
-            dot {
+            & dot {
                 background-color: var(--trek-color-6);
+            }
+            & sub-box {
+                background-color: var(--trek-color-2);
             }
         }
     }
@@ -213,13 +266,12 @@ decoration {
 }
 
 body {
-
     & header {
         grid-row: var(--ship-display-row);
         grid-column: var(--ship-display-col-1) / calc(1 + var(--ship-display-col-2));
 
-        gap: 1em;
-        margin: 0.75em 0.25em 0.25em 0.75em;
+        gap: 2em;
+        margin: 0.75em 0.25em 0.25em 1.75em;
 
         & > model-viewer {
             display: block;
@@ -234,22 +286,30 @@ body {
     & nav {
         grid-row: var(--controls-row);
         grid-column: var(--controls-2-col);
-        padding: 1em;
+        padding: 0em 0.25em 0em 1.75em;
         margin: auto;
+        justify-content: space-evenly;
+        padding-top: 0.75em;
+        height: calc(100% - 1.25em);
+    }
+
+    #shipname {
+        height: 1.125em;
+        height: fit-content;
     }
 
     & > main {
         grid-row: var(--main-content-row);
         grid-column: var(--main-content-col-start) / var(--main-content-col-end);
         overflow: auto;
-        margin-top: 1em;
+        margin-top: 0.6em;
         margin-left: 1em;
-        height: calc(100% - 1.25em);
-        width: calc(100% - 1.25em);
+        height: calc(100% - 0.7em);
+        width: calc(100% - 1.125em);
 
         & content,
         &.players {
-            padding-left: 0.25em;
+            padding-left: 1em;
         }
 
         & #general-text {
@@ -258,9 +318,9 @@ body {
 
         & traits {
             position: absolute;
-            top: 0;
+            top: 1em;
+            bottom: 1em;
             right: 0.5em;
-            bottom: 0;
             font-size: 1em;
             border: none;
             width: calc(var(--traits-display-width) - 2em);

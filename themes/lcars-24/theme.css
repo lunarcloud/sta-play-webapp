@@ -37,6 +37,10 @@ body, h1, h2, h3, h4, h5, h6 {
     letter-spacing: 0.06em;
 }
 
+body nav {
+    align-items: center;
+}
+
 decoration {
     z-index: -1;
     position: absolute;
