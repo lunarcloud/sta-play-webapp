@@ -609,10 +609,13 @@ body {
 
         & mission-tracker {
           font-size: 1.25em;
+          padding-bottom: 0.25em;
+          margin-top: 0.25em;
         }
 
         & traits {
           font-size: 1.5em;
+          margin-top: 0;
         }
 
         & traits, & mission-tracker {
@@ -621,8 +624,6 @@ body {
             width: fill-available;
             display: block;
             position: relative;
-            margin-top: 0.2em;
-            padding-bottom: 0.4em;
             border-bottom: 0.1em solid white;
             margin-bottom: 0.2em;
 

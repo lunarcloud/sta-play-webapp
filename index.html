@@ -21,52 +21,53 @@
 
     <body>
 
-        <div id="game-name">
-            Star Trek
-            <br>
-            Adventures
-            <div class="edition-1">1E</div>
-            <div class="edition-2">2E</div>
-            <div class="edition-captains-log">Captain's Log</div>
-        </div>
+        <menu-items>
+            <div id="game-name">
+                Star Trek
+                <br>
+                Adventures
+                <div class="edition-1">1E</div>
+                <div class="edition-2">2E</div>
+                <div class="edition-captains-log">Captain's Log</div>
+            </div>
 
-        <!-- General Buttons -->
-        <a id="settings-btn" class="text-n-symbol-btn">
-            <text>Menu</text>
-            <symbol>☰</symbol>
-        </a>
+            <!-- General Buttons -->
+            <a id="settings-btn" class="text-n-symbol-btn">
+                <text>Menu</text>
+                <symbol>☰</symbol>
+            </a>
 
-        <a id="save-btn" class="text-n-symbol-btn">
-            <text>Save</text>
-            <symbol>💾</symbol>
-        </a>
+            <a id="save-btn" class="text-n-symbol-btn">
+                <text>Save</text>
+                <symbol>💾</symbol>
+            </a>
 
-        <a id="font-up-btn" class="text-n-symbol-btn">
-            <text>font</text>
-            <symbol>++</symbol>
-        </a>
+            <a id="font-up-btn" class="text-n-symbol-btn">
+                <text>font</text>
+                <symbol>++</symbol>
+            </a>
 
-        <a id="font-down-btn" class="text-n-symbol-btn">
-            <text>font</text>
-            <symbol>--</symbol>
-        </a>
+            <a id="font-down-btn" class="text-n-symbol-btn">
+                <text>font</text>
+                <symbol>--</symbol>
+            </a>
 
-        <div id="momentum-section">
-            <label>
-                Momentum <span class="edition-1 edition-2 pool-text">Pool</span>
-                <input class="edition-captains-log" id="momentum-toggle" type="checkbox"></input>
-            </label>
-            <input id="momentum-pool" class="edition-1 edition-2" type="number" min="0" max="6" value="0"></input>
-        </div>
+            <div id="momentum-section">
+                <label>
+                    Momentum <span class="edition-1 edition-2 pool-text">Pool</span>
+                    <input class="edition-captains-log" id="momentum-toggle" type="checkbox"></input>
+                </label>
+                <input id="momentum-pool" class="edition-1 edition-2" type="number" min="0" max="6" value="0"></input>
+            </div>
 
-        <div id="threat-section">
-            <label>
-                Threat <span class="edition-1 edition-2 pool-text">Pool</span>
-                <input class="edition-captains-log" id="threat-toggle" type="checkbox"></input>
-            </label>
-            <input id="threat-pool" class="edition-1 edition-2" type="number" min="0" value="2"></input>
-        </div>
-
+            <div id="threat-section">
+                <label>
+                    Threat <span class="edition-1 edition-2 pool-text">Pool</span>
+                    <input class="edition-captains-log" id="threat-toggle" type="checkbox"></input>
+                </label>
+                <input id="threat-pool" class="edition-1 edition-2" type="number" min="0" value="2"></input>
+            </div>
+        </menu-items>
         <!-- Content -->
         <header>
             <!-- linthtml-disable attr-name-style -->

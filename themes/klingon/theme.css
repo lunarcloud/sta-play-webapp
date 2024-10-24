@@ -70,18 +70,14 @@ body {
         grid-template-rows: 1fr auto;
 
         & traits, & mission-tracker {
-            margin-bottom: 1em;
+            margin-top: 0;
+            margin-bottom: 0.75em;
             border-bottom: 0;
-        }
-
-        & traits {
-            font-size: 1.25em;
+            padding: 0;
+            font-size: 1em;
         }
 
         & mission-tracker {
-            margin-top: 0;
-            font-size: 1em;
-
             &::part(scene) {
                 background-image: url('../../img/klingon-embled-dark.webp');
                 background-size: 1.3em;
