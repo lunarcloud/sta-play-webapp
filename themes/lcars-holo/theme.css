@@ -60,7 +60,7 @@ body {
 }
 
 decoration > ul {
-    opacity: 0.33;
+    opacity: 0.45; /* This is the important "holographic" part */
 }
 
 nav > ul {
