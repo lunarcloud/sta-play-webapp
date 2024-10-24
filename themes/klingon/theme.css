@@ -29,6 +29,9 @@
     --bottom-section-height: 8em;
 }
 
+li[is="player-display"] {
+    --main-font-headers: "Okuda", sans-serif;
+}
 
 nav > ul li {
     border-radius: 2px !important;

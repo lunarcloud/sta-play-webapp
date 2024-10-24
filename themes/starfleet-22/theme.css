@@ -44,8 +44,9 @@
     --controls-row: 3;
 }
 
-ship-alert, .players {
+ship-alert, li[is="player-display"] {
     font-family: Okuda, sans-serif;
+    --main-font-headers: "Okuda", sans-serif;
 }
 
 nav > ul li {
