@@ -23,3 +23,210 @@
     --player-color-black: hsl(260deg 12% 25%);
     --player-color-white: hsl(261deg 19% 77%);
 }
+
+
+html {
+    min-height: 0;
+    background-color: #999;
+}
+
+html > body, decoration {
+    height: 100dvh;
+    width: 100vw;
+    min-width: 6em;
+    min-height: 4em;
+    display: block;
+    padding: 0;
+    margin: 0;
+}
+
+html > body {
+    background-color: #ccc;
+
+    & > header {
+        bottom: unset;
+        left: unset;
+        top: 1.25em;
+        right: 1.125em;
+        width: 15.75em;
+        aspect-ratio: calc(16 / 9);
+        position: absolute !important;
+        background-color: black !important;
+
+        & #ship-top {
+            display: none;
+        }
+    }
+
+    & > main {
+        position: absolute;
+        inset: 4em 18.5em 3em 5.5em; /* just inside of the decoration */
+        padding: 0.5em;
+        overflow: auto;
+        height: auto;
+    }
+
+    & > nav {
+        position: absolute;
+        bottom: 1.25em;
+        right: 1.125em;
+        width: 15.75em;
+
+        & ul li {
+            border-radius: 0;
+
+            &.shipname {
+                border-radius: 0;
+                color: black;
+            }
+        }
+    }
+}
+
+
+#game-name {
+    inset: unset;
+    padding: unset;
+    top: 0.5em;
+    left: 4em;
+    right: 15em;
+    text-align: center;
+    width: auto;
+
+    & br {
+        display: none;
+    }
+
+    & * {
+        display: inline-block;
+    }
+}
+
+#settings-btn,
+#save-btn,
+#font-up-btn,
+#font-down-btn  {
+    position: absolute;
+    top: unset;
+    bottom: 0.5em;
+    width: fit-content;
+}
+
+#settings-btn {
+    left: 9em;
+    right: unset;
+}
+
+#save-btn {
+    left: 14em;
+    right: unset;
+}
+
+#font-up-btn {
+    left: unset;
+    right: 27em;
+}
+
+#font-down-btn {
+    left: unset;
+    right: 22em;
+}
+
+#momentum-section,
+#threat-section  {
+    position: absolute;
+    left: unset;
+    right: 13em;
+    background-color: #999;
+    width: 8em;
+    aspect-ratio: calc(16 / 9);
+    justify-content: space-around;
+}
+
+#momentum-section  {
+    top: calc(50% + 2.5em) !important;
+}
+
+#threat-section  {
+    top: calc(50% - 2.5em) !important;
+}
+
+decoration {
+    z-index: -1000;
+    accent-color: #873333;
+    display: block;
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+
+viewscreen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1em 0.5em;
+    position: absolute;
+    top: 0.125em;
+    right: 0.125em;
+
+    screen {
+        display: block;
+        background-color: black;
+        width: 16.5em;
+        aspect-ratio: calc(16 / 9);
+    }
+}
+
+monitor {
+    display: block;
+    position: absolute;
+    inset: 3em 18em 2em 5em;
+    border-radius: 2em;
+    background-color: black;
+}
+
+
+ul.sliders {
+    list-style: none;
+    width: auto;
+    position: absolute;
+    height: auto;
+    height: -webkit-fill-available;
+    top: 4em;
+    bottom: 2em;
+    left: 1em;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+
+    li {
+        height: 100%;
+        margin: 0;
+
+        input {
+            appearance: slider-vertical;
+            -webkit-appearance: none;
+            margin: 0.25em;
+            background: #833;
+            height: 100%;
+            width: 0.5em;
+
+            &::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 0.75em;
+                aspect-ratio: 1;
+                background: #AA046D;
+                cursor: pointer;
+            }
+
+            &::-moz-range-thumb {
+                width: 0.75em;
+                aspect-ratio: 1;
+                background: #AA046D;
+                cursor: pointer;
+            }
+        }
+    }
+}
