@@ -384,6 +384,12 @@ dialogs > dialog {
     }
 }
 
+menu-items {
+    display: contents;
+    width: 0;
+    height: 0;
+}
+
 #game-name {
   position: absolute;
   font-size: calc(var(--main-font-size)* 1.2);

@@ -41,6 +41,11 @@ body nav {
     align-items: center;
 }
 
+#font-up-btn,
+#font-down-btn {
+    color: var(--main-color-text) !important;
+}
+
 decoration {
     z-index: -1;
     position: absolute;
@@ -98,6 +103,28 @@ decoration {
 
                     & a {
                         width: 12em;
+                    }
+
+                    &.font-button-up,
+                    &.font-button-down {
+                        a {
+                            width: 5em;
+                            border-style: solid;
+                            border-left-width: 7em;
+                            border-right-width: 1em;
+                            border-top-width: 0;
+                            border-bottom-width: 0;
+                            border-radius: 1em;
+                            background-color: transparent;
+                            background-color: #111 !important;
+                        }
+                    }
+
+                    &.font-button-up a {
+                        border-color: var(--trek-color-1) !important;
+                    }
+                    &.font-button-down a {
+                        border-color: var(--trek-color-2) !important;
                     }
                 }
             }
