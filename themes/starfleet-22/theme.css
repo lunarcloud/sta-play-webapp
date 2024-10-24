@@ -5,7 +5,7 @@
 ::backdrop {
     --main-font-body: "Persis", sans-serif;
     --main-font-headers: "Persis", sans-serif;
-    --main-font-size: 4.5mm;
+    --main-font-size: 12pt;
     --main-color-bg: hsl(200deg 50% 1%); /* nearly-black */
     --void-bg: black;
     --trek-color-1: hsl(221deg 22% 34%);
@@ -33,6 +33,18 @@
     --traits-display-width: 12em;
     --controls-height: 10em;
     --ship-display-height: 8em;
+
+    --ship-display-col-1: 1;
+    --ship-display-col-2: 2;
+    --ship-display-row: 1;
+
+    --main-content-col-start: 1;
+    --main-content-col-end: 4;
+    --main-content-row: 2;
+
+    --controls-1-col: 1;
+    --controls-2-col: 2;
+    --controls-row: 3;
 }
 
 ship-alert {
@@ -51,22 +63,115 @@ html {
     height: fit-content;
 }
 
-
-body {
-    grid-template-columns: 0.5em 1fr 1fr var(--traits-display-width);
-    grid-template-rows: 0 calc(var(--ship-display-height) - 0.5em) 1fr calc(var(--controls-height) - 0.5em);
-    grid-gap: 0.5em;
+body, decoration {
+    grid-template-columns: repeat(2, 27em) 1fr var(--traits-display-width);
+    grid-template-rows: var(--ship-display-height) 1fr var(--controls-height);
+    grid-gap: 0;
+    height: calc(100dvh - 1em);
+    width: calc(100vw - 1em);
+    inset: 0;
+    margin: 0;
     padding: 0;
     min-width: 66em;
     min-height: 30em;
-    height: calc(100dvh - 0.25em);
-    width: 100vw;
+}
+
+decoration {
+    z-index: -1000;
+    display: grid;
+    position: absolute;
+
+    box {
+        display: block;
+        z-index: -100;
+        position: relative;
+        border: 1mm inset white;
+        background-color: transparent;
+        background-repeat: repeat;
+        background-size: 240px;
+        margin-top: 0.5em;
+        margin-left: 0.5em;
+
+        & dot {
+            display: block;
+            border-radius: 50%;
+            border: 0.125em solid #999;
+            background-color: var(--trek-color-1);
+            height: 0.75em;
+            aspect-ratio: 1;
+            position: absolute;
+            top: -0.5em;
+            left: -0.5em;
+        }
+
+        &:first-child {
+            grid-row: var(--ship-display-row);
+            grid-column: var(--ship-display-col-1);
+
+            dot {
+                background-color: var(--trek-color-1);
+            }
+        }
+
+        &:nth-child(2) {
+            grid-row: var(--ship-display-row);
+            grid-column: var(--ship-display-col-2);
+
+            dot {
+                background-color: var(--trek-color-3);
+            }
+        }
+
+        &:nth-child(3) {
+            grid-row: var(--main-content-row);
+            grid-column: var(--main-content-col-start) / var(--main-content-col-end);
+
+            dot {
+                background-color: var(--trek-color-4);
+            }
+        }
+
+        &:nth-child(4) {
+            grid-row: var(--controls-row);
+            grid-column: var(--controls-1-col);
+
+            dot {
+                background-color: var(--trek-color-5);
+            }
+        }
+
+        &:nth-child(5) {
+            grid-row: var(--controls-row);
+            grid-column: var(--controls-2-col);
+
+            dot {
+                background-color: var(--trek-color-6);
+            }
+        }
+    }
+
+    edge {
+        grid-row: 1 / 4;
+        grid-column: 4;
+        display: block;
+        z-index: -100;
+        margin: 1em;
+        border-left: 0.125em solid #999;
+    }
+}
+
+body {
 
     & header {
-        grid-row: 2;
-        grid-column: 2 / 4;
+        grid-row: var(--ship-display-row);
+        grid-column: var(--ship-display-col-1) / calc(1 + var(--ship-display-col-2));
+
         gap: 1em;
-        padding-bottom: 1.25em;
+        margin: 0.75em 0.25em 0.25em 0.75em;
+
+        & > model-viewer {
+            display: block;
+        }
 
         & .fullscreen-btn {
             right: 0.5em;
@@ -75,19 +180,25 @@ body {
     }
 
     & nav {
-        grid-row: 4;
-        grid-column: 3;
+        grid-row: var(--controls-row);
+        grid-column: var(--controls-2-col);
         padding: 1em;
         margin: auto;
     }
 
     & > main {
-        grid-row: 3;
-        grid-column: 2 / 4;
-        width: 100%;
+        grid-row: var(--main-content-row);
+        grid-column: var(--main-content-col-start) / var(--main-content-col-end);
         overflow: auto;
-        padding-top: 0.5em;
-        height: calc(100% - 1em);
+        margin-top: 1em;
+        margin-left: 1em;
+        height: calc(100% - 1.25em);
+        width: calc(100% - 1.25em);
+
+        & content,
+        &.players {
+            padding-left: 0.25em;
+        }
 
         & #general-text {
             word-break: break-word;
@@ -154,8 +265,9 @@ body {
 }
 
 #settings-btn,
-#save-btn {
-    left: 2em;
+#save-btn,
+#font-up-btn,
+#font-down-btn {
     top: unset !important;
     right: unset;
     bottom: 7em;
@@ -168,7 +280,27 @@ body {
 }
 
 #save-btn {
-    left: 14em;
+    left: 10em;
+}
+
+#font-down-btn {
+    left: 18em;
+}
+
+#font-up-btn {
+    left: 26em;
+}
+
+#font-up-btn,
+#font-down-btn {
+    justify-content: center;
+    & text {
+        padding-inline: 0.25em;
+    }
+    & symbol {
+        letter-spacing: 0.25em;
+        width: fit-content;
+    }
 }
 
 #momentum-section,
@@ -177,7 +309,7 @@ body {
     right: unset;
     bottom: 2em;
     left: 14em;
-    width: 10em;
+    width: 14em;
 }
 
 #momentum-section {
@@ -185,23 +317,7 @@ body {
 }
 
 #threat-section {
-    left: 14em;
-}
-
-#font-up-btn,
-#font-down-btn {
-    top: unset !important;
-    right: unset;
-    left: 26em;
-    width: 5.5em;
-}
-
-#font-down-btn {
-    bottom: 2em;
-}
-
-#font-up-btn {
-    bottom: 4.25em;
+    left: 18em;
 }
 
 
@@ -217,93 +333,3 @@ task-tracker::part(internal) {
     text-shadow: 0 0 2px #999;
 }
 
-
-
-decoration {
-    z-index: -1000;
-    display: grid;
-    inset: 0;
-    margin: 0;
-    position: absolute;
-    grid-template-columns: 1fr 1fr var(--traits-display-width);
-    grid-template-rows: var(--ship-display-height) 1fr var(--controls-height);
-    grid-gap: 0;
-
-    box {
-        display: block;
-        z-index: -100;
-        position: relative;
-        border: 1mm inset white;
-        background-color: transparent;
-        background-repeat: repeat;
-        background-size: 240px;
-        margin-top: 0.5em;
-        margin-left: 0.5em;
-
-        & dot {
-            display: block;
-            border-radius: 50%;
-            border: 0.125em solid #999;
-            background-color: var(--trek-color-1);
-            height: 0.75em;
-            aspect-ratio: 1;
-            position: absolute;
-            top: -0.5em;
-            left: -0.5em;
-        }
-
-        &:first-child {
-            grid-row: 1;
-            grid-column: 1;
-
-            dot {
-                background-color: var(--trek-color-1);
-            }
-        }
-
-        &:nth-child(2) {
-            grid-row: 1;
-            grid-column: 2;
-
-            dot {
-                background-color: var(--trek-color-3);
-            }
-        }
-
-        &:nth-child(3) {
-            grid-row: 2;
-            grid-column: 1 / 3;
-
-            dot {
-                background-color: var(--trek-color-4);
-            }
-        }
-
-        &:nth-child(4) {
-            grid-row: 3;
-            grid-column: 1;
-
-            dot {
-                background-color: var(--trek-color-5);
-            }
-        }
-
-        &:nth-child(5) {
-            grid-row: 3;
-            grid-column: 2;
-
-            dot {
-                background-color: var(--trek-color-6);
-            }
-        }
-    }
-
-    edge {
-        display: block;
-        z-index: -100;
-        margin: 1em;
-        border-left: 0.125em solid #999;
-        grid-row: 1 / 4;
-        grid-column: 3;
-    }
-}
