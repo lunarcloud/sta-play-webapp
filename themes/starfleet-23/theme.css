@@ -205,12 +205,13 @@ ul.sliders {
         margin: 0;
 
         input {
-            appearance: slider-vertical;
-            -webkit-appearance: none;
+            writing-mode: vertical-lr;
+            direction: rtl;
             margin: 0.25em;
             background: #833;
             height: 100%;
             width: 0.5em;
+            -webkit-appearance: none;
 
             &::-webkit-slider-thumb {
                 -webkit-appearance: none;
