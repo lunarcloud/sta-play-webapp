@@ -122,17 +122,15 @@ export class IndexController {
             shipFullscreenViewer.setAttribute('interaction-prompt', interactionPrompt ? 'none' : 'auto')
         })
 
-        // Setup Dropping 3D model on the Ship
-        const modelViewers = document.getElementsByTagName('model-viewer')
-        for (const viewer of modelViewers)
-            setupDropOnly(viewer, event => {
-                if (!event.dataTransfer.items?.[0].type.startsWith('model/gltf') ||
-                    !event.dataTransfer.files?.[0])
-                    return false
+        // Setup Dropping ship's 3D model anywhere on the page
+        setupDropOnly(document.body, event => {
+            if (!event.dataTransfer.items?.[0].type.startsWith('model/gltf') ||
+                !event.dataTransfer.files?.[0])
+                return false
 
-                this.setShipModel(event.dataTransfer.files?.[0])
-                return true
-            })
+            this.setShipModel(event.dataTransfer.files?.[0])
+            return true
+        })
 
         // Setup Theme & Selection
         const themeSelectEl = document.getElementById('select-theme')
@@ -178,27 +176,6 @@ export class IndexController {
             } finally {
                 handlingInput = false
             }
-        })
-    }
-
-    /**
-     * Set an element up as a drop zone (not draggable).
-     * @param {HTMLElement|any} el Element to set up drop but not drag for
-     * @param {function(DragEvent):boolean} onDrop  Action to perform within the drop event handler
-     */
-    static setupDropOnly (el, onDrop) {
-        if (el instanceof HTMLElement === false)
-            throw new Error("Cannot use 'el' as HTMLElement argument!")
-
-        el.addEventListener('dragenter', event => event.preventDefault())
-        el.addEventListener('dragover', event => event.preventDefault())
-        el.addEventListener('dragleave', event => event.preventDefault())
-        el.addEventListener('drop', event => {
-            if (event instanceof DragEvent === false || !onDrop(event))
-                return
-
-            event.preventDefault()
-            event.stopPropagation()
         })
     }
 
