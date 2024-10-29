@@ -78,10 +78,13 @@ export class IndexController {
         document.getElementById('font-down-btn').addEventListener('click', () => this.#editFontSize(-0.25))
 
         const alertEl = document.getElementsByTagName('ship-alert')[0]
-        if (alertEl instanceof ShipAlertElement)
-            document.getElementById('alert-toggle').addEventListener('click', () => {
-                alertEl.cycle()
-            })
+        const alertDropdownEl = document.getElementById('alert-dropdown')
+        if (alertEl instanceof ShipAlertElement === false || alertDropdownEl instanceof HTMLSelectElement === false)
+            throw new Error('Ship Alerts not setup correctly!')
+
+        alertDropdownEl.addEventListener('change', () => {
+            alertEl.color = alertDropdownEl.value
+        })
 
         // Check the importing dialog
         const importingDialog = document.querySelector('dialog[is="importing-dialog"]')

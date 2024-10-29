@@ -83,24 +83,6 @@ export class ShipAlertElement extends HTMLElement {
         this.#colorEl.textContent = value?.toUpperCase() ?? 'HIDDEN'
         this.#internalEl.className = value?.toLowerCase() ?? 'hidden'
     }
-
-    /**
-     * Cycle between the alert types and none.
-     */
-    cycle () {
-        const lastType = ShipAlertElement.Colors[ShipAlertElement.Colors.length - 1].name.toLowerCase()
-
-        if (this.#internalEl.classList.contains(lastType)) {
-            this.removeAttribute('color')
-        } else if (['', 'hidden'].includes(this.#internalEl.className)) {
-            this.setAttribute('color', this.#firstColorClass)
-        } else for (let i = 0; i < ShipAlertElement.Colors.length - 1; i++) {
-            if (this.#internalEl.classList.contains(ShipAlertElement.Colors[i].name.toLowerCase())) {
-                this.setAttribute('color', ShipAlertElement.Colors[i + 1].name)
-                break
-            }
-        }
-    }
 }
 
 // Register element

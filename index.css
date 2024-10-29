@@ -6,8 +6,10 @@
     --secondary-color-bg: hsl(273.6deg 17.48% 10%);  /* colored-nearly-black */
     --nav-color-bg: var(--main-color-text);
     --nav-color-text: var(--main-color-bg);
-    --main-font-body: "Okuda", sans-serif;
-    --main-font-headers: "Okuda", sans-serif;
+    --main-font-body: sans-serif;
+    --main-font-headers: sans-serif;
+    --headers-weight: bold;
+    --headers-text-transform: unset;
     --shadow-color-text: hsl(180deg 25% 20%);
     --dialog-color-backdrop: hsl(0deg 0% 0% / 70%);
     --main-a-link-color: hsl(220deg 31% 41%);
@@ -140,6 +142,8 @@ html:focus-within {
 
 h1, h2, h3, h4, h5, h6{
   font-family: var(--main-font-headers);
+  font-weight: var(--headers-weight);
+  text-transform: var(--headers-text-transform);
   margin-top: 0.2em;
   margin-bottom: 0.1em;
 }
@@ -324,7 +328,8 @@ dialogs > dialog {
             border-bottom: 2px solid #444;
 
             & th {
-                font-weight: bold;
+                font-weight: var(--headers-weight);
+                text-transform: var(--headers-text-transform);
                 text-align: center;
             }
           }
@@ -435,8 +440,10 @@ menu-items {
   }
 
   & > symbol {
+    font-family: monospace;
       width: 1.125em;
       text-align: justify;
+      white-space: nowrap;
   }
 }
 
@@ -476,7 +483,8 @@ menu-items {
 
     & > label {
         font-size: inherit;
-        font-weight: bold;
+        font-weight: var(--headers-weight);
+        text-transform: var(--headers-text-transform);
         color: var(--nav-color-text);
     }
 
@@ -672,6 +680,10 @@ body {
 
             & li {
                 flex: 0 1 6.5em;
+
+                & h2 {
+                    text-transform: unset;
+                }
             }
         }
 
@@ -696,6 +708,7 @@ body {
             padding: 0;
 
             & li {
+                position: relative;
                 flex: 1 0 40%;
                 border-radius: 8px;
                 font-size: calc(var(--main-font-size) * 0.8);
@@ -708,6 +721,14 @@ body {
                     padding: 0.5em 0 0.5em 0.5em;
                     cursor: pointer;
                     line-height: 1.2em;
+                }
+
+                & #alert-dropdown {
+                    z-index: 10;
+                    position: absolute;
+                    inset: 0;
+                    font-size: 2em;
+                    opacity: 0;
                 }
 
                 &:hover {

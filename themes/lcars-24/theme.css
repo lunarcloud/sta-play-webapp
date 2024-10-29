@@ -1,4 +1,5 @@
 @import url('../../fonts/pixelsagas.com/PS_Okuda/font.css');
+@import url('../../fonts/LCARS/font.css');
 
 :root,
 ::backdrop {
@@ -31,6 +32,13 @@
     --player-color-brown: var(--trek-color-4);
     --player-color-black: hsl(0deg 0% 13%);
     --player-color-white: hsl(0deg 0% 73%);
+}
+
+html.font-lcars {
+    --main-font-body: "LCARS", sans-serif;
+    --main-font-headers: "LCARS", sans-serif;
+    --headers-weight: normal;
+    --headers-text-transform: uppercase;
 }
 
 body, h1, h2, h3, h4, h5, h6 {
