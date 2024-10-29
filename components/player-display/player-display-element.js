@@ -23,8 +23,8 @@ const ColorSquares = [
  */
 function PipText (solid, hollow) {
     return ''
-        .padStart(solid, '⚫')
-        .padEnd(solid + hollow, '⚪')
+        .padStart(solid, '⬤')
+        .padEnd(solid + hollow, '◯')
 }
 
 const Pips = [

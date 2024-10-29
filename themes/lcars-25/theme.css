@@ -20,3 +20,7 @@
     --player-color-black: hsl(260deg 12% 25%);
     --player-color-white: hsl(261deg 19% 77%);
 }
+
+li[is="player-display"] {
+    --pip-color: unset !important;
+}

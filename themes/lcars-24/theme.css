@@ -54,6 +54,10 @@ body nav {
     color: var(--main-color-text) !important;
 }
 
+li[is="player-display"] {
+    --pip-color: rgb(163 154 108) !important;
+}
+
 decoration {
     z-index: -1;
     position: absolute;

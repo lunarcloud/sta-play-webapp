@@ -17,6 +17,8 @@
 
 li[is="player-display"] {
     background-color: transparent !important;
+
+    --pip-color: unset !important;
 }
 
 task-tracker::part(internal) {

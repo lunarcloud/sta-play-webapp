@@ -1,4 +1,6 @@
 li[is="player-display"] {
+    --pip-color: rgb(185 185 185);
+
     border: 1em solid black;
     border: 1em solid var(--trek-color-1);
     border-bottom-width: 0;
@@ -90,8 +92,9 @@ li[is="player-display"] {
         }
     }
 
-    & select.rank {
+    & .rank {
         background-color: hsl(0deg 0% 10%);
+        color: var(--pip-color);
     }
 
     & stress {

@@ -34,3 +34,7 @@ task-tracker::part(internal) {
 #momentum-pool {
     color: var(--nav-color-text);
 }
+
+li[is="player-display"] {
+    --pip-color: unset !important;
+}
