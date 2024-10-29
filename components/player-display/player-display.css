@@ -95,6 +95,8 @@ li[is="player-display"] {
     & .rank {
         background-color: hsl(0deg 0% 10%);
         color: var(--pip-color);
+        font-size: 0.975em;
+        padding: 0.125em;
     }
 
     & stress {
