@@ -159,7 +159,7 @@ export class IndexController {
             try {
                 if (e.ctrlKey && e.key === 'e') {
                     e.preventDefault()
-                    await this.export()
+                    await this.saveAndExport()
                 } else if (e.ctrlKey && e.key === 'i') {
                     e.preventDefault()
                     const importEl = document.querySelector('input.import-game-file')
@@ -287,9 +287,7 @@ export class IndexController {
             }
         })
 
-        dialogEl.querySelector('button.export-game').addEventListener('click', async () => {
-            await this.export()
-        })
+        dialogEl.querySelector('button.export-game').addEventListener('click', async () => await this.saveAndExport())
 
         const fileSelectShip = dialogEl.querySelector('input.select-ship')
         if (fileSelectShip instanceof HTMLInputElement === false)
@@ -424,8 +422,9 @@ export class IndexController {
 
     /**
      * Save information from the page to the database
+     * @param {boolean} [alertAtEnd]    whether to display the "saved!" notification at the end of saving
      */
-    async saveData () {
+    async saveData (alertAtEnd = true) {
         const dbToken = await this.db.open()
 
         const momentumEl = document.getElementById('momentum-pool')
@@ -544,7 +543,8 @@ export class IndexController {
         dbToken.close()
 
         this.safeToSaveDB = true
-        alert('Database Updated')
+        if (alertAtEnd)
+            alert('Database Updated')
     }
 
     /**
@@ -665,6 +665,23 @@ export class IndexController {
         for (const viewer of modelViewers) {
             if ('src' in viewer)
                 viewer.src = url
+        }
+    }
+
+    /**
+     * Save to database and then export information from the database to a file
+     * @param {string}  [gameName]      the name of the game to export
+     */
+    async saveAndExport (gameName = undefined) {
+        try {
+            await this.saveData(false)
+        } catch (ex) {
+            alert('Issue saving data.\n' + ex.message)
+        }
+        try {
+            await this.export(gameName)
+        } catch (ex) {
+            alert('Issue exporting data.\n' + ex.message)
         }
     }
 

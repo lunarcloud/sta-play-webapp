@@ -125,20 +125,22 @@ export class BackupData {
     async getZip () {
         const files = new Map()
 
-        // @ts-ignore
-        this.GameInfo.shipModel.toJSON = function () {
-            /** @type {AppEncodedFileObject} */
-            const value = {
-                lastModified: this.lastModified,
-                name: this.name,
-                size: this.size,
-                type: this.type,
-                webkitRelativePath: this.webkitRelativePath,
-                isReferencedFile: true,
-                reference: crypto.randomUUID()
+        if (this.GameInfo.shipModel instanceof File) {
+            // @ts-ignore
+            this.GameInfo.shipModel.toJSON = function () {
+                /** @type {AppEncodedFileObject} */
+                const value = {
+                    lastModified: this.lastModified,
+                    name: this.name,
+                    size: this.size,
+                    type: this.type,
+                    webkitRelativePath: this.webkitRelativePath,
+                    isReferencedFile: true,
+                    reference: crypto.randomUUID()
+                }
+                files[value.reference] = this
+                return value
             }
-            files[value.reference] = this
-            return value
         }
 
         for (let i = 0; i < this.Players.length; i++) {

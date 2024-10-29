@@ -7,6 +7,7 @@ export function setupDropOnly (el, onDrop) {
     if (el instanceof HTMLElement === false)
         throw new Error("Cannot use 'el' as HTMLElement argument!")
 
+    el.addEventListener('dragstart', event => event.dataTransfer.setData('text/plain', null)) // required for firefox
     el.addEventListener('dragenter', event => event.preventDefault())
     el.addEventListener('dragover', event => event.preventDefault())
     el.addEventListener('dragleave', event => event.preventDefault())
