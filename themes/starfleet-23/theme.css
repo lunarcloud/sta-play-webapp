@@ -40,6 +40,10 @@ html > body, decoration {
     margin: 0;
 }
 
+li[is="player-display"] {
+    --pip-color: rgb(163 154 108) !important;
+}
+
 html > body {
     background-color: #ccc;
 
