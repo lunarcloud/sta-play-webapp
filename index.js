@@ -388,8 +388,7 @@ export class IndexController {
             threatEl.value = `${(gameInfo?.threat ?? 0)}`
             threatToggleEl.checked = gameInfo?.threat > 0
             document.getElementsByTagName('ship-alert')[0].setAttribute('color', (gameInfo?.activeAlert ?? '').trim())
-            this.#useTheme(gameInfo?.theme ?? 'lcars-24')
-            this.#setAltFont(gameInfo?.altFont ?? false)
+            this.#useTheme(gameInfo?.theme ?? 'lcars-24', gameInfo?.altFont ?? false)
             this.#useEdition(gameInfo?.edition)
 
             /** @type {SceneInfo} */
