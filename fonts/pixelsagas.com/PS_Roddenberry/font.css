@@ -1,23 +1,23 @@
 @font-face {
     font-family: Roddenberry;
-    src: url("Roddenberry Bold Italic.otf");
+    src: url("Roddenberry Bold Italic.woff2");
     font-style: italic;
     font-weight: bold;
 }
 
 @font-face {
     font-family: Roddenberry;
-    src: url("Roddenberry Italic.otf");
+    src: url("Roddenberry Italic.woff2");
     font-style: italic;
 }
 
 @font-face {
     font-family: Roddenberry;
-    src: url("Roddenberry Bold.otf");
+    src: url("Roddenberry Bold.woff2");
     font-weight: bold;
 }
 
  @font-face {
     font-family: Roddenberry;
-    src: url("Roddenberry.otf");
+    src: url("Roddenberry.woff2");
 }

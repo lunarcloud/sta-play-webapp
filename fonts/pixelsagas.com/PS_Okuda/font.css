@@ -1,23 +1,23 @@
 @font-face {
     font-family: Okuda;
-    src: url("Okuda Bold Italic.otf");
+    src: url("Okuda Bold Italic.woff2");
     font-style: italic;
     font-weight: bold;
 }
 
 @font-face {
     font-family: Okuda;
-    src: url("Okuda Italic.otf");
+    src: url("Okuda Italic.woff2");
     font-style: italic;
 }
 
 @font-face {
     font-family: Okuda;
-    src: url("Okuda Bold.otf");
+    src: url("Okuda Bold.woff2");
     font-weight: bold;
 }
 
  @font-face {
     font-family: Okuda;
-    src: url("Okuda.otf");
+    src: url("Okuda.woff2");
 }
