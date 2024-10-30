@@ -88,7 +88,7 @@ export class IndexController {
         const alertDropdownEl = document.getElementById('alert-dropdown')
         if (alertEl instanceof ShipAlertElement === false || alertDropdownEl instanceof HTMLSelectElement === false)
             throw new Error('Ship Alerts not setup correctly!')
-        alertDropdownEl.addEventListener('change', () => alertEl.color = alertDropdownEl.value)
+        alertDropdownEl.addEventListener('change', () => { alertEl.color = alertDropdownEl.value })
 
         // Check the importing dialog
         const importingDialog = document.querySelector('dialog[is="importing-dialog"]')
@@ -242,7 +242,7 @@ export class IndexController {
         this.#setAltFont(altFont)
     }
 
-    #setAltFont(use) {
+    #setAltFont (use) {
         document.documentElement.classList.toggle('alt-font', use === true)
 
         const altFontCheckbox = document.getElementById('alt-font-toggle')
@@ -391,7 +391,6 @@ export class IndexController {
             this.#useTheme(gameInfo?.theme ?? 'lcars-24')
             this.#setAltFont(gameInfo?.altFont ?? false)
             this.#useEdition(gameInfo?.edition)
-
 
             /** @type {SceneInfo} */
             let firstSceneInfo
