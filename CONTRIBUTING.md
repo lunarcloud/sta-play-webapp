@@ -16,6 +16,8 @@ Ideally, you should be solving an open issue and including as many **screenshots
   * Avoid CSS or javascript in all HTML files. Separate responsibilities allow flexibility like the theming system.
   * This is open source software. Consider the people who will read your code, and make it look nice for them. Document as much as possible and use a neutral, objective tone.
   * Don't rely on CDNs and avoid adding dependencies as much as possible.
+  * JavaScript should be using modules, classes, async where applicable 
+  * Images should be well-optimized, modern formats (webp, svg, avif)
 
 Thanks,
 Sam
