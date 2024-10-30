@@ -206,6 +206,9 @@ dialog::backdrop {
   background-color: var(--dialog-color-backdrop);
 }
 
+.alt-font-available {
+    display: none;
+}
 
 button,
 #save-btn,

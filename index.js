@@ -73,18 +73,22 @@ export class IndexController {
 
         // load this device's last known font size
         this.#loadFontSize()
+
         // Wire up font size change buttons
         document.getElementById('font-up-btn').addEventListener('click', () => this.#editFontSize(0.25))
         document.getElementById('font-down-btn').addEventListener('click', () => this.#editFontSize(-0.25))
 
+        // Wire up Alternate Font checkbox
+        const altFontCheckbox = document.getElementById('alt-font-toggle')
+        if (altFontCheckbox instanceof HTMLInputElement)
+            document.getElementById('alt-font-toggle').addEventListener('change', () => this.#setAltFont(altFontCheckbox.checked))
+
+        // Wire up the Alerts Selector
         const alertEl = document.getElementsByTagName('ship-alert')[0]
         const alertDropdownEl = document.getElementById('alert-dropdown')
         if (alertEl instanceof ShipAlertElement === false || alertDropdownEl instanceof HTMLSelectElement === false)
             throw new Error('Ship Alerts not setup correctly!')
-
-        alertDropdownEl.addEventListener('change', () => {
-            alertEl.color = alertDropdownEl.value
-        })
+        alertDropdownEl.addEventListener('change', () => alertEl.color = alertDropdownEl.value)
 
         // Check the importing dialog
         const importingDialog = document.querySelector('dialog[is="importing-dialog"]')
@@ -206,9 +210,10 @@ export class IndexController {
 
     /**
      * Set the page to a particular theme
-     * @param {string} theme name of the theme
+     * @param {string} theme        name of the theme
+     * @param {boolean} [altFont]   whether to use the alternate font (defaults to false)
      */
-    #useTheme (theme) {
+    #useTheme (theme, altFont = false) {
         // Get elements
         const themeSelectEl = document.getElementById('select-theme')
         if (themeSelectEl instanceof HTMLSelectElement === false)
@@ -233,6 +238,16 @@ export class IndexController {
                 throw new Error(`Cannot find theme: "${theme}"`)
             themeEl.innerHTML = el.innerHTML
         })
+
+        this.#setAltFont(altFont)
+    }
+
+    #setAltFont(use) {
+        document.documentElement.classList.toggle('alt-font', use === true)
+
+        const altFontCheckbox = document.getElementById('alt-font-toggle')
+        if (altFontCheckbox instanceof HTMLInputElement)
+            altFontCheckbox.checked = use === true
     }
 
     /**
@@ -374,7 +389,9 @@ export class IndexController {
             threatToggleEl.checked = gameInfo?.threat > 0
             document.getElementsByTagName('ship-alert')[0].setAttribute('color', (gameInfo?.activeAlert ?? '').trim())
             this.#useTheme(gameInfo?.theme ?? 'lcars-24')
+            this.#setAltFont(gameInfo?.altFont ?? false)
             this.#useEdition(gameInfo?.edition)
+
 
             /** @type {SceneInfo} */
             let firstSceneInfo
@@ -451,6 +468,10 @@ export class IndexController {
         if (themeSelectEl instanceof HTMLSelectElement === false)
             throw new Error('Theme selector element is wrong/missing!')
 
+        const altFontCheckbox = document.getElementById('alt-font-toggle')
+        if (altFontCheckbox instanceof HTMLInputElement === false)
+            throw new Error('Theme alt font choice is wrong/missing!')
+
         const shipAlertEl = document.getElementsByTagName('ship-alert')[0]
         if (shipAlertEl instanceof ShipAlertElement === false)
             throw new Error('Ship alert element is wrong/missing!')
@@ -478,7 +499,8 @@ export class IndexController {
             shipAlertEl.color,
             themeSelectEl.value,
             editionSelectEl.value,
-            this.shipModel
+            this.shipModel,
+            altFontCheckbox.checked
         )
         this.currentGameId = await this.db.saveGameInfo(gameInfo, dbToken)
 

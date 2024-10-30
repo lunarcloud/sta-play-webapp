@@ -34,11 +34,15 @@
     --player-color-white: hsl(0deg 0% 73%);
 }
 
-html.font-lcars {
+html.alt-font {
     --main-font-body: "LCARS", sans-serif;
     --main-font-headers: "LCARS", sans-serif;
     --headers-weight: normal;
     --headers-text-transform: uppercase;
+}
+
+.alt-font-available {
+    display: unset;
 }
 
 body, h1, h2, h3, h4, h5, h6 {

@@ -1,5 +1,6 @@
 @import url('../../fonts/pixelsagas.com/PS_Persis/font.css');
 @import url('../../fonts/pixelsagas.com/PS_Okuda/font.css');
+@import url('../../fonts/pixelsagas.com/PS_Roddenberry/font.css');
 
 :root,
 ::backdrop {
@@ -42,6 +43,17 @@
     --controls-1-col: 1;
     --controls-2-col: 2;
     --controls-row: 3;
+}
+
+html.alt-font {
+    --main-font-body: "Roddenberry", sans-serif;
+    --main-font-headers: "Roddenberry", sans-serif;
+    --headers-weight: normal;
+    --headers-text-transform: uppercase;
+}
+
+.alt-font-available {
+    display: unset;
 }
 
 ship-alert, li[is="player-display"] {
