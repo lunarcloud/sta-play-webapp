@@ -15,6 +15,13 @@ const ColorSquares = [
     { name: 'white', text: '⬜' }
 ]
 
+const PipCharacters = {
+    solid: '⬤',
+    hollow: '◯',
+    legacySolid: '⚫',
+    legacyHollow: '⚪'
+}
+
 /**
  * Get the text for player rank pips
  * @param {number} solid amount of solid pips
@@ -23,8 +30,8 @@ const ColorSquares = [
  */
 function PipText (solid, hollow) {
     return ''
-        .padStart(solid, '⬤')
-        .padEnd(solid + hollow, '◯')
+        .padStart(solid, PipCharacters.solid)
+        .padEnd(solid + hollow, PipCharacters.hollow)
 }
 
 const Pips = [
@@ -294,6 +301,9 @@ export class PlayerDisplayElement extends HTMLLIElement {
     set rank (value) {
         if (typeof (value) !== 'string')
             return
+        value = value
+            .replaceAll(PipCharacters.legacySolid, PipCharacters.solid)
+            .replaceAll(PipCharacters.legacyHollow, PipCharacters.hollow)
         const titleMatches = Pips.filter(e => e.title === value)
         const pipMatches = Pips.filter(e => e.pips === value)
         if (titleMatches.length > 0)
