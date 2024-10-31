@@ -107,6 +107,11 @@ export class PlayerDisplayElement extends HTMLLIElement {
     #rankSelect
 
     /**
+     * @type {HTMLElement}
+     */
+    #rankDisplay
+
+    /**
      * @type {InputProgressElement}
      */
     #currentStressEl
@@ -171,17 +176,28 @@ export class PlayerDisplayElement extends HTMLLIElement {
         const currentRank = this.getAttribute('rank') ?? Pips[0].pips
         this.setAttribute('rank', currentRank)
 
+        this.#rankDisplay = document.createElement('div')
+        this.#rankDisplay.className = 'rank'
+
+        let rankLabelEl = document.createElement('label')
+        this.#rankDisplay.appendChild(rankLabelEl)
+
         this.#rankSelect = document.createElement('select')
-        this.#rankSelect.className = 'rank'
+        this.#rankDisplay.appendChild(this.#rankSelect)
+
         for (let i = 0; i < Pips.length; i++) {
             const optionEl = document.createElement('option')
             optionEl.title = Pips[i].title
-            optionEl.textContent = Pips[i].pips
-            if ([Pips[i].pips, Pips[i].title].includes(currentRank))
+            optionEl.textContent = Pips[i].title
+            optionEl.value = Pips[i].pips
+            if ([Pips[i].pips, Pips[i].title].includes(currentRank)) {
                 optionEl.selected = true
+                rankLabelEl.textContent = Pips[i].pips
+            }
             this.#rankSelect.appendChild(optionEl)
         }
         this.#rankSelect.addEventListener('change', _event => this.setAttribute('rank', this.#rankSelect.value))
+
 
         // stress input-progress of input max
         let currentStress = parseInt(this.getAttribute('current-stress'))
@@ -246,7 +262,7 @@ export class PlayerDisplayElement extends HTMLLIElement {
         // Put them together
         this.appendChild(this.#removeBtnEl)
         this.appendChild(this.#colorSelect)
-        this.appendChild(this.#rankSelect)
+        this.appendChild(this.#rankDisplay)
         this.appendChild(stressEl)
         this.appendChild(topAreaEl)
 
@@ -315,6 +331,7 @@ export class PlayerDisplayElement extends HTMLLIElement {
             this.setAttribute('rank', titleMatches[0].pips)
         else if (pipMatches.length > 0)
             this.#rankSelect.value = pipMatches[0].pips
+        this.#rankDisplay.querySelector('label').textContent = pipMatches[0].pips
     }
 
     get currentStress () {
