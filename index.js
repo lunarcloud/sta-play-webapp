@@ -19,7 +19,7 @@ import { BackupData } from './js/database/backup-data.js'
 import './lib/model-viewer.min.js'
 import { setupNumberInputScrollForParent } from './js/scrollable-inputs.js'
 
-const DefaultShipUrl = 'gltf/starfleet-generic.glb'
+const DefaultShipUrl = 'gltf/default-ship-1.glb'
 
 export class IndexController {
     safeToSaveDB = false
