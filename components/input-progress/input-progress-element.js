@@ -85,6 +85,14 @@ export class InputProgressElement extends HTMLElement {
         this.#dataEl.textContent = `${intVal}`
     }
 
+    get valueAsNumber () {
+        return this.value
+    }
+
+    set valueAsNumber (newValue) {
+        this.value = newValue
+    }
+
     get max () {
         return this.#progressEl.max
     }

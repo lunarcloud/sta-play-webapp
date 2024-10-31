@@ -17,7 +17,7 @@ import { SceneInfo } from './js/database/scene-info.js'
 import { saveBlobAs } from './js/save-file-utils.js'
 import { BackupData } from './js/database/backup-data.js'
 import './lib/model-viewer.min.js'
-import { setupNumberInputScroll } from './js/scrollable-number-inputs.js'
+import { setupNumberInputScrollForParent } from './js/scrollable-inputs.js'
 
 const DefaultShipUrl = 'gltf/starfleet-generic.glb'
 
@@ -156,10 +156,7 @@ export class IndexController {
             .catch(e => console.error(e))
 
         // Mouse scrolling to update number inputs
-        const numberInputEls = document.querySelectorAll('input[type=number]')
-        for (let el of numberInputEls)
-            if (el instanceof HTMLInputElement)
-                setupNumberInputScroll(el)
+        setupNumberInputScrollForParent(document)
 
         // Keyboard Shortcuts
         let handlingInput = false

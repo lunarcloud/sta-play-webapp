@@ -1,6 +1,7 @@
 import { setupDropOnly } from '../../js/drop-nodrag-setup.js'
 import { InputProgressElement } from '../input-progress/input-progress-element.js'
 import { snakeToCamel } from '../../js/string-utils.js'
+import { setupNumberInputScrollForParent } from '../../js/scrollable-inputs.js'
 
 /**
  * Player Information Display
@@ -252,6 +253,10 @@ export class PlayerDisplayElement extends HTMLLIElement {
         this.#nameEl.addEventListener('input', _event => {
             this.setAttribute('text', this.#nameEl.textContent)
         }, { passive: true, capture: false })
+
+
+        // Mouse scrolling to update number inputs
+        setupNumberInputScrollForParent(this)
 
         setupDropOnly(this, event => {
             if (!event.dataTransfer.items?.[0].type.startsWith('image') ||

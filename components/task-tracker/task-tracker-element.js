@@ -1,3 +1,4 @@
+import { setupNumberInputScrollForParent } from '../../js/scrollable-inputs.js'
 import { snakeToCamel } from '../../js/string-utils.js'
 
 /**
@@ -182,13 +183,18 @@ export class TaskTrackerElement extends HTMLElement {
 
         this.#addDataListItem(listEl, 'progress', 'Progress', this.#progressEl)
 
-        // Put it together
+        // Create internal element
         const internalEls = document.createElement('task-tracker-internal')
         internalEls.setAttribute('part', 'internal')
+
+
+        // Put it together
         internalEls.appendChild(this.#removeBtnEl)
         internalEls.appendChild(this.#nameEl)
         internalEls.appendChild(listEl)
         shadow.appendChild(internalEls)
+
+        setupNumberInputScrollForParent(shadow)
     }
 
     /**
