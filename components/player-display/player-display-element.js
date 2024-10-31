@@ -179,7 +179,7 @@ export class PlayerDisplayElement extends HTMLLIElement {
         this.#rankDisplay = document.createElement('div')
         this.#rankDisplay.className = 'rank'
 
-        let rankLabelEl = document.createElement('label')
+        const rankLabelEl = document.createElement('label')
         this.#rankDisplay.appendChild(rankLabelEl)
 
         this.#rankSelect = document.createElement('select')
@@ -197,7 +197,6 @@ export class PlayerDisplayElement extends HTMLLIElement {
             this.#rankSelect.appendChild(optionEl)
         }
         this.#rankSelect.addEventListener('change', _event => this.setAttribute('rank', this.#rankSelect.value))
-
 
         // stress input-progress of input max
         let currentStress = parseInt(this.getAttribute('current-stress'))
@@ -269,7 +268,6 @@ export class PlayerDisplayElement extends HTMLLIElement {
         this.#nameEl.addEventListener('input', _event => {
             this.setAttribute('text', this.#nameEl.textContent)
         }, { passive: true, capture: false })
-
 
         // Mouse scrolling to update number inputs
         setupNumberInputScrollForParent(this)

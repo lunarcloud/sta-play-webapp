@@ -187,7 +187,6 @@ export class TaskTrackerElement extends HTMLElement {
         const internalEls = document.createElement('task-tracker-internal')
         internalEls.setAttribute('part', 'internal')
 
-
         // Put it together
         internalEls.appendChild(this.#removeBtnEl)
         internalEls.appendChild(this.#nameEl)
