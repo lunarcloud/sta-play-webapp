@@ -31,6 +31,7 @@ export function setupNumberInputScroll (el) {
         console.warn('Ignoring already setup input scrolling on element: ' + el)
         return
     }
+    // @ts-ignore
     el.inputScrollSetup = true
 
     // @ts-ignore
@@ -42,6 +43,7 @@ export function setupNumberInputScroll (el) {
  * @param {EventTarget} el element to de-setup
  */
 export function removeNumberInputScroll (el) {
+    // @ts-ignore
     el.inputScrollSetup = false
     el.removeEventListener('wheel', handleScrollOnNumberInput)
 }
