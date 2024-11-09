@@ -74,7 +74,33 @@ function getAnonymousName () {
     return AnonymousNames[Math.floor(Math.random() * AnonymousNames.length)]
 }
 
+/**
+ * @summary Element that represents a player character.
+ * @tagname player-display
+ * @cssprop [--pip-color=hsl(0, 0%, 73%)] - controls the color of the rank pips.
+ * @cssprop [--progress-bar-color=#229bd8] - controls the color of the stress level progress-bar.
+ * @cssprop [--progress-text-shadow-color=gray] - controls the text stress level progress-bar shadow color.
+ * @cssprop [--slider-thumb-color=hsl(0deg 0% 0% / 75%)] - controls the color of the stress level progress-bar slider.
+ * @cssprop [--trek-color-1=black] - controls the color of the border.
+ * @cssprop [--player-color-brown=hsl(40deg 36% 21%)] - controls the color of the brown border selection color.
+ * @cssprop [--player-color-red=red] - controls the color of the red border selection color.
+ * @cssprop [--player-color-blue=blue] - controls the color of the blue border selection color.
+ * @cssprop [--player-color-yellow=yellow] - controls the color of the yellow border selection color.
+ * @cssprop [--player-color-black=black] - controls the color of the black border selection color.
+ * @cssprop [--player-color-white=white] - controls the color of the white border selection color.
+ * @attr {number} player-index - the player id number.
+ * @attr {string} name - the player's name text.
+ * @attr {string} color - the player's department color.
+ * @attr {string} rank - the player's rank pip text.
+ * @attr {number} current-stress - the player's current stress value.
+ * @attr {number} max-stress - the player's maximum stress value.
+ * @event {CustomEvent} removed - when the element has been removed from the DOM.
+ */
 export class PlayerDisplayElement extends HTMLLIElement {
+    /**
+     * [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements#responding_to_attribute_changes)
+     * @returns {Array<string>} the list of attributes to observe.
+     */
     static get observedAttributes () {
         return [
             'player-index',
@@ -152,7 +178,7 @@ export class PlayerDisplayElement extends HTMLLIElement {
         this.#removeBtnEl.classList.add('remove')
         this.#removeBtnEl.textContent = '⤫'
         this.#removeBtnEl.addEventListener('click', () => {
-            this.dispatchEvent(new Event('removed'))
+            this.dispatchEvent(new CustomEvent('removed'))
             this.remove()
         })
 
@@ -282,41 +308,84 @@ export class PlayerDisplayElement extends HTMLLIElement {
         })
     }
 
+    /**
+     * Called when an attribute changes.
+     * [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements#responding_to_attribute_changes)
+     * @param {string} name     attribute name
+     * @param {any} _oldValue   the previous value
+     * @param {any} newValue    the new value
+     */
     attributeChangedCallback (name, _oldValue, newValue) {
         if (PlayerDisplayElement.observedAttributes.includes(name))
             this[snakeToCamel(name)] = newValue
     }
 
+    /**
+     * The Player's Database Id number.
+     * @returns {number}    the attribute value
+     */
     get playerIndex () {
         const i = parseInt(this.getAttribute('player-index'))
         return isNaN(i) ? 0 : i
     }
 
+    /**
+     * The Player's Database Id number.
+     * @param {number} value    the attribute value
+     */
     set playerIndex (value) {
         if (this.getAttribute('player-index') !== `${value}`)
             this.setAttribute('player-index', `${value}`)
     }
 
+    /**
+     * The Player's name text.
+     * @returns {string}    the attribute value
+     */
     get name () {
         return this.#nameEl.textContent
     }
 
+    /**
+     * The Player's name text.
+     * @param {string} value    the attribute value
+     */
     set name (value) {
         this.#nameEl.textContent = value
     }
 
+    /**
+     * The Player's department color.
+     * @returns {string}    the attribute value
+     * @see {@link ColorSquares}
+     */
     get color () {
         return this.#colorSelect.value
     }
 
+    /**
+     * The Player's department color.
+     * @param {string} value    the attribute value
+     * @see {@link ColorSquares}
+     */
     set color (value) {
         this.#colorSelect.value = value
     }
 
+    /**
+     * The Player's rank pips text.
+     * @returns {string}    the attribute value
+     * @see {@link Pips}
+     */
     get rank () {
         return this.#rankSelect.value
     }
 
+    /**
+     * The Player's rank pips text.
+     * @param {string} value    the attribute value
+     * @see {@link Pips}
+     */
     set rank (value) {
         if (typeof (value) !== 'string')
             return
@@ -332,10 +401,18 @@ export class PlayerDisplayElement extends HTMLLIElement {
         this.#rankDisplay.querySelector('label').textContent = pipMatches[0].pips
     }
 
+    /**
+     * The Player's current stress level.
+     * @returns {number}    the attribute value
+     */
     get currentStress () {
         return this.#currentStressEl.value
     }
 
+    /**
+     * The Player's current stress level.
+     * @param {number} value    the attribute value
+     */
     set currentStress (value) {
         if (isNaN(value))
             return
@@ -344,10 +421,18 @@ export class PlayerDisplayElement extends HTMLLIElement {
             this.#currentStressEl.value = value
     }
 
+    /**
+     * The Player's maximum stress level.
+     * @returns {number}    the attribute value
+     */
     get maxStress () {
         return this.#currentStressEl.max
     }
 
+    /**
+     * The Player's maximum stress level.
+     * @param {number} value    the attribute value
+     */
     set maxStress (value) {
         if (isNaN(value))
             return
@@ -359,6 +444,10 @@ export class PlayerDisplayElement extends HTMLLIElement {
             this.#maxStressEl.value = `${value}`
     }
 
+    /**
+     * The Player's portrait image.
+     * @returns {File}    the attribute value
+     */
     get imageFile () {
         return this.#imageFile
     }
@@ -372,6 +461,10 @@ export class PlayerDisplayElement extends HTMLLIElement {
         this.#portraitEl.src = URL.createObjectURL(this.#imageFile)
     }
 
+    /**
+     * Set the player's portrait image to a random default image.
+     * @see {@link DefaultPlayerImages}
+     */
     setDefaultImage () {
         this.#portraitEl.src = DefaultPlayerImages[this.playerIndex % DefaultPlayerImages.length]
     }

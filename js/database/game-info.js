@@ -2,6 +2,9 @@ import { NamedInfo } from './named-info.js'
 
 export const DefaultGameName = 'Default Game'
 
+/**
+ * Database Game Information Object.
+ */
 export class GameInfo extends NamedInfo {
     /**
      * @type {string}
@@ -68,6 +71,11 @@ export class GameInfo extends NamedInfo {
         this.shipModel = shipModel
     }
 
+    /**
+     * Assign the data from a generic object to that of a valid {@link GameInfo}
+     * @param {object} obj object to copy from.
+     * @returns {GameInfo}   valid {@link GameInfo}.
+     */
     static assign (obj) {
         return new GameInfo(
             obj.id,
@@ -102,6 +110,10 @@ export class GameInfo extends NamedInfo {
         }
     }
 
+    /**
+     * Determine whether the object has complete, valid data.
+     * @returns {boolean} whether the object is valid.
+     */
     validate () {
         return typeof (this.name) === 'string' &&
             this.momentum !== undefined &&

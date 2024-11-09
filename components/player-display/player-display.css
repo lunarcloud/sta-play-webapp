@@ -1,5 +1,5 @@
 li[is="player-display"] {
-    --pip-color: rgb(185 185 185);
+    --pip-color: hsl(0deg 0% 73%);
 
     border: 1em solid black;
     border: 1em solid var(--trek-color-1);

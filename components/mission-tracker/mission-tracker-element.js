@@ -15,7 +15,23 @@ const NUM_SCENES_PER_ACT = 5
  */
 const SCENE_OUTCOMES = [' ', '✓', '✗']
 
+/**
+ * Element that represents a Captain's Log mission tracker.
+ * @tagname mission-tracker
+ * @cssprop [--nav-color-text=unset] - controls the text color of the clear missions button.
+ * @cssprop [--trait-color-opacity=1] - controls the background color of the clear missions button.
+ * @cssprop [--player-color-red=red] - controls the act1 background color.
+ * @cssprop [--player-color-blue=blue] - controls the act2 background color.
+ * @cssprop [--player-color-yellow=gold] - controls the act3 background color.
+ * @attr {string} act1 - the act1 progress text (series of comma-separated ' ', '✓, and '✗' characters)
+ * @attr {string} act2 - the act2 progress text (series of comma-separated ' ', '✓, and '✗' characters)
+ * @attr {string} act3 - the act3 progress text (series of comma-separated ' ', '✓, and '✗' characters)
+ */
 export class MissionTrackerElement extends HTMLElement {
+    /**
+     * [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements#responding_to_attribute_changes)
+     * @returns {Array<string>} the list of attributes to observe.
+     */
     static get observedAttributes () {
         return ['act1', 'act2', 'act3']
     }
@@ -83,35 +99,69 @@ export class MissionTrackerElement extends HTMLElement {
         shadow.appendChild(internalEl)
     }
 
+    /**
+     * Called when an attribute changes.
+     * [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements#responding_to_attribute_changes)
+     * @param {string} name     attribute name
+     * @param {any} _oldValue   the previous value
+     * @param {any} newValue    the new value
+     */
     attributeChangedCallback (name, _oldValue, newValue) {
         if (MissionTrackerElement.observedAttributes.includes(name))
             this[name] = newValue
     }
 
+    /**
+     * the act1 progress text
+     * @returns {string} series of comma-separated {@link SCENE_OUTCOMES}
+     */
     get act1 () {
         return this.#getActValue(this.#actEls[1])
     }
 
+    /**
+     * the act1 progress text
+     * @param {string} newValue     series of comma-separated {@link SCENE_OUTCOMES}
+     */
     set act1 (newValue) {
         this.#setActValue(this.#actEls[1], newValue.split(','))
     }
 
+    /**
+     * the act2 progress text
+     * @returns {string} series of comma-separated {@link SCENE_OUTCOMES}
+     */
     get act2 () {
         return this.#getActValue(this.#actEls[2])
     }
 
+    /**
+     * the act2 progress text
+     * @param {string} newValue     series of comma-separated {@link SCENE_OUTCOMES}
+     */
     set act2 (newValue) {
         this.#setActValue(this.#actEls[2], newValue.split(','))
     }
 
+    /**
+     * the act3 progress text
+     * @returns {string} series of comma-separated {@link SCENE_OUTCOMES}
+     */
     get act3 () {
         return this.#getActValue(this.#actEls[3])
     }
 
+    /**
+     * the act3 progress text
+     * @param {string} newValue     series of comma-separated {@link SCENE_OUTCOMES}
+     */
     set act3 (newValue) {
         this.#setActValue(this.#actEls[3], newValue.split(','))
     }
 
+    /**
+     * Clears the progress of all acts.
+     */
     clear () {
         this.act1 = ',,,,'
         this.act2 = ',,,,'

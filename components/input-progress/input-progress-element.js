@@ -1,4 +1,18 @@
+/**
+ * Element that represents a combination of range and progress elements.
+ * @tagname input-progress
+ * @cssprop [--progress-bar-color=#229bd8] - controls the color of the progress-bar.
+ * @cssprop [--progress-text-shadow-color=gray] - controls the text shadow color.
+ * @cssprop [--slider-thumb-color=hsl(0deg 0% 0% / 75%)] - controls the color of the slider.
+ * @attr {number} value - the current numeric value.
+ * @attr {number} max - the maximum numeric value.
+ * @event {CustomEvent} change - when the value changes.
+ */
 export class InputProgressElement extends HTMLElement {
+    /**
+     * [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements#responding_to_attribute_changes)
+     * @returns {Array<string>} the list of attributes to observe.
+     */
     static get observedAttributes () {
         return ['value', 'max']
     }
@@ -67,15 +81,30 @@ export class InputProgressElement extends HTMLElement {
         })
     }
 
+    /**
+     * Called when an attribute changes.
+     * [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements#responding_to_attribute_changes)
+     * @param {string} name     attribute name
+     * @param {any} _oldValue   the previous value
+     * @param {any} newValue    the new value
+     */
     attributeChangedCallback (name, _oldValue, newValue) {
         if (InputProgressElement.observedAttributes.includes(name))
             this[name] = newValue
     }
 
+    /**
+     * Current value
+     * @returns {number} attribute value
+     */
     get value () {
         return this.#progressEl.value
     }
 
+    /**
+     * Current value
+     * @param {number} newValue attribute value
+     */
     set value (newValue) {
         const intVal = parseInt(`${newValue}`)
         newValue = Math.min(this.max, Math.max(0, intVal)) // clamp
@@ -85,18 +114,34 @@ export class InputProgressElement extends HTMLElement {
         this.#dataEl.textContent = `${intVal}`
     }
 
+    /**
+     * Current value, as a number.
+     * @returns {number} attribute value as a number
+     */
     get valueAsNumber () {
         return this.value
     }
 
+    /**
+     * Current value, as a number.
+     * @param {number} newValue   attribute value as a number
+     */
     set valueAsNumber (newValue) {
         this.value = newValue
     }
 
+    /**
+     * Maximum value
+     * @returns {number} attribute value
+     */
     get max () {
         return this.#progressEl.max
     }
 
+    /**
+     * Maximum value
+     * @param {number} newValue attribute value
+     */
     set max (newValue) {
         let intVal = parseInt(`${newValue}`)
         intVal = Math.max(1, intVal) // clamp

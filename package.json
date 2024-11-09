@@ -1,6 +1,7 @@
 {
     "name": "@lunarcloud/sta-play-webapp",
     "private": true,
+    "type": "module",
     "scripts": {
         "eslint-fix": "npx eslint --ignore-path .gitignore --ext .js . --fix",
         "eslint": "npx eslint --ignore-path .gitignore --ext .js .",
@@ -10,7 +11,8 @@
         "lint": "npm run eslint; npm run htmllint; npm run csslint;  npm run svglint",
         "lint-fix": "npm run eslint-fix; npm run htmllint; npm run csslint-fix",
         "serve": "serve",
-        "copy-deps": "sh copy-deps.sh"
+        "copy-deps": "sh copy-deps.sh",
+        "anaylyze-custom-elements": "npx cem analyze"
     },
     "dependencies": {
         "@google/model-viewer": "^3.5.0",
@@ -19,8 +21,10 @@
         "jszip": "^3.10.1"
     },
     "devDependencies": {
+        "@custom-elements-manifest/analyzer": "^0.10.3",
         "@linthtml/linthtml": "^0.9.6",
-        "eslint": "^8.55.0",
+        "custom-element-vs-code-integration": "^1.4.1",
+        "eslint": "^8.57.1",
         "eslint-config-standard": "^17.1.0",
         "eslint-plugin-editorconfig": "^4.0.3",
         "eslint-plugin-import": "^2.29.0",

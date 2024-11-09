@@ -1,5 +1,7 @@
 import { NamedInfo } from './named-info.js'
-
+/**
+ * Database Player Information Object.
+ */
 export class PlayerInfo extends NamedInfo {
     /**
      * The id of the game it is for
@@ -59,6 +61,11 @@ export class PlayerInfo extends NamedInfo {
         this.image = image
     }
 
+    /**
+     * Assign the data from a generic object to that of a valid {@link PlayerInfo}
+     * @param {object} obj object to copy from.
+     * @returns {PlayerInfo}   valid {@link PlayerInfo}.
+     */
     static assign (obj) {
         return new PlayerInfo(
             obj.game,
@@ -72,6 +79,10 @@ export class PlayerInfo extends NamedInfo {
         )
     }
 
+    /**
+     * Determine whether the object has complete, valid data.
+     * @returns {boolean} whether the object is valid.
+     */
     validate () {
         return typeof (this.game) === 'number' &&
             typeof (this.name) === 'string' &&

@@ -1,3 +1,6 @@
+/**
+ * Database Named Information Object.
+ */
 export class NamedInfo {
     /**
      * @type {number|undefined}

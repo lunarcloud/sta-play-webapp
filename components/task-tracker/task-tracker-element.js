@@ -41,7 +41,37 @@ const DepartmentNames = [
     'Medicine'
 ]
 
+/**
+ * Element that represents an extended-task or combat tracker.
+ * @tagname task-tracker
+ * @cssprop [--tracker-background-color=#666] - controls the background color.
+ * @cssprop [--tracker-border-width=6px] - controls the border width.
+ * @cssprop [--tracker-border-style=outset] - controls the border style.
+ * @cssprop [--tracker-border-color=black white white black] - controls the border color.
+ * @cssprop [--tracker-title-separator-color=#333] - controls the color of the title separator.
+ * @cssprop [--tracker-select-background-color=#333] - controls the color of the background color of select elements.
+ * @cssprop [--tracker-select-color=#ccc] -  controls the color of the text color of select elements.
+ * @cssprop [--tracker-dt-text-color=inherit] - controls the color of the text color of description term elements.
+ * @cssprop [--tracker-dt-background-color=unset] - controls the color of the background color of description term elements.
+ * @cssprop [--tracker-dt-border-color=transparent] - controls the color of the border color of description term elements.
+ * @cssprop [--tracker-dd-text-color=inherit] - controls the color of the text color of description details elements.
+ * @cssprop [--tracker-dd-background-color=unset] - controls the color of the background color of description details elements.
+ * @cssprop [--tracker-dd-border-color=transparent] - controls the color of the border color of description details elements.
+ * @attr {string} name - the name of the extended task or combat being tracked.
+ * @attr {number} resistance - the amount of resistance applied to the task.
+ * @attr {number} complication-range - the complication range of the task.
+ * @attr {string} attribute - the task's attribute for a player
+ * @attr {string} department - the task's department (discipline) for a player
+ * @attr {string} ship-system - the task's attribute for the ship
+ * @attr {string} ship-department - the task's department (discipline) for the ship
+ * @attr {number} progress - the progress made/yet to be made for the task.
+ * @event {CustomEvent} removed - when the element has been removed from the DOM.
+ */
 export class TaskTrackerElement extends HTMLElement {
+    /**
+     * [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements#responding_to_attribute_changes)
+     * @returns {Array<string>} the list of attributes to observe.
+     */
     static get observedAttributes () {
         return [
             'name',
@@ -86,7 +116,7 @@ export class TaskTrackerElement extends HTMLElement {
         this.#removeBtnEl.classList.add('remove')
         this.#removeBtnEl.textContent = '⤫'
         this.#removeBtnEl.addEventListener('click', () => {
-            this.dispatchEvent(new Event('removed'))
+            this.dispatchEvent(new CustomEvent('removed'))
             this.remove()
         })
 
@@ -275,76 +305,159 @@ export class TaskTrackerElement extends HTMLElement {
             innerEl.textContent = value
     }
 
+    /**
+     * Called when an attribute changes.
+     * [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements#responding_to_attribute_changes)
+     * @param {string} name     attribute name
+     * @param {any} _oldValue   the previous value
+     * @param {any} newValue    the new value
+     */
     attributeChangedCallback (name, _oldValue, newValue) {
         if (TaskTrackerElement.observedAttributes.includes(name))
             this[snakeToCamel(name)] = newValue
     }
 
+    /**
+     * the name of the extended task or combat being tracked.
+     * @returns {string} attribute value
+     */
     get name () {
         return this.#nameEl.textContent
     }
 
+    /**
+     * the name of the extended task or combat being tracked.
+     * @param {string} value attribute value
+     */
     set name (value) {
         this.#nameEl.textContent = value
     }
 
+    /**
+     * the amount of resistance applied to the task.
+     * @returns {number} attribute value
+     */
     get resistance () {
-        return this.#resistanceEl.value
+        const value = parseInt(this.#resistanceEl.value)
+        return isNaN(value) ? 0 : value
     }
 
+    /**
+     * the amount of resistance applied to the task.
+     * @param {number|string} value the new attribute value
+     */
     set resistance (value) {
-        this.#resistanceEl.value = value
+        if (!isNaN(parseInt(`${value}`)))
+            this.#resistanceEl.value = `${value}`
     }
 
+    /**
+     * the complication range applied to the task.
+     * @returns {number} attribute value
+     */
     get complicationRange () {
-        return this.#complicationRangeEl.value
+        const value = parseInt(this.#complicationRangeEl.value)
+        return isNaN(value) ? 0 : value
     }
 
+    /**
+     * the complication range applied to the task.
+     * @param {number|string} value the new attribute value
+     */
     set complicationRange (value) {
-        if (!isNaN(parseInt(value)))
-            this.#complicationRangeEl.value = value
+        if (!isNaN(parseInt(`${value}`)))
+            this.#complicationRangeEl.value = `${value}`
     }
 
+    /**
+     * the progress made/yet to be made for the task
+     * @returns {number} attribute value
+     */
     get progress () {
-        return this.#progressEl.value
+        const value = parseInt(this.#progressEl.value)
+        return isNaN(value) ? 0 : value
     }
 
+    /**
+     * the progress made/yet to be made for the task
+     * @param {number|string} value the new attribute value
+     */
     set progress (value) {
-        if (!isNaN(parseInt(value)))
-            this.#progressEl.value = value
+        if (!isNaN(parseInt(`${value}`)))
+            this.#progressEl.value = `${value}`
     }
 
+    /**
+     * the task's attribute for a player
+     * @returns {string} attribute value
+     * @see {@link AttributeNames}
+     */
     get attribute () {
         return this.#attributeEl.value
     }
 
+    /**
+     * the task's attribute for a player
+     * @param {string} value    attribute value
+     * @see {@link AttributeNames}
+     */
     set attribute (value) {
         if (this.#attributeEl.querySelector(`option[value="${value}"]`))
             this.#attributeEl.value = value
     }
 
+    /**
+     * the task's department (discipline) for a player
+     * @returns {string} attribute value
+     * @see {@link DepartmentNames}
+     */
     get department () {
         return this.#departmentEl.value
     }
 
+    /**
+     * the task's department (discipline) for a player
+     * @param {string} value    attribute value
+     * @see {@link DepartmentNames}
+     */
     set department (value) {
         if (this.#departmentEl.querySelector(`option[value="${value}"]`))
             this.#departmentEl.value = value
     }
 
+    /**
+     * the task's attribute for the ship
+     * @returns {string} attribute value
+     * @see {@link SystemNames}
+     */
     get shipSystem () {
         return this.#shipSystemEl.value
     }
 
+    /**
+     * the task's attribute for the ship
+     * @param {string} value    attribute value
+     * @see {@link SystemNames}
+     */
     set shipSystem (value) {
         if (this.#shipSystemEl.querySelector(`option[value="${value}"]`))
             this.#shipSystemEl.value = value
     }
 
+    /**
+     *  the task's department (discipline) for the ship
+     * @returns {string} attribute value
+     * @see {@link DepartmentNames}
+     */
     get shipDepartment () {
         return this.#shipDepartmentEl.value
     }
 
+    /**
+     *  the task's department (discipline) for the ship
+     * @param {string} value    attribute value
+     * @see {@link DepartmentNames}
+     */
     set shipDepartment (value) {
         if (this.#shipDepartmentEl.querySelector(`option[value="${value}"]`))
             this.#shipDepartmentEl.value = value

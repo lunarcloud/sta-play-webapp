@@ -1,4 +1,13 @@
+/**
+ * Element that represents the alert level of the ship or scene.
+ * @tagname ship-alert
+ * @attr {string} color - the alert's color.
+ */
 export class ShipAlertElement extends HTMLElement {
+    /**
+     * [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements#responding_to_attribute_changes)
+     * @returns {Array<string>} the list of attributes to observe.
+     */
     static get observedAttributes () {
         return ['color']
     }
@@ -66,15 +75,32 @@ export class ShipAlertElement extends HTMLElement {
         this.color = currentColor
     }
 
+    /**
+     * Called when an attribute changes.
+     * [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements#responding_to_attribute_changes)
+     * @param {string} name     attribute name
+     * @param {any} _oldValue   the previous value
+     * @param {any} newValue    the new value
+     */
     attributeChangedCallback (name, _oldValue, newValue) {
         if (ShipAlertElement.observedAttributes.includes(name))
             this[name] = newValue
     }
 
+    /**
+     * The alert's color.
+     * @returns {string}    the attribute value
+     * @see {@link ShipAlertElement.Colors}
+     */
     get color () {
         return this.#internalEl.className
     }
 
+    /**
+     * The alert's color.
+     * @param {string}  value    the attribute value
+     * @see {@link ShipAlertElement.Colors}
+     */
     set color (value) {
         // Must be valid (null or in the list)
         if (!!value && !ShipAlertElement.Colors.map(a => a.name.toLowerCase()).includes(value.toLowerCase()))

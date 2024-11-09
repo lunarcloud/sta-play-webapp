@@ -36,7 +36,13 @@ const INDEX = {
     SCENE: 'scene'
 }
 
+/**
+ * Application Database Access.
+ */
 export class Database {
+    /**
+     * Clear the database.
+     */
     async clear () {
         await deleteDB(DB_NAME)
     }

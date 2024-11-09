@@ -122,6 +122,10 @@ export class BackupData {
         return backupData
     }
 
+    /**
+     * Build the zip file.
+     * @returns {Promise<Blob>} zip file blob
+     */
     async getZip () {
         const files = new Map()
 
@@ -147,6 +151,7 @@ export class BackupData {
             if (this.Players[i].image instanceof File === false)
                 continue
 
+            // @ts-ignore
             this.Players[i].image.toJSON = function () {
                 /** @type {AppEncodedFileObject} */
                 const value = {

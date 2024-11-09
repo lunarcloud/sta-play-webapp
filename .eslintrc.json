@@ -20,6 +20,18 @@
               "JSZip",
               "FocusOptions"
             ]
-          }]
+          }],
+        "jsdoc/check-tag-names": [1, {
+            "definedTags": ["attr", "cssprop", "tagname"]
+        }],
+        "require-jsdoc": ["error", {
+            "require": {
+                "FunctionDeclaration": true,
+                "MethodDefinition": true,
+                "ClassDeclaration": true,
+                "ArrowFunctionExpression": false,
+                "FunctionExpression": true
+            }
+        }]
     }
 }

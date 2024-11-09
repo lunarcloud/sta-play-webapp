@@ -1,5 +1,8 @@
 import { NamedInfo } from './named-info.js'
 
+/**
+ * Database Trait Information Object.
+ */
 export class TraitInfo extends NamedInfo {
     /**
      * The id of the scene it is for
@@ -17,6 +20,10 @@ export class TraitInfo extends NamedInfo {
         this.scene = scene
     }
 
+    /**
+     * Determine whether the object has complete, valid data.
+     * @returns {boolean} whether the object is valid.
+     */
     validate () {
         return typeof (this.scene) === 'number' &&
         typeof (this.name) === 'string'

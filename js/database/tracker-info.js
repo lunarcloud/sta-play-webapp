@@ -1,5 +1,8 @@
 import { NamedInfo } from './named-info.js'
 
+/**
+ * Database Tracker Information Object.
+ */
 export class TrackerInfo extends NamedInfo {
     /**
      * The id of the game it is for
@@ -66,6 +69,11 @@ export class TrackerInfo extends NamedInfo {
         this.complicationRange = typeof (complicationRange) === 'number' ? complicationRange : parseInt(complicationRange)
     }
 
+    /**
+     * Assign the data from a generic object to that of a valid {@link TrackerInfo}
+     * @param {object} obj object to copy from.
+     * @returns {TrackerInfo}   valid {@link TrackerInfo}.
+     */
     static assign (obj) {
         return new TrackerInfo(
             obj.game,
@@ -80,6 +88,10 @@ export class TrackerInfo extends NamedInfo {
         )
     }
 
+    /**
+     * Determine whether the object has complete, valid data.
+     * @returns {boolean} whether the object is valid.
+     */
     validate () {
         return typeof (this.game) === 'number' &&
             typeof (this.name) === 'string' && this.name.length > 0 &&

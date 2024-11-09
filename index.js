@@ -21,6 +21,9 @@ import { setupNumberInputScrollForParent } from './js/scrollable-inputs.js'
 
 const DefaultShipUrl = 'gltf/default-ship-1.glb'
 
+/**
+ * Controller for the Main, Index, Page.
+ */
 export class IndexController {
     safeToSaveDB = false
 
@@ -190,6 +193,9 @@ export class IndexController {
         })
     }
 
+    /**
+     * Load the local device's last-saved font size.
+     */
     #loadFontSize () {
         const savedSize = localStorage.getItem('fontSize')
 
@@ -246,6 +252,10 @@ export class IndexController {
         this.#setAltFont(altFont)
     }
 
+    /**
+     * Update the alternative font setting.
+     * @param {boolean} use whether to use the alternative font
+     */
     #setAltFont (use) {
         document.documentElement.classList.toggle('alt-font', use === true)
 
@@ -326,8 +336,8 @@ export class IndexController {
             throw new Error('Page setup incorrect')
 
         dialogEl.querySelector('.player-image-upload button.set').addEventListener('click', () => {
-            const index = parseInt(indexSelectPlayer.value) - 1 // convert 1-based to 0-based
-            const playerEl = document.querySelector(`.players li[player-index='${index}']`)
+            const index = parseInt(indexSelectPlayer.value)
+            const playerEl = document.querySelector(`.players li:nth-child(${index})`)
             if (playerEl instanceof PlayerDisplayElement)
                 playerEl.imageFile = fileSelectPlayer.files[0]
         })
@@ -625,15 +635,24 @@ export class IndexController {
         if (newPlayerEl instanceof PlayerDisplayElement === false)
             throw new Error('App incorrectly configured!')
 
-        let playerIndex = document.querySelectorAll('.players li').length
+        let playerIndex = 0
 
         if (typeof (info) !== 'undefined') {
+            // Set the index and other attributes from the database info
             playerIndex = info.playerNumber
             newPlayerEl.setAttribute('name', info.name)
             newPlayerEl.setAttribute('current-stress', `${info.currentStress}`)
             newPlayerEl.setAttribute('max-stress', `${info.maxStress}`)
             newPlayerEl.setAttribute('rank', info.pips)
             newPlayerEl.setAttribute('color', info.borderColor.trim())
+        } else {
+            // Find the highest current player Index
+            playerIndex = Array.from(document.querySelectorAll('.players li'))
+                .filter(el => el instanceof PlayerDisplayElement)
+                .map(el => el.playerIndex)
+                .sort()
+                .reverse()?.[0] ?? -1
+            playerIndex++ // this is one newer than that
         }
 
         newPlayerEl.setAttribute('player-index', `${playerIndex}`)
@@ -649,9 +668,10 @@ export class IndexController {
 
         // add player to the settings page selector
         const settingsPlayerEl = document.querySelector('dialog[is="settings-dialog"] .player-image-upload input.index')
+        const playerCount = document.querySelectorAll('.players li').length
         if (settingsPlayerEl instanceof HTMLInputElement) {
-            if (parseInt(settingsPlayerEl.max) < playerIndex + 1)
-                settingsPlayerEl.max = `${playerIndex + 1}`
+            if (parseInt(settingsPlayerEl.max) < playerCount)
+                settingsPlayerEl.max = `${playerCount}`
 
             newPlayerEl.addEventListener('removed', () => {
                 const playerCount = document.querySelectorAll('.players li').length
@@ -676,11 +696,14 @@ export class IndexController {
      * Handler for new ship model drop
      * @param {File} modelFile  GLTF/GLB model file
      */
-    async setShipModel (modelFile) {
+    setShipModel (modelFile) {
         this.shipModel = modelFile
         this.#updateShipSrc()
     }
 
+    /**
+     * Update the model-viewers so they are using the current ship model.
+     */
     #updateShipSrc () {
         const url = this.shipModel instanceof File
             ? URL.createObjectURL(this.shipModel)
@@ -725,6 +748,10 @@ export class IndexController {
         await saveBlobAs(`${fileName}.staplay`, file, mimeOpts, 'downloads', true)
     }
 
+    /**
+     * Import information from a file to the database.
+     * @param {File} backupFile save data to import from.
+     */
     async import (backupFile) {
         const backupData = await BackupData.import(backupFile)
         await this.db.import(backupData)

@@ -3,6 +3,9 @@ import { NamedInfo } from './named-info.js'
 export const DefaultSceneName = 'Scene Notes'
 export const DefaultSceneDescription = 'The story so far...'
 
+/**
+ * Scene Named Information Object.
+ */
 export class SceneInfo extends NamedInfo {
     /**
      * The id of the game it is for
@@ -37,6 +40,11 @@ export class SceneInfo extends NamedInfo {
         this.missionTrack = missionTrack
     }
 
+    /**
+     * Assign the data from a generic object to that of a valid {@link SceneInfo}
+     * @param {object} obj object to copy from.
+     * @returns {SceneInfo}   valid {@link SceneInfo}.
+     */
     static assign (obj) {
         return new SceneInfo(
             obj.id,
@@ -47,6 +55,10 @@ export class SceneInfo extends NamedInfo {
         )
     }
 
+    /**
+     * Determine whether the object has complete, valid data.
+     * @returns {boolean} whether the object is valid.
+     */
     validate () {
         return typeof (this.game) === 'number' &&
             typeof (this.name) === 'string' &&
