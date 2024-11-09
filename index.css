@@ -183,6 +183,8 @@ select {
 dialog select,
 dialog input {
     max-width: -webkit-fill-available;
+    max-width: -moz-available;
+    max-width: fill-available;
 }
 
 a,

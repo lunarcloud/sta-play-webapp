@@ -12,8 +12,8 @@ trait-display-internal {
         color: black;
         outline: none;
         border: none;
-        min-width: 1.2em;
         width: auto;
+        min-width: 1.2em;
         padding-block: 0;
         padding-inline: 0 0.6em;
         font-family: inherit;
@@ -21,6 +21,9 @@ trait-display-internal {
         line-height: inherit;
         background: unset;
         user-select: text;
+        white-space: nowrap;
+        field-sizing: content;
+        box-sizing: border-box;
     }
 
     & button.close {

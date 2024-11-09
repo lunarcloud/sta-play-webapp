@@ -14,9 +14,16 @@ export class TraitDisplayElement extends HTMLElement {
         return ['text']
     }
 
+    /**
+     * @type {HTMLSpanElement}
+     */
     #textEl
+
+    /**
+     * @type {HTMLButtonElement}
+     */
     #removeBtnEl
-    #textElValueProperty
+
 
     /**
      * Constructor.
@@ -38,17 +45,13 @@ export class TraitDisplayElement extends HTMLElement {
         internalEl.setAttribute('part', 'internal')
         this.#textEl = document.createElement('span')
 
-        /** Handle differences in ContentEditable support between firefox and chrome */
-        let textElChangeEvent = 'input'
-        this.#textElValueProperty = 'textContent'
+        this.#textEl.textContent = ''
         try {
             this.#textEl.contentEditable = 'plaintext-only'
         } catch {
-            this.#textEl = document.createElement('input')
-            textElChangeEvent = 'change'
-            this.#textElValueProperty = 'value'
+            this.#textEl.contentEditable = 'true'
+            this.#textEl.appendChild(document.createElement('br'))
         }
-        this.#textEl.textContent = ' '
         this.#textEl.classList.add('name')
 
         this.#removeBtnEl = document.createElement('button')
@@ -63,8 +66,8 @@ export class TraitDisplayElement extends HTMLElement {
         internalEl.appendChild(this.#removeBtnEl)
         shadow.appendChild(internalEl)
 
-        this.#textEl.addEventListener(textElChangeEvent, _event => {
-            this.setAttribute('text', this.#textEl[this.#textElValueProperty])
+        this.#textEl.addEventListener('input', _event => {
+            this.setAttribute('text', this.#textEl.textContent)
         }, { passive: true, capture: false })
     }
 
@@ -85,7 +88,7 @@ export class TraitDisplayElement extends HTMLElement {
      * @returns {string}    the attribute value
      */
     get text () {
-        return this.#textEl[this.#textElValueProperty].trim()
+        return this.#textEl.textContent.trim()
     }
 
     /**
@@ -93,7 +96,17 @@ export class TraitDisplayElement extends HTMLElement {
      * @param {string} newValue     the new attribute value
      */
     set text (newValue) {
-        this.#textEl[this.#textElValueProperty] = newValue
+        if (this.#textEl.textContent !== newValue)
+            this.#textEl.textContent = newValue
+
+        if (this.#textEl.contentEditable === 'plaintext-only')
+            return
+
+        // This fixes internal line breaks, while preserving the odd behaviour of Firefox
+        let innerElements = this.#textEl.querySelectorAll('br:not(:last-child)')
+        for (let el of innerElements) {
+            this.#textEl.removeChild(el)
+        }
     }
 
     /**

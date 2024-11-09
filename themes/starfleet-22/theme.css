@@ -357,6 +357,8 @@ body {
             & > trait-display::part(internal) {
                 width: 100%;
                 width: -webkit-fill-available;
+                width: -moz-available;
+                width: fill-available;
             }
         }
     }

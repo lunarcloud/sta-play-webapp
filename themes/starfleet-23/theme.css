@@ -196,6 +196,8 @@ ul.sliders {
     position: absolute;
     height: auto;
     height: -webkit-fill-available;
+    height: -moz-available;
+    height: fill-available;
     top: 4em;
     bottom: 2em;
     left: 1em;

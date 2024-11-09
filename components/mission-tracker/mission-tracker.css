@@ -2,8 +2,9 @@
 mission-tracker-internal {
     display: inline-grid;
     grid-template-columns: auto repeat(3, 1fr);
-    width: fill-available;
     width: -webkit-fill-available;
+    width: -moz-available;
+    width: fill-available;
     max-width: 40em;
     font-size: 1em;
 
