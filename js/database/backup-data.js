@@ -94,7 +94,8 @@ export class BackupData {
         const data = JSON.parse(jsonText)
 
         // re-hydrate the files
-        data.GameInfo.shipModel = await convertFile(data.GameInfo.shipModel)
+        if (data.GameInfo.shipModel)
+            data.GameInfo.shipModel = await convertFile(data.GameInfo.shipModel)
 
         const players = []
         for (const player of data.Players) {
