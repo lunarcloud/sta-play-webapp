@@ -24,7 +24,6 @@ export class TraitDisplayElement extends HTMLElement {
      */
     #removeBtnEl
 
-
     /**
      * Constructor.
      */
@@ -103,8 +102,8 @@ export class TraitDisplayElement extends HTMLElement {
             return
 
         // This fixes internal line breaks, while preserving the odd behaviour of Firefox
-        let innerElements = this.#textEl.querySelectorAll('br:not(:last-child)')
-        for (let el of innerElements) {
+        const innerElements = this.#textEl.querySelectorAll('br:not(:last-child)')
+        for (const el of innerElements) {
             this.#textEl.removeChild(el)
         }
     }
