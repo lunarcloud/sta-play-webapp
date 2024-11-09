@@ -119,7 +119,7 @@ html {
     min-height: 30em;
     height: fit-content;
     position: relative;
-    overflow: auto auto;
+    overflow: auto;
     overflow-wrap: anywhere;
     word-break: auto-phrase;
     color: var(--main-color-text);
