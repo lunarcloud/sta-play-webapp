@@ -76,6 +76,9 @@ export class BackupData {
          * @returns {Promise<File>}  file reconstituted
          */
         async function convertFile (fileInfo) {
+            if (fileInfo === undefined)
+                return
+
             const blob = await zip.file(fileInfo.reference).async('blob')
             return new File(
                 [blob],
