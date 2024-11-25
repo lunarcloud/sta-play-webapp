@@ -7,6 +7,8 @@ Play App for Star Trek Adventures
 [![GitHub top language](https://img.shields.io/github/languages/top/lunarcloud/sta-play-webapp)](https://github.com/lunarcloud/sta-play-webapp/pulse)
 [![environment](https://img.shields.io/badge/env-Browser-green)](https://developer.mozilla.org/en-US/docs/Glossary/Browser)
 
+![Code Quality](https://github.com/lunarcloud/sta-play-webapp/actions/workflows/lint.yml/badge.svg)
+
 A utility for GMs running a game of Star Trek Adventures TTRPG or players of the Captain's Log Solo RPG to display high-level player information during a game session.
 
 ## Development Setup
