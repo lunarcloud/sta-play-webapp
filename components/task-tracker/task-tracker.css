@@ -128,7 +128,7 @@ task-tracker-internal {
 
         dt.stats{
             grid-row: 1;
-            min-width: 3em;
+            min-width: 6em;
             width: fill-available;
             display: flex;
             justify-content: space-between;

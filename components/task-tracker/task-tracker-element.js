@@ -310,7 +310,7 @@ export class TaskTrackerElement extends HTMLElement {
 
         // Line break before progress visualization
         const brForVisualizeEl = document.createElement('br')
-        brFor1eEl.classList.add('non-legacy-controls')
+        brForVisualizeEl.classList.add('non-legacy-controls')
         listEl.appendChild(brForVisualizeEl)
 
         // progress visualization element
