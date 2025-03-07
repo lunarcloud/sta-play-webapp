@@ -1,4 +1,4 @@
-import { setupNumberInputScrollForParent } from '../../js/scrollable-inputs.js'
+import { setupNumberInputScrollForParent, handleScrollOnNumberInput } from '../../js/scrollable-inputs.js'
 import { snakeToCamel } from '../../js/string-utils.js'
 
 /**
@@ -329,7 +329,13 @@ export class TaskTrackerElement extends HTMLElement {
         internalEls.appendChild(listEl)
         shadow.appendChild(internalEls)
 
+        // Setup input field scrolling to update
         setupNumberInputScrollForParent(shadow)
+
+        // Scrolling on the visualization should update the progress value
+        this.#progressVisualizeEl.addEventListener('wheel', evt => {
+            handleScrollOnNumberInput(evt, this.#progressEl)
+        }, { passive: false })
 
         this.#internalEls = internalEls
 

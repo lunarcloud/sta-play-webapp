@@ -66,14 +66,14 @@ export class Database {
      * @param {IDBPDatabase} db the database
      */
     async #upgrade (db) {
-        if (db.version === 13) {
-            // TODO
-            console.debug('add logic here for migration')
-        } else {
-            // fallback to wiping the database
-            console.warn('clearing db for upgrade')
-            await this.#create(db)
-        }
+        // if (db.version === ??) {
+        //    console.debug('add logic here for migration')
+        //    return
+        // }
+
+        // fallback to wiping the database
+        console.warn('clearing db for upgrade')
+        await this.#create(db)
     }
 
     /**

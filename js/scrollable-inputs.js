@@ -50,10 +50,11 @@ export function removeNumberInputScroll (el) {
 
 /**
  * Handle scroll wheel event for number inputs
- * @param {WheelEvent} evt scroll wheel event
+ * @param {WheelEvent}  evt         scroll wheel event
+ * @param {HTMLElement} [target]    input element target
  */
-export function handleScrollOnNumberInput (evt) {
-    const el = evt.target
+export function handleScrollOnNumberInput (evt, target) {
+    const el = target ?? evt.target
     if (evt instanceof WheelEvent === false || 'wheelDelta' in evt === false ||
         !NumberInputTypes.some(e => el instanceof e) ||
         'valueAsNumber' in el === false || typeof (el.valueAsNumber) !== 'number')
