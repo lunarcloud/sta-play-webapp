@@ -55,7 +55,6 @@ export class TrackerInfo extends NamedInfo {
      */
     breakthroughs
 
-
     /**
      * Create a Combat/Extended Tracker Info
      * @param {number} game                         the id of the game it is for

@@ -87,12 +87,10 @@ export class IndexController {
         if (altFontCheckbox instanceof HTMLInputElement)
             altFontCheckbox.addEventListener('change', () => this.#setAltFont(altFontCheckbox.checked))
 
-
         // Wire up Legacy Task Tracker Controls checkbox
         const legacyTrackersCheckbox = document.getElementById('legacy-task-tracker-toggle')
         if (legacyTrackersCheckbox instanceof HTMLInputElement)
             legacyTrackersCheckbox.addEventListener('change', () => this.#setLegacyTaskTrackers(legacyTrackersCheckbox.checked))
-
 
         // Wire up the Alerts Selector
         const alertEl = document.getElementsByTagName('ship-alert')[0]
@@ -163,7 +161,7 @@ export class IndexController {
 
         // Load Info and Images from Database
         this.#loadData()
-            //.catch(e => console.error(e))
+        // .catch(e => console.error(e))
 
         // Mouse scrolling to update number inputs
         setupNumberInputScrollForParent(document)
@@ -389,7 +387,6 @@ export class IndexController {
      * @returns {Promise<boolean>}      if there was info to load
      */
     async #loadData (gameName = DefaultGameName) {
-
         const gameInfo = await this.db.getGameInfo(gameName)
 
         const momentumEl = document.getElementById('momentum-pool')
@@ -479,7 +476,6 @@ export class IndexController {
      * @param {boolean} [alertAtEnd]    whether to display the "saved!" notification at the end of saving
      */
     async saveData (alertAtEnd = true) {
-
         const momentumEl = document.getElementById('momentum-pool')
         if (momentumEl instanceof HTMLInputElement === false)
             throw new Error('page setup incorrectly!')

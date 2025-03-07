@@ -55,7 +55,7 @@ export class Database {
         try {
             return await openDB(DB_NAME, DB_VERSION, { upgrade: async db => await this.#upgrade(db) })
         } catch (e) {
-            console.error("Downgrade detected, wiping database", e)
+            console.error('Downgrade detected, wiping database', e)
             await this.clear()
             return await this.open()
         }
@@ -66,13 +66,10 @@ export class Database {
      * @param {IDBPDatabase} db the database
      */
     async #upgrade (db) {
-
-        if (false && db.version === 13) {
+        if (db.version === 13) {
             // TODO
             console.debug('add logic here for migration')
-        }
-        else
-        {
+        } else {
             // fallback to wiping the database
             console.warn('clearing db for upgrade')
             await this.#create(db)

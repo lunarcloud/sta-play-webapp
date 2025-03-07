@@ -85,7 +85,6 @@ task-tracker-internal {
             display: flex;
             flex-direction: column;
             gap: 4px;
-
             width: 100%;
             width: fill-available;
             width: -webkit-fill-available;
@@ -149,7 +148,6 @@ task-tracker-internal {
 
     /* Way simpler presentation for new controls style */
     &:not(.legacy-controls) {
-
         dl {
             display: block;
         }

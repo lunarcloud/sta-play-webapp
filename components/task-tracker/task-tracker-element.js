@@ -234,7 +234,6 @@ export class TaskTrackerElement extends HTMLElement {
             this.#attributeEl, this.#departmentEl,
             this.#shipSystemEl, this.#shipDepartmentEl)
 
-
         // Ensure all this is only shown when legacy trackers is enabled
         attributeEl.classList.add('legacy-controls')
         departmentEl.classList.add('legacy-controls')
@@ -339,7 +338,10 @@ export class TaskTrackerElement extends HTMLElement {
         this.maxProgress = this.#maxProgressEl.valueAsNumber
     }
 
-    #updateProgressVisualization() {
+    /**
+     * Update the textual representation of progress
+     */
+    #updateProgressVisualization () {
         // clear previous
         this.#progressVisualizeEl.textContent = ''
 
@@ -348,13 +350,12 @@ export class TaskTrackerElement extends HTMLElement {
 
         // loop for all max progress blocks
         for (let i = 1; i <= max; i++) {
-
             // if we're on an earned block
             if (i <= current) {
                 // black squares for earned
                 this.#progressVisualizeEl.textContent += '⬛'
-            } else if ( !this.manualBreakthroughs
-                && ( i == Math.ceil(max * 0.50)  || i == Math.ceil(max * 0.75) ) ) {
+            } else if (!this.manualBreakthroughs &&
+                (i === Math.ceil(max * 0.50) || i === Math.ceil(max * 0.75))) {
                 // yellow squares for unearned 50% or 75% auto breakthrough (2e)
                 this.#progressVisualizeEl.textContent += '🟨'
             } else {
@@ -653,7 +654,7 @@ export class TaskTrackerElement extends HTMLElement {
      *  Whether to use legacy controls for the tracker
      * @returns {boolean} legacy controls active or not
      */
-    get legacyControls() {
+    get legacyControls () {
         return this.#internalEls.classList.contains('legacy-controls')
     }
 
@@ -661,7 +662,7 @@ export class TaskTrackerElement extends HTMLElement {
      *  Whether to use legacy controls for the tracker
      * @param {string|boolean|null} value    legacy controls should be active or not
      */
-    set legacyControls(value) {
+    set legacyControls (value) {
         this.#internalEls.classList.toggle('legacy-controls', value !== null && `${value}` !== 'false')
     }
 
@@ -669,7 +670,7 @@ export class TaskTrackerElement extends HTMLElement {
      *  Whether breakthroughs are a manual thing (1e) or automatic (2e)
      * @returns {boolean}   if breakthroughs are manual
      */
-    get manualBreakthroughs() {
+    get manualBreakthroughs () {
         if (!this.#internalEls)
             return false
 
@@ -680,7 +681,7 @@ export class TaskTrackerElement extends HTMLElement {
      *  Whether breakthroughs are a manual thing (1e) or automatic (2e)
      * @param {string|boolean|null} value    breakthroughs should be manual
      */
-    set manualBreakthroughs(value) {
+    set manualBreakthroughs (value) {
         if (!this.#internalEls)
             return
 
