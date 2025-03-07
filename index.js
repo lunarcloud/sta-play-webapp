@@ -85,7 +85,14 @@ export class IndexController {
         // Wire up Alternate Font checkbox
         const altFontCheckbox = document.getElementById('alt-font-toggle')
         if (altFontCheckbox instanceof HTMLInputElement)
-            document.getElementById('alt-font-toggle').addEventListener('change', () => this.#setAltFont(altFontCheckbox.checked))
+            altFontCheckbox.addEventListener('change', () => this.#setAltFont(altFontCheckbox.checked))
+
+
+        // Wire up Legacy Task Tracker Controls checkbox
+        const legacyTrackersCheckbox = document.getElementById('legacy-task-tracker-toggle')
+        if (legacyTrackersCheckbox instanceof HTMLInputElement)
+            legacyTrackersCheckbox.addEventListener('change', () => this.#setLegacyTaskTrackers(legacyTrackersCheckbox.checked))
+
 
         // Wire up the Alerts Selector
         const alertEl = document.getElementsByTagName('ship-alert')[0]
@@ -156,7 +163,7 @@ export class IndexController {
 
         // Load Info and Images from Database
         this.#loadData()
-            .catch(e => console.error(e))
+            //.catch(e => console.error(e))
 
         // Mouse scrolling to update number inputs
         setupNumberInputScrollForParent(document)
@@ -279,6 +286,28 @@ export class IndexController {
         editionSelectEl.value = `${edition}`
         document.body.classList.remove('edition-1', 'edition-2', 'edition-captains-log')
         document.body.classList.add(`edition-${edition}`)
+
+        const trackerEls = document.getElementsByTagName('task-tracker')
+        for (const el of trackerEls) {
+            el.toggleAttribute('manual-breakthroughs', edition === '1')
+        }
+    }
+
+    /**
+     * Update the legacy task tracker style setting.
+     * @param {boolean} use whether to use the legacy task trackers
+     */
+    #setLegacyTaskTrackers (use) {
+        document.documentElement.classList.toggle('legacy-task-trackers', use === true)
+
+        const legacyTrackersCheckbox = document.getElementById('legacy-task-tracker-toggle')
+        if (legacyTrackersCheckbox instanceof HTMLInputElement)
+            legacyTrackersCheckbox.checked = use === true
+
+        const trackerEls = document.getElementsByTagName('task-tracker')
+        for (const el of trackerEls) {
+            el.toggleAttribute('legacy-controls', use === true)
+        }
     }
 
     /**
@@ -360,93 +389,89 @@ export class IndexController {
      * @returns {Promise<boolean>}      if there was info to load
      */
     async #loadData (gameName = DefaultGameName) {
-        const dbToken = await this.db.open()
 
-        try {
-            const gameInfo = await this.db.getGameInfo(gameName, dbToken)
+        const gameInfo = await this.db.getGameInfo(gameName)
 
-            const momentumEl = document.getElementById('momentum-pool')
-            if (momentumEl instanceof HTMLInputElement === false)
-                throw new Error('page setup incorrectly!')
+        const momentumEl = document.getElementById('momentum-pool')
+        if (momentumEl instanceof HTMLInputElement === false)
+            throw new Error('page setup incorrectly!')
 
-            const momentumToggleEl = document.getElementById('momentum-toggle')
-            if (momentumToggleEl instanceof HTMLInputElement === false)
-                throw new Error('page setup incorrectly!')
+        const momentumToggleEl = document.getElementById('momentum-toggle')
+        if (momentumToggleEl instanceof HTMLInputElement === false)
+            throw new Error('page setup incorrectly!')
 
-            const threatEl = document.getElementById('threat-pool')
-            if (threatEl instanceof HTMLInputElement === false)
-                throw new Error('page setup incorrectly!')
+        const threatEl = document.getElementById('threat-pool')
+        if (threatEl instanceof HTMLInputElement === false)
+            throw new Error('page setup incorrectly!')
 
-            const threatToggleEl = document.getElementById('threat-toggle')
-            if (threatToggleEl instanceof HTMLInputElement === false)
-                throw new Error('page setup incorrectly!')
+        const threatToggleEl = document.getElementById('threat-toggle')
+        if (threatToggleEl instanceof HTMLInputElement === false)
+            throw new Error('page setup incorrectly!')
 
-            const editionSelectEl = document.getElementById('select-edition')
-            if (editionSelectEl instanceof HTMLSelectElement === false)
-                throw new Error('Theme selector element is wrong/missing!')
+        const editionSelectEl = document.getElementById('select-edition')
+        if (editionSelectEl instanceof HTMLSelectElement === false)
+            throw new Error('Theme selector element is wrong/missing!')
 
-            const missionTrackerEl = document.getElementsByTagName('mission-tracker')[0]
-            if (missionTrackerEl instanceof MissionTrackerElement === false)
-                throw new Error('Mission Tracker element is wrong/missing!')
+        const missionTrackerEl = document.getElementsByTagName('mission-tracker')[0]
+        if (missionTrackerEl instanceof MissionTrackerElement === false)
+            throw new Error('Mission Tracker element is wrong/missing!')
 
-            // Clear screen
-            document.querySelectorAll('trait-display').forEach(el => el.parentNode.removeChild(el))
-            document.querySelectorAll('.players li').forEach(el => el.parentNode.removeChild(el))
-            document.querySelectorAll('task-tracker').forEach(el => el.parentNode.removeChild(el))
+        // Clear screen
+        document.querySelectorAll('trait-display').forEach(el => el.parentNode.removeChild(el))
+        document.querySelectorAll('.players li').forEach(el => el.parentNode.removeChild(el))
+        document.querySelectorAll('task-tracker').forEach(el => el.parentNode.removeChild(el))
 
-            this.currentGameId = gameInfo?.id
-            document.body.setAttribute('loaded-game-name', gameInfo?.name ?? DefaultGameName)
-            document.getElementById('shipname').textContent = (gameInfo?.shipName ?? this.fallbackShipName).trim()
-            momentumEl.value = `${(gameInfo?.momentum ?? 0)}`
-            momentumToggleEl.checked = gameInfo?.momentum > 0
-            threatEl.value = `${(gameInfo?.threat ?? 0)}`
-            threatToggleEl.checked = gameInfo?.threat > 0
-            document.getElementsByTagName('ship-alert')[0].setAttribute('color', (gameInfo?.activeAlert ?? '').trim())
-            this.#useTheme(gameInfo?.theme ?? 'lcars-24', gameInfo?.altFont ?? false)
-            this.#useEdition(gameInfo?.edition)
+        this.currentGameId = gameInfo?.id
+        document.body.setAttribute('loaded-game-name', gameInfo?.name ?? DefaultGameName)
+        document.getElementById('shipname').textContent = (gameInfo?.shipName ?? this.fallbackShipName).trim()
+        momentumEl.value = `${(gameInfo?.momentum ?? 0)}`
+        momentumToggleEl.checked = gameInfo?.momentum > 0
+        threatEl.value = `${(gameInfo?.threat ?? 0)}`
+        threatToggleEl.checked = gameInfo?.threat > 0
+        document.getElementsByTagName('ship-alert')[0].setAttribute('color', (gameInfo?.activeAlert ?? '').trim())
+        this.#useTheme(gameInfo?.theme ?? 'lcars-24', gameInfo?.altFont ?? false)
+        this.#useEdition(gameInfo?.edition)
+        this.#setLegacyTaskTrackers(gameInfo?.legacyTrackers ?? false)
 
-            /** @type {SceneInfo} */
-            let firstSceneInfo
+        /** @type {SceneInfo} */
+        let firstSceneInfo
 
-            if (gameInfo !== undefined) {
-                const sceneInfos = await this.db.getScenes(this.currentGameId, dbToken)
-                firstSceneInfo = sceneInfos?.[0]
-                this.currentSceneId = firstSceneInfo?.id
-                document.getElementById('general-text').innerHTML = firstSceneInfo?.description ?? this.fallbackText
+        if (gameInfo !== undefined) {
+            const sceneInfos = await this.db.getScenes(this.currentGameId)
+            firstSceneInfo = sceneInfos?.[0]
+            this.currentSceneId = firstSceneInfo?.id
+            document.getElementById('general-text').innerHTML = firstSceneInfo?.description ?? this.fallbackText
 
-                // Get all players
-                const players = await this.db.getPlayers(gameInfo?.id, dbToken)
-                for (const player of players)
-                    this.addPlayer(player)
+            // Get all players
+            const players = await this.db.getPlayers(gameInfo?.id)
+            for (const player of players)
+                this.addPlayer(player)
 
-                // Get all trackers
-                const trackers = await this.db.getTrackers(gameInfo?.id, dbToken)
-                for (const tracker of trackers)
-                    this.addTaskTracker(tracker)
-            }
-
-            if (firstSceneInfo !== undefined) {
-                // Get all traits
-                const traits = await this.db.getTraits(firstSceneInfo.id, dbToken)
-                for (const trait of traits)
-                    this.addTrait(trait)
-
-                if (firstSceneInfo.missionTrack.length >= 3) {
-                    missionTrackerEl.act1 = firstSceneInfo.missionTrack[0]
-                    missionTrackerEl.act2 = firstSceneInfo.missionTrack[1]
-                    missionTrackerEl.act3 = firstSceneInfo.missionTrack[2]
-                }
-            } else {
-                document.getElementById('general-text').innerHTML = this.fallbackText
-            }
-
-            this.setShipModel(gameInfo?.shipModel)
-
-            this.safeToSaveDB = true
-            return typeof (gameInfo) !== 'undefined'
-        } finally {
-            dbToken.close()
+            // Get all trackers
+            const trackers = await this.db.getTrackers(gameInfo?.id)
+            for (const tracker of trackers)
+                this.addTaskTracker(tracker)
         }
+
+        if (firstSceneInfo !== undefined) {
+            // Get all traits
+            const traits = await this.db.getTraits(firstSceneInfo.id)
+            for (const trait of traits)
+                this.addTrait(trait)
+
+            if (firstSceneInfo.missionTrack.length >= 3) {
+                missionTrackerEl.act1 = firstSceneInfo.missionTrack[0]
+                missionTrackerEl.act2 = firstSceneInfo.missionTrack[1]
+                missionTrackerEl.act3 = firstSceneInfo.missionTrack[2]
+            }
+        } else {
+            document.getElementById('general-text').innerHTML = this.fallbackText
+        }
+
+        this.setShipModel(gameInfo?.shipModel)
+
+        this.safeToSaveDB = true
+        return typeof (gameInfo) !== 'undefined'
     }
 
     /**
@@ -454,7 +479,6 @@ export class IndexController {
      * @param {boolean} [alertAtEnd]    whether to display the "saved!" notification at the end of saving
      */
     async saveData (alertAtEnd = true) {
-        const dbToken = await this.db.open()
 
         const momentumEl = document.getElementById('momentum-pool')
         if (momentumEl instanceof HTMLInputElement === false)
@@ -484,6 +508,10 @@ export class IndexController {
         if (altFontCheckbox instanceof HTMLInputElement === false)
             throw new Error('Theme alt font choice is wrong/missing!')
 
+        const legacyTrackersCheckbox = document.getElementById('legacy-task-tracker-toggle')
+        if (legacyTrackersCheckbox instanceof HTMLInputElement === false)
+            throw new Error('The legacy task tracker style choice is wrong/missing!')
+
         const shipAlertEl = document.getElementsByTagName('ship-alert')[0]
         if (shipAlertEl instanceof ShipAlertElement === false)
             throw new Error('Ship alert element is wrong/missing!')
@@ -512,9 +540,10 @@ export class IndexController {
             themeSelectEl.value,
             editionSelectEl.value,
             this.shipModel,
-            altFontCheckbox.checked
+            altFontCheckbox.checked,
+            legacyTrackersCheckbox.checked
         )
-        this.currentGameId = await this.db.saveGameInfo(gameInfo, dbToken)
+        this.currentGameId = await this.db.saveGameInfo(gameInfo)
 
         const sceneInfo = new SceneInfo(
             this.currentSceneId,
@@ -527,14 +556,14 @@ export class IndexController {
                 missionTrackerEl.act3
             ]
         )
-        this.currentSceneId = await this.db.saveSceneInfo(sceneInfo, dbToken)
+        this.currentSceneId = await this.db.saveSceneInfo(sceneInfo)
 
         const traits =
             [...document.querySelectorAll('traits trait-display')]
                 .map(el => (el instanceof TraitDisplayElement ? el.text : ''))
                 .filter(el => !!el)
                 .filter((v, i, a) => a.indexOf(v) === i) // unique
-        await this.db.replaceTraits(this.currentSceneId, traits, dbToken)
+        await this.db.replaceTraits(this.currentSceneId, traits)
 
         const players = [...document.querySelectorAll('.players > li')]
             .map((el) => {
@@ -553,7 +582,7 @@ export class IndexController {
                 )
                 return info
             })
-        await this.db.replacePlayers(players, dbToken)
+        await this.db.replacePlayers(players)
 
         const trackers = [...document.querySelectorAll('task-tracker')]
             .map(el => {
@@ -568,13 +597,14 @@ export class IndexController {
                     el.shipSystem,
                     el.shipDepartment,
                     el.progress,
+                    el.maxProgress,
                     el.resistance,
-                    el.complicationRange
+                    el.complicationRange,
+                    el.breakthroughs
                 )
                 return info
             })
-        await this.db.replaceTrackers(trackers, dbToken)
-        dbToken.close()
+        await this.db.replaceTrackers(trackers)
 
         this.safeToSaveDB = true
         if (alertAtEnd)
@@ -599,8 +629,12 @@ export class IndexController {
             newTrackerEl.resistance = `${info.resistance}`
             newTrackerEl.complicationRange = `${info.complicationRange}`
             newTrackerEl.progress = `${info.progressTrack}`
+            newTrackerEl.maxProgress = `${info.maxProgressTrack}`
+            newTrackerEl.breakthroughs = `${info.breakthroughs}`
         }
 
+        newTrackerEl.toggleAttribute('manual-breakthroughs', document.body.hasAttribute('edition-1'))
+        newTrackerEl.toggleAttribute('legacy-controls', document.body.classList.contains('legacy-task-trackers'))
         document.querySelector('task-trackers').appendChild(newTrackerEl)
 
         // if completely new tracker, focus on renaming

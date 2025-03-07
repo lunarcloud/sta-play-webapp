@@ -566,7 +566,8 @@ body {
     &.edition-captains-log .edition-1:not(.edition-captains-log),
     &.edition-captains-log .edition-2:not(.edition-captains-log),
     &.edition-2 .edition-1:not(.edition-2),
-    &.edition-2 .edition-captains-log:not(.edition-2)
+    &.edition-2 .edition-captains-log:not(.edition-2),
+    &.edition-captains-log task-tracker
     {
       display: none !important;
     }

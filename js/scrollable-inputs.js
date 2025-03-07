@@ -35,7 +35,7 @@ export function setupNumberInputScroll (el) {
     el.inputScrollSetup = true
 
     // @ts-ignore
-    el.addEventListener('wheel', handleScrollOnNumberInput)
+    el.addEventListener('wheel', handleScrollOnNumberInput, { passive: true })
 }
 
 /**
@@ -78,4 +78,6 @@ export function handleScrollOnNumberInput (evt) {
     if (!isNaN(maxVal))
         // @ts-ignore
         el.valueAsNumber = Math.min(el.valueAsNumber, maxVal) // clamp max
+
+    el.dispatchEvent(new Event('change'))
 }

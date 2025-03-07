@@ -52,15 +52,31 @@ export class Database {
      * @returns {Promise<IDBPDatabase>}    handle to the database
      */
     async open () {
-        return await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
+        try {
+            return await openDB(DB_NAME, DB_VERSION, { upgrade: async db => await this.#upgrade(db) })
+        } catch (e) {
+            console.error("Downgrade detected, wiping database", e)
+            await this.clear()
+            return await this.open()
+        }
     }
 
     /**
      * Upgrade the database
      * @param {IDBPDatabase} db the database
      */
-    #upgrade (db) {
-        this.#create(db) // currently, no fancy upgrade logic, just replace
+    async #upgrade (db) {
+
+        if (false && db.version === 13) {
+            // TODO
+            console.debug('add logic here for migration')
+        }
+        else
+        {
+            // fallback to wiping the database
+            console.warn('clearing db for upgrade')
+            await this.#create(db)
+        }
     }
 
     /**
@@ -108,7 +124,7 @@ export class Database {
      */
     async getGameInfo (nameOrId = DefaultGameName, db = undefined) {
         const andClose = typeof (db) === 'undefined'
-        db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
+        db ??= await this.open()
 
         const index = typeof (nameOrId) === 'number' ? INDEX.ID : INDEX.NAME
 
@@ -135,7 +151,7 @@ export class Database {
      */
     async getScenes (gameId, db = undefined) {
         const andClose = typeof (db) === 'undefined'
-        db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
+        db ??= await this.open()
 
         const rows = await db.getAllFromIndex(STORE.SCENES, INDEX.GAME, gameId)
         if (andClose) db.close()
@@ -157,7 +173,7 @@ export class Database {
      */
     async getTraits (sceneId, db = undefined) {
         const andClose = typeof (db) === 'undefined'
-        db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
+        db ??= await this.open()
 
         /** @type {NamedInfo[]} */
         const rows = await db.getAllFromIndex(STORE.TRAITS, INDEX.SCENE, sceneId)
@@ -174,7 +190,7 @@ export class Database {
      */
     async getPlayers (gameId, db = undefined) {
         const andClose = typeof (db) === 'undefined'
-        db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
+        db ??= await this.open()
 
         const rows = await db.getAllFromIndex(STORE.PLAYERS, INDEX.GAME, gameId)
         if (andClose) db.close()
@@ -196,7 +212,7 @@ export class Database {
      */
     async getTrackers (gameId, db = undefined) {
         const andClose = typeof (db) === 'undefined'
-        db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
+        db ??= await this.open()
 
         const rows = await db.getAllFromIndex(STORE.TRACKERS, INDEX.GAME, gameId)
         if (andClose) db.close()
@@ -222,7 +238,7 @@ export class Database {
             return
         }
         const andClose = typeof (db) === 'undefined'
-        db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
+        db ??= await this.open()
 
         if (info.id === undefined)
             delete info.id
@@ -244,7 +260,7 @@ export class Database {
             return
         }
         const andClose = typeof (db) === 'undefined'
-        db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
+        db ??= await this.open()
 
         if (info.id === undefined)
             delete info.id
@@ -263,7 +279,7 @@ export class Database {
      */
     async #replaceData (storeName, clearIndex = INDEX.NAME, data = [], db = undefined) {
         const andClose = typeof (db) === 'undefined'
-        db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
+        db ??= await this.open()
 
         /** @type {IDBPTransaction} */
         // @ts-ignore
@@ -339,7 +355,7 @@ export class Database {
      */
     async export (nameOrId = DefaultGameName, db = undefined) {
         const andClose = typeof (db) === 'undefined'
-        db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
+        db ??= await this.open()
 
         const gameInfo = await this.getGameInfo(nameOrId, db)
 
@@ -364,7 +380,7 @@ export class Database {
      */
     async import (data, db = undefined) {
         const andClose = typeof (db) === 'undefined'
-        db ??= await openDB(DB_NAME, DB_VERSION, { upgrade: db => this.#upgrade(db) })
+        db ??= await this.open()
 
         // save the data
         await this.saveGameInfo(data.GameInfo, db)
