@@ -35,7 +35,7 @@ export function setupNumberInputScroll (el) {
     el.inputScrollSetup = true
 
     // @ts-ignore
-    el.addEventListener('wheel', handleScrollOnNumberInput, { passive: true })
+    el.addEventListener('wheel', handleScrollOnNumberInput, { passive: false })
 }
 
 /**
