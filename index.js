@@ -296,7 +296,7 @@ export class IndexController {
      * @param {boolean} use whether to use the legacy task trackers
      */
     #setLegacyTaskTrackers (use) {
-        document.documentElement.classList.toggle('legacy-task-trackers', use === true)
+        document.body.classList.toggle('legacy-task-trackers', use === true)
 
         const legacyTrackersCheckbox = document.getElementById('legacy-task-tracker-toggle')
         if (legacyTrackersCheckbox instanceof HTMLInputElement)
@@ -629,7 +629,7 @@ export class IndexController {
             newTrackerEl.breakthroughs = `${info.breakthroughs}`
         }
 
-        newTrackerEl.toggleAttribute('manual-breakthroughs', document.body.hasAttribute('edition-1'))
+        newTrackerEl.toggleAttribute('manual-breakthroughs', document.body.classList.contains('edition-1'))
         newTrackerEl.toggleAttribute('legacy-controls', document.body.classList.contains('legacy-task-trackers'))
         document.querySelector('task-trackers').appendChild(newTrackerEl)
 
