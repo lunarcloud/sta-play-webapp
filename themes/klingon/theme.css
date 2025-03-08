@@ -83,7 +83,7 @@ body {
         & mission-tracker {
             &::part(scene) {
                 background-image: url('../../img/klingon-emblem-dark.webp');
-                background-size: 1.3em;
+                background-size: 15em;
                 background-position: 0 center;
             }
         }
@@ -169,8 +169,8 @@ body {
 
 task-tracker::part(internal) {
     background-repeat: repeat;
-    background-size: 240px;
     background-image: url('cc0-textures/diamond-plate-007-D.webp');
+    background-size: 15em;
     color: black;
     text-shadow: 0 0 2px #999;
 
@@ -193,8 +193,8 @@ decoration {
             border: 0.25em inset white;
             background-color: gray;
             background-image: url('cc0-textures/metal-024.webp');
+            background-size: 50%;
             background-repeat: repeat;
-            background-size: 240px;
         }
 
         /* App Controls at bottom */
@@ -204,6 +204,7 @@ decoration {
             right: 0;
             height: var(--bottom-section-height);
             background-image: url('cc0-textures/diamond-plate-007-D.webp');
+            background-size: 24em;
         }
 
         /* Traits section at top */
