@@ -768,7 +768,8 @@ export class IndexController {
      */
     async export (gameName = undefined) {
         gameName ??= document.body.getAttribute('loaded-game-name') || 'Game'
-        const fileName = gameName === DefaultGameName ? `game.${Date.now()}` : gameName
+        const shipName = document.getElementById('shipname').textContent ?? 'game'
+        const fileName = gameName === DefaultGameName ? `${shipName}.${Date.now()}` : gameName
         const file = await this.db.export(gameName)
         const mimeOpts = {
             description: 'STA Play Backup',
