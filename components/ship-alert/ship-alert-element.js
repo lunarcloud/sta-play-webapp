@@ -69,7 +69,7 @@ export class ShipAlertElement extends HTMLElement {
         this.#internalEl = document.createElement('ship-alert-internal')
         this.#internalEl.setAttribute('part', 'internal')
 
-        let titleEl = document.createElement('h1')
+        const titleEl = document.createElement('h1')
         titleEl.textContent = 'ALERT'
 
         const conditionEl = document.createElement('p')

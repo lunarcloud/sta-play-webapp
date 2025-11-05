@@ -55,6 +55,12 @@ export class IndexController {
     #debounceAmount = 300
 
     /**
+     * Ship Alert Transition ID, used to cancel old transitions when demanding a new one
+     * @type {number}
+     */
+    #shipAlertTransitionID = 0
+
+    /**
      * Constructor.
      */
     constructor () {
@@ -330,17 +336,23 @@ export class IndexController {
             document.body.removeAttribute('alert')
 
         const targetExposure = alertEl.color === 'grey' ? 0.25 : alertEl.color === 'cloak' ? 0.01 : 0.90
+        const targetOpacity = alertEl.color === 'cloak' ? 0.1 : 1
         const lerp = (/** @type {number} */ a, /** @type {number} */ b, /** @type {number} */ amount) => (1 - amount) * a + amount * b
+        const thisTransitionID = ++this.#shipAlertTransitionID
         const transitionTime = 4000 // ms
         const startTime = Date.now()
         const modelViewers = document.querySelectorAll('model-viewer')
         const updateExposure = (el) => {
+            if (thisTransitionID !== this.#shipAlertTransitionID)
+                return
+
             const amount = (Date.now() - startTime) / transitionTime
 
             if (amount !== Math.max(0, Math.min(1.01, amount)))
                 throw new Error('Amount not properly normalized!')
 
             el.exposure = lerp(el.exposure, targetExposure, amount)
+            el.style.opacity = lerp(el.style.opacity || 1, targetOpacity, amount)
 
             if (amount < 1)
                 requestAnimationFrame(() => updateExposure(el))
