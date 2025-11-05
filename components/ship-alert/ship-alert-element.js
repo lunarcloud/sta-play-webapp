@@ -32,6 +32,10 @@ export class ShipAlertElement extends HTMLElement {
         {
             name: 'Black',
             description: 'top-secret action'
+        },
+        {
+            name: 'Cloak',
+            description: 'cloaking device active'
         }
     ]
 
@@ -39,7 +43,7 @@ export class ShipAlertElement extends HTMLElement {
 
     #internalEl
 
-    #titleEl
+    #conditionTextEl
 
     #colorEl
 
@@ -65,15 +69,16 @@ export class ShipAlertElement extends HTMLElement {
         this.#internalEl = document.createElement('ship-alert-internal')
         this.#internalEl.setAttribute('part', 'internal')
 
-        this.#titleEl = document.createElement('h1')
-        this.#titleEl.textContent = 'ALERT'
+        let titleEl = document.createElement('h1')
+        titleEl.textContent = 'ALERT'
 
         const conditionEl = document.createElement('p')
-        conditionEl.textContent = 'CONDITION: '
-
+        this.#conditionTextEl = document.createElement('span')
+        this.#conditionTextEl.textContent = 'CONDITION: '
         this.#colorEl = document.createElement('span')
 
-        this.#internalEl.appendChild(this.#titleEl)
+        this.#internalEl.appendChild(titleEl)
+        conditionEl.appendChild(this.#conditionTextEl)
         conditionEl.appendChild(this.#colorEl)
         this.#internalEl.appendChild(conditionEl)
         shadow.appendChild(this.#internalEl)
@@ -116,12 +121,18 @@ export class ShipAlertElement extends HTMLElement {
             return
 
         const valueLower = value?.toLowerCase() ?? 'hidden'
-
-        this.#colorEl.textContent = value?.toUpperCase() ?? 'HIDDEN'
         this.#internalEl.className = valueLower
-        this.#titleEl.hidden = valueLower === 'grey'
+
+        this.#colorEl.textContent = valueLower === 'grey'
+            ? 'GREY MODE'
+            : valueLower === 'cloak'
+                ? 'CLOAK ACTIVE'
+                : value?.toUpperCase() ??
+                    'HIDDEN'
+
+        this.#conditionTextEl.hidden = ['grey', 'cloak'].includes(valueLower)
         if (this.hasAttribute('color'))
-            this.attributes.color.value = valueLower
+            this.setAttribute('color', valueLower)
     }
 }
 

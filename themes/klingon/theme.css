@@ -58,7 +58,7 @@ body {
         transition: filter 2s ease-in-out 0.25s;
     }
 
-    &[alert="grey"] {
+    &[alert="grey"], &[alert="cloak"] {
         decoration li {
             filter: sepia(1) hue-rotate(-55deg) brightness(0.5);
         }

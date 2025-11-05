@@ -21,6 +21,7 @@ ship-alert-internal {
     &.yellow,
     &.blue,
     &.grey,
+    &.cloak,
     &.black {
         display: inline-flex;
         background-image: url('../../img/red-alert.webp');

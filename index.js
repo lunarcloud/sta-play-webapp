@@ -329,7 +329,7 @@ export class IndexController {
         else
             document.body.removeAttribute('alert')
 
-        const targetExposure = alertEl.color === 'grey' ? 0.25 : alertEl.color === 'grey' ? 0.01 : 0.90
+        const targetExposure = alertEl.color === 'grey' ? 0.25 : alertEl.color === 'cloak' ? 0.01 : 0.90
         const lerp = (/** @type {number} */ a, /** @type {number} */ b, /** @type {number} */ amount) => (1 - amount) * a + amount * b
         const transitionTime = 4000 // ms
         const startTime = Date.now()

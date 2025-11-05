@@ -54,10 +54,11 @@ body {
     var(--main-color-bg));
   background-size: 200% 200%;
   animation: move-gradient 30s linear 0s infinite normal;
-}
 
-body[alert="grey"] decoration {
-    filter: grayscale(.8) brightness(0.66);
+  &[alert="grey"], &[alert="cloak"] {
+    decoration {
+        filter: grayscale(.8) brightness(0.66);
+    }
 }
 
 @keyframes move-gradient {
@@ -100,4 +101,5 @@ decoration > ul li {
             border-top-color: var(--trek-color-1);
         }
     }
+}
 }

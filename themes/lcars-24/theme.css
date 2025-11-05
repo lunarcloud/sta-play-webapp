@@ -57,11 +57,11 @@ body {
     decoration {
         transition: filter 2s ease-in-out 0.25s;
     }
-}
 
-body[alert="grey"] {
-    decoration {
-        filter: grayscale(.4) brightness(0.66);
+    &[alert="grey"], &[alert="cloak"] {
+        decoration {
+            filter: grayscale(.4) brightness(0.66);
+        }
     }
 }
 

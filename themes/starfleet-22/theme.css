@@ -300,7 +300,7 @@ body {
         }
     }
 
-    &[alert="grey"] {
+    &[alert="grey"], &[alert="cloak"] {
         background-color: black;
 
         & nav {
