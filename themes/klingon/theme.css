@@ -54,6 +54,16 @@ body {
     grid-template-columns: 13em 1fr 14em;
     gap: 0;
 
+    & decoration li {
+        transition: filter 2s ease-in-out 0.25s;
+    }
+
+    &[alert="grey"] {
+        decoration li {
+            filter: sepia(1) hue-rotate(-55deg) brightness(0.5);
+        }
+    }
+
     & header {
         grid-row: 2;
         grid-column: 2;
@@ -182,17 +192,6 @@ task-tracker::part(internal) {
     --tracker-dd-border-color: hsl(0deg 51% 15%);
 }
 
-
-body {
-    decoration li {
-        transition: filter 2s ease-in-out 0.25s;
-    }
-}
-body[alert=grey] {
-    decoration li {
-        filter: sepia(1) hue-rotate(-55deg) brightness(0.5);
-    }
-}
 
 decoration {
     ul {

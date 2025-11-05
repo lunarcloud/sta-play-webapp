@@ -56,7 +56,7 @@ body {
   animation: move-gradient 30s linear 0s infinite normal;
 }
 
-body[alert=grey] decoration {
+body[alert="grey"] decoration {
     filter: grayscale(.8) brightness(0.66);
 }
 

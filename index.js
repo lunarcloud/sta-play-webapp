@@ -329,27 +329,24 @@ export class IndexController {
         else
             document.body.removeAttribute('alert')
 
-        const targetExposure = alertEl.color === 'grey' ? 0.25 : .90;
-        const lerp = (/** @type {number} */ a, /** @type {number} */ b, /** @type {number} */ amount) => (1 - amount) * a + amount * b;
-        const transitionTime = 4000; //ms
+        const targetExposure = alertEl.color === 'grey' ? 0.25 : alertEl.color === 'grey' ? 0.01 : 0.90
+        const lerp = (/** @type {number} */ a, /** @type {number} */ b, /** @type {number} */ amount) => (1 - amount) * a + amount * b
+        const transitionTime = 4000 // ms
         const startTime = Date.now()
         const modelViewers = document.querySelectorAll('model-viewer')
-        var updateExposure = (el) => {
-            let amount = (Date.now() - startTime)/transitionTime
+        const updateExposure = (el) => {
+            const amount = (Date.now() - startTime) / transitionTime
 
             if (amount !== Math.max(0, Math.min(1.01, amount)))
                 throw new Error('Amount not properly normalized!')
 
             el.exposure = lerp(el.exposure, targetExposure, amount)
 
-            if (amount >= 1)
-                return
-            else
+            if (amount < 1)
                 requestAnimationFrame(() => updateExposure(el))
         }
-        for (let el of modelViewers) {
+        for (const el of modelViewers)
             requestAnimationFrame(() => updateExposure(el))
-        }
     }
 
     /**

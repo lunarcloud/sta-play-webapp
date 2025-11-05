@@ -58,7 +58,8 @@ body {
         transition: filter 2s ease-in-out 0.25s;
     }
 }
-body[alert=grey] {
+
+body[alert="grey"] {
     decoration {
         filter: grayscale(.4) brightness(0.66);
     }
