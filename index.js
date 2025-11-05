@@ -93,11 +93,10 @@ export class IndexController {
             legacyTrackersCheckbox.addEventListener('change', () => this.#setLegacyTaskTrackers(legacyTrackersCheckbox.checked))
 
         // Wire up the Alerts Selector
-        const alertEl = document.getElementsByTagName('ship-alert')[0]
         const alertDropdownEl = document.getElementById('alert-dropdown')
-        if (alertEl instanceof ShipAlertElement === false || alertDropdownEl instanceof HTMLSelectElement === false)
+        if (alertDropdownEl instanceof HTMLSelectElement === false)
             throw new Error('Ship Alerts not setup correctly!')
-        alertDropdownEl.addEventListener('change', () => { alertEl.color = alertDropdownEl.value })
+        alertDropdownEl.addEventListener('change', () => this.#setShipAlert(alertDropdownEl.value))
 
         // Check the importing dialog
         const importingDialog = document.querySelector('dialog[is="importing-dialog"]')
@@ -309,6 +308,29 @@ export class IndexController {
     }
 
     /**
+     * Update the ship alert
+     * @param {string} newColor color to use
+     */
+    #setShipAlert (newColor) {
+        const alertEl = document.getElementsByTagName('ship-alert')[0]
+        const alertDropdownEl = document.getElementById('alert-dropdown')
+        if (alertEl instanceof ShipAlertElement === false || alertDropdownEl instanceof HTMLSelectElement === false)
+            throw new Error('Ship alert elements are wrong/missing!')
+
+        // Update if different
+        if (alertEl.color !== newColor)
+            alertEl.color = newColor
+        if (alertDropdownEl.value !== newColor)
+            alertDropdownEl.value = newColor
+
+        // inform the body element, for potential styling
+        if (alertEl.color)
+            document.body.setAttribute('alert', alertEl.color)
+        else
+            document.body.removeAttribute('alert')
+    }
+
+    /**
      * Wire up all the settings.
      * @param {HTMLDialogElement} dialogEl          settings dialog element
      * @param {HTMLDialogElement} welcomeDialogEl   the welcome dialog element
@@ -425,7 +447,7 @@ export class IndexController {
         momentumToggleEl.checked = gameInfo?.momentum > 0
         threatEl.value = `${(gameInfo?.threat ?? 0)}`
         threatToggleEl.checked = gameInfo?.threat > 0
-        document.getElementsByTagName('ship-alert')[0].setAttribute('color', (gameInfo?.activeAlert ?? '').trim())
+        this.#setShipAlert((gameInfo?.activeAlert ?? '').trim())
         this.#useTheme(gameInfo?.theme ?? 'lcars-24', gameInfo?.altFont ?? false)
         this.#useEdition(gameInfo?.edition)
         this.#setLegacyTaskTrackers(gameInfo?.legacyTrackers ?? false)

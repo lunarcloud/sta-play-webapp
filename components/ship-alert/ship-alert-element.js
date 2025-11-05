@@ -26,6 +26,10 @@ export class ShipAlertElement extends HTMLElement {
             description: 'ship landing'
         },
         {
+            name: 'Grey',
+            description: 'low or reserve power'
+        },
+        {
             name: 'Black',
             description: 'top-secret action'
         }
@@ -34,6 +38,8 @@ export class ShipAlertElement extends HTMLElement {
     #firstColorClass
 
     #internalEl
+
+    #titleEl
 
     #colorEl
 
@@ -59,15 +65,15 @@ export class ShipAlertElement extends HTMLElement {
         this.#internalEl = document.createElement('ship-alert-internal')
         this.#internalEl.setAttribute('part', 'internal')
 
-        const titleEl = document.createElement('h1')
-        titleEl.textContent = 'ALERT'
+        this.#titleEl = document.createElement('h1')
+        this.#titleEl.textContent = 'ALERT'
 
         const conditionEl = document.createElement('p')
         conditionEl.textContent = 'CONDITION: '
 
         this.#colorEl = document.createElement('span')
 
-        this.#internalEl.appendChild(titleEl)
+        this.#internalEl.appendChild(this.#titleEl)
         conditionEl.appendChild(this.#colorEl)
         this.#internalEl.appendChild(conditionEl)
         shadow.appendChild(this.#internalEl)
@@ -83,6 +89,9 @@ export class ShipAlertElement extends HTMLElement {
      * @param {any} newValue    the new value
      */
     attributeChangedCallback (name, _oldValue, newValue) {
+        if (_oldValue === newValue)
+            return
+
         if (ShipAlertElement.observedAttributes.includes(name))
             this[name] = newValue
     }
@@ -106,8 +115,13 @@ export class ShipAlertElement extends HTMLElement {
         if (!!value && !ShipAlertElement.Colors.map(a => a.name.toLowerCase()).includes(value.toLowerCase()))
             return
 
+        const valueLower = value?.toLowerCase() ?? 'hidden'
+
         this.#colorEl.textContent = value?.toUpperCase() ?? 'HIDDEN'
-        this.#internalEl.className = value?.toLowerCase() ?? 'hidden'
+        this.#internalEl.className = valueLower
+        this.#titleEl.hidden = valueLower === 'grey'
+        if (this.hasAttribute('color'))
+            this.attributes.color.value = valueLower
     }
 }
 

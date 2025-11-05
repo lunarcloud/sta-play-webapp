@@ -20,6 +20,7 @@ ship-alert-internal {
     &.red,
     &.yellow,
     &.blue,
+    &.grey,
     &.black {
         display: inline-flex;
         background-image: url('../../img/red-alert.webp');
@@ -32,6 +33,10 @@ ship-alert-internal {
 
     &.blue {
         filter: hue-rotate(230deg) brightness(3);
+    }
+
+    &.grey {
+        filter: grayscale(1) brightness(5);
     }
 
     &.black {
