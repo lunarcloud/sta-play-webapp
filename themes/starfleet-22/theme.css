@@ -364,6 +364,49 @@ body {
     }
 }
 
+body {
+    transition: background-color 2s ease-in-out 0.25s;
+
+    & nav {
+        transition: filter 2s ease-in-out 0.25s;
+    }
+    & mission-tracker act, & trait-display, & li[is=player-display] {
+        transition: filter 3s ease-in-out 0.25s;
+    }
+    & decoration box {
+        transition: background-color  2s ease-in-out 0.25s;
+
+        & sub-box {
+            transition: filter  2s ease-in-out 0.25s;
+        }
+    }
+}
+body[alert=grey] {
+    background-color: black;
+
+    & nav {
+        filter: grayscale(.66);
+    }
+
+    & mission-tracker act, & trait-display, & li[is=player-display] {
+        filter: saturate(1.25)  1s ease-in-out 0.25s;
+    }
+
+    & trait-display, & li[is=player-display] {
+        box-shadow: 0px 0px 10px 0px #200505;
+    }
+
+    & decoration box {
+        background-color: #24242c;
+        transition: background-color  1s ease-in-out 0.25s;
+
+        & sub-box {
+            filter: grayscale(.66);
+            transition: filter  1s ease-in-out 0.25s;
+        }
+    }
+}
+
 #game-name {
     inset: unset;
     padding: unset;

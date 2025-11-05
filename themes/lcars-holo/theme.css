@@ -56,6 +56,10 @@ body {
   animation: move-gradient 30s linear 0s infinite normal;
 }
 
+body[alert=grey] decoration {
+    filter: grayscale(.8) brightness(0.66);
+}
+
 @keyframes move-gradient {
     0% {background-position: 100% 0%}
     100% {background-position: 0% 100%}

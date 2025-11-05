@@ -40,6 +40,21 @@ html > body, decoration {
     margin: 0;
 }
 
+body {
+    transition: background-color 2s ease-in-out 0.25s;
+
+    decoration {
+        transition: filter 2s ease-in-out 0.25s;
+    }
+}
+body[alert=grey] {
+    background-color: #494f53;
+
+    decoration {
+        filter: grayscale(.6)
+    }
+}
+
 li[is="player-display"] {
     --pip-color: rgb(163 154 108) !important;
 }

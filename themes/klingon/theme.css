@@ -45,6 +45,7 @@ html {
     height: fit-content;
 }
 
+
 body {
     padding-left: 0.5em;
     padding-right: 0.5em;
@@ -182,6 +183,16 @@ task-tracker::part(internal) {
 }
 
 
+body {
+    decoration li {
+        transition: filter 2s ease-in-out 0.25s;
+    }
+}
+body[alert=grey] {
+    decoration li {
+        filter: sepia(1) hue-rotate(-55deg) brightness(0.5);
+    }
+}
 
 decoration {
     ul {

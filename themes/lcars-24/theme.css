@@ -53,6 +53,17 @@ body nav {
     align-items: center;
 }
 
+body {
+    decoration {
+        transition: filter 2s ease-in-out 0.25s;
+    }
+}
+body[alert=grey] {
+    decoration {
+        filter: grayscale(.4) brightness(0.66);
+    }
+}
+
 #font-up-btn,
 #font-down-btn {
     color: var(--main-color-text) !important;
