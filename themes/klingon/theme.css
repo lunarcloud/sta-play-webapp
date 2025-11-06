@@ -119,12 +119,23 @@ body {
 
 #settings-btn,
 #save-btn,
+#fullscreen-btn,
 #font-up-btn,
 #font-down-btn {
     inset: unset;
     padding: unset;
     width: 5em;
     justify-content: space-evenly;
+}
+
+#fullscreen-btn {
+    bottom: calc(var(--bottom-section-height) - 3.125em);
+    left: 13.6em;
+    width: unset !important;
+
+    & img.symbol {
+        width: 2em;
+    }
 }
 
 #settings-btn,
@@ -134,7 +145,7 @@ body {
 
 #font-down-btn,
 #save-btn {
-    bottom: calc(var(--bottom-section-height) - 3.5em);
+    bottom: calc(var(--bottom-section-height) - 3.65em);
 }
 
 #save-btn,
@@ -144,15 +155,19 @@ body {
 
 #font-up-btn,
 #font-down-btn   {
-    left: 10.6em;
+    left: 7em;
 }
 
 #momentum-section,
 #threat-section {
     inset: unset;
     top: unset !important;
-    bottom: 0.5em;
+    bottom: 0.33em;
     width: 7em;
+
+    & input {
+        line-height: 1.125em;
+    }
 }
 
 #momentum-section {
@@ -165,6 +180,7 @@ body {
 
 #settings-btn,
 #save-btn,
+#fullscreen-btn,
 #momentum-section,
 #threat-section,
 #font-up-btn,

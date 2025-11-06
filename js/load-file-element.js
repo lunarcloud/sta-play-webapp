@@ -5,8 +5,8 @@
  * @returns {Promise<Element>}      Element within the HTML
  */
 export async function loadElementFromFile (filePath, querySelector) {
-    const parser = new DOMParser()
-    const resp = await fetch(filePath)
-    const html = await resp.text()
-    return parser.parseFromString(html, 'text/html').querySelector(querySelector)
+  const parser = new DOMParser()
+  const resp = await fetch(filePath)
+  const html = await resp.text()
+  return parser.parseFromString(html, 'text/html').querySelector(querySelector)
 }

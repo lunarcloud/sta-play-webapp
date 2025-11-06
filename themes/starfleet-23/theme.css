@@ -125,6 +125,7 @@ html > body {
 
 #settings-btn,
 #save-btn,
+#fullscreen-btn,
 #font-up-btn,
 #font-down-btn  {
     position: absolute;
@@ -140,6 +141,11 @@ html > body {
 
 #save-btn {
     left: 14em;
+    right: unset;
+}
+
+#fullscreen-btn {
+    left: 1em;
     right: unset;
 }
 
@@ -212,9 +218,7 @@ ul.sliders {
     width: auto;
     position: absolute;
     height: auto;
-    height: -webkit-fill-available;
-    height: -moz-available;
-    height: fill-available;
+    height: var(--stretch);
     top: 4em;
     bottom: 2em;
     left: 1em;

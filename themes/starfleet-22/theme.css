@@ -77,7 +77,7 @@ html {
 body, decoration {
     grid-template-columns: repeat(2, 27em) 1fr var(--traits-display-width);
     grid-template-rows: var(--ship-display-height) 1fr var(--controls-height);
-    grid-gap: 0;
+    gap: 0;
     height: 100dvh;
     width: 100vw;
     inset: 0;
@@ -308,7 +308,8 @@ body {
         }
 
         & mission-tracker act, & trait-display, & li[is="player-display"] {
-            filter: saturate(1.25)  1s ease-in-out 0.25s;
+            filter: saturate(1.25);
+            transition: filter 1s ease-in-out 0.25s;
         }
 
         & trait-display, & li[is="player-display"] {
@@ -317,7 +318,7 @@ body {
 
         & decoration box {
             background-color: #24242c;
-            transition: background-color  1s ease-in-out 0.25s;
+            transition: background-color 1s ease-in-out 0.25s;
 
             & sub-box {
                 filter: grayscale(.66);
@@ -373,7 +374,8 @@ body {
         }
 
         & #general-text {
-            word-break: break-word;
+            overflow-wrap: anywhere;
+            word-break: normal;
         }
 
         & traits {
@@ -397,9 +399,7 @@ body {
 
             & > trait-display::part(internal) {
                 width: 100%;
-                width: -webkit-fill-available;
-                width: -moz-available;
-                width: fill-available;
+                width: var(--stretch);
             }
         }
     }
@@ -427,6 +427,7 @@ body {
 
 #settings-btn,
 #save-btn,
+#fullscreen-btn,
 #momentum-section,
 #threat-section,
 #font-up-btn,
@@ -441,11 +442,13 @@ body {
 
 #settings-btn,
 #save-btn,
+#fullscreen-btn,
 #font-up-btn,
 #font-down-btn {
     top: unset !important;
     right: unset;
     bottom: 7em;
+    height: 1.125em;
     width: 6em;
     justify-content: space-evenly;
 }
@@ -455,11 +458,16 @@ body {
 }
 
 #save-btn {
-    left: 10em;
+    left: 9.25em;
+}
+
+#fullscreen-btn {
+    left: 16.5em;
+    width: 1.25em;
 }
 
 #font-down-btn {
-    left: 18em;
+    left: 19em;
 }
 
 #font-up-btn {

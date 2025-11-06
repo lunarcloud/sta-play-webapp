@@ -4,12 +4,12 @@
  * @returns {string} modified string
  */
 export function snakeToCamel (value) {
-    return value.toLowerCase().replace(/([-_][a-z])/g, group =>
-        group
-            .toUpperCase()
-            .replace('-', '')
-            .replace('_', '')
-    )
+  return value.toLowerCase().replace(/([-_][a-z])/g, group =>
+    group
+      .toUpperCase()
+      .replace('-', '')
+      .replace('_', '')
+  )
 }
 
 /**
@@ -18,5 +18,5 @@ export function snakeToCamel (value) {
  * @returns {string} csv    the items as comma-separated
  */
 export function toCSV (values) {
-    return values.join(',')
+  return values.join(',')
 }

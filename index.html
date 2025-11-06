@@ -42,6 +42,11 @@
                 <symbol>💾</symbol>
             </a>
 
+            <a id="fullscreen-btn" class="text-n-symbol-btn">
+                <img class="symbol enter" alt="enter fullscreen" src="img/fullscreen-icon.svg">
+                <img class="symbol exit" hidden alt="return from fullscreen" src="img/fullscreen-return-icon.svg">
+            </a>
+
             <a id="font-up-btn" class="text-n-symbol-btn">
                 <text>font</text>
                 <symbol>++</symbol>
@@ -165,17 +170,18 @@
             <!-- linthtml-disable attr-name-style -->
             <model-viewer id="ship-fullscreen" src=""
                     alt="starship 3d model" loading="lazy"
-                    interaction-prompt="auto"
-                    interaction-prompt-threshold="15000"
+                    skybox-image="img/model-viewer/HDR_rich_blue_nebulae_1.jpg"
+                    environment-image="img/model-viewer/HDR_rich_blue_nebulae_1.bright.jpg"
+                    interaction-prompt="none"
                     camera-controls
                     auto-rotate-delay="400"
-                    camera-orbit="0deg 95deg 0%"
-                    field-of-view="40deg"
+                    camera-orbit="180deg 40deg 200m"
+                    field-of-view="70deg"
                     min-field-of-view="1deg"
-                    max-field-of-view="180deg"
+                    max-field-of-view="170deg"
                     shadow-intensity="0"
                     exposure="1"
-                    zoom-sensitivity="1"
+                    zoom-sensitivity="0.5"
                     shadow-softness="1"
                     style="margin: 0 auto; min-width: 1px; height: 100%">
             </model-viewer>

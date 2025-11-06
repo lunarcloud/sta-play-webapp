@@ -36,6 +36,14 @@
     --player-color-brown: var(--trek-color-4);
     --player-color-black: #222;
     --player-color-white: #bbb;
+
+    @supports (width: -moz-available) { --stretch: -moz-available; }
+
+    @supports (width: -webkit-fill-available) { --stretch: -webkit-fill-available; }
+
+    @supports (width: fill-available) { --stretch: fill-available; }
+
+    @supports (width: stretch) { --stretch: stretch; }
 }
 
 @media screen and (prefers-contrast: more) {
@@ -182,9 +190,7 @@ select {
 
 dialog select,
 dialog input {
-    max-width: -webkit-fill-available;
-    max-width: -moz-available;
-    max-width: fill-available;
+    max-width: var(--stretch);
 }
 
 a,
@@ -215,6 +221,7 @@ dialog::backdrop {
 button,
 #save-btn,
 #settings-btn,
+#fullscreen-btn,
 #font-up-btn,
 #font-down-btn {
     user-select: none;
@@ -258,7 +265,7 @@ model-viewer {
 }
 
 dialogs > dialog {
-    --backdrop-color: hsla(0deg 0% 0% / 80%);
+    --backdrop-color: hsl(0deg 0% 0% / 80%);
 
     flex-direction: column;
     justify-content: flex-start;
@@ -414,6 +421,7 @@ menu-items {
 
 #settings-btn,
 #save-btn,
+#fullscreen-btn,
 #font-up-btn,
 #font-down-btn,
 #momentum-section,
@@ -444,11 +452,15 @@ menu-items {
     padding-inline: 0.5em;
   }
 
-  & > symbol {
+  & > symbol, & > img.symbol {
     font-family: monospace;
-      width: 1.125em;
-      text-align: justify;
-      white-space: nowrap;
+    width: 1.125em;
+    text-align: justify;
+    white-space: nowrap;
+
+    &.exit {
+        rotate: 45deg;
+    }
   }
 }
 
@@ -460,6 +472,13 @@ menu-items {
     top: calc(var(--main-font-size) * 6.5);
 }
 
+#fullscreen-btn {
+    top: calc(var(--main-font-size) * 7.75);
+
+    & img.symbol {
+        filter: invert(1);
+    }
+}
 
 #font-up-btn,
 #font-down-btn {
@@ -552,7 +571,7 @@ body {
     padding-top: 0.2em;
     grid-template-rows: 6em 4.75em 1fr;
     grid-template-columns: 1fr 12em;
-    grid-gap: 0.4em;
+    gap: 0.4em;
 
     /* Hide elements exclusive to the other edition */
     span.edition-1,
@@ -631,7 +650,7 @@ body {
         height: 100%;
         display: grid;
         grid-template-rows: 1fr 1px auto;
-        grid-gap: 0.2em;
+        gap: 0.2em;
 
         & mission-tracker {
           font-size: 1.25em;
@@ -645,9 +664,7 @@ body {
         }
 
         & traits, & mission-tracker {
-            width: -webkit-fill-available;
-            width: -moz-available;
-            width: fill-available;
+            width: var(--stretch);
             display: block;
             position: relative;
             border-bottom: 0.1em solid white;
@@ -826,13 +843,14 @@ header .fullscreen-btn img {
   display: none;
 }
 
+
 body.ship-fullscreen {
   inset: 0;
   min-width: 3em;
   min-height: 3em;
 
   main, header, footer, nav, theme,
-  #font-up-btn, #font-down-btn, #save-btn, #settings-btn,
+  #font-up-btn, #font-down-btn, #save-btn, #fullscreen-btn, #settings-btn,
   #momentum-section, #threat-section {
     display: none;
   }
@@ -842,6 +860,10 @@ body.ship-fullscreen {
     position: fixed;
     display: block;
     background-color: black;
+    background-image: url('img/model-viewer/HDR_rich_blue_nebulae_1.jpg');
+    background-size: 500%;
+    background-position: 100% 200%;
+
 
     & #ship-autorotate-fullscreen {
       bottom: unset;

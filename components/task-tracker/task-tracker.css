@@ -48,9 +48,7 @@ task-tracker-internal {
     input {
         background: unset;
         color: unset;
-        width: -webkit-fill-available;
-        width: -moz-available;
-        width: fill-available;
+        width: var(--stretch);
     }
 
     select, option {
@@ -86,8 +84,7 @@ task-tracker-internal {
             flex-direction: column;
             gap: 4px;
             width: 100%;
-            width: fill-available;
-            width: -webkit-fill-available;
+            width: var(--stretch);
         }
     }
 
@@ -129,7 +126,7 @@ task-tracker-internal {
         dt.stats{
             grid-row: 1;
             min-width: 6em;
-            width: fill-available;
+            width: var(--stretch);
             display: flex;
             justify-content: space-between;
         }

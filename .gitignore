@@ -132,8 +132,6 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-img/projects/kmc-vr-lab-me.jpg
-
 *.*~
 [Cc]ustom/
 uss-misfits/

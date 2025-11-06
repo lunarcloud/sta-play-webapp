@@ -23,11 +23,11 @@
  * @param {Blob} blobData                       data to write
  */
 export async function saveBlob (filename, blobData) {
-    const link = document.createElement('a')
-    link.href = URL.createObjectURL(blobData)
-    link.download = filename
-    link.click()
-    URL.revokeObjectURL(link.href)
+  const link = document.createElement('a')
+  link.href = URL.createObjectURL(blobData)
+  link.download = filename
+  link.click()
+  URL.revokeObjectURL(link.href)
 }
 
 /**
@@ -39,54 +39,54 @@ export async function saveBlob (filename, blobData) {
  * @param {boolean} [promptIfFallback]             whether to prompt for filename if falling back to old save method
  */
 export async function saveBlobAs (filename, blobData, mimeOptions, startIn = 'downloads', promptIfFallback = false) {
-    if (blobData instanceof Blob === false)
-        throw new Error('Cannot save a non-blob!')
+  if (blobData instanceof Blob === false) {
+    throw new Error('Cannot save a non-blob!')
+  }
 
+  /**
+   * @type {SaveFilePickerOptions}
+   */
+  const savePickOptions = {
+    startIn,
+    suggestedName: filename,
+    types: [mimeOptions]
+  }
+
+  try {
     /**
-     * @type {SaveFilePickerOptions}
-     */
-    const savePickOptions = {
-        startIn,
-        suggestedName: filename,
-        types: [mimeOptions]
+     * @type {FileSystemFileHandle}
+     */ // @ts-ignore
+    const fileHandle = await window.showSaveFilePicker(savePickOptions)
+
+    const writeable = await fileHandle.createWritable()
+    await writeable.write(blobData)
+    await writeable.close()
+  } catch (ex) {
+    if (ex.name === 'AbortError') { return } // user chose to cancel
+
+    if (ex.message.includes('already active')) {
+      throw ex
     }
 
-    try {
-        /**
-         * @type {FileSystemFileHandle}
-         */ // @ts-ignore
-        const fileHandle = await window.showSaveFilePicker(savePickOptions)
+    console.warn('file picker method failed, falling back to link element with download attribute. ', ex)
 
-        const writeable = await fileHandle.createWritable()
-        await writeable.write(blobData)
-        await writeable.close()
-    } catch (ex) {
-        if (ex.name === 'AbortError')
-            return // user chose to cancel
-
-        if (ex.message.includes('already active')) {
-            throw ex
-        }
-
-        console.warn('file picker method failed, falling back to link element with download attribute. ', ex)
-
-        if (promptIfFallback)
-            try {
-                // Use the browser prompt for name selection
-                filename = prompt('Enter file name for download', filename)
-                if (typeof (filename) !== 'string')
-                    return // user chose to cancel
-            } catch (ex) {
-                console.warn('Prompt failed, using default filename. ', ex)
-            }
-
-        // Classic method, only gives users a choice if they tell their browser to for all downloads
-        const link = document.createElement('a')
-        link.href = URL.createObjectURL(blobData)
-        link.download = filename
-        link.click()
-        URL.revokeObjectURL(link.href)
+    if (promptIfFallback) {
+      try {
+      // Use the browser prompt for name selection
+        filename = prompt('Enter file name for download', filename)
+        if (typeof (filename) !== 'string') { return } // user chose to cancel
+      } catch (ex) {
+        console.warn('Prompt failed, using default filename. ', ex)
+      }
     }
+
+    // Classic method, only gives users a choice if they tell their browser to for all downloads
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blobData)
+    link.download = filename
+    link.click()
+    URL.revokeObjectURL(link.href)
+  }
 }
 
 /**
@@ -96,8 +96,8 @@ export async function saveBlobAs (filename, blobData, mimeOptions, startIn = 'do
  * @param {FileMimeTypeOption} typeOption   MIME type info
  */
 export async function saveTextAs (filename, text, typeOption) {
-    const blobData = new Blob([text], { type: 'text/plain;charset=utf-8' })
-    await saveBlobAs(filename, blobData, typeOption)
+  const blobData = new Blob([text], { type: 'text/plain;charset=utf-8' })
+  await saveBlobAs(filename, blobData, typeOption)
 }
 
 /**
@@ -106,6 +106,6 @@ export async function saveTextAs (filename, text, typeOption) {
  * @param {string} text         text to write
  */
 export async function saveText (filename, text) {
-    const blobData = new Blob([text], { type: 'text/plain;charset=utf-8' })
-    await saveBlob(filename, blobData)
+  const blobData = new Blob([text], { type: 'text/plain;charset=utf-8' })
+  await saveBlob(filename, blobData)
 }
