@@ -4,10 +4,14 @@
     <body>
         <dialog>
             <style>
+                dialog {
+                    width: fit-content;
+                    max-width: max(240px, 90%);
+                }
+
                 main {
                     white-space: pre-wrap;
                     padding: 1.5em;
-                    max-width: 30em;
                     text-align: center;
                 }
 
@@ -15,10 +19,6 @@
                     display: flex;
                     justify-content: center;
                     gap: 1em;
-                }
-
-                footer button {
-                    min-width: 6em;
                 }
             </style>
             <header>
