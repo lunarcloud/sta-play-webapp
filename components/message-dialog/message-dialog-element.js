@@ -18,7 +18,6 @@ const setup = async () => {
 
     /**
      * Show the dialog with a message.
-     *
      * @param {string} message - The message to display
      */
     show (message) {

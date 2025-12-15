@@ -64,6 +64,16 @@ export class IndexController {
   #shipAlertTransitionID = 0
 
   /**
+   * @type {HTMLDialogElement|undefined}
+   */
+  messageDialog
+
+  /**
+   * @type {HTMLDialogElement|undefined}
+   */
+  confirmDialog
+
+  /**
    * Constructor.
    */
   constructor () {
@@ -151,13 +161,13 @@ export class IndexController {
     }
 
     // Get message and confirm dialogs
-    const messageDialog = document.querySelector('dialog[is="message-dialog"]')
-    if (messageDialog instanceof HTMLDialogElement === false) {
+    this.messageDialog = document.querySelector('dialog[is="message-dialog"]')
+    if (this.messageDialog instanceof HTMLDialogElement === false) {
       throw new Error('Message dialog not setup!')
     }
 
-    const confirmDialog = document.querySelector('dialog[is="confirm-dialog"]')
-    if (confirmDialog instanceof HTMLDialogElement === false) {
+    this.confirmDialog = document.querySelector('dialog[is="confirm-dialog"]')
+    if (this.confirmDialog instanceof HTMLDialogElement === false) {
       throw new Error('Confirm dialog not setup!')
     }
 
@@ -445,7 +455,7 @@ export class IndexController {
         await this.import(file)
       } catch (ex) {
         if (ex instanceof Error) {
-          alert(`Could not import ${file.name} \n${ex.message}`)
+          this.messageDialog?.show(`Could not import ${file.name} \n${ex.message}`)
         }
       } finally {
         importEl.value = null
@@ -746,7 +756,7 @@ export class IndexController {
 
     this.safeToSaveDB = true
     if (alertAtEnd) {
-      alert('Database Updated')
+      this.messageDialog?.show('Database Updated')
     }
   }
 
@@ -905,12 +915,12 @@ export class IndexController {
     try {
       await this.saveData(false)
     } catch (ex) {
-      alert('Issue saving data.\n' + ex.message)
+      this.messageDialog?.show('Issue saving data.\n' + ex.message)
     }
     try {
       await this.export(gameName)
     } catch (ex) {
-      alert('Issue exporting data.\n' + ex.message)
+      this.messageDialog?.show('Issue exporting data.\n' + ex.message)
     }
   }
 

@@ -63,10 +63,13 @@ export class MissionTrackerElement extends HTMLElement {
     const clearBtnEl = document.createElement('button')
     clearBtnEl.className = 'clear-mission-tracker'
     clearBtnEl.type = 'button'
-    clearBtnEl.addEventListener('click', _ => {
-      const answer = confirm('Are you sure you want to clear the mission tracker?')
-      if (answer === true) {
-        this.clear()
+    clearBtnEl.addEventListener('click', async _ => {
+      const confirmDialog = document.querySelector('dialog[is="confirm-dialog"]')
+      if (confirmDialog && typeof confirmDialog.confirm === 'function') {
+        const answer = await confirmDialog.confirm('Are you sure you want to clear the mission tracker?')
+        if (answer === true) {
+          this.clear()
+        }
       }
     })
     const clearBtnTextEl = document.createElement('div')

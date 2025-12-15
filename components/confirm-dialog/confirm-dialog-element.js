@@ -8,7 +8,7 @@ const setup = async () => {
    */
   class ConfirmDialogElement extends HTMLDialogElement {
     /**
-     * @type {Function|null}
+     * @type {((value: boolean) => void)|null}
      */
     #resolvePromise = null
 
@@ -55,7 +55,6 @@ const setup = async () => {
 
     /**
      * Show the dialog with a confirmation question.
-     *
      * @param {string} message - The message to display
      * @returns {Promise<boolean>} Promise that resolves to true if confirmed, false otherwise
      */
