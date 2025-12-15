@@ -2,6 +2,8 @@ import './components/input-progress/input-progress-element.js'
 import './components/welcome-dialog/welcome-dialog-element.js'
 import './components/settings-dialog/settings-dialog-element.js'
 import './components/importing-dialog/importing-dialog-element.js'
+import './components/message-dialog/message-dialog-element.js'
+import './components/confirm-dialog/confirm-dialog-element.js'
 import { MissionTrackerElement } from './components/mission-tracker/mission-tracker-element.js'
 import { TraitDisplayElement } from './components/trait-display/trait-display-element.js'
 import { PlayerDisplayElement } from './components/player-display/player-display-element.js'
@@ -60,6 +62,16 @@ export class IndexController {
    * @type {number}
    */
   #shipAlertTransitionID = 0
+
+  /**
+   * @type {HTMLDialogElement|undefined}
+   */
+  messageDialog
+
+  /**
+   * @type {HTMLDialogElement|undefined}
+   */
+  confirmDialog
 
   /**
    * Constructor.
@@ -146,6 +158,17 @@ export class IndexController {
     const settingsDialog = document.querySelector('dialog[is="settings-dialog"]')
     if (settingsDialog instanceof HTMLDialogElement === false) {
       throw new Error('HTML setup incorrect!')
+    }
+
+    // Get message and confirm dialogs
+    this.messageDialog = document.querySelector('dialog[is="message-dialog"]')
+    if (this.messageDialog instanceof HTMLDialogElement === false) {
+      throw new Error('Message dialog not setup!')
+    }
+
+    this.confirmDialog = document.querySelector('dialog[is="confirm-dialog"]')
+    if (this.confirmDialog instanceof HTMLDialogElement === false) {
+      throw new Error('Confirm dialog not setup!')
     }
 
     this.#setupSettings(settingsDialog, welcomeDialog, importingDialog)
@@ -432,7 +455,7 @@ export class IndexController {
         await this.import(file)
       } catch (ex) {
         if (ex instanceof Error) {
-          alert(`Could not import ${file.name} \n${ex.message}`)
+          this.messageDialog?.show(`Could not import ${file.name} \n${ex.message}`)
         }
       } finally {
         importEl.value = null
@@ -733,7 +756,7 @@ export class IndexController {
 
     this.safeToSaveDB = true
     if (alertAtEnd) {
-      alert('Database Updated')
+      this.messageDialog?.show('Database Updated')
     }
   }
 
@@ -892,12 +915,12 @@ export class IndexController {
     try {
       await this.saveData(false)
     } catch (ex) {
-      alert('Issue saving data.\n' + ex.message)
+      this.messageDialog?.show('Issue saving data.\n' + ex.message)
     }
     try {
       await this.export(gameName)
     } catch (ex) {
-      alert('Issue exporting data.\n' + ex.message)
+      this.messageDialog?.show('Issue exporting data.\n' + ex.message)
     }
   }
 

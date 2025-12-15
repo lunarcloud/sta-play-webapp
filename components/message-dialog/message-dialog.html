@@ -1,0 +1,33 @@
+
+<!DOCTYPE html>
+<html>
+    <body>
+        <dialog>
+            <style>
+                dialog {
+                    width: fit-content;
+                    max-width: max(240px, 90%);
+                }
+
+                main {
+                    white-space: pre-wrap;
+                    padding: 1.5em;
+                    text-align: center;
+                }
+
+                footer {
+                    display: flex;
+                    justify-content: center;
+                }
+            </style>
+            <header>
+                Message
+                <button class="close" role="button">⤫</button>
+            </header>
+            <main></main>
+            <footer>
+                <button class="close" role="button">OK</button>
+            </footer>
+        </dialog>
+    </body>
+</html>
