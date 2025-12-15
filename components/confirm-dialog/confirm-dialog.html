@@ -1,0 +1,35 @@
+
+<!DOCTYPE html>
+<html>
+    <body>
+        <dialog>
+            <style>
+                main {
+                    white-space: pre-wrap;
+                    padding: 1.5em;
+                    min-width: 20em;
+                    max-width: 40em;
+                }
+
+                footer {
+                    display: flex;
+                    justify-content: center;
+                    gap: 1em;
+                }
+
+                footer button {
+                    min-width: 6em;
+                }
+            </style>
+            <header>
+                Confirm
+                <button class="close" role="button">⤫</button>
+            </header>
+            <main></main>
+            <footer>
+                <button class="cancel" role="button">Cancel</button>
+                <button class="confirm" role="button">OK</button>
+            </footer>
+        </dialog>
+    </body>
+</html>

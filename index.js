@@ -2,6 +2,8 @@ import './components/input-progress/input-progress-element.js'
 import './components/welcome-dialog/welcome-dialog-element.js'
 import './components/settings-dialog/settings-dialog-element.js'
 import './components/importing-dialog/importing-dialog-element.js'
+import './components/message-dialog/message-dialog-element.js'
+import './components/confirm-dialog/confirm-dialog-element.js'
 import { MissionTrackerElement } from './components/mission-tracker/mission-tracker-element.js'
 import { TraitDisplayElement } from './components/trait-display/trait-display-element.js'
 import { PlayerDisplayElement } from './components/player-display/player-display-element.js'
@@ -146,6 +148,17 @@ export class IndexController {
     const settingsDialog = document.querySelector('dialog[is="settings-dialog"]')
     if (settingsDialog instanceof HTMLDialogElement === false) {
       throw new Error('HTML setup incorrect!')
+    }
+
+    // Get message and confirm dialogs
+    const messageDialog = document.querySelector('dialog[is="message-dialog"]')
+    if (messageDialog instanceof HTMLDialogElement === false) {
+      throw new Error('Message dialog not setup!')
+    }
+
+    const confirmDialog = document.querySelector('dialog[is="confirm-dialog"]')
+    if (confirmDialog instanceof HTMLDialogElement === false) {
+      throw new Error('Confirm dialog not setup!')
     }
 
     this.#setupSettings(settingsDialog, welcomeDialog, importingDialog)
