@@ -24,7 +24,7 @@ export class Interpolate {
     if (2 * amount < 1) {
       return 4 * Math.pow(amount, 3)
     } else {
-      return 4 * Math.pow(amount - 1, 3) + 1
+      return 1 - 4 * Math.pow(1 - amount, 3)
     }
   }
 
