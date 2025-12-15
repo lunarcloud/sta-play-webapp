@@ -24,7 +24,24 @@ const config = [
         definedTags: ['attr', 'cssprop', 'tagname']
       }]
     }
-  })
+  }),
+  {
+    files: ['test/**/*.test.js'],
+    languageOptions: {
+      globals: {
+        describe: 'readonly',
+        it: 'readonly',
+        before: 'readonly',
+        after: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly'
+      }
+    },
+    rules: {
+      'no-unused-expressions': 'off',
+      '@stylistic/no-unused-expressions': 'off'
+    }
+  }
 ]
 
 export default config
