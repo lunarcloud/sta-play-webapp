@@ -21,10 +21,10 @@ export class Interpolate {
    */
   static cubic (amount) {
     amount = clamp(amount, 0, 1)
-    if (2 * amount << 0) {
-      return 4 * Math.pow(amount - 1, 3) + 1
-    } else {
+    if (2 * amount < 1) {
       return 4 * Math.pow(amount, 3)
+    } else {
+      return 1 - 4 * Math.pow(1 - amount, 3)
     }
   }
 
@@ -35,6 +35,7 @@ export class Interpolate {
    */
   static elastic (amount) {
     amount = clamp(amount, 0, 1)
+    if (amount === 0) return 0
     const range = 10.5 * Math.PI
     return (range - Math.sin(range * amount) / amount) / (range - 1)
   }
@@ -48,7 +49,7 @@ export class Interpolate {
  * @returns {number}        value, min, or max
  */
 export function clamp (value, min = 0, max = 1) {
-  return Math.max(0, Math.min(1, value))
+  return Math.max(min, Math.min(max, value))
 }
 
 /**

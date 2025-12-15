@@ -232,12 +232,12 @@ export class Database {
    * Save the game info to the database
    * @param {GameInfo} info                   data to save
    * @param {IDBPDatabase|undefined} [db]     the database (else we'll open a new one)
-   * @returns {Promise<number>} game id
+   * @returns {Promise<number|undefined>} game id, or undefined if validation fails
    */
   async saveGameInfo (info, db = undefined) {
     if (!info.validate()) {
       console.error('Invalid info, will not save!')
-      return
+      return undefined
     }
     const andClose = typeof (db) === 'undefined'
     db ??= await this.open()
@@ -255,12 +255,12 @@ export class Database {
    * Save the scene info to the database
    * @param {SceneInfo} info                   data to save
    * @param {IDBPDatabase|undefined} [db]     the database (else we'll open a new one)
-   * @returns {Promise<number>} scene id
+   * @returns {Promise<number|undefined>} scene id, or undefined if validation fails
    */
   async saveSceneInfo (info, db = undefined) {
     if (!info.validate()) {
       console.error('Invalid info, will not save!')
-      return
+      return undefined
     }
     const andClose = typeof (db) === 'undefined'
     db ??= await this.open()
@@ -331,14 +331,14 @@ export class Database {
    * @param {IDBPDatabase|IDBDatabase} [db]   the database
    */
   async replaceTrackers (trackers = [], db = undefined) {
-    const validTrackers = trackers.filter(t => t.validate())
-    if (validTrackers.length !== trackers.length) {
-      console.error('Invalid trackers provided: %o', trackers.filter(t => !t.validate()))
+    const invalidTrackers = trackers.filter(t => !t.validate())
+    if (invalidTrackers.length > 0) {
+      console.error('Invalid trackers provided: %o', invalidTrackers)
       return
     }
 
-    validTrackers.forEach(t => { if (t.id === undefined) delete t.id })
-    await this.#replaceData(STORE.TRACKERS, INDEX.NAME, validTrackers, db)
+    trackers.forEach(t => { if (t.id === undefined) delete t.id })
+    await this.#replaceData(STORE.TRACKERS, INDEX.NAME, trackers, db)
   }
 
   /**

@@ -660,7 +660,10 @@ export class IndexController {
       altFontCheckbox.checked,
       legacyTrackersCheckbox.checked
     )
-    this.currentGameId = await this.db.saveGameInfo(gameInfo)
+    const savedGameId = await this.db.saveGameInfo(gameInfo)
+    if (savedGameId !== undefined) {
+      this.currentGameId = savedGameId
+    }
 
     const sceneInfo = new SceneInfo(
       this.currentSceneId,
@@ -673,7 +676,10 @@ export class IndexController {
         missionTrackerEl.act3
       ]
     )
-    this.currentSceneId = await this.db.saveSceneInfo(sceneInfo)
+    const savedSceneId = await this.db.saveSceneInfo(sceneInfo)
+    if (savedSceneId !== undefined) {
+      this.currentSceneId = savedSceneId
+    }
 
     const traits =
             [...document.querySelectorAll('traits trait-display')]
