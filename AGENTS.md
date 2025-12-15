@@ -15,6 +15,7 @@ STA Play is a client-side web application for managing and displaying Star Trek 
 * **Primary Dependencies**: [jszip, idb, @google/model-viewer]
 * **Web Platform Features**: [Shadow DOM, Custom Elements, IndexedDB, PWA]
 * **Development Utilities**: [jsdoc, eslint, linthtml, stylelint]
+* **Testing**: [@web/test-runner, @web/test-runner-playwright, @esm-bundle/chai]
 
 
 ## Project Structure
@@ -61,6 +62,21 @@ Use these commands to perform common development tasks:
   npm run lint-fix
   ```
 
+* **Run unit tests**:
+  ```bash
+  npm test
+  ```
+
+* **Run unit tests in watch mode**:
+  ```bash
+  npm run test:watch
+  ```
+
+* **Run unit tests with coverage**:
+  ```bash
+  npm run test:coverage
+  ```
+
 
 ## Code Style and Conventions
 
@@ -79,6 +95,12 @@ Use these commands to perform common development tasks:
   - eslint for javascript
   - linthtml for HTML 
   - stylelint for CSS
+* **Unit Testing**: The project uses Web Test Runner with Playwright for browser-native ES module testing:
+  - Tests are located in the `test/` directory
+  - Test files follow the `*.test.js` naming convention
+  - Uses Chai for assertions
+  - Tests run in actual browser environments (Chromium via Playwright)
+  - All new code should include corresponding unit tests
 * **EditorConfig**: The .editorconfig file enforces consistent code style across IDEs
 * **JSDoc**: All ECMAScript methods, classes, fields, and typing information shall be documented via the jsdoc syntax.
 
@@ -92,6 +114,9 @@ npm i
 
 # Run the Lint analyzers, automatically fixing some errors
 npm run lint-fix
+
+# Run unit tests
+npm test
 ```
 
 And correct any remaining issues reported.

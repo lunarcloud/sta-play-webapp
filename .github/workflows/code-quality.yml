@@ -1,5 +1,5 @@
-# This workflow will run the three lint tools
-name: Lint
+# This workflow will run lint tools and unit tests
+name: Code Quality
 
 on:
   push:
@@ -10,8 +10,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  lint:
-    name: Run Code Quality Checks
+  quality:
+    name: Run Code Quality Checks and Tests
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -25,6 +25,9 @@ jobs:
         run: npm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Playwright Browsers
+        run: npx playwright install chromium
   
       - name: Lint JavaScript
         if: ${{ ! cancelled() }}
@@ -37,4 +40,8 @@ jobs:
       - name: Lint CSS
         if: ${{ ! cancelled() }}
         run: npm run csslint
+
+      - name: Run Unit Tests
+        if: ${{ ! cancelled() }}
+        run: npm test
         
