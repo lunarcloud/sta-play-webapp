@@ -35,6 +35,7 @@ export class Interpolate {
    */
   static elastic (amount) {
     amount = clamp(amount, 0, 1)
+    if (amount === 0) return 0
     const range = 10.5 * Math.PI
     return (range - Math.sin(range * amount) / amount) / (range - 1)
   }

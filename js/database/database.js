@@ -331,14 +331,14 @@ export class Database {
    * @param {IDBPDatabase|IDBDatabase} [db]   the database
    */
   async replaceTrackers (trackers = [], db = undefined) {
-    const validTrackers = trackers.filter(t => t.validate())
-    if (validTrackers.length !== trackers.length) {
-      console.error('Invalid trackers provided: %o', trackers.filter(t => !t.validate()))
+    const invalidTrackers = trackers.filter(t => !t.validate())
+    if (invalidTrackers.length > 0) {
+      console.error('Invalid trackers provided: %o', invalidTrackers)
       return
     }
 
-    validTrackers.forEach(t => { if (t.id === undefined) delete t.id })
-    await this.#replaceData(STORE.TRACKERS, INDEX.NAME, validTrackers, db)
+    trackers.forEach(t => { if (t.id === undefined) delete t.id })
+    await this.#replaceData(STORE.TRACKERS, INDEX.NAME, trackers, db)
   }
 
   /**
