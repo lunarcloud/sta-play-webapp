@@ -27,10 +27,8 @@ describe('NamedInfo', () => {
       expect(info.id).to.equal(0)
     })
 
-    it('should accept empty string as name', () => {
-      const info = new NamedInfo('', 1)
-      expect(info.name).to.equal('')
-      expect(info.id).to.equal(1)
+    it('should reject empty string as name', () => {
+      expect(() => new NamedInfo('', 1)).to.throw(Error, 'Name cannot be an empty string')
     })
 
     it('should store large id numbers', () => {
