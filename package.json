@@ -10,6 +10,9 @@
         "csslint-fix": "npx stylelint \"**/*.css\" --quiet-deprecation-warnings --fix",
         "lint": "npm run eslint; npm run htmllint; npm run csslint",
         "lint-fix": "npm run eslint-fix; npm run htmllint; npm run csslint-fix",
+        "test": "npx web-test-runner",
+        "test:watch": "npx web-test-runner --watch",
+        "test:coverage": "npx web-test-runner --coverage",
         "serve": "serve",
         "copy-deps": "sh copy-deps.sh",
         "cem": "npx cem analyze"
@@ -23,7 +26,10 @@
     },
     "devDependencies": {
         "@custom-elements-manifest/analyzer": "^0.11.0",
+        "@esm-bundle/chai": "^4.3.4-fix.0",
         "@linthtml/linthtml": "^0.10.2",
+        "@web/test-runner": "^0.20.2",
+        "@web/test-runner-playwright": "^0.11.1",
         "custom-element-vs-code-integration": "^1.5.0",
         "eslint": "^9.39.1",
         "eslint-plugin-editorconfig": "^4.0.3",

@@ -18,6 +18,22 @@ npm run copy-deps
 npm serve
 ```
 
+## Testing
+The project uses [@web/test-runner](https://modern-web.dev/docs/test-runner/overview/) for unit testing with browser-native ES modules support.
+
+```sh
+# Run tests once
+npm test
+
+# Run tests in watch mode (reruns on file changes)
+npm run test:watch
+
+# Run tests with coverage report
+npm run test:coverage
+```
+
+Test files are located in the `test/` directory and follow the `*.test.js` naming convention.
+
 ## Code Quality Tools
 The project has linters for the HTML, CSS, and JavaScript all setup and configured.
 Simply run `npm run lint-fix` to run all of them in "fix what you can automatically" mode.
