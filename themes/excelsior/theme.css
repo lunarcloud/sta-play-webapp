@@ -8,8 +8,8 @@
     --main-font-size: 11pt;
     --main-color-bg: hsl(0deg 0% 0%); /* black background */
     --main-color-text: hsl(32deg 100% 60%); /* amber display color */
-    --nav-color-bg: hsl(32deg 100% 50%);
-    --nav-color-text: hsl(0deg 0% 0%);
+    --nav-color-bg: hsl(0deg 0% 10%);
+    --nav-color-text: hsl(32deg 100% 60%);
     --void-bg: hsl(0deg 0% 5%);
     --trek-color-1: hsl(32deg 100% 60%);
     --trek-color-2: hsl(32deg 100% 50%);
