@@ -88,6 +88,49 @@ decoration {
                 pointer-events: none;
             }
             
+            &.left-panel div {
+                /* Dark background for left padding area with programmable matter pattern */
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                width: 7em;
+                background: 
+                    /* Programmable matter hexagon pattern */
+                    repeating-linear-gradient(
+                        30deg,
+                        hsl(210deg 25% 12%) 0px,
+                        hsl(210deg 25% 12%) 2px,
+                        hsl(210deg 20% 10%) 2px,
+                        hsl(210deg 20% 10%) 4px
+                    ),
+                    repeating-linear-gradient(
+                        150deg,
+                        hsl(210deg 25% 12%) 0px,
+                        hsl(210deg 25% 12%) 2px,
+                        hsl(210deg 20% 10%) 2px,
+                        hsl(210deg 20% 10%) 4px
+                    ),
+                    repeating-linear-gradient(
+                        90deg,
+                        hsl(210deg 25% 12%) 0px,
+                        hsl(210deg 25% 12%) 2px,
+                        hsl(210deg 20% 10%) 2px,
+                        hsl(210deg 20% 10%) 4px
+                    ),
+                    linear-gradient(135deg,
+                        hsl(210deg 22% 11%) 0%,
+                        hsl(210deg 20% 9%) 50%,
+                        hsl(210deg 22% 11%) 100%
+                    );
+                background-size: 12px 21px, 12px 21px, 12px 21px, 100% 100%;
+                background-position: 0 0, 0 0, 0 0, 0 0;
+                opacity: 1;
+                box-shadow: inset -2px 0 10px hsl(190deg 75% 55% / 20%),
+                            inset 0 0 30px hsl(210deg 30% 5% / 80%);
+                border-right: 1px solid hsl(190deg 75% 55% / 30%);
+            }
+            
             &.top-border div {
                 top: 0;
                 left: 0;
@@ -287,6 +330,11 @@ theme {
     z-index: -1;
     height: 0;
     overflow: visible;
+}
+
+/* Fix body main grid positioning */
+body > main {
+    grid-row: 2 / 3;
 }
 
 /* Settings dialog styling to match theme */
