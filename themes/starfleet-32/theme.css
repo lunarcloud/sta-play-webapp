@@ -104,7 +104,7 @@ decoration {
                 top: 0;
                 left: 0;
                 bottom: 0;
-                width: 6em;
+                width: 5em;
                 background: 
                     /* Programmable matter hexagon pattern */
                     repeating-linear-gradient(
@@ -306,6 +306,8 @@ body::before {
 
 /* Enhanced visibility for specific UI elements */
 #game-name {
+    text-align: center;
+    width: calc(var(--main-font-size) * 5);
     color: hsl(190deg 85% 90%) !important;
     text-shadow: 0 0 15px var(--trek-color-1),
                  0 0 25px var(--trek-color-2);
@@ -325,11 +327,19 @@ body::before {
 #font-up-btn,
 #font-down-btn {
     color: hsl(190deg 85% 88%) !important;
-    
+
     & text,
     & symbol {
         text-shadow: 0 0 12px var(--trek-color-1);
     }
+}
+
+#font-up-btn {
+    top: calc(var(--main-font-size)* 7.8);
+}
+
+#font-down-btn {
+    top: calc(var(--main-font-size)* 9);
 }
 
 /* Move fullscreen button to bottom left and make it bigger */
@@ -342,7 +352,7 @@ body::before {
     display: flex;
     align-items: center;
     justify-content: center;
-    
+
     & img.symbol {
         width: 2em;
         height: 2em;
@@ -357,8 +367,9 @@ body::before {
 #momentum-section,
 #threat-section {
     left: 0.3em !important;
-    width: 6.4em !important;
+    width: 5em !important;
     padding: 0 0.3em !important;
+    justify-content: space-evenly;
 }
 
 #momentum-section label,
