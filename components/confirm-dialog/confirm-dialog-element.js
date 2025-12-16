@@ -32,9 +32,8 @@ const setup = async () => {
 
     /**
      * Animate the dialog closing.
-     * @returns {Promise<void>} Promise that resolves when animation completes
      */
-    async #animateClose () {
+    #animateClose () {
       // Check if animations are enabled
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -49,10 +48,10 @@ const setup = async () => {
 
       // Wait for animation to complete before actually closing
       const animationDuration = 300 // matches CSS animation duration
-      await new Promise(resolve => setTimeout(resolve, animationDuration))
-
-      this.classList.remove('closing')
-      this.close()
+      setTimeout(() => {
+        this.classList.remove('closing')
+        this.close()
+      }, animationDuration)
     }
 
     /**

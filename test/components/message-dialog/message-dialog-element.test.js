@@ -39,8 +39,7 @@ describe('MessageDialogElement', () => {
     it('should apply opening animation when shown', (done) => {
       dialog.show('Test')
 
-      // Check that dialog has slide-in animation applied via CSS
-      const styles = window.getComputedStyle(dialog)
+      // Check that dialog is open and animation is applied via CSS
       // The animation should be applied via the [open] selector in CSS
       expect(dialog.open).to.be.true
 
