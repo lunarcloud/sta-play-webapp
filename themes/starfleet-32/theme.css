@@ -409,6 +409,7 @@ body::before {
     bottom: 4.5em;
 }
 
+
 /* Ensure theme element doesn't take up space */
 theme {
     display: block;
@@ -418,6 +419,17 @@ theme {
     z-index: -1;
     height: 0;
     overflow: visible;
+}
+
+body > header {
+    border-radius: 1em;
+    border: 2px solid var(--trek-color-highlight);
+    box-shadow: var(--text-glow);
+
+    & #ship-enter-fullscreen {
+        right: 6px;
+        bottom: 6px;
+    }
 }
 
 /* Fix body main grid positioning */
