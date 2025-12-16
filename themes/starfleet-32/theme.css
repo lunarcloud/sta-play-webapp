@@ -321,6 +321,17 @@ body::before {
     }
 }
 
+/* Style font buttons text like other menu items */
+#font-up-btn,
+#font-down-btn {
+    color: hsl(190deg 85% 88%) !important;
+    
+    & text,
+    & symbol {
+        text-shadow: 0 0 12px var(--trek-color-1);
+    }
+}
+
 /* Move fullscreen button to bottom left and make it bigger */
 #fullscreen-btn {
     filter: brightness(1.8) drop-shadow(0 0 8px var(--trek-color-1));
@@ -356,6 +367,17 @@ body::before {
     text-shadow: 0 0 10px var(--trek-color-1);
 }
 
+/* Move momentum and threat pools closer to bottom, above fullscreen button */
+#momentum-section {
+    top: auto !important;
+    bottom: 8em;
+}
+
+#threat-section {
+    top: auto !important;
+    bottom: 4.5em;
+}
+
 /* Ensure theme element doesn't take up space */
 theme {
     display: block;
@@ -369,7 +391,7 @@ theme {
 
 /* Fix body main grid positioning */
 body > main {
-    grid-row: 2 / 3;
+    grid-row: 2 / 4;
 }
 
 /* Settings dialog styling to match theme */
