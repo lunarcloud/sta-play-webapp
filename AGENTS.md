@@ -28,7 +28,9 @@ The repository is organized as follows:
 * `/js/`: Contains the application main javascript.
 * `/js/database/`: Contains the database source code.
 * `/themes/`: Contains the files to support application theming CSS and decoration structure HTML.
-* `index.*`: The entrypoint files.
+* `index.html`: The main HTML page.
+* `index.js`: The entrypoint ECMAScript file.
+* `index.css`: The base application-wide stylesheet.
 * `package.json`: the NPM project file.
 * `upload-to-itch.sh`: the script which deploys the application to the itch.io website.
 
@@ -87,6 +89,7 @@ Use these commands to perform common development tasks:
 * No AI generated artwork is allowed.
 * Changes to the application should be backwards-compatible with existing "*.staplay" files, and the database should migrate users if there is any schema change.
 * All code features (ECMAScript, HTML, and CSS) must be compatible with all current versions of Chrome, Edge, Safari, and Firefox. This information is available at [caniuse.com](caniuse.com).
+* Components should use CSS that is isolated either via specific identifier (i.e. "dialog[is=special-dialog] { ... }) or shadow DOM styling.
 
 
 ## Quality Tools and Practices
