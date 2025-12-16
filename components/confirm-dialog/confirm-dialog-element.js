@@ -1,3 +1,4 @@
+import { animateClose } from '../../js/dialog-utils.js'
 import { loadElementFromFile } from '../../js/load-file-element.js'
 
 const setup = async () => {
@@ -31,30 +32,6 @@ const setup = async () => {
     }
 
     /**
-     * Animate the dialog closing.
-     */
-    #animateClose () {
-      // Check if animations are enabled
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-      if (prefersReducedMotion) {
-        // If reduced motion is preferred, close immediately
-        this.close()
-        return
-      }
-
-      // Add closing class to trigger animation
-      this.classList.add('closing')
-
-      // Wait for animation to complete before actually closing
-      const animationDuration = 300 // matches CSS animation duration
-      setTimeout(() => {
-        this.classList.remove('closing')
-        this.close()
-      }, animationDuration)
-    }
-
-    /**
      * Handle cancel action.
      */
     #handleCancel () {
@@ -62,7 +39,7 @@ const setup = async () => {
         this.#resolvePromise(false)
         this.#resolvePromise = null
       }
-      this.#animateClose()
+      animateClose(this)
     }
 
     /**
@@ -74,7 +51,7 @@ const setup = async () => {
         this.#resolvePromise = null
       }
       this.returnValue = 'confirm'
-      this.#animateClose()
+      animateClose(this)
     }
 
     /**
