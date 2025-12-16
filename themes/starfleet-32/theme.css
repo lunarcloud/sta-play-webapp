@@ -369,7 +369,7 @@ theme {
 
 /* Fix body main grid positioning */
 body > main {
-    grid-row: 2 / 4;
+    grid-row: 2 / 3;
 }
 
 /* Settings dialog styling to match theme */
