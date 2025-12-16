@@ -148,6 +148,7 @@ And correct any remaining issues reported.
   - **User experience**: Element positioning for accessibility, responsive sizing
 * Address feedback incrementally without reverting previous approved changes unless explicitly requested.
 * Always include screenshots for UI changes in PR descriptions to facilitate review.
+* Always include at least one screenshot of two traits, two player cards, condition red alert, and a tracker for new theme PR descriptions to facilitate review layout and styling. 
 * When making theme or styling changes, preserve the original aesthetic unless specifically asked to change it.
 
 
