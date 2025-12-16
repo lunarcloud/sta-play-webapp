@@ -90,7 +90,7 @@ Use these commands to perform common development tasks:
 * Avoid usage of any artwork or other resources from outside of the application. CC0 artwork may be utilized for theme textures.
 * No AI generated artwork is allowed.
 * Changes to the application should be backwards-compatible with existing "*.staplay" files, and the database should migrate users if there is any schema change.
-* All code features (ECMAScript, HTML, and CSS) must be compatible with all current versions of Chrome, Edge, Safari, and Firefox. This information is available at caniuse.com.
+* All code features (ECMAScript, HTML, and CSS) must be compatible with all current versions of Chrome, Edge, Safari, and Firefox. This information is available at [caniuse.com](https://caniuse.com).
 * Components should use CSS that is isolated either via specific identifier (i.e. "dialog[is=special-dialog] { ... }) or shadow DOM styling.
 * **Accessibility**: All text must maintain sufficient contrast with backgrounds for readability. Follow WCAG AA contrast guidelines at minimum.
 * **Validation**: Input validation should reject invalid values (e.g., empty strings where meaningful values are required) and throw appropriate errors.
