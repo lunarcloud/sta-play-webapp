@@ -231,10 +231,15 @@ decoration {
 }
 
 /* Holographic effect for headers */
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5, h6, .player-image-upload input {
     text-shadow: 0 0 10px var(--trek-color-1),
                  0 0 20px var(--trek-color-2);
     letter-spacing: 0.08em;
+}
+
+.player-image-upload input,
+#alert-dropdown option {
+    color: hsl(190deg 85% 90%) !important;
 }
 
 /* Modern button styling */
@@ -413,9 +418,9 @@ dialog {
         hsl(210deg 20% 12%) 50%,
         hsl(210deg 25% 10%) 100%);
     border: 2px solid var(--trek-color-1);
-    border-radius: 1em;
+    border-radius: 1em !important;
     box-shadow: 0 0 30px hsl(190deg 75% 55% / 40%),
-                inset 0 0 20px hsl(190deg 75% 55% / 10%);
+                inset 0 0 20px hsl(190deg 75% 55% / 10%) !important;
     color: var(--main-color-text);
     
     & header {
