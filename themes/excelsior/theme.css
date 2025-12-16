@@ -18,12 +18,12 @@
     --trek-color-5: hsl(32deg 100% 55%);
     --trek-color-6: hsl(32deg 80% 40%);
     --trek-color-highlight: var(--trek-color-3);
-    --player-color-red: hsl(32deg 100% 50%);
-    --player-color-blue: hsl(32deg 90% 55%);
-    --player-color-yellow: hsl(32deg 100% 65%);
-    --player-color-brown: hsl(32deg 80% 45%);
-    --player-color-black: hsl(32deg 50% 30%);
-    --player-color-white: hsl(32deg 100% 75%);
+    --player-color-red: hsl(5deg 56% 54%);
+    --player-color-blue: hsl(234deg 90% 73%);
+    --player-color-yellow: hsl(27deg 84% 55%);
+    --player-color-brown: hsl(17deg 78% 76%);
+    --player-color-black: hsl(0deg 0% 13%);
+    --player-color-white: hsl(0deg 0% 73%);
     --header-inner-bg: hsl(0deg 0% 5%);
     --header-outer-bg: var(--main-color-bg);
     --header-edge-bg: transparent;
