@@ -1,0 +1,339 @@
+@import url('../../fonts/pixelsagas.com/PS_Okuda/font.css');
+
+:root,
+::backdrop {
+    --main-font-body: "Okuda", sans-serif;
+    --main-font-headers: "Okuda", sans-serif;
+    --main-font-size: 13pt;
+    --main-color-bg: hsl(120deg 15% 8%); /* dark green-grey */
+    --main-color-text: hsl(140deg 25% 75%);
+    --nav-color-bg: hsl(140deg 30% 25%);
+    --nav-color-text: hsl(140deg 25% 85%);
+    --shadow-color-text: hsl(120deg 30% 15%);
+    --dialog-color-backdrop: hsl(120deg 20% 5% / 85%);
+    --main-a-link-color: hsl(140deg 50% 50%);
+    --main-a-hover-color: hsl(140deg 60% 60%);
+    --main-a-active-color: hsl(140deg 40% 40%);
+    --main-a-visited-color: hsl(150deg 45% 55%);
+    --void-bg: hsl(120deg 20% 5%);
+    --min-decoration-height: 0;
+    --min-body-height: 100vh;
+    --trek-color-1: hsl(140deg 60% 45%); /* romulan green */
+    --trek-color-2: hsl(30deg 40% 40%); /* bronze/copper */
+    --trek-color-3: hsl(0deg 0% 30%); /* dark gray */
+    --trek-color-4: hsl(140deg 40% 35%); /* darker green */
+    --trek-color-5: hsl(20deg 35% 35%); /* rust/brown */
+    --trek-color-6: hsl(0deg 0% 50%); /* medium gray */
+    --trek-color-highlight: var(--trek-color-1);
+    --player-color-red: hsl(5deg 65% 40%);
+    --player-color-blue: hsl(200deg 50% 40%);
+    --player-color-yellow: hsl(45deg 70% 50%);
+    --player-color-brown: hsl(30deg 45% 35%);
+    --player-color-black: hsl(120deg 10% 15%);
+    --player-color-white: hsl(140deg 15% 70%);
+    
+    /* Theme-specific variables */
+    --romulan-primary: hsl(140deg 60% 45%);
+    --romulan-secondary: hsl(30deg 40% 40%);
+    --bg-panel: hsl(120deg 20% 12%);
+    --bg-panel-dark: hsl(120deg 25% 10%);
+    --border-color: hsl(140deg 40% 25%);
+    --border-accent: hsl(140deg 60% 35%);
+    --glow-shadow: 0 0 15px hsl(140deg 60% 45% / 40%);
+    --glow-strong: 0 0 20px hsl(140deg 60% 45% / 60%);
+    --border-radius: 0.2em;
+    --header-inner-bg: hsl(120deg 25% 15%);
+    --header-outer-bg: var(--main-color-bg);
+}
+
+html {
+    background: linear-gradient(135deg, hsl(120deg 20% 6%) 0%, hsl(120deg 15% 10%) 50%, hsl(120deg 20% 6%) 100%);
+}
+
+body {
+    padding: 0.5em;
+    grid-template-rows: auto 1fr;
+    grid-template-columns: 1fr;
+    transition: filter 2s ease-in-out 0.25s;
+    
+    decoration {
+        transition: filter 2s ease-in-out 0.25s;
+    }
+
+    &[alert="grey"], &[alert="cloak"] {
+        filter: grayscale(0.8) brightness(0.5);
+        
+        decoration {
+            filter: grayscale(0.9) brightness(0.4);
+        }
+    }
+
+    & > header {
+        grid-row: 1;
+        grid-column: 1;
+        border: 2px solid var(--border-color);
+        border-radius: var(--border-radius);
+        background: var(--bg-panel);
+        box-shadow: var(--glow-shadow), inset 0 0 20px hsl(140deg 50% 20% / 30%);
+    }
+
+    & > main {
+        grid-row: 2;
+        grid-column: 1;
+        padding-top: 1em;
+    }
+
+    & > nav {
+        position: absolute;
+        top: 0.5em;
+        right: 0.5em;
+        width: auto;
+
+        & ul {
+            flex-direction: row;
+            gap: 0.5em;
+
+            & li {
+                border: 2px solid var(--border-color);
+                border-radius: var(--border-radius);
+                background: var(--bg-panel);
+                box-shadow: var(--glow-shadow);
+
+                &:hover {
+                    border-color: var(--border-accent);
+                    box-shadow: var(--glow-strong);
+                }
+
+                &.shipname {
+                    background: var(--bg-panel-dark);
+                    border-color: var(--border-accent);
+                    font-weight: bold;
+                }
+            }
+        }
+    }
+}
+
+li[is="player-display"] {
+    --pip-color: hsl(140deg 55% 50%) !important;
+
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--bg-panel);
+    box-shadow: var(--glow-shadow), inset 0 0 15px hsl(140deg 40% 20% / 20%);
+
+    & button.remove {
+        background: hsl(0deg 60% 35%);
+        border: 1px solid hsl(0deg 50% 25%);
+        box-shadow: 0 0 10px hsl(0deg 60% 40% / 40%);
+        
+        &:hover {
+            background: hsl(0deg 70% 45%);
+            box-shadow: 0 0 15px hsl(0deg 70% 50% / 60%);
+        }
+    }
+}
+
+traits {
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--bg-panel);
+    box-shadow: var(--glow-shadow);
+    padding: 0.5em;
+}
+
+mission-tracker::part(scene) {
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--bg-panel);
+    box-shadow: var(--glow-shadow), inset 0 0 25px hsl(140deg 40% 20% / 25%);
+}
+
+task-tracker::part(internal) {
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--bg-panel);
+    box-shadow: var(--glow-shadow);
+    color: var(--main-color-text);
+
+    --tracker-dt-background-color: hsl(120deg 20% 18%);
+    --tracker-dt-border-color: var(--border-color);
+    --tracker-dd-text-color: var(--main-color-text);
+    --tracker-dd-background-color: hsl(120deg 25% 10%);
+    --tracker-dd-border-color: var(--border-color);
+}
+
+#game-name {
+    text-shadow: 0 0 10px var(--romulan-primary);
+    color: var(--romulan-primary);
+    font-weight: bold;
+}
+
+#settings-btn,
+#save-btn,
+#fullscreen-btn,
+#font-up-btn,
+#font-down-btn {
+    background: var(--bg-panel);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--glow-shadow);
+    color: var(--main-color-text);
+    
+    &:hover {
+        border-color: var(--border-accent);
+        box-shadow: var(--glow-strong);
+        background: var(--bg-panel-dark);
+    }
+}
+
+#momentum-section,
+#threat-section {
+    background: var(--bg-panel);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--glow-shadow);
+
+    & input {
+        background: var(--bg-panel-dark);
+        border: 1px solid var(--border-color);
+        color: var(--romulan-primary);
+        text-shadow: 0 0 8px var(--romulan-primary);
+        font-weight: bold;
+    }
+
+    & label {
+        color: var(--main-color-text);
+        text-shadow: 0 0 5px var(--romulan-primary);
+    }
+}
+
+decoration {
+    z-index: -1;
+    position: fixed;
+    inset: 0;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    pointer-events: none;
+    height: 0; /* Don't take up space */
+
+    & > ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        position: absolute;
+        inset: 0;
+
+        & li {
+            position: absolute;
+            border: 3px solid var(--border-accent);
+            background: transparent;
+            box-shadow: inset 0 0 20px hsl(140deg 60% 45% / 15%);
+        }
+
+        /* Top accent bar */
+        & li:first-child {
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 0.25em;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--romulan-primary) 30%, 
+                var(--romulan-primary) 70%, 
+                transparent 100%);
+            border: none;
+            box-shadow: 0 0 15px var(--romulan-primary);
+        }
+
+        /* Bottom accent bar */
+        & li:nth-child(2) {
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 0.25em;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--romulan-primary) 30%, 
+                var(--romulan-primary) 70%, 
+                transparent 100%);
+            border: none;
+            box-shadow: 0 0 15px var(--romulan-primary);
+        }
+
+        /* Left accent bar */
+        & li:nth-child(3) {
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 0.25em;
+            background: linear-gradient(180deg, 
+                transparent 0%, 
+                var(--romulan-secondary) 30%, 
+                var(--romulan-secondary) 70%, 
+                transparent 100%);
+            border: none;
+            box-shadow: 0 0 10px var(--romulan-secondary);
+        }
+
+        /* Right accent bar */
+        & li:nth-child(4) {
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 0.25em;
+            background: linear-gradient(180deg, 
+                transparent 0%, 
+                var(--romulan-secondary) 30%, 
+                var(--romulan-secondary) 70%, 
+                transparent 100%);
+            border: none;
+            box-shadow: 0 0 10px var(--romulan-secondary);
+        }
+
+        /* Corner accents - top-left */
+        & li:nth-child(5) {
+            top: 0;
+            left: 0;
+            width: 3em;
+            height: 3em;
+            border-width: 3px 0 0 3px;
+            border-color: var(--border-accent);
+            background: transparent;
+        }
+
+        /* Corner accents - top-right */
+        & li:nth-child(6) {
+            top: 0;
+            right: 0;
+            width: 3em;
+            height: 3em;
+            border-width: 3px 3px 0 0;
+            border-color: var(--border-accent);
+            background: transparent;
+        }
+
+        /* Corner accents - bottom-left */
+        & li:nth-child(7) {
+            bottom: 0;
+            left: 0;
+            width: 3em;
+            height: 3em;
+            border-width: 0 0 3px 3px;
+            border-color: var(--border-accent);
+            background: transparent;
+        }
+
+        /* Corner accents - bottom-right */
+        & li:nth-child(8) {
+            bottom: 0;
+            right: 0;
+            width: 3em;
+            height: 3em;
+            border-width: 0 3px 3px 0;
+            border-color: var(--border-accent);
+            background: transparent;
+        }
+    }
+}
