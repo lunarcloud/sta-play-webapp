@@ -483,7 +483,25 @@ li[is="player-display"] {
 }
 
 task-tracker::part(internal) {
+    background-color: hsl(0deg 0% 5%);
+    border: 2px solid var(--trek-color-2);
+    box-shadow: 0 0 4px var(--trek-color-4);
+    color: var(--trek-color-1);
     text-shadow: 0 0 3px var(--trek-color-4);
+
+    --tracker-background-color: hsl(0deg 0% 5%);
+    --tracker-border-width: 2px;
+    --tracker-border-style: solid;
+    --tracker-border-color: var(--trek-color-2);
+    --tracker-title-separator-color: var(--trek-color-4);
+    --tracker-select-background-color: hsl(0deg 0% 10%);
+    --tracker-select-color: var(--trek-color-1);
+    --tracker-dt-text-color: var(--trek-color-3);
+    --tracker-dt-background-color: transparent;
+    --tracker-dt-border-color: var(--trek-color-6);
+    --tracker-dd-text-color: var(--trek-color-1);
+    --tracker-dd-background-color: hsl(0deg 0% 8%);
+    --tracker-dd-border-color: var(--trek-color-6);
 }
 
 trait-display {
