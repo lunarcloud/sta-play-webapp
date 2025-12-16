@@ -344,7 +344,7 @@ theme {
 
 /* Fix body main grid positioning */
 body > main {
-    grid-row: 2 / 3;
+    grid-row: 2 / 4;
 }
 
 /* Settings dialog styling to match theme */
