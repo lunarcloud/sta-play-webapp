@@ -44,6 +44,8 @@
     --border-radius: 0.2em;
     --header-inner-bg: hsl(120deg 25% 15%);
     --header-outer-bg: var(--main-color-bg);
+    --gradient-primary: linear-gradient(90deg, transparent 0%, var(--romulan-primary) 30%, var(--romulan-primary) 70%, transparent 100%);
+    --gradient-secondary: linear-gradient(180deg, transparent 0%, var(--romulan-secondary) 30%, var(--romulan-secondary) 70%, transparent 100%);
 }
 
 html {
@@ -238,11 +240,7 @@ decoration {
             left: 0;
             right: 0;
             height: 0.25em;
-            background: linear-gradient(90deg, 
-                transparent 0%, 
-                var(--romulan-primary) 30%, 
-                var(--romulan-primary) 70%, 
-                transparent 100%);
+            background: var(--gradient-primary);
             border: none;
             box-shadow: 0 0 15px var(--romulan-primary);
         }
@@ -253,11 +251,7 @@ decoration {
             left: 0;
             right: 0;
             height: 0.25em;
-            background: linear-gradient(90deg, 
-                transparent 0%, 
-                var(--romulan-primary) 30%, 
-                var(--romulan-primary) 70%, 
-                transparent 100%);
+            background: var(--gradient-primary);
             border: none;
             box-shadow: 0 0 15px var(--romulan-primary);
         }
@@ -268,11 +262,7 @@ decoration {
             left: 0;
             bottom: 0;
             width: 0.25em;
-            background: linear-gradient(180deg, 
-                transparent 0%, 
-                var(--romulan-secondary) 30%, 
-                var(--romulan-secondary) 70%, 
-                transparent 100%);
+            background: var(--gradient-secondary);
             border: none;
             box-shadow: 0 0 10px var(--romulan-secondary);
         }
@@ -283,11 +273,7 @@ decoration {
             right: 0;
             bottom: 0;
             width: 0.25em;
-            background: linear-gradient(180deg, 
-                transparent 0%, 
-                var(--romulan-secondary) 30%, 
-                var(--romulan-secondary) 70%, 
-                transparent 100%);
+            background: var(--gradient-secondary);
             border: none;
             box-shadow: 0 0 10px var(--romulan-secondary);
         }
