@@ -4,21 +4,26 @@
     <body>
         <dialog>
             <style>
-                dialog {
+                dialog[is=confirm-dialog] {
                     width: fit-content;
                     max-width: max(240px, 90%);
-                }
 
-                main {
-                    white-space: pre-wrap;
-                    padding: 1.5em;
-                    text-align: center;
-                }
+                    main {
+                        white-space: pre-wrap;
+                        padding: 1.5em;
+                        text-align: center;
+                    }
 
-                footer {
-                    display: flex;
-                    justify-content: center;
-                    gap: 1em;
+                    footer {
+                        display: flex;
+                        gap: 1em;
+                        flex-direction: row;
+                        justify-content: center;
+
+                        & > button {
+                            margin: 0 !important;
+                        }
+                    }
                 }
             </style>
             <header>

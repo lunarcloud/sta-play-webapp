@@ -4,20 +4,20 @@
     <body>
         <dialog>
             <style>
-                dialog {
+                dialog[is=message-dialog] {
                     width: fit-content;
                     max-width: max(240px, 90%);
-                }
 
-                main {
-                    white-space: pre-wrap;
-                    padding: 1.5em;
-                    text-align: center;
-                }
+                    main {
+                        white-space: pre-wrap;
+                        padding: 1.5em;
+                        text-align: center;
+                    }
 
-                footer {
-                    display: flex;
-                    justify-content: center;
+                    footer {
+                        display: flex;
+                        justify-content: center;
+                    }
                 }
             </style>
             <header>

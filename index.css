@@ -308,7 +308,7 @@ dialogs > dialog {
     & main {
         padding: 20px 12px;
         overflow: auto;
-        min-height: 10vh;
+        min-height: min(1em, 10vh);
 
         & dl {
             margin-top: 0.5em;
@@ -379,7 +379,9 @@ dialogs > dialog {
         padding: 0 0 4px;
         background-color: hsl(0deg 0% 8%);
 
-        & > button.close {
+        & > button.close,
+        & > button.cancel,
+        & > button.confirm {
             display: block;
             margin: 0 auto;
             appearance: none;
@@ -440,7 +442,6 @@ menu-items {
     &:not(:active) {
         color: var(--nav-color-text);
     }
-
 }
 
 .text-n-symbol-btn {
@@ -473,6 +474,7 @@ menu-items {
 }
 
 #fullscreen-btn {
+    width: 1.5em; /* This shouldn't be nearly as wide as the others */
     top: calc(var(--main-font-size) * 7.75);
 
     & img.symbol {
