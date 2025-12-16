@@ -432,7 +432,6 @@ export class IndexController {
    */
   #setupSettings (dialogEl, welcomeDialogEl, importingDialog) {
     document.getElementById('settings-btn').addEventListener('click', () => dialogEl.showModal())
-    dialogEl.querySelectorAll('button.close').forEach(el => el.addEventListener('click', () => dialogEl.close()))
     dialogEl.querySelector('button.clear-info').addEventListener('click', async () => {
       await this.db.clear()
       this.#loadData()
