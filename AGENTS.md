@@ -51,7 +51,7 @@ Use these commands to perform common development tasks:
 
 * **Run the application locally**:
   ```bash
-  npm serve
+  npm run serve
   ```
 
 * **Check the application for style errors**:
@@ -84,13 +84,16 @@ Use these commands to perform common development tasks:
 
 * Follow StandardJS conventions for ECMAScript, and the default style rules enforced by all lint utilities.
 * CSS uses nesting to specify and scope styles.
+* **CSS Maintainability**: Use CSS variables to reduce code duplication. When multiple rules share the same color, size, shadow, or border-radius values, extract them into reusable CSS variables.
 * Avoid syntax that requires any pre-processing or compilation of the code. It should run in a browser directly after the third-party libraries have been copied via the "copy-deps" script.
 * Avoid any language that suggests ownership or rights over the Star Trek or Star Trek Adventures licenses.
 * Avoid usage of any artwork or other resources from outside of the application. CC0 artwork may be utilized for theme textures.
 * No AI generated artwork is allowed.
 * Changes to the application should be backwards-compatible with existing "*.staplay" files, and the database should migrate users if there is any schema change.
-* All code features (ECMAScript, HTML, and CSS) must be compatible with all current versions of Chrome, Edge, Safari, and Firefox. This information is available at [caniuse.com](caniuse.com).
+* All code features (ECMAScript, HTML, and CSS) must be compatible with all current versions of Chrome, Edge, Safari, and Firefox. This information is available at caniuse.com.
 * Components should use CSS that is isolated either via specific identifier (i.e. "dialog[is=special-dialog] { ... }) or shadow DOM styling.
+* **Accessibility**: All text must maintain sufficient contrast with backgrounds for readability. Follow WCAG AA contrast guidelines at minimum.
+* **Validation**: Input validation should reject invalid values (e.g., empty strings where meaningful values are required) and throw appropriate errors.
 
 
 ## Quality Tools and Practices
@@ -133,3 +136,35 @@ And correct any remaining issues reported.
 * **NEVER** introduce a preprocessor (such as LESS, SCSS) or compilation step (such as using TypeScript).
 * **ASK FIRST** before introducing a new CSS or HTML library.
 * **ASK FIRST** before making significant architectural changes to the application logic.
+
+
+## Working with Feedback and Iteration
+
+* When receiving feedback on PRs, expect iterative refinement through multiple rounds of changes.
+* Common feedback areas include:
+  - **Visual design**: Color contrast, text readability, UI element visibility
+  - **Layout**: Grid positioning (e.g., `grid-row: 2 / 4`), element alignment, spacing
+  - **Code quality**: Reducing duplication through CSS variables, improving maintainability
+  - **User experience**: Element positioning for accessibility, responsive sizing
+* Address feedback incrementally without reverting previous approved changes unless explicitly requested.
+* Always include screenshots for UI changes in PR descriptions to facilitate review.
+* When making theme or styling changes, preserve the original aesthetic unless specifically asked to change it.
+
+
+## UI and Visual Design Best Practices
+
+* **Screenshots are mandatory** for any PR that includes UI or visual changes.
+* **Iterative refinement**: Be prepared to adjust colors, positions, and sizes based on maintainer feedback.
+* **Theme decorations**: Ensure theme elements don't take up layout space or interfere with main content positioning.
+* **Element positioning**: Pay attention to specific positioning values like `grid-row` spans - verify they match the parent grid structure.
+* **Layout issues**: Watch for unintended layout shifts or elements pushing content down - decorative elements should use absolute positioning or grid placement that doesn't disrupt flow.
+* **Menu and navigation**: Ensure UI controls (buttons, icons, labels) have sufficient visibility and are appropriately sized for their importance.
+
+
+## Common Pitfalls to Avoid
+
+* **Grid positioning errors**: Double-check `grid-row` and `grid-column` values match the parent grid template. For example, if the body has 4 rows, `grid-row: 2 / 4` spans rows 2-3, while `grid-row: 3` only occupies row 3.
+* **Forgotten setup steps**: Remember to run `npm run copy-deps` after `npm i` before attempting to run the application locally.
+* **Over-correcting feedback**: When asked to enhance specific UI elements for visibility, don't make global changes that affect the entire theme - target only the specified elements.
+* **Ignoring existing patterns**: Look at how similar components are structured and styled before creating new patterns.
+* **Missing component tests**: When adding or modifying custom elements, include tests that demonstrate registration, shadow DOM structure, attributes, properties, and events.
