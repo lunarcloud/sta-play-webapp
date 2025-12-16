@@ -321,8 +321,33 @@ body::before {
     }
 }
 
+/* Move fullscreen button to bottom left and make it bigger */
 #fullscreen-btn {
     filter: brightness(1.8) drop-shadow(0 0 8px var(--trek-color-1));
+    top: auto !important;
+    bottom: 1em;
+    width: 3em !important;
+    height: 3em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    & img.symbol {
+        width: 2em;
+        height: 2em;
+    }
+}
+
+/* Adjust menu items to better fit the 7em left panel space */
+#settings-btn,
+#save-btn,
+#font-up-btn,
+#font-down-btn,
+#momentum-section,
+#threat-section {
+    left: 0.3em !important;
+    width: 6.4em !important;
+    padding: 0 0.3em !important;
 }
 
 #momentum-section label,
