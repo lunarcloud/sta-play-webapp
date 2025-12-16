@@ -318,7 +318,6 @@ body {
     }
 
     #shipname {
-        height: 1.125em;
         height: fit-content;
     }
 
@@ -361,7 +360,6 @@ body {
             }
 
             & > trait-display::part(internal) {
-                width: 100%;
                 width: var(--stretch);
             }
         }
@@ -472,7 +470,6 @@ body {
 #save-btn,
 #momentum-section {
     border-radius: 2px;
-    padding: 4px;
 }
 
 /* Player display and task tracker */
