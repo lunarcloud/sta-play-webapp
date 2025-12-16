@@ -16,7 +16,6 @@ const setup = async () => {
       this.innerHTML = dialogEl.innerHTML
       this.querySelectorAll('button.close').forEach(el => el.addEventListener('click', () => animateClose(this)))
     }
-
   }
   customElements.define('importing-dialog', ImportingDialogElement, { extends: 'dialog' })
   globalThis.importingDialogElement = ImportingDialogElement
