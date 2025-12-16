@@ -280,6 +280,24 @@ dialogs > dialog {
         display: flex;
     }
 
+    @media screen and (prefers-reduced-motion: no-preference) {
+        &[open] {
+            animation: slide-in 0.3s ease-out;
+        }
+
+        &[open]::backdrop {
+            animation: fade-in 0.3s ease-out;
+        }
+
+        &.closing {
+            animation: slide-out 0.3s ease-in;
+        }
+
+        &.closing::backdrop {
+            animation: fade-out 0.3s ease-in;
+        }
+    }
+
     &[is="settings-dialog"] {
         max-width: 20em;
     }

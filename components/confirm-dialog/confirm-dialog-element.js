@@ -31,6 +31,30 @@ const setup = async () => {
     }
 
     /**
+     * Animate the dialog closing.
+     */
+    #animateClose () {
+      // Check if animations are enabled
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+      if (prefersReducedMotion) {
+        // If reduced motion is preferred, close immediately
+        this.close()
+        return
+      }
+
+      // Add closing class to trigger animation
+      this.classList.add('closing')
+
+      // Wait for animation to complete before actually closing
+      const animationDuration = 300 // matches CSS animation duration
+      setTimeout(() => {
+        this.classList.remove('closing')
+        this.close()
+      }, animationDuration)
+    }
+
+    /**
      * Handle cancel action.
      */
     #handleCancel () {
@@ -38,7 +62,7 @@ const setup = async () => {
         this.#resolvePromise(false)
         this.#resolvePromise = null
       }
-      this.close()
+      this.#animateClose()
     }
 
     /**
@@ -50,7 +74,7 @@ const setup = async () => {
         this.#resolvePromise = null
       }
       this.returnValue = 'confirm'
-      this.close()
+      this.#animateClose()
     }
 
     /**
