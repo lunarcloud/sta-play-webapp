@@ -31,6 +31,21 @@
     --player-color-brown: hsl(30deg 50% 45%);
     --player-color-black: hsl(210deg 15% 20%);
     --player-color-white: hsl(190deg 20% 80%);
+    
+    /* Theme-specific variables for duplicate values */
+    --menu-text-bright: hsl(190deg 85% 88%);
+    --menu-text-brightest: hsl(190deg 85% 90%);
+    --bg-dark-1: hsl(210deg 20% 10%);
+    --bg-dark-2: hsl(210deg 25% 12%);
+    --bg-dark-3: hsl(210deg 30% 15%);
+    --bg-darker: hsl(210deg 25% 10%);
+    --bg-darkest: hsl(210deg 20% 9%);
+    --glow-shadow-sm: 0 0 10px var(--trek-color-1);
+    --glow-shadow-md: 0 0 15px var(--trek-color-1);
+    --text-glow: 0 0 12px var(--trek-color-1);
+    --border-radius-sm: 0.3em;
+    --border-radius-md: 0.5em;
+    --border-radius-lg: 1em;
 }
 
 html {
@@ -147,7 +162,7 @@ decoration {
                 left: 0;
                 right: 0;
                 height: 2px;
-                box-shadow: 0 0 10px var(--trek-color-1);
+                box-shadow: var(--glow-shadow-sm);
             }
             
             &.bottom-border div {
@@ -155,7 +170,7 @@ decoration {
                 left: 0;
                 right: 0;
                 height: 2px;
-                box-shadow: 0 0 10px var(--trek-color-1);
+                box-shadow: var(--glow-shadow-sm);
             }
             
             &.left-accent div {
@@ -169,7 +184,7 @@ decoration {
                     var(--trek-color-1) 50%,
                     var(--trek-color-2) 90%,
                     transparent 100%);
-                box-shadow: 0 0 15px var(--trek-color-1);
+                box-shadow: var(--glow-shadow-md);
             }
             
             &.right-accent div {
@@ -183,7 +198,7 @@ decoration {
                     var(--trek-color-1) 50%,
                     var(--trek-color-2) 90%,
                     transparent 100%);
-                box-shadow: 0 0 15px var(--trek-color-1);
+                box-shadow: var(--glow-shadow-md);
             }
             
             &.corner-tl div {
@@ -195,7 +210,7 @@ decoration {
                 border-left: 2px solid var(--trek-color-1);
                 border-radius: 0 0 50%;
                 background: transparent;
-                box-shadow: 0 0 15px var(--trek-color-1);
+                box-shadow: var(--glow-shadow-md);
             }
             
             &.corner-tr {
@@ -212,7 +227,7 @@ decoration {
                 border-left: 2px solid var(--trek-color-1);
                 border-radius: 0 50% 0 0;
                 background: transparent;
-                box-shadow: 0 0 15px var(--trek-color-1);
+                box-shadow: var(--glow-shadow-md);
             }
             
             &.corner-br div {
@@ -224,7 +239,7 @@ decoration {
                 border-right: 2px solid var(--trek-color-1);
                 border-radius: 50% 0 0;
                 background: transparent;
-                box-shadow: 0 0 15px var(--trek-color-1);
+                box-shadow: var(--glow-shadow-md);
             }
         }
     }
@@ -238,16 +253,16 @@ h1, h2, h3, h4, h5, h6, .player-image-upload input {
 
 .player-image-upload input,
 #alert-dropdown option {
-    color: hsl(190deg 85% 90%) !important;
+    color: var(--menu-text-brightest) !important;
 }
 
 /* Modern button styling */
 button {
-    border-radius: 0.5em;
+    border-radius: var(--border-radius-md);
     border: 1px solid var(--trek-color-1);
     background: linear-gradient(135deg, 
-        hsl(210deg 30% 15%) 0%,
-        hsl(210deg 25% 12%) 100%);
+        var(--bg-dark-3) 0%,
+        var(--bg-dark-2) 100%);
     box-shadow: 0 0 10px hsl(190deg 75% 55% / 30%),
                 inset 0 1px 0 hsl(190deg 75% 55% / 20%);
     transition: all 0.2s ease;
@@ -263,8 +278,8 @@ button {
     
     &:active {
         background: linear-gradient(135deg,
-            hsl(210deg 25% 10%) 0%,
-            hsl(210deg 20% 8%) 100%);
+            var(--bg-darker) 0%,
+            var(--main-color-bg) 100%);
         box-shadow: 0 0 5px hsl(190deg 75% 55% / 40%),
                     inset 0 -1px 0 hsl(190deg 75% 55% / 20%);
     }
@@ -272,9 +287,9 @@ button {
 
 /* Modern input styling */
 input, select {
-    border-radius: 0.3em;
+    border-radius: var(--border-radius-sm);
     border: 1px solid var(--trek-color-3);
-    background: hsl(210deg 20% 10%);
+    background: var(--bg-dark-1);
     box-shadow: inset 0 1px 3px hsl(0deg 0% 0% / 50%);
     
     &:focus {
@@ -313,29 +328,29 @@ body::before {
 #game-name {
     text-align: center;
     width: calc(var(--main-font-size) * 5);
-    color: hsl(190deg 85% 90%) !important;
+    color: var(--menu-text-brightest) !important;
     text-shadow: 0 0 15px var(--trek-color-1),
                  0 0 25px var(--trek-color-2);
 }
 
 #settings-btn,
 #save-btn {
-    color: hsl(190deg 85% 88%) !important;
+    color: var(--menu-text-bright) !important;
     
     & text,
     & symbol {
-        text-shadow: 0 0 12px var(--trek-color-1);
+        text-shadow: var(--text-glow);
     }
 }
 
 /* Style font buttons text like other menu items */
 #font-up-btn,
 #font-down-btn {
-    color: hsl(190deg 85% 88%) !important;
+    color: var(--menu-text-bright) !important;
 
     & text,
     & symbol {
-        text-shadow: 0 0 12px var(--trek-color-1);
+        text-shadow: var(--text-glow);
     }
 }
 
@@ -379,8 +394,8 @@ body::before {
 
 #momentum-section label,
 #threat-section label {
-    color: hsl(190deg 85% 88%) !important;
-    text-shadow: 0 0 10px var(--trek-color-1);
+    color: var(--menu-text-bright) !important;
+    text-shadow: var(--glow-shadow-sm);
 }
 
 /* Move momentum and threat pools closer to bottom, above fullscreen button */
@@ -413,11 +428,11 @@ body > main {
 /* Settings dialog styling to match theme */
 dialog {
     background: linear-gradient(135deg, 
-        hsl(210deg 25% 10%) 0%,
+        var(--bg-darker) 0%,
         hsl(210deg 20% 12%) 50%,
-        hsl(210deg 25% 10%) 100%);
+        var(--bg-darker) 100%);
     border: 2px solid var(--trek-color-1);
-    border-radius: 1em !important;
+    border-radius: var(--border-radius-lg) !important;
     box-shadow: 0 0 30px hsl(190deg 75% 55% / 40%),
                 inset 0 0 20px hsl(190deg 75% 55% / 10%) !important;
     color: var(--main-color-text);
@@ -436,7 +451,7 @@ dialog {
             background: hsl(210deg 20% 8%);
             color: var(--trek-color-1);
             border: 1px solid var(--trek-color-1);
-            border-radius: 0.3em;
+            border-radius: var(--border-radius-sm);
             padding: 0.2em 0.5em;
             font-size: 1.2em;
             
@@ -464,10 +479,10 @@ dialog {
         
         & button {
             background: linear-gradient(135deg,
-                hsl(210deg 30% 15%) 0%,
-                hsl(210deg 25% 12%) 100%);
+                var(--bg-dark-3) 0%,
+                var(--bg-dark-2) 100%);
             border: 1px solid var(--trek-color-1);
-            border-radius: 0.5em;
+            border-radius: var(--border-radius-md);
             color: var(--main-color-text);
             padding: 0.5em 1em;
             box-shadow: 0 0 10px hsl(190deg 75% 55% / 30%);
@@ -483,9 +498,9 @@ dialog {
         
         & select,
         & input[type="file"] {
-            background: hsl(210deg 20% 10%);
+            background: var(--bg-dark-1);
             border: 1px solid var(--trek-color-3);
-            border-radius: 0.3em;
+            border-radius: var(--border-radius-sm);
             color: var(--main-color-text);
             padding: 0.3em 0.5em;
             
@@ -506,7 +521,7 @@ dialog {
             background: var(--trek-color-1);
             color: var(--main-color-bg);
             border: none;
-            border-radius: 0.5em;
+            border-radius: var(--border-radius-md);
             padding: 0.5em 1.5em;
             font-weight: bold;
             box-shadow: 0 0 15px hsl(190deg 75% 55% / 50%);
