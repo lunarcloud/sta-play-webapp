@@ -6,31 +6,31 @@
     --main-font-headers: "Okuda", sans-serif;
     --main-font-size: 13pt;
     --main-color-bg: hsl(210deg 20% 8%); /* dark blue-grey */
-    --main-color-text: hsl(190deg 70% 85%);
+    --main-color-text: hsl(190deg 60% 95%);
     --nav-color-bg: var(--main-color-text);
     --nav-color-text: var(--main-color-bg);
-    --shadow-color-text: hsl(190deg 50% 30%);
+    --shadow-color-text: hsl(190deg 80% 45%);
     --dialog-color-backdrop: hsl(210deg 30% 5% / 80%);
-    --main-a-link-color: hsl(190deg 65% 55%);
-    --main-a-hover-color: hsl(190deg 75% 65%);
-    --main-a-active-color: hsl(190deg 55% 45%);
+    --main-a-link-color: hsl(190deg 80% 70%);
+    --main-a-hover-color: hsl(190deg 85% 80%);
+    --main-a-active-color: hsl(190deg 75% 60%);
     --main-a-visited-color: hsl(200deg 50% 60%);
     --void-bg: hsl(210deg 25% 5%);
     --min-decoration-height: 0;
     --min-body-height: 100vh;
-    --trek-color-1: hsl(190deg 75% 55%); /* cyan */
-    --trek-color-2: hsl(200deg 70% 60%); /* light blue */
-    --trek-color-3: hsl(180deg 60% 50%); /* teal */
-    --trek-color-4: hsl(170deg 50% 45%); /* blue-green */
-    --trek-color-5: hsl(210deg 65% 65%); /* soft blue */
-    --trek-color-6: hsl(195deg 55% 50%); /* medium cyan */
+    --trek-color-1: hsl(190deg 85% 65%); /* cyan */
+    --trek-color-2: hsl(200deg 80% 70%); /* light blue */
+    --trek-color-3: hsl(180deg 75% 60%); /* teal */
+    --trek-color-4: hsl(170deg 70% 55%); /* blue-green */
+    --trek-color-5: hsl(210deg 75% 75%); /* soft blue */
+    --trek-color-6: hsl(195deg 70% 60%); /* medium cyan */
     --trek-color-highlight: var(--trek-color-1);
-    --player-color-red: hsl(10deg 70% 50%);
-    --player-color-blue: hsl(210deg 70% 55%);
-    --player-color-yellow: hsl(45deg 85% 60%);
-    --player-color-brown: hsl(30deg 50% 45%);
-    --player-color-black: hsl(210deg 15% 20%);
-    --player-color-white: hsl(190deg 20% 80%);
+    --player-color-red: hsl(10deg 85% 65%);
+    --player-color-blue: hsl(210deg 85% 70%);
+    --player-color-yellow: hsl(45deg 95% 70%);
+    --player-color-brown: hsl(30deg 70% 60%);
+    --player-color-black: hsl(210deg 20% 30%);
+    --player-color-white: hsl(190deg 30% 90%);
 }
 
 html {
