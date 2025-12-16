@@ -65,6 +65,7 @@ decoration {
     margin: 0;
     overflow: hidden;
     pointer-events: none;
+    height: 0; /* Don't take up space */
 
     & > ul {
         margin: 0;
@@ -143,16 +144,9 @@ decoration {
                 box-shadow: 0 0 15px var(--trek-color-1);
             }
             
-            &.corner-tr div {
-                top: 0;
-                right: 0;
-                width: 100px;
-                height: 100px;
-                border-top: 2px solid var(--trek-color-1);
-                border-right: 2px solid var(--trek-color-1);
-                border-radius: 0 0 0 50%;
-                background: transparent;
-                box-shadow: 0 0 15px var(--trek-color-1);
+            &.corner-tr {
+                /* Hide upper-right corner glow */
+                display: none;
             }
             
             &.corner-bl div {
@@ -282,4 +276,124 @@ body::before {
 #threat-section label {
     color: hsl(190deg 85% 88%) !important;
     text-shadow: 0 0 10px var(--trek-color-1);
+}
+
+/* Ensure theme element doesn't take up space */
+theme {
+    display: block;
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    height: 0;
+    overflow: visible;
+}
+
+/* Settings dialog styling to match theme */
+dialog {
+    background: linear-gradient(135deg, 
+        hsl(210deg 25% 10%) 0%,
+        hsl(210deg 20% 12%) 50%,
+        hsl(210deg 25% 10%) 100%);
+    border: 2px solid var(--trek-color-1);
+    border-radius: 1em;
+    box-shadow: 0 0 30px hsl(190deg 75% 55% / 40%),
+                inset 0 0 20px hsl(190deg 75% 55% / 10%);
+    color: var(--main-color-text);
+    
+    & header {
+        background: linear-gradient(90deg,
+            var(--trek-color-1) 0%,
+            var(--trek-color-2) 100%);
+        color: var(--main-color-bg);
+        padding: 0.8em 1em;
+        font-weight: bold;
+        border-radius: 0.8em 0.8em 0 0;
+        text-shadow: 0 0 10px hsl(210deg 20% 8%);
+        
+        & button.close {
+            background: hsl(210deg 20% 8%);
+            color: var(--trek-color-1);
+            border: 1px solid var(--trek-color-1);
+            border-radius: 0.3em;
+            padding: 0.2em 0.5em;
+            font-size: 1.2em;
+            
+            &:hover {
+                background: var(--trek-color-1);
+                color: var(--main-color-bg);
+            }
+        }
+    }
+    
+    & main {
+        padding: 1em 1.5em;
+        
+        & dt {
+            color: var(--trek-color-1);
+            font-weight: bold;
+            margin-top: 1em;
+            text-shadow: 0 0 8px var(--trek-color-1);
+        }
+        
+        & dd {
+            margin-left: 1em;
+            margin-bottom: 0.5em;
+        }
+        
+        & button {
+            background: linear-gradient(135deg,
+                hsl(210deg 30% 15%) 0%,
+                hsl(210deg 25% 12%) 100%);
+            border: 1px solid var(--trek-color-1);
+            border-radius: 0.5em;
+            color: var(--main-color-text);
+            padding: 0.5em 1em;
+            box-shadow: 0 0 10px hsl(190deg 75% 55% / 30%);
+            
+            &:hover {
+                background: linear-gradient(135deg,
+                    hsl(210deg 30% 18%) 0%,
+                    hsl(210deg 25% 15%) 100%);
+                box-shadow: 0 0 15px hsl(190deg 75% 55% / 50%);
+                border-color: var(--trek-color-2);
+            }
+        }
+        
+        & select,
+        & input[type="file"] {
+            background: hsl(210deg 20% 10%);
+            border: 1px solid var(--trek-color-3);
+            border-radius: 0.3em;
+            color: var(--main-color-text);
+            padding: 0.3em 0.5em;
+            
+            &:focus {
+                outline: none;
+                border-color: var(--trek-color-1);
+                box-shadow: 0 0 10px hsl(190deg 75% 55% / 40%);
+            }
+        }
+    }
+    
+    & footer {
+        padding: 0.8em 1em;
+        border-top: 1px solid var(--trek-color-3);
+        text-align: right;
+        
+        & button {
+            background: var(--trek-color-1);
+            color: var(--main-color-bg);
+            border: none;
+            border-radius: 0.5em;
+            padding: 0.5em 1.5em;
+            font-weight: bold;
+            box-shadow: 0 0 15px hsl(190deg 75% 55% / 50%);
+            
+            &:hover {
+                background: var(--trek-color-2);
+                box-shadow: 0 0 20px hsl(190deg 75% 55% / 70%);
+            }
+        }
+    }
 }
