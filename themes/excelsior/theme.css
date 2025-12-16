@@ -314,6 +314,10 @@ body {
         & ul li {
             border: 1px solid var(--trek-color-2);
             box-shadow: 0 0 2px var(--trek-color-4);
+
+            & a {
+                color: hsl(0deg 0% 0%) !important;
+            }
         }
     }
 
