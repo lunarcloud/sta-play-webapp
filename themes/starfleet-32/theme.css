@@ -55,6 +55,16 @@ body {
 
 li[is="player-display"] {
     --pip-color: hsl(190deg 70% 70%) !important;
+
+    button.remove {
+        box-shadow: unset;
+        background: unset;
+    }
+
+    select {
+        box-shadow: unset;
+        border: unset;
+    }
 }
 
 decoration {
