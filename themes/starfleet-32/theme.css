@@ -232,8 +232,7 @@ decoration {
 
 /* Holographic effect for headers */
 h1, h2, h3, h4, h5, h6, .player-image-upload input {
-    text-shadow: 0 0 10px var(--trek-color-1),
-                 0 0 20px var(--trek-color-2);
+    text-shadow: 0 0 8px var(--trek-color-2);
     letter-spacing: 0.08em;
 }
 
