@@ -178,25 +178,25 @@ describe('InputProgressElement', () => {
   })
 
   describe('shadow DOM structure', () => {
-    it('should contain progress element', () => {
+    it('should contain progress bar indicator', () => {
       const element = new InputProgressElement()
       const progress = element.shadowRoot.querySelector('progress')
       expect(progress).to.not.be.null
     })
 
-    it('should contain range input', () => {
+    it('should contain slider control', () => {
       const element = new InputProgressElement()
       const input = element.shadowRoot.querySelector('input[type="range"]')
       expect(input).to.not.be.null
     })
 
-    it('should contain data element for display', () => {
+    it('should contain value display', () => {
       const element = new InputProgressElement()
       const data = element.shadowRoot.querySelector('data')
       expect(data).to.not.be.null
     })
 
-    it('should update data element text when value changes', () => {
+    it('should update value display when value changes', () => {
       const element = new InputProgressElement()
       element.value = 7
       const data = element.shadowRoot.querySelector('data')
