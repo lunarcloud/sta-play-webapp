@@ -130,14 +130,14 @@ describe('ShipAlertElement', () => {
   })
 
   describe('shadow DOM structure', () => {
-    it('should contain h1 with ALERT text', () => {
+    it('should contain alert title', () => {
       const element = new ShipAlertElement()
       const h1 = element.shadowRoot.querySelector('h1')
       expect(h1).to.not.be.null
       expect(h1.textContent).to.equal('ALERT')
     })
 
-    it('should contain paragraph with condition', () => {
+    it('should contain condition text area', () => {
       const element = new ShipAlertElement()
       const p = element.shadowRoot.querySelector('p')
       expect(p).to.not.be.null

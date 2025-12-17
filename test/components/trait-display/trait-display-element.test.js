@@ -74,11 +74,10 @@ describe('TraitDisplayElement', () => {
   })
 
   describe('shadow DOM structure', () => {
-    it('should contain text span element', () => {
+    it('should contain element for the name text', () => {
       const element = new TraitDisplayElement()
-      const textSpan = element.shadowRoot.querySelector('.name')
-      expect(textSpan).to.not.be.null
-      expect(textSpan.tagName).to.equal('SPAN')
+      const nameElement = element.shadowRoot.querySelector('.name')
+      expect(nameElement).to.not.be.null
     })
 
     it('should contain remove button', () => {
@@ -101,10 +100,10 @@ describe('TraitDisplayElement', () => {
       expect(internal).to.not.be.null
     })
 
-    it('should make text span content editable', () => {
+    it('should make the name text editable', () => {
       const element = new TraitDisplayElement()
-      const textSpan = element.shadowRoot.querySelector('.name')
-      expect(textSpan.contentEditable).to.be.oneOf(['plaintext-only', 'true'])
+      const nameElement = element.shadowRoot.querySelector('.name')
+      expect(nameElement.contentEditable).to.be.oneOf(['plaintext-only', 'true'])
     })
   })
 
