@@ -155,7 +155,7 @@ describe('TraitDisplayElement', () => {
       document.body.appendChild(element)
 
       const textSpan = element.shadowRoot.querySelector('.name')
-      
+
       textSpan.textContent = 'First Edit'
       textSpan.dispatchEvent(new Event('input'))
 
@@ -178,8 +178,7 @@ describe('TraitDisplayElement', () => {
       document.body.appendChild(element)
 
       element.focus()
-      
-      const textSpan = element.shadowRoot.querySelector('.name')
+
       expect(document.activeElement).to.equal(element)
 
       document.body.removeChild(element)
@@ -216,7 +215,7 @@ describe('TraitDisplayElement', () => {
     it('should handle browsers without plaintext-only support', () => {
       const element = new TraitDisplayElement()
       const textSpan = element.shadowRoot.querySelector('.name')
-      
+
       // Element should work with either plaintext-only or true
       expect(textSpan.contentEditable).to.be.oneOf(['plaintext-only', 'true'])
     })
@@ -224,15 +223,15 @@ describe('TraitDisplayElement', () => {
     it('should remove internal br elements when not using plaintext-only', () => {
       const element = new TraitDisplayElement()
       const textSpan = element.shadowRoot.querySelector('.name')
-      
+
       if (textSpan.contentEditable === 'true') {
         // Add some br elements
         textSpan.appendChild(document.createElement('br'))
         textSpan.appendChild(document.createElement('br'))
-        
+
         // Set text which should clean up internal brs
         element.text = 'Clean Text'
-        
+
         // Should only have one br (the last one)
         const brs = textSpan.querySelectorAll('br')
         expect(brs.length).to.be.at.most(1)
@@ -254,14 +253,14 @@ describe('TraitDisplayElement', () => {
     it('should maintain text content through DOM operations', () => {
       const element = new TraitDisplayElement()
       element.text = 'Persistent Text'
-      
+
       document.body.appendChild(element)
       const textBefore = element.text
       document.body.removeChild(element)
-      
+
       document.body.appendChild(element)
       expect(element.text).to.equal(textBefore)
-      
+
       document.body.removeChild(element)
     })
   })

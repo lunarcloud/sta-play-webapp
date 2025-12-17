@@ -97,7 +97,7 @@ describe('Dialog Utils', () => {
 
     it('should handle already closed dialog', () => {
       dialog.close()
-      
+
       const originalMatchMedia = window.matchMedia
       window.matchMedia = (query) => ({
         matches: false,
