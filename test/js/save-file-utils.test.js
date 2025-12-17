@@ -1,47 +1,61 @@
 import { expect } from '@esm-bundle/chai'
 import { saveBlob, saveText } from '../../js/save-file-utils.js'
 
+// Helper to setup mocks for URL and click
+function setupFileMocks () {
+  const mocks = {
+    originalCreateObjectURL: URL.createObjectURL,
+    originalRevokeObjectURL: URL.revokeObjectURL,
+    originalClick: HTMLAnchorElement.prototype.click,
+    createdURL: null,
+    revokedURL: null,
+    clickCalled: false
+  }
+
+  URL.createObjectURL = (blob) => {
+    mocks.createdURL = 'blob:mock-url'
+    return mocks.createdURL
+  }
+
+  URL.revokeObjectURL = (url) => {
+    mocks.revokedURL = url
+  }
+
+  HTMLAnchorElement.prototype.click = function () {
+    mocks.clickCalled = true
+  }
+
+  return mocks
+}
+
+// Helper to restore mocks
+function restoreMocks (mocks) {
+  URL.createObjectURL = mocks.originalCreateObjectURL
+  URL.revokeObjectURL = mocks.originalRevokeObjectURL
+  HTMLAnchorElement.prototype.click = mocks.originalClick
+}
+
 describe('Save File Utils', () => {
   describe('saveBlob', () => {
     it('should create and click download link', (done) => {
       const testData = new Blob(['test content'], { type: 'text/plain' })
       const filename = 'test.txt'
 
-      // Mock URL methods
-      const originalCreateObjectURL = URL.createObjectURL
-      const originalRevokeObjectURL = URL.revokeObjectURL
-      let createdURL = null
-      let revokedURL = null
+      const mocks = setupFileMocks()
 
-      URL.createObjectURL = (blob) => {
-        createdURL = 'blob:mock-url'
-        return createdURL
-      }
-
-      URL.revokeObjectURL = (url) => {
-        revokedURL = url
-      }
-
-      // Mock click
-      const originalClick = HTMLAnchorElement.prototype.click
-      let clickCalled = false
+      // Override click to verify link attributes
       HTMLAnchorElement.prototype.click = function () {
-        clickCalled = true
-        // Verify link attributes
+        mocks.clickCalled = true
         expect(this.download).to.equal(filename)
-        expect(this.href).to.equal(createdURL)
+        expect(this.href).to.equal(mocks.createdURL)
       }
 
       saveBlob(filename, testData).then(() => {
-        expect(clickCalled).to.be.true
-        expect(createdURL).to.not.be.null
-        expect(revokedURL).to.equal(createdURL)
+        expect(mocks.clickCalled).to.be.true
+        expect(mocks.createdURL).to.not.be.null
+        expect(mocks.revokedURL).to.equal(mocks.createdURL)
 
-        // Restore original methods
-        URL.createObjectURL = originalCreateObjectURL
-        URL.revokeObjectURL = originalRevokeObjectURL
-        HTMLAnchorElement.prototype.click = originalClick
-
+        restoreMocks(mocks)
         done()
       }).catch(done)
     })
@@ -50,18 +64,10 @@ describe('Save File Utils', () => {
       const testData = new Blob(['{"key": "value"}'], { type: 'application/json' })
       const filename = 'data.json'
 
-      const originalCreateObjectURL = URL.createObjectURL
-      const originalRevokeObjectURL = URL.revokeObjectURL
-      const originalClick = HTMLAnchorElement.prototype.click
-
-      URL.createObjectURL = () => 'blob:mock-url'
-      URL.revokeObjectURL = () => {}
-      HTMLAnchorElement.prototype.click = function () {}
+      const mocks = setupFileMocks()
 
       saveBlob(filename, testData).then(() => {
-        URL.createObjectURL = originalCreateObjectURL
-        URL.revokeObjectURL = originalRevokeObjectURL
-        HTMLAnchorElement.prototype.click = originalClick
+        restoreMocks(mocks)
         done()
       }).catch(done)
     })
@@ -72,33 +78,25 @@ describe('Save File Utils', () => {
       const text = 'Hello, World!'
       const filename = 'hello.txt'
 
-      const originalCreateObjectURL = URL.createObjectURL
-      const originalRevokeObjectURL = URL.revokeObjectURL
-      const originalClick = HTMLAnchorElement.prototype.click
+      const mocks = setupFileMocks()
 
-      let clickCalled = false
-
+      // Override createObjectURL to verify blob properties
       URL.createObjectURL = (blob) => {
-        // Verify blob properties
         expect(blob).to.be.instanceof(Blob)
         expect(blob.type).to.equal('text/plain;charset=utf-8')
-        return 'blob:mock-url'
+        mocks.createdURL = 'blob:mock-url'
+        return mocks.createdURL
       }
 
-      URL.revokeObjectURL = () => {}
-
+      // Override click to verify filename
       HTMLAnchorElement.prototype.click = function () {
-        clickCalled = true
+        mocks.clickCalled = true
         expect(this.download).to.equal(filename)
       }
 
       saveText(filename, text).then(() => {
-        expect(clickCalled).to.be.true
-
-        URL.createObjectURL = originalCreateObjectURL
-        URL.revokeObjectURL = originalRevokeObjectURL
-        HTMLAnchorElement.prototype.click = originalClick
-
+        expect(mocks.clickCalled).to.be.true
+        restoreMocks(mocks)
         done()
       }).catch(done)
     })
@@ -107,18 +105,10 @@ describe('Save File Utils', () => {
       const text = ''
       const filename = 'empty.txt'
 
-      const originalCreateObjectURL = URL.createObjectURL
-      const originalRevokeObjectURL = URL.revokeObjectURL
-      const originalClick = HTMLAnchorElement.prototype.click
-
-      URL.createObjectURL = () => 'blob:mock-url'
-      URL.revokeObjectURL = () => {}
-      HTMLAnchorElement.prototype.click = function () {}
+      const mocks = setupFileMocks()
 
       saveText(filename, text).then(() => {
-        URL.createObjectURL = originalCreateObjectURL
-        URL.revokeObjectURL = originalRevokeObjectURL
-        HTMLAnchorElement.prototype.click = originalClick
+        restoreMocks(mocks)
         done()
       }).catch(done)
     })
@@ -127,18 +117,10 @@ describe('Save File Utils', () => {
       const text = 'Line 1\nLine 2\nLine 3'
       const filename = 'multiline.txt'
 
-      const originalCreateObjectURL = URL.createObjectURL
-      const originalRevokeObjectURL = URL.revokeObjectURL
-      const originalClick = HTMLAnchorElement.prototype.click
-
-      URL.createObjectURL = () => 'blob:mock-url'
-      URL.revokeObjectURL = () => {}
-      HTMLAnchorElement.prototype.click = function () {}
+      const mocks = setupFileMocks()
 
       saveText(filename, text).then(() => {
-        URL.createObjectURL = originalCreateObjectURL
-        URL.revokeObjectURL = originalRevokeObjectURL
-        HTMLAnchorElement.prototype.click = originalClick
+        restoreMocks(mocks)
         done()
       }).catch(done)
     })
@@ -147,18 +129,10 @@ describe('Save File Utils', () => {
       const text = 'Special: 你好, émojis: 😊, symbols: ©®™'
       const filename = 'special.txt'
 
-      const originalCreateObjectURL = URL.createObjectURL
-      const originalRevokeObjectURL = URL.revokeObjectURL
-      const originalClick = HTMLAnchorElement.prototype.click
-
-      URL.createObjectURL = () => 'blob:mock-url'
-      URL.revokeObjectURL = () => {}
-      HTMLAnchorElement.prototype.click = function () {}
+      const mocks = setupFileMocks()
 
       saveText(filename, text).then(() => {
-        URL.createObjectURL = originalCreateObjectURL
-        URL.revokeObjectURL = originalRevokeObjectURL
-        HTMLAnchorElement.prototype.click = originalClick
+        restoreMocks(mocks)
         done()
       }).catch(done)
     })

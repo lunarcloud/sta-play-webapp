@@ -1,6 +1,10 @@
 import { expect } from '@esm-bundle/chai'
 import { animateClose } from '../../js/dialog-utils.js'
 
+// Animation duration constant matching the CSS animation
+const ANIMATION_DURATION = 300
+const ANIMATION_BUFFER = 50
+
 describe('Dialog Utils', () => {
   describe('animateClose', () => {
     let dialog
@@ -86,13 +90,13 @@ describe('Dialog Utils', () => {
       expect(dialog.open).to.be.true
       expect(dialog.classList.contains('closing')).to.be.true
 
-      // Wait for animation to complete (300ms + buffer)
+      // Wait for animation to complete
       setTimeout(() => {
         expect(dialog.open).to.be.false
         expect(dialog.classList.contains('closing')).to.be.false
         window.matchMedia = originalMatchMedia
         done()
-      }, 350)
+      }, ANIMATION_DURATION + ANIMATION_BUFFER)
     })
 
     it('should handle already closed dialog', () => {
