@@ -172,7 +172,7 @@ describe('TraitDisplayElement', () => {
   })
 
   describe('focus method', () => {
-    it('should focus the text element', () => {
+    it('should focus the name text field', () => {
       const element = new TraitDisplayElement()
       document.body.appendChild(element)
 
