@@ -39,8 +39,8 @@
     --bg-panel-dark: hsl(120deg 25% 10%);
     --border-color: hsl(140deg 40% 25%);
     --border-accent: hsl(140deg 60% 35%);
-    --glow-shadow: 0 0 15px hsl(140deg 60% 45% / 40%);
-    --glow-strong: 0 0 20px hsl(140deg 60% 45% / 60%);
+    --glow-shadow: 0 0 5px hsl(140deg 60% 45% / 15%);
+    --glow-strong: 0 0 8px hsl(140deg 60% 45% / 25%);
     --border-radius: 0.2em;
     --header-inner-bg: hsl(120deg 25% 15%);
     --header-outer-bg: var(--main-color-bg);
@@ -83,7 +83,7 @@ body {
         border: 2px solid var(--border-color);
         border-radius: var(--border-radius);
         background: var(--bg-panel);
-        box-shadow: var(--glow-shadow), inset 0 0 20px hsl(140deg 50% 20% / 30%);
+        box-shadow: var(--glow-shadow), inset 0 0 10px hsl(140deg 50% 20% / 15%);
     }
 
     & > main {
@@ -135,16 +135,16 @@ li[is="player-display"] {
     border: 2px solid var(--border-color);
     border-radius: var(--border-radius);
     background: var(--bg-panel);
-    box-shadow: var(--glow-shadow), inset 0 0 15px hsl(140deg 40% 20% / 20%);
+    box-shadow: var(--glow-shadow), inset 0 0 8px hsl(140deg 40% 20% / 10%);
 
     & button.remove {
         background: hsl(0deg 60% 35%);
         border: 1px solid hsl(0deg 50% 25%);
-        box-shadow: 0 0 10px hsl(0deg 60% 40% / 40%);
+        box-shadow: 0 0 5px hsl(0deg 60% 40% / 20%);
         
         &:hover {
             background: hsl(0deg 70% 45%);
-            box-shadow: 0 0 15px hsl(0deg 70% 50% / 60%);
+            box-shadow: 0 0 8px hsl(0deg 70% 50% / 30%);
         }
     }
 }
@@ -176,7 +176,7 @@ task-tracker::part(internal) {
     bottom: calc(var(--bottom-section-height) - 1.5em);
     left: 0.75em;
     width: auto;
-    text-shadow: 0 0 10px var(--romulan-primary);
+    text-shadow: 0 0 3px var(--romulan-primary);
     color: var(--romulan-primary);
     font-weight: bold;
     
@@ -246,13 +246,13 @@ task-tracker::part(internal) {
         background: var(--bg-panel-dark);
         border: 1px solid var(--border-color);
         color: var(--romulan-primary);
-        text-shadow: 0 0 8px var(--romulan-primary);
+        text-shadow: 0 0 3px var(--romulan-primary);
         font-weight: bold;
     }
 
     & label {
         color: var(--main-color-text);
-        text-shadow: 0 0 5px var(--romulan-primary);
+        text-shadow: 0 0 2px var(--romulan-primary);
     }
 }
 
@@ -301,8 +301,8 @@ decoration {
                 );
             border-top: 3px solid var(--border-accent);
             box-shadow: 
-                inset 0 0 30px hsl(140deg 60% 45% / 20%),
-                0 -5px 20px hsl(140deg 60% 45% / 30%);
+                inset 0 0 15px hsl(140deg 60% 45% / 10%),
+                0 -3px 10px hsl(140deg 60% 45% / 15%);
         }
 
         /* Top accent bar */
@@ -313,7 +313,7 @@ decoration {
             height: 0.25em;
             background: var(--gradient-primary);
             border: none;
-            box-shadow: 0 0 15px var(--romulan-primary);
+            box-shadow: 0 0 5px var(--romulan-primary);
         }
 
         /* Left accent bar */
@@ -324,7 +324,7 @@ decoration {
             width: 0.25em;
             background: var(--gradient-secondary);
             border: none;
-            box-shadow: 0 0 10px var(--romulan-secondary);
+            box-shadow: 0 0 4px var(--romulan-secondary);
         }
 
         /* Right accent bar */
@@ -335,7 +335,7 @@ decoration {
             width: 0.25em;
             background: var(--gradient-secondary);
             border: none;
-            box-shadow: 0 0 10px var(--romulan-secondary);
+            box-shadow: 0 0 4px var(--romulan-secondary);
         }
 
         /* Corner accent - top-left */
@@ -347,7 +347,7 @@ decoration {
             border: 3px solid var(--border-accent);
             border-width: 3px 0 0 3px;
             background: transparent;
-            box-shadow: inset 0 0 20px hsl(140deg 60% 45% / 15%);
+            box-shadow: inset 0 0 10px hsl(140deg 60% 45% / 8%);
         }
 
         /* Corner accent - top-right */
@@ -359,7 +359,7 @@ decoration {
             border: 3px solid var(--border-accent);
             border-width: 3px 3px 0 0;
             background: transparent;
-            box-shadow: inset 0 0 20px hsl(140deg 60% 45% / 15%);
+            box-shadow: inset 0 0 10px hsl(140deg 60% 45% / 8%);
         }
 
         /* Bottom panel accent - left */
@@ -370,7 +370,7 @@ decoration {
             height: 1em;
             background: var(--romulan-secondary);
             border: none;
-            box-shadow: 0 0 10px var(--romulan-secondary);
+            box-shadow: 0 0 4px var(--romulan-secondary);
         }
 
         /* Bottom panel accent - right */
@@ -381,7 +381,7 @@ decoration {
             height: 1em;
             background: var(--romulan-secondary);
             border: none;
-            box-shadow: 0 0 10px var(--romulan-secondary);
+            box-shadow: 0 0 4px var(--romulan-secondary);
         }
     }
 }
