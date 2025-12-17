@@ -26,6 +26,7 @@ task-tracker-internal {
     }
 
     & > .remove {
+        color: var(--tracker-title-close-color, #333);
         position: absolute;
         top: 0;
         right: 0;

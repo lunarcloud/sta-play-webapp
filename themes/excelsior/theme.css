@@ -1,0 +1,522 @@
+@import url('../../fonts/pixelsagas.com/PS_Roddenberry/font.css');
+
+:root,
+::backdrop {
+    /* Excelsior computer displays featured amber/orange monochrome screens */
+    --main-font-body: "Roddenberry", sans-serif;
+    --main-font-headers: "Roddenberry", sans-serif;
+    --main-font-size: 11pt;
+    --main-color-bg: hsl(0deg 0% 0%); /* black background */
+    --main-color-text: hsl(32deg 100% 60%); /* amber display color */
+    --nav-color-bg: hsl(0deg 0% 10%);
+    --nav-color-text: hsl(32deg 100% 60%);
+    --void-bg: hsl(0deg 0% 5%);
+    --trek-color-1: hsl(32deg 100% 60%);
+    --trek-color-2: hsl(32deg 100% 50%);
+    --trek-color-3: hsl(32deg 100% 70%);
+    --trek-color-4: hsl(32deg 100% 45%);
+    --trek-color-5: hsl(32deg 100% 55%);
+    --trek-color-6: hsl(32deg 80% 40%);
+    --trek-color-highlight: var(--trek-color-3);
+    --player-color-red: hsl(1deg 65% 38%);
+    --player-color-blue: hsl(205deg 69% 49%);
+    --player-color-yellow: hsl(48deg 100% 42%);
+    --player-color-brown: hsl(17deg 78% 76%);
+    --player-color-black: hsl(0deg 0% 13%);
+    --player-color-white: hsl(0deg 0% 73%);
+    --header-inner-bg: hsl(0deg 0% 5%);
+    --header-outer-bg: var(--main-color-bg);
+    --header-edge-bg: transparent;
+    --traits-display-width: 12em;
+    --controls-height: 10em;
+    --ship-display-height: 8em;
+    --ship-display-col-1: 1;
+    --ship-display-col-2: 2;
+    --ship-display-row: 1;
+    --main-content-col-start: 1;
+    --main-content-col-end: 4;
+    --main-content-row: 2;
+    --controls-1-col: 1;
+    --controls-2-col: 2;
+    --controls-row: 3;
+}
+
+html {
+    min-height: 30em;
+    min-width: fit-content;
+    width: 100vw;
+    height: fit-content;
+}
+
+body, decoration {
+    grid-template-columns: repeat(2, 27em) 1fr var(--traits-display-width);
+    grid-template-rows: var(--ship-display-height) 1fr var(--controls-height);
+    gap: 0;
+    height: 100dvh;
+    width: 100vw;
+    inset: 0;
+    margin: 0;
+    padding: 0;
+    min-width: 66em;
+    min-height: 30em;
+}
+
+body:not(.edition-captains-log) {
+    & ul > li > a {
+        line-height: 2.25em;
+    }
+}
+
+body.edition-captains-log {
+    --controls-height: 7.5em;
+    --mission-tracker-height: 2.75em;
+    --main-content-row: 3;
+    --controls-row: 4;
+
+    &, & decoration {
+        grid-template-columns: repeat(2, 27em) 1fr;
+        grid-template-rows: var(--ship-display-height) 4em 1fr var(--controls-height);
+    }
+
+    & mission-tracker {
+        --clear-mission-tracker-color-text: black;
+
+        position: absolute;
+        bottom: unset;
+        left: 1.25em;
+        right: unset;
+        top: calc(var(--ship-display-height) - 1em);
+        height: 1.5em;
+        border: none;
+    }
+
+    & #game-name {
+        bottom: 4.25em;
+    }
+
+    & #settings-btn,
+    & #save-btn,
+    & #font-up-btn,
+    & #font-down-btn,
+    & #fullscreen-btn {
+        bottom: 4em;
+    }
+
+    & #momentum-section,
+    & #threat-section {
+        bottom: 1em;
+    }
+}
+
+dialogs > dialog {
+    text-shadow: none;
+}
+
+/* Decoration styling */
+
+decoration {
+    z-index: -1000;
+    display: grid;
+    position: absolute;
+
+    & screen-border {
+        position: absolute;
+        inset: 0.5em;
+        pointer-events: none;
+        z-index: -100;
+
+        & corner {
+            position: absolute;
+            width: 2em;
+            height: 2em;
+            border: 2px solid var(--trek-color-1);
+            
+            &.top-left {
+                top: 0;
+                left: 0;
+                border-right: none;
+                border-bottom: none;
+            }
+            
+            &.top-right {
+                top: 0;
+                right: 0;
+                border-left: none;
+                border-bottom: none;
+            }
+            
+            &.bottom-left {
+                bottom: 0;
+                left: 0;
+                border-right: none;
+                border-top: none;
+            }
+            
+            &.bottom-right {
+                bottom: 0;
+                right: 0;
+                border-left: none;
+                border-top: none;
+            }
+        }
+
+        & border {
+            position: absolute;
+            background: linear-gradient(to right, transparent, var(--trek-color-4), transparent);
+            opacity: 0.3;
+            
+            &.top {
+                top: 0;
+                left: 2em;
+                right: 2em;
+                height: 1px;
+            }
+            
+            &.bottom {
+                bottom: 0;
+                left: 2em;
+                right: 2em;
+                height: 1px;
+            }
+            
+            &.left {
+                left: 0;
+                top: 2em;
+                bottom: 2em;
+                width: 1px;
+                background: linear-gradient(to bottom, transparent, var(--trek-color-4), transparent);
+            }
+            
+            &.right {
+                right: 0;
+                top: 2em;
+                bottom: 2em;
+                width: 1px;
+                background: linear-gradient(to bottom, transparent, var(--trek-color-4), transparent);
+            }
+        }
+    }
+
+    /* Grid lines for computer display aesthetic */
+    & grid {
+        position: absolute;
+        inset: 3em;
+        pointer-events: none;
+        z-index: -99;
+
+        & line {
+            position: absolute;
+            background-color: var(--trek-color-6);
+            opacity: 0.15;
+            
+            &.horizontal {
+                left: 0;
+                right: 0;
+                height: 1px;
+            }
+            
+            &.vertical {
+                top: 0;
+                bottom: 0;
+                width: 1px;
+            }
+        }
+    }
+
+    /* Status indicators */
+    & indicators {
+        position: absolute;
+        top: 1em;
+        right: 1em;
+        display: flex;
+        gap: 0.5em;
+        z-index: -98;
+
+        & indicator {
+            width: 0.5em;
+            height: 0.5em;
+            background-color: var(--trek-color-1);
+            border: 1px solid var(--trek-color-2);
+            box-shadow: 0 0 4px var(--trek-color-1);
+            animation: blink 2s ease-in-out infinite;
+            
+            &:nth-child(2) {
+                animation-delay: 0.5s;
+            }
+            
+            &:nth-child(3) {
+                animation-delay: 1s;
+            }
+        }
+    }
+}
+
+@keyframes blink {
+    0%, 100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+}
+
+body {
+    transition: background-color 2s ease-in-out 0.25s;
+    text-shadow: 0 0 3px var(--trek-color-4);
+
+    & mission-tracker act, & trait-display, & li[is="player-display"] {
+        transition: filter 3s ease-in-out 0.25s;
+    }
+
+    & decoration {
+        transition: filter 2s ease-in-out 0.25s;
+    }
+
+    /* Alert states */
+    &[alert="grey"], &[alert="cloak"] {
+        background-color: hsl(0deg 0% 5%);
+
+        & nav {
+            filter: grayscale(.66);
+        }
+
+        & mission-tracker act, & trait-display, & li[is="player-display"] {
+            filter: saturate(1.25);
+            transition: filter 1s ease-in-out 0.25s;
+        }
+
+        & decoration {
+            filter: grayscale(.66);
+            transition: filter 1s ease-in-out 0.25s;
+        }
+    }
+
+    & header {
+        grid-row: var(--ship-display-row);
+        grid-column: var(--ship-display-col-1) / calc(1 + var(--ship-display-col-2));
+        gap: 2em;
+        margin: 0.75em 0.25em 0.25em 1.75em;
+
+        & > model-viewer {
+            display: block;
+        }
+
+        & .fullscreen-btn {
+            right: 0.5em;
+            bottom: 1em;
+        }
+    }
+
+    & nav {
+        grid-row: var(--controls-row);
+        grid-column: var(--controls-2-col);
+        padding: 0 0.25em 0 1.75em;
+        margin: auto;
+        justify-content: space-evenly;
+        padding-top: 0.75em;
+        height: calc(100% - 1.25em);
+        transition: filter 2s ease-in-out 0.25s;
+        
+        & ul li {
+            border: 1px solid var(--trek-color-2);
+            box-shadow: 0 0 2px var(--trek-color-4);
+
+            & a {
+                color: hsl(0deg 0% 0%) !important;
+            }
+        }
+    }
+
+    #shipname {
+        height: fit-content;
+    }
+
+    & > main {
+        grid-row: var(--main-content-row);
+        grid-column: var(--main-content-col-start) / var(--main-content-col-end);
+        overflow: auto;
+        margin-top: 0.6em;
+        margin-left: 1em;
+        height: calc(100% - 0.7em);
+        width: calc(100% - 1.125em);
+
+        & content,
+        &.players {
+            padding-left: 1em;
+        }
+
+        & #general-text {
+            overflow-wrap: anywhere;
+            word-break: normal;
+        }
+
+        & traits {
+            position: absolute;
+            top: 1em;
+            bottom: 1em;
+            right: 0.5em;
+            font-size: 1em;
+            border: none;
+            width: calc(var(--traits-display-width) - 2em);
+            display: flex;
+            flex-flow: column nowrap;
+            align-items: stretch;
+            justify-content: flex-start;
+
+            & > * {
+                width: 100%;
+                margin: 0 auto;
+                text-align: center;
+            }
+
+            & > trait-display::part(internal) {
+                width: var(--stretch);
+            }
+        }
+    }
+}
+
+/* UI controls */
+#game-name {
+    inset: unset;
+    padding: unset;
+    bottom: 6.5em;
+    left: 1.5em;
+    width: fit-content;
+    text-align: center;
+    color: var(--trek-color-1);
+    text-shadow: 0 0 4px var(--trek-color-2);
+
+    & br {
+        display: none;
+    }
+
+    & * {
+        display: inline-block;
+    }
+}
+
+#settings-btn,
+#save-btn,
+#fullscreen-btn,
+#momentum-section,
+#threat-section,
+#font-up-btn,
+#font-down-btn {
+    background-color: hsl(0deg 0% 10%);
+    color: var(--trek-color-1);
+    padding: 4px;
+    height: fit-content;
+    border: 1px solid var(--trek-color-2);
+    box-shadow: 0 0 3px var(--trek-color-4);
+}
+
+#settings-btn,
+#save-btn,
+#fullscreen-btn,
+#font-up-btn,
+#font-down-btn {
+    top: unset !important;
+    right: unset;
+    bottom: 7em;
+    height: 1.125em;
+    width: 6em;
+    justify-content: space-evenly;
+}
+
+#settings-btn {
+    left: 2em;
+}
+
+#save-btn {
+    left: 9.25em;
+}
+
+#fullscreen-btn {
+    left: 16.5em;
+    width: 1.25em;
+
+    & img.symbol {
+        filter: unset;
+    }
+}
+
+#font-down-btn {
+    left: 19em;
+}
+
+#font-up-btn {
+    left: 26em;
+}
+
+#font-up-btn,
+#font-down-btn {
+    justify-content: center;
+
+    & text {
+        padding-inline: 0.25em;
+    }
+
+    & symbol {
+        letter-spacing: 0.25em;
+        width: fit-content;
+    }
+}
+
+#momentum-section,
+#threat-section {
+    top: unset !important;
+    right: unset;
+    bottom: 2em;
+    left: 14em;
+    width: 14em;
+}
+
+#momentum-section {
+    left: 2em;
+}
+
+#threat-section {
+    left: 18em;
+}
+
+#settings-btn,
+#save-btn,
+#momentum-section {
+    border-radius: 2px;
+}
+
+/* Player display and task tracker */
+li[is="player-display"] {
+    border: 1px solid var(--trek-color-2);
+    box-shadow: 0 0 3px var(--trek-color-4);
+}
+
+task-tracker::part(internal) {
+    background-color: hsl(0deg 0% 5%);
+    border: 2px solid var(--trek-color-2);
+    box-shadow: 0 0 4px var(--trek-color-4);
+    color: var(--trek-color-1);
+    text-shadow: 0 0 3px var(--trek-color-4);
+
+    --tracker-background-color: hsl(0deg 0% 5%);
+    --tracker-border-width: 2px;
+    --tracker-border-style: solid;
+    --tracker-border-color: var(--trek-color-2);
+    --tracker-title-separator-color: var(--trek-color-4);
+    --tracker-select-background-color: hsl(0deg 0% 10%);
+    --tracker-select-color: var(--trek-color-1);
+    --tracker-dt-text-color: var(--trek-color-3);
+    --tracker-dt-background-color: transparent;
+    --tracker-dt-border-color: var(--trek-color-6);
+    --tracker-dd-text-color: var(--trek-color-1);
+    --tracker-dd-background-color: hsl(0deg 0% 8%);
+    --tracker-dd-border-color: var(--trek-color-6);
+    --tracker-title-close-color: var(--trek-color-3);
+}
+
+trait-display {
+    border: 1px solid var(--trek-color-2);
+    box-shadow: 0 0 3px var(--trek-color-4);
+}
