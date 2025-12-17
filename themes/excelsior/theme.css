@@ -429,6 +429,10 @@ body {
 #fullscreen-btn {
     left: 16.5em;
     width: 1.25em;
+
+    & img.symbol {
+        filter: unset;
+    }
 }
 
 #font-down-btn {
@@ -502,6 +506,7 @@ task-tracker::part(internal) {
     --tracker-dd-text-color: var(--trek-color-1);
     --tracker-dd-background-color: hsl(0deg 0% 8%);
     --tracker-dd-border-color: var(--trek-color-6);
+    --tracker-title-close-color: var(--trek-color-3);
 }
 
 trait-display {
