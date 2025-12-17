@@ -38,7 +38,15 @@ jobs:
         if: ${{ ! cancelled() }}
         run: npm run csslint
 
-      - name: Run Unit Tests
+      - name: Run Unit Tests with Coverage
         if: ${{ ! cancelled() }}
-        run: npm test
+        run: npm run test:coverage
+
+      - name: Upload Coverage Report
+        if: ${{ ! cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 30
         
