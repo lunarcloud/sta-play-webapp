@@ -164,6 +164,20 @@ mission-tracker::part(scene) {
     box-shadow: var(--glow-shadow), inset 0 0 25px hsl(140deg 40% 20% / 25%);
 }
 
+task-tracker::part(internal) {
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--bg-panel);
+    box-shadow: var(--glow-shadow);
+    color: var(--main-color-text);
+
+    --tracker-dt-background-color: hsl(120deg 20% 18%);
+    --tracker-dt-border-color: var(--border-color);
+    --tracker-dd-text-color: var(--main-color-text);
+    --tracker-dd-background-color: hsl(120deg 25% 10%);
+    --tracker-dd-border-color: var(--border-color);
+}
+
 #game-name {
     inset: unset;
     bottom: calc(var(--bottom-section-height) - 1.5em);
