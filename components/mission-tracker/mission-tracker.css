@@ -11,8 +11,8 @@ mission-tracker-internal {
         padding: 0 0.125em 0 0;
         font-size: 1em;
         margin-inline-end: 2em;
-        color: var(--nav-color-text, unset);
-        background-color: var(--trek-color-1);
+        color: var(--clear-mission-tracker-color-text, var(--nav-color-text, unset));
+        background-color: var(--clear-mission-tracker-color-bg, var(--trek-color-1));
         opacity: var(--trait-color-opacity, 1);
 
         & div {

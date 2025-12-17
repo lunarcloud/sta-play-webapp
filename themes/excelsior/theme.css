@@ -79,6 +79,8 @@ body.edition-captains-log {
     }
 
     & mission-tracker {
+        --clear-mission-tracker-color-text: black;
+
         position: absolute;
         bottom: unset;
         left: 1.25em;
@@ -95,7 +97,8 @@ body.edition-captains-log {
     & #settings-btn,
     & #save-btn,
     & #font-up-btn,
-    & #font-down-btn {
+    & #font-down-btn,
+    & #fullscreen-btn {
         bottom: 4em;
     }
 
@@ -103,6 +106,10 @@ body.edition-captains-log {
     & #threat-section {
         bottom: 1em;
     }
+}
+
+dialogs > dialog {
+    text-shadow: none;
 }
 
 /* Decoration styling */
