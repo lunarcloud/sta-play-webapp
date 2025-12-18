@@ -48,66 +48,70 @@ body, h1, h2, h3, h4, h5, h6 {
     letter-spacing: 0.06em;
 }
 
-body nav {
-    align-items: center;
-}
 
 body {
     z-index: 1;
-    padding-top: 0.5em;
-    padding-left: 0.5em;
+    padding: 0;
+    overflow-y: hidden;
     grid-template-rows: 4.75em 1fr 4em;
     grid-template-columns: 8.5em 5em 9em 1fr 8.5em 15em 5em;
 
-    decoration {
+    & > theme > decoration {
+        position: absolute;
+        display: block;
+        inset: 0;
+        overflow: hidden;
+        z-index: -10;
         transition: filter 2s ease-in-out 0.25s;
         background-color: hsl(240deg 88% 10%);
 
         & top-left,
         & top-right,
         & bottom-right {
-            width: 100%;
-            height: 100%;
             display: block;
-            position: fixed;
-            inset: 0;
+            position: absolute;
             z-index: -1;
+            height: 100%;
+            width: 100%;
+            inset: 0;
 
             & img {
                 position: absolute;
-                width: 100%;
+                width: 75em;
+                height: auto;
             }
         }
 
         & top-left img {
             top: 0;
             left: 0;
+            bottom: unset;
+            right: unset;
         }
 
         & top-right img {
             top: 0;
+            left: unset;
+            bottom: unset;
             right: 0;
         }
 
         & bottom-right img {
+            top: unset;
+            left: unset;
             bottom: 0;
             right: 0;
         }
 
         & right {
             display: block;
-            position: fixed;
-            top: 20vw;
-            bottom: 33vw;
-            right: .5vw;
-            width: 6.75vw;
+            position: absolute;
+            top: 15em;
+            left: unset;
+            bottom: 24.75em;
+            right: .45em;
+            width: 5em;
             background-color: #6bf3f7;
-        }
-    }
-
-    &[alert="grey"], &[alert="cloak"] {
-        decoration {
-            filter: grayscale(.4) brightness(0.66);
         }
     }
 
@@ -116,6 +120,8 @@ body {
         grid-column: 3 / 7;
 
         content {
+            padding-top: 1em;
+
             traits {
                 position: absolute;
                 display: flex;
@@ -129,6 +135,10 @@ body {
                     width: var(--stretch);
                     border-radius: 0 0 .5em .5em;
                 }
+            }
+
+            ship-alert::part(internal) {
+                margin-right: 2em;
             }
         }
 
@@ -160,7 +170,7 @@ body {
             left: unset;
             top: unset;
             bottom: 2em;
-            right: 10em;
+            right: 11em;
             font-size: calc(var(--main-font-size) * 1.2);
         }
 
@@ -168,7 +178,7 @@ body {
             left: unset;
             top: unset;
             bottom: 0.5em;
-            right: 10em;
+            right: 11em;
             font-size: calc(var(--main-font-size) * 1.2);
         }
 
@@ -176,7 +186,7 @@ body {
             left: unset;
             top: unset;
             bottom: 4em;
-            right: 5em;
+            right: 6em;
             font-size: calc(var(--main-font-size) * 1.2);
             transform: rotate(-53deg);
         }
@@ -185,7 +195,7 @@ body {
             left: unset;
             top: unset;
             bottom: 2em;
-            right: 4em;
+            right: 5em;
             font-size: calc(var(--main-font-size) * 1.2);
             transform: rotate(-53deg);
         }
@@ -264,7 +274,7 @@ body {
                 }
 
                 &.shipname {
-                    width: 14em;
+                    width: 16em;
                     border-radius: 0 1.5em 1.5em 0;
                 }
             }
