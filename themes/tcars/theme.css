@@ -1,0 +1,439 @@
+@import url('../../fonts/pixelsagas.com/PS_Okuda/font.css');
+@import url('../../fonts/LCARS/font.css');
+
+:root,
+::backdrop {
+    --main-color-bg: lab(13 6.17 -29.46);
+    --main-color-text: #ddd;
+    --nav-color-bg: var(--main-color-text);
+    --nav-color-text: var(--main-color-bg);
+    --main-font-body: "Okuda", sans-serif;
+    --main-font-headers: "Okuda", sans-serif;
+    --shadow-color-text: hsl(180deg 25% 20%);
+    --dialog-color-backdrop: hsl(0deg 0% 0% / 70%);
+    --main-a-link-color: hsl(220deg 31% 41%);
+    --main-a-hover-color: hsl(220deg 49% 38%);
+    --main-a-active-color: hsl(220deg 38% 31%);
+    --main-a-visited-color: hsl(268deg 23% 42%);
+    --main-font-unitless: 16;
+    --void-bg: black;
+    --min-decoration-height: 28em;
+    --min-body-height: calc(1em + var(--min-decoration-height));
+    --trek-color-1: lab(90.4% -50.19 -3.21);
+    --trek-color-2: lab(69.56% -23.11 -28.71);
+    --trek-color-3: hsl(243deg 84% 55%);
+    --trek-color-4: hsl(184deg 79% 76%);
+    --trek-color-5: hsl(209deg 90% 76%);
+    --trek-color-6: hsl(247deg 44% 53%);
+    --trek-color-highlight: var(--trek-color-3);
+    --player-color-red: var(--trek-color-1);
+    --player-color-blue: var(--trek-color-2);
+    --player-color-yellow: var(--trek-color-3);
+    --player-color-brown: var(--trek-color-4);
+    --player-color-black: hsl(0deg 0% 13%);
+    --player-color-white: hsl(0deg 0% 73%);
+
+    --tcars-accent: lab(76.48% -4.48 73.56);
+    --secondary-color-bg: lab(3.58% 1.1 -10.97);
+}
+
+@keyframes tcarsColorChange {
+    0% {
+        background-color: var(--trek-color-2);
+    }
+    20% {
+        background-color: var(--tcars-accent);
+    }
+    40% {
+        background-color: var(--trek-color-2);
+    }
+}
+
+html.alt-font {
+    --main-font-body: "LCARS", sans-serif;
+    --main-font-headers: "LCARS", sans-serif;
+    --headers-weight: normal;
+    --headers-text-transform: uppercase;
+}
+
+.alt-font-available {
+    display: unset;
+}
+
+body, h1, h2, h3, h4, h5, h6 {
+    letter-spacing: 0.06em;
+}
+
+
+body {
+    z-index: 1;
+    padding: 0;
+    overflow-y: hidden;
+    min-width: 60em; /* elements start looking wrong after this, but you can decrease the font size */
+    grid-template-rows: 4em 1fr 4em;
+    grid-template-columns: 8.5em 5em 9em 1fr 8.5em 15em 5em;
+    z-index: -100;
+    transition: background-color 2s ease-in-out 0.25s;
+
+    &[alert="grey"], &[alert="cloak"] {
+        background-color: var(--secondary-color-bg);
+
+        & nav {
+            filter: grayscale(.66);
+        }
+
+        & mission-tracker act, & trait-display, & li[is="player-display"] {
+            filter: saturate(1.25);
+            transition: filter 1s ease-in-out 0.25s;
+        }
+
+        & trait-display, & li[is="player-display"] {
+            box-shadow: 0 0 10px 0 #200505;
+        }
+
+        & > theme > decoration {
+            filter: brightness(0.5);
+        }
+    }
+
+    & > theme > decoration {
+        position: absolute;
+        display: block;
+        inset: 0;
+        overflow: hidden;
+        z-index: -10;
+        transition: filter 2s ease-in-out 0.25s;
+
+        & top-left,
+        & top-right,
+        & bottom-right {
+            display: block;
+            position: absolute;
+            z-index: -1;
+            height: 100%;
+            width: 100%;
+            inset: 0;
+
+            & img {
+                position: absolute;
+                width: 75em;
+                height: auto;
+            }
+        }
+
+        & top-left {
+
+            & > box {
+                display: block;
+                position: absolute;
+                z-index: -8;
+                height: 3.25em;
+                width: 2em;
+                color: black;
+                background-color: var(--trek-color-2);
+                animation: tcarsColorChange 4s infinite;
+                padding-left: 0.2em;
+                top: 0.45em;
+
+                &:nth-child(1) {
+                    left: 0.5em;
+                    animation-delay: 1s;
+                }
+
+                &:nth-child(2) {
+                    left: 3em;
+                    animation-delay: 3.25s;
+                }
+
+                &:nth-child(3) {
+                    left: 5.5em;
+                    animation-delay: 4.5s;
+                }
+
+                &:nth-child(4) {
+                    left: 8em;
+                    animation-delay: 6.25s;
+                }
+            }
+
+            & > img {
+                z-index: -10;
+                top: 0;
+                left: 0;
+                bottom: unset;
+                right: unset;
+            }
+        }
+
+        & top-right img {
+            top: 0;
+            left: unset;
+            bottom: unset;
+            right: 0;
+        }
+
+        & bottom-right img {
+            top: unset;
+            left: unset;
+            bottom: 0;
+            right: 0;
+        }
+
+        & right {
+            display: block;
+            position: absolute;
+            top: 12em;
+            left: unset;
+            bottom: 22.125em;
+            right: 0em;
+            width: 4.5em;
+            background-color: #6bf3f7;
+            clip-path: polygon(0.25em 0.25em, calc(100% - 0.4em) 0.35em, calc(100% - 0.125em) 100%, 0 100%);
+        }
+    }
+
+    & > main {
+        grid-row: 2;
+        grid-column: 3 / 7;
+
+        content {
+
+            traits {
+                position: absolute;
+                display: flex;
+                flex-direction: column;
+                width: 6em;
+                left: 0.5em;
+                top: 2.75em;
+
+                & > trait-display::part(internal) {
+                    width: 100%;
+                    width: var(--stretch);
+                    border-radius: 0 0 .5em .5em;
+                }
+            }
+
+            ship-alert::part(internal) {
+                margin-top: -0.5em;
+            }
+        }
+
+        ul.players {
+            width: calc(100% - 4em);
+            margin-left: -3em;
+        }
+    }
+
+    & > header {
+        grid-row: 1;
+        grid-column: 4;
+        margin: 0 -7em;
+        background: transparent;
+    }
+
+    & > menu-items {
+        #game-name {
+            left: unset;
+            right: 0.5em;
+            top: 0.25em;
+            font-size: calc(var(--main-font-size)* 1.5);
+
+            & .edition-captains-log {
+                font-size: calc(var(--main-font-size)* 1.25);
+            }
+        }
+
+        #save-btn {
+            left: unset;
+            top: unset;
+            bottom: 2em;
+            right: 11em;
+            font-size: var(--main-font-size);
+        }
+
+        #settings-btn {
+            left: unset;
+            top: unset;
+            bottom: 0.5em;
+            right: 11em;
+            font-size: var(--main-font-size);
+        }
+
+        #font-up-btn {
+            left: unset;
+            top: unset;
+            bottom: 3.5em;
+            right: 5.5em;
+            font-size: var(--main-font-size);
+            transform: rotate(-53deg);
+        }
+
+        #font-down-btn {
+            left: unset;
+            top: unset;
+            bottom: 2em;
+            right: 4.5em;
+            font-size: var(--main-font-size);
+            transform: rotate(-53deg);
+        }
+
+        #momentum-section, #threat-section {
+            flex-direction: column;
+            padding: 0.5em;
+            border-radius: 1.5em 0 0 1.5em;
+
+            label {
+                text-align: right;
+            }
+
+            input {
+                background: lab(90.24% 0 -0.01 / 20%);
+                color: black;
+                border-color: transparent;
+                border-radius: 0 0 0 .5em;
+            }
+        }
+
+        #momentum-section {
+            background: var(--trek-color-5);
+            top: unset !important;
+            right: unset;
+            left: .5em;
+            bottom: 0.5em;
+            width: 5.5em;
+        }
+
+        #threat-section {
+            background: var(--tcars-accent);
+            top: unset !important;
+            right: unset;
+            left: 7.5em;
+            bottom: 0.5em;
+            width: 5.5em;
+        }
+    }
+
+    & > nav {
+        position: absolute;
+        top: unset !important;
+        left: 3em;
+        bottom: 0.5em;
+        right: 20em;
+        flex-flow: row nowrap;
+        height: 3.45em;
+
+        ul {
+            justify-content: flex-start;
+            flex-wrap: nowrap;
+            gap: 0 0.5em;
+            height: 100%;
+
+            li {
+                flex: unset;
+                width: 3.5em;
+                border-radius: 0 1.5em 1.5em 0;
+                line-height: 3em;
+
+                & a {
+                    line-height: unset;
+                }
+
+                &:first-child {
+                    width: 5em;
+                }
+
+                &:nth-child(2) {
+                    width: 4em;
+                }
+
+                &:nth-child(3) {
+                    width: 4.5em;
+                }
+
+                &.shipname {
+                    width: 16em;
+                    border-radius: 0 1.5em 1.5em 0;
+                }
+            }
+        }
+    }
+}
+
+dialogs > dialog {
+
+
+    &[is="settings-dialog"] {
+        max-width: 30em;
+    }
+
+    & > header, & > footer {
+        background: var(--trek-color-1);
+        color: black;
+        font-weight: bold;
+
+        & button.close {
+            background: var(--trek-color-2);
+            text-transform: capitalize;
+
+            &:hover {
+                background-color: var(--tcars-accent);
+            }
+        }
+    }
+
+    & > footer {
+        padding: 0.5em 0;
+
+        & button.close {
+            padding: 0.25em 2.25em;
+        }
+    }
+
+    & > main {
+        background: var(--secondary-color-bg);
+        color: white;
+        font-size: calc(var(--main-font-size) * 1.2);
+
+        & dt {
+            font-weight: bold;
+        }
+
+        & dd br {
+            /*display: none; /* inline what otherwise is new-lined */
+        }
+
+        & button,
+        & select,
+        & input[type="file"] {
+            background-color: var(--trek-color-1);
+            border: 1px solid var(--trek-color-1);
+            border-radius: 0 0.5em 0.5em 0;
+            padding: 0.25em 0.5em;
+
+            &:hover {
+                background-color: var(--trek-color-2);
+                box-shadow: 0 0 15px hsl(190deg 75% 55% / 50%);
+                border-color: var(--trek-color-2);
+            }
+            &:focus {
+                background-color: var(--tcars-accent);
+                color: black;
+            }
+        }
+
+        & select,
+        & input[type="file"] {
+            background: var(--bg-dark-1);
+            border-radius: 0.5em 0 0 0.5em;
+            color: var(--main-color-text);
+            padding: 0.3em 0.5em;
+            margin-bottom: 0.5em;
+
+            &:focus {
+                outline: none;
+                border-color: var(--tcars-accent);
+                box-shadow: 0 0 10px hsl(190deg 75% 55% / 40%);
+            }
+        }
+    }
+}

@@ -4,7 +4,7 @@
 ::backdrop {
     --main-font-body: "Okuda", sans-serif;
     --main-font-headers: "Okuda", sans-serif;
-    --main-font-size: 13pt;
+    --main-font-unitless: 13pt;
     --main-color-bg: hsl(210deg 20% 8%); /* dark blue-grey */
     --main-color-text: hsl(190deg 70% 85%);
     --nav-color-bg: var(--main-color-text);
@@ -46,10 +46,11 @@
     --border-radius-sm: 0.3em;
     --border-radius-md: 0.5em;
     --border-radius-lg: 1em;
+    --grid-bg: linear-gradient(135deg, hsl(210deg 25% 5%) 0%, hsl(210deg 20% 8%) 50%, hsl(210deg 25% 5%) 100%);
 }
 
 html {
-    background: linear-gradient(135deg, hsl(210deg 25% 5%) 0%, hsl(210deg 20% 8%) 50%, hsl(210deg 25% 5%) 100%);
+    background: var(--grid-bg);
 }
 
 body {
@@ -437,110 +438,110 @@ body > main {
     grid-row: 2 / 4;
 }
 
-/* Settings dialog styling to match theme */
-dialog {
-    background: linear-gradient(135deg, 
-        var(--bg-darker) 0%,
-        hsl(210deg 20% 12%) 50%,
-        var(--bg-darker) 100%);
-    border: 2px solid var(--trek-color-1);
-    border-radius: var(--border-radius-lg) !important;
+dialogs > dialog {
+    color: white;
     box-shadow: 0 0 30px hsl(190deg 75% 55% / 40%),
                 inset 0 0 20px hsl(190deg 75% 55% / 10%) !important;
-    color: var(--main-color-text);
-    
-    & header {
-        background: linear-gradient(90deg,
-            var(--trek-color-1) 0%,
-            var(--trek-color-2) 100%);
-        color: var(--main-color-bg);
-        padding: 0.8em 1em;
+
+    &[is="settings-dialog"] {
+        max-width: 30em;
+    }
+
+    & > header, & > footer {
+        background:
+            /* Programmable matter hexagon pattern */
+            repeating-linear-gradient(
+                30deg,
+                hsl(210deg 25% 12%) 0,
+                hsl(210deg 25% 12%) 2px,
+                hsl(210deg 20% 10%) 2px,
+                hsl(210deg 20% 10%) 4px
+            ),
+            repeating-linear-gradient(
+                150deg,
+                hsl(210deg 25% 12%) 0,
+                hsl(210deg 25% 12%) 2px,
+                hsl(210deg 20% 10%) 2px,
+                hsl(210deg 20% 10%) 4px
+            ),
+            repeating-linear-gradient(
+                90deg,
+                hsl(210deg 25% 12%) 0,
+                hsl(210deg 25% 12%) 2px,
+                hsl(210deg 20% 10%) 2px,
+                hsl(210deg 20% 10%) 4px
+            ),
+            linear-gradient(135deg,
+                hsl(210deg 22% 11%) 0%,
+                hsl(210deg 20% 9%) 50%,
+                hsl(210deg 22% 11%) 100%
+            );
+        background-size: 12px 21px, 12px 21px, 12px 21px, 100% 100%;
+        background-position: 0 0, 0 0, 0 0, 0 0;
+        color: black;
         font-weight: bold;
-        border-radius: 0.8em 0.8em 0 0;
-        text-shadow: 0 0 10px hsl(210deg 20% 8%);
-        
+
         & button.close {
-            background: hsl(210deg 20% 8%);
-            color: var(--trek-color-1);
-            border: 1px solid var(--trek-color-1);
-            border-radius: var(--border-radius-sm);
-            padding: 0.2em 0.5em;
-            font-size: 1.2em;
-            
-            &:hover {
-                background: var(--trek-color-1);
-                color: var(--main-color-bg);
-            }
+            background: var(--bg-dark-1);
+            border-radius: unset;
         }
     }
-    
-    & main {
-        padding: 1em 1.5em;
-        
-        & dt {
-            color: var(--trek-color-1);
-            font-weight: bold;
-            margin-top: 1em;
-            text-shadow: 0 0 8px var(--trek-color-1);
+
+    & > header {
+        color: var(--main-color-text);
+    }
+
+    & > footer {
+        padding: 0.5em 0;
+
+        & button.close {
+            padding: 0.25em 2.25em;
         }
-        
-        & dd {
-            margin-left: 1em;
-            margin-bottom: 0.5em;
-        }
-        
-        & button {
-            background: linear-gradient(135deg,
-                var(--bg-dark-3) 0%,
-                var(--bg-dark-2) 100%);
-            border: 1px solid var(--trek-color-1);
-            border-radius: var(--border-radius-md);
+    }
+
+    & > main {
+        background: var(--grid-bg);
             color: var(--main-color-text);
-            padding: 0.5em 1em;
-            box-shadow: 0 0 10px hsl(190deg 75% 55% / 30%);
-            
+        font-size: calc(var(--main-font-size) * 1.2);
+
+        & dt {
+            font-weight: bold;
+        }
+
+        & dd br {
+            display: none; /* inline what otherwise is new-lined */
+        }
+
+        & button,
+        & select,
+        & input[type="file"] {
+            background-color: var(--trek-color-1);
+            color: var(--main-color-text);
+            border: 1px solid var(--trek-color-1);
+            border-radius: 0.5em 0 0 0.5em;
+            padding: 0.25em 0.5em;
+
             &:hover {
-                background: linear-gradient(135deg,
-                    hsl(210deg 30% 18%) 0%,
-                    hsl(210deg 25% 15%) 100%);
                 box-shadow: 0 0 15px hsl(190deg 75% 55% / 50%);
                 border-color: var(--trek-color-2);
             }
+            &:focus {
+                box-shadow: 0 0 15px hsl(190, 75%, 55%);
+            }
         }
-        
+
         & select,
         & input[type="file"] {
             background: var(--bg-dark-1);
-            border: 1px solid var(--trek-color-3);
-            border-radius: var(--border-radius-sm);
+            border-radius: 0.5em 0 0 0.5em;
             color: var(--main-color-text);
             padding: 0.3em 0.5em;
-            
+            margin-bottom: 0.5em;
+
             &:focus {
                 outline: none;
-                border-color: var(--trek-color-1);
+                border-color: var(--trek-color-5);
                 box-shadow: 0 0 10px hsl(190deg 75% 55% / 40%);
-            }
-        }
-    }
-    
-    & footer {
-        padding: 0.8em 1em;
-        border-top: 1px solid var(--trek-color-3);
-        text-align: right;
-        
-        & button {
-            background: var(--trek-color-1);
-            color: var(--main-color-bg);
-            border: none;
-            border-radius: var(--border-radius-md);
-            padding: 0.5em 1.5em;
-            font-weight: bold;
-            box-shadow: 0 0 15px hsl(190deg 75% 55% / 50%);
-            
-            &:hover {
-                background: var(--trek-color-2);
-                box-shadow: 0 0 20px hsl(190deg 75% 55% / 70%);
             }
         }
     }

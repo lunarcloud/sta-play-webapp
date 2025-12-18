@@ -8,7 +8,7 @@
                 <button class="close" role="button">⤫</button>
             </header>
             <main>
-                <dl>
+                <dl class="left actions">
                     <dt>Actions</dt>
                     <dd>
                         <button class="clear-info">Clear Database</button>
@@ -24,19 +24,31 @@
                             <input type="file" class="import-game-file" accept=".staplay"></input>
                         </label>
                     </dd>
+                </dl>
+                <dl class="left ship-model">
+                    <dl>Ship Model</dl>
+                    <dd>
+                        <input class="select-ship" type="file" accept=".gltf,.glb" />
+                        <wbr>>
+                        <button class="set-ship">Update</button>
+                        <button class="clear-ship">Clear</button>
+                    </dd>
+                </dl>
+                <dl class="right theme">
                     <dt>Theme</dt>
                     <dd>
                         <select id="select-theme">
                             <option value="klingon">Klingon</option>
                             <option value="starfleet-22">22nd Century</option>
-                            <option value="starfleet-23">23rd Century</option>
-                            <option value="excelsior">Excelsior (Movie Era)</option>
+                            <option value="starfleet-23">Mid-23rd Century</option>
+                            <option value="excelsior">Late-23rd Century</option>
                             <optgroup label="LCARS">
                                 <option value="lcars-24">Mid 24th</option>
                                 <option value="lcars-late-24">Late 24th</option>
                                 <option value="lcars-holo">Holographic</option>
                                 <option value="lcars-25">Early 25th</option>
                             </optgroup>
+                            <option value="tcars">26–29th Century (TCARS)</option>
                             <option value="starfleet-32">32nd Century</option>
                         </select>
                         <select id="select-edition">
@@ -58,20 +70,15 @@
                             </label>
                         </div>
                     </dd>
-                    <dl>Ship Model</dl>
-                    <dd>
-                        <input class="select-ship" type="file" accept=".gltf,.glb" />
-                        <br>
-                        <button class="set-ship">Update</button>
-                        <button class="clear-ship">Clear</button>
-                    </dd>
+                </dl>
+                <dl class="right player-images">
                     <dt>Upload Player Image</dt>
                     <dd class="player-image-upload">
                         <input class="select" type="file" accept="image/*" />
-                        <br>
+                        <wbr>>
+                        <button class="set">Update</button>
                         Player
                         <input class="index" type="number" value="1" min="1" max="1">
-                        <button class="set">Update</button>
                     </dd>
                 </dl>
             </main>

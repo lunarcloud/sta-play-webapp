@@ -6,7 +6,7 @@
 ::backdrop {
     --main-font-body: "Persis", sans-serif;
     --main-font-headers: "Persis", sans-serif;
-    --main-font-size: 10pt;
+    --main-font-unitless: 10pt;
     --main-color-bg: hsl(200deg 50% 1%); /* nearly-black */
     --void-bg: black;
     --trek-color-1: hsl(221deg 22% 34%);
@@ -518,3 +518,8 @@ task-tracker::part(internal) {
     text-shadow: 0 0 2px #999;
 }
 
+dialogs > dialog {
+    &[is="settings-dialog"] {
+        min-width: 37em;
+    }
+}

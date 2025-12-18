@@ -5,7 +5,7 @@
     /* Excelsior computer displays featured amber/orange monochrome screens */
     --main-font-body: "Roddenberry", sans-serif;
     --main-font-headers: "Roddenberry", sans-serif;
-    --main-font-size: 11pt;
+    --main-font-unitless: 11;
     --main-color-bg: hsl(0deg 0% 0%); /* black background */
     --main-color-text: hsl(32deg 100% 60%); /* amber display color */
     --nav-color-bg: hsl(0deg 0% 10%);
@@ -281,8 +281,8 @@ body {
             filter: grayscale(.66);
         }
 
-        & mission-tracker act, & trait-display, & li[is="player-display"] {
-            filter: saturate(1.25);
+        & mission-tracker act, & trait-display, & task-tracker::part(internal) {
+            filter: brightness(0.5);
             transition: filter 1s ease-in-out 0.25s;
         }
 
