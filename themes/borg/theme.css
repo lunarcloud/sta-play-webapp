@@ -1,0 +1,398 @@
+@import url('../../fonts/pixelsagas.com/PS_Jefferies/font.css');
+
+:root,
+::backdrop {
+    --main-font-body: "Jefferies", sans-serif;
+    --main-font-headers: "Jefferies", sans-serif;
+    --main-font-size: 12pt;
+    --main-color-bg: hsl(120deg 20% 8%); /* dark green-black */
+    --main-color-text: hsl(120deg 30% 75%);
+    --void-bg: hsl(0deg 0% 5%);
+    --trek-color-1: hsl(120deg 40% 30%); /* borg green */
+    --trek-color-2: hsl(180deg 30% 25%); /* teal */
+    --trek-color-3: hsl(120deg 50% 40%); /* bright green */
+    --trek-color-4: hsl(0deg 0% 40%); /* grey */
+    --trek-color-5: hsl(0deg 0% 25%); /* dark grey */
+    --trek-color-6: hsl(120deg 60% 50%); /* scan green */
+    --header-inner-bg: hsl(120deg 15% 12%);
+    --header-outer-bg: var(--main-color-bg);
+    --trek-color-highlight: var(--trek-color-3);
+    --player-color-red: hsl(120deg 30% 20%);
+    --player-color-blue: hsl(180deg 30% 20%);
+    --player-color-yellow: hsl(120deg 50% 35%);
+    --player-color-brown: hsl(120deg 20% 18%);
+    --player-color-black: hsl(120deg 10% 15%);
+    --player-color-white: hsl(120deg 20% 60%);
+}
+
+html {
+    min-height: 0;
+    background-color: #1a2a1a;
+}
+
+html > body, decoration {
+    height: 100dvh;
+    width: 100vw;
+    min-width: 6em;
+    min-height: 4em;
+    display: block;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    transition: background-color 2s ease-in-out 0.25s;
+
+    decoration {
+        transition: filter 2s ease-in-out 0.25s;
+    }
+
+    &[alert="grey"], &[alert="cloak"] {
+        background-color: #2a2a2a;
+
+        decoration {
+            filter: grayscale(.8);
+        }
+    }
+}
+
+li[is="player-display"] {
+    --pip-color: hsl(120deg 40% 40%) !important;
+}
+
+html > body {
+    background-color: #0d0d0d;
+
+    & > header {
+        bottom: unset;
+        left: unset;
+        top: 1.25em;
+        right: 1.125em;
+        width: 15.75em;
+        aspect-ratio: calc(16 / 9);
+        position: absolute !important;
+        background-color: black !important;
+
+        & #ship-top {
+            display: none;
+        }
+    }
+
+    & > main {
+        position: absolute;
+        inset: 4em 18.5em 3em 5.5em;
+        padding: 0.5em;
+        overflow: auto;
+        height: auto;
+    }
+
+    & > nav {
+        position: absolute;
+        bottom: 1.25em;
+        right: 1.125em;
+        width: 15.75em;
+
+        & ul li {
+            border-radius: 0;
+            border: 1px solid hsl(120deg 40% 25%);
+            background-color: hsl(120deg 20% 10%);
+
+            &.shipname {
+                border-radius: 0;
+                color: hsl(120deg 50% 70%);
+                background-color: hsl(120deg 15% 8%);
+            }
+        }
+    }
+}
+
+#game-name {
+    inset: unset;
+    padding: unset;
+    top: 0.5em;
+    left: 4em;
+    right: 15em;
+    text-align: center;
+    width: auto;
+
+    & br {
+        display: none;
+    }
+
+    & * {
+        display: inline-block;
+    }
+}
+
+#settings-btn,
+#save-btn,
+#fullscreen-btn,
+#font-up-btn,
+#font-down-btn  {
+    position: absolute;
+    top: unset;
+    bottom: 0.5em;
+    width: fit-content;
+}
+
+#settings-btn {
+    left: 9em;
+    right: unset;
+}
+
+#save-btn {
+    left: 14em;
+    right: unset;
+}
+
+#fullscreen-btn {
+    left: 1em;
+    right: unset;
+}
+
+#font-up-btn {
+    left: unset;
+    right: 27em;
+}
+
+#font-down-btn {
+    left: unset;
+    right: 22em;
+}
+
+#momentum-section,
+#threat-section  {
+    position: absolute;
+    left: unset;
+    right: 13em;
+    background-color: hsl(120deg 15% 10%);
+    border: 1px solid hsl(120deg 40% 25%);
+    width: 8em;
+    aspect-ratio: calc(16 / 9);
+    justify-content: space-around;
+}
+
+#momentum-section  {
+    top: calc(50% + 2.5em) !important;
+}
+
+#threat-section  {
+    top: calc(50% - 2.5em) !important;
+}
+
+decoration {
+    z-index: -1000;
+    display: block;
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background-color: hsl(0deg 0% 8%);
+}
+
+viewscreen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1em 0.5em;
+    position: absolute;
+    top: 0.125em;
+    right: 0.125em;
+
+    screen {
+        display: block;
+        background-color: black;
+        width: 16.5em;
+        aspect-ratio: calc(16 / 9);
+        border: 2px solid hsl(120deg 40% 20%);
+        box-shadow: inset 0 0 10px hsl(120deg 40% 15%);
+    }
+}
+
+monitor {
+    display: block;
+    position: absolute;
+    inset: 3em 18em 2em 5em;
+    border-radius: 1.5em;
+    background-color: black;
+    border: 2px solid hsl(120deg 40% 20%);
+    box-shadow: inset 0 0 15px hsl(120deg 40% 15%);
+}
+
+/* Borg side panels */
+borg-panel {
+    display: block;
+    position: absolute;
+    width: 4em;
+    top: 3em;
+    bottom: 2em;
+    background: linear-gradient(to bottom,
+        hsl(120deg 30% 12%) 0%,
+        hsl(120deg 25% 10%) 20%,
+        hsl(120deg 20% 8%) 40%,
+        hsl(120deg 25% 10%) 60%,
+        hsl(120deg 30% 12%) 100%);
+    border: 1px solid hsl(120deg 40% 20%);
+
+    &.left {
+        left: 0.5em;
+        border-left: 3px solid hsl(120deg 50% 25%);
+    }
+
+    &.right {
+        right: 17.5em;
+        border-right: 3px solid hsl(120deg 50% 25%);
+    }
+
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 0.5em,
+            hsl(120deg 40% 15%) 0.5em,
+            hsl(120deg 40% 15%) 0.6em
+        );
+    }
+}
+
+/* Data grid corners */
+data-grid {
+    display: block;
+    position: absolute;
+    width: 3em;
+    height: 2em;
+    background: repeating-linear-gradient(
+        90deg,
+        hsl(120deg 40% 15%),
+        hsl(120deg 40% 15%) 0.3em,
+        transparent 0.3em,
+        transparent 0.6em
+    );
+    border: 1px solid hsl(120deg 40% 20%);
+    animation: data-pulse 4s ease-in-out infinite;
+
+    &.top-left {
+        top: 1em;
+        left: 0.5em;
+    }
+
+    &.top-right {
+        top: 1em;
+        right: 17.5em;
+        animation-delay: 1s;
+    }
+
+    &.bottom-left {
+        bottom: 0.5em;
+        left: 0.5em;
+        animation-delay: 2s;
+    }
+
+    &.bottom-right {
+        bottom: 0.5em;
+        right: 17.5em;
+        animation-delay: 3s;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 0.3em,
+            hsl(120deg 40% 15%) 0.3em,
+            hsl(120deg 40% 15%) 0.6em
+        );
+    }
+}
+
+/* Hexagonal pattern overlay */
+hex-pattern {
+    display: block;
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.08;
+    background-image:
+        repeating-linear-gradient(
+            120deg,
+            transparent,
+            transparent 2em,
+            hsl(120deg 50% 40%) 2em,
+            hsl(120deg 50% 40%) 2.1em
+        ),
+        repeating-linear-gradient(
+            60deg,
+            transparent,
+            transparent 2em,
+            hsl(120deg 50% 40%) 2em,
+            hsl(120deg 50% 40%) 2.1em
+        ),
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2em,
+            hsl(120deg 50% 40%) 2em,
+            hsl(120deg 50% 40%) 2.1em
+        );
+}
+
+/* Scanning animation */
+@keyframes borg-scan {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0.3;
+    }
+
+    90% {
+        opacity: 0.3;
+    }
+
+    100% {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+}
+
+monitor::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        transparent 40%,
+        hsl(120deg 60% 50% / 40%) 50%,
+        transparent 60%
+    );
+    animation: borg-scan 8s ease-in-out infinite;
+}
+
+/* Pulsing data stream animation */
+@keyframes data-pulse {
+    0%, 100% {
+        opacity: 0.3;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+}
+
+borg-panel::after {
+    content: '';
+    position: absolute;
+    top: 20%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: hsl(120deg 60% 50%);
+    animation: data-pulse 3s ease-in-out infinite;
+}
