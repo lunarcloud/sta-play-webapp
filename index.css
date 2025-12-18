@@ -300,7 +300,40 @@ dialogs > dialog {
     }
 
     &[is="settings-dialog"] {
-        max-width: 20em;
+        font-size: calc(var(--main-font-size) * 1.1);
+        max-width: 25em;
+
+        dd input[type=file] {
+            display: block;
+        }
+
+        main {
+            display: grid;
+            grid-template-rows: 4fr 1fr 2fr;
+            grid-template-columns: 4fr 3fr;
+
+            & .left {
+                grid-column: 1;
+            }
+
+            & .right {
+                grid-column: 2;
+            }
+
+            & .actions {
+                grid-row: 1 / 3;
+            }
+
+            & .theme {
+                grid-row: 1;
+            }
+
+            & .ship-model,
+            & .player-images {
+                grid-row: 3;
+            }
+        }
+
     }
 
     &[is="welcome-dialog"] {
@@ -325,13 +358,14 @@ dialogs > dialog {
     }
 
     & main {
-        padding: 20px 12px;
+        padding: 0 1em 1em;
         overflow: auto;
         min-height: min(1em, 10vh);
 
         & dl {
             margin-top: 0.5em;
             margin-bottom: 0;
+            margin-top: 0.125em;
         }
 
         & input[type="file"] {

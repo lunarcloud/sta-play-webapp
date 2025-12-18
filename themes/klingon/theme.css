@@ -241,3 +241,14 @@ decoration {
         }
     }
 }
+
+dialogs > dialog {
+
+    dd input[type=file] {
+        display: block;
+    }
+
+    dd button {
+        display: inline-block;
+    }
+}

@@ -399,7 +399,7 @@ dialogs > dialog {
         }
 
         & dd br {
-            display: none; /* inline what otherwise is new-lined */
+            /*display: none; /* inline what otherwise is new-lined */
         }
 
         & button,
@@ -407,7 +407,7 @@ dialogs > dialog {
         & input[type="file"] {
             background-color: var(--trek-color-1);
             border: 1px solid var(--trek-color-1);
-            border-radius: 0.5em 0 0 0.5em;
+            border-radius: 0 0.5em 0.5em 0;
             padding: 0.25em 0.5em;
 
             &:hover {
@@ -427,6 +427,7 @@ dialogs > dialog {
             border-radius: 0.5em 0 0 0.5em;
             color: var(--main-color-text);
             padding: 0.3em 0.5em;
+            margin-bottom: 0.5em;
 
             &:focus {
                 outline: none;

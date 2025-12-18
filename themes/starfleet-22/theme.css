@@ -518,3 +518,8 @@ task-tracker::part(internal) {
     text-shadow: 0 0 2px #999;
 }
 
+dialogs > dialog {
+    &[is="settings-dialog"] {
+        min-width: 37em;
+    }
+}
