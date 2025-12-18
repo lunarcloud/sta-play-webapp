@@ -185,7 +185,6 @@ decoration {
                             border-style: solid;
                             border-width: 0 1em 0 7em;
                             border-radius: 1em;
-                            background-color: transparent;
                             background-color: hsl(200deg 30% 8%) !important;
                         }
                     }
