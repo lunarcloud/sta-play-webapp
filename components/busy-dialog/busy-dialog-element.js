@@ -9,12 +9,19 @@ const setup = async () => {
    */
   class BusyDialogElement extends HTMLDialogElement {
     /**
+     * @type {HTMLElement|null}
+     */
+    #messageElement
+
+    /**
      * Constructor.
      */
     constructor () {
       super()
       this.innerHTML = dialogEl.innerHTML
       this.querySelectorAll('button.close').forEach(el => el.addEventListener('click', () => animateClose(this)))
+      // Cache the message element for better performance
+      this.#messageElement = this.querySelector('main p')
     }
 
     /**
@@ -22,11 +29,10 @@ const setup = async () => {
      * @param {string} message - The activity message to display
      * @override
      */
-    // @ts-ignore
+    // @ts-ignore - TypeScript doesn't recognize the HTMLDialogElement.show() method signature override
     show (message) {
-      const mainEl = this.querySelector('main p')
-      if (mainEl) {
-        mainEl.textContent = message
+      if (this.#messageElement) {
+        this.#messageElement.textContent = message
       }
       this.showModal()
     }
