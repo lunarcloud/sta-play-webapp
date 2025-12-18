@@ -25,6 +25,9 @@ jobs:
 
       - name: Install Playwright Browsers
         run: npx playwright install chromium
+
+      - name: Copy Dependencies
+        run: npm run copy-deps
   
       - name: Lint JavaScript
         if: ${{ ! cancelled() }}
