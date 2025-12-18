@@ -1,0 +1,421 @@
+@import url('../../fonts/pixelsagas.com/PS_Okuda/font.css');
+@import url('../../fonts/LCARS/font.css');
+
+:root,
+::backdrop {
+    --main-color-bg: hsl(200deg 30% 3%); /* deep temporal void */
+    --main-color-text: hsl(180deg 70% 85%); /* bright chroniton cyan */
+    --nav-color-bg: var(--main-color-text);
+    --nav-color-text: var(--main-color-bg);
+    --main-font-body: "Okuda", sans-serif;
+    --main-font-headers: "Okuda", sans-serif;
+    --shadow-color-text: hsl(180deg 60% 25%);
+    --dialog-color-backdrop: hsl(200deg 50% 5% / 80%);
+    --main-a-link-color: hsl(180deg 65% 55%);
+    --main-a-hover-color: hsl(180deg 75% 65%);
+    --main-a-active-color: hsl(180deg 55% 45%);
+    --main-a-visited-color: hsl(190deg 50% 60%);
+    --main-font-size: 14pt;
+    --void-bg: hsl(200deg 40% 2%);
+    --min-decoration-height: 28em;
+    --min-body-height: calc(1em + var(--min-decoration-height));
+    
+    /* Temporal color palette - chroniton blues and quantum golds */
+    --trek-color-1: hsl(180deg 80% 60%); /* bright chroniton cyan */
+    --trek-color-2: hsl(190deg 70% 55%); /* temporal blue */
+    --trek-color-3: hsl(45deg 85% 60%); /* quantum gold */
+    --trek-color-4: hsl(280deg 60% 65%); /* temporal violet */
+    --trek-color-5: hsl(170deg 75% 50%); /* phase teal */
+    --trek-color-6: hsl(200deg 80% 70%); /* holographic light blue */
+    --trek-color-highlight: var(--trek-color-1);
+    
+    /* Player colors with temporal theme */
+    --player-color-red: hsl(10deg 70% 50%);
+    --player-color-blue: hsl(190deg 70% 55%);
+    --player-color-yellow: var(--trek-color-3);
+    --player-color-brown: hsl(30deg 50% 45%);
+    --player-color-black: hsl(200deg 20% 15%);
+    --player-color-white: hsl(180deg 30% 80%);
+    
+    /* Temporal effect variables */
+    --temporal-glow: 0 0 15px var(--trek-color-1), 0 0 25px var(--trek-color-2);
+    --chroniton-shadow: 0 0 20px var(--trek-color-1);
+    --quantum-glow: 0 0 10px var(--trek-color-3);
+}
+
+html.alt-font {
+    --main-font-body: "LCARS", sans-serif;
+    --main-font-headers: "LCARS", sans-serif;
+    --headers-weight: normal;
+    --headers-text-transform: uppercase;
+}
+
+.alt-font-available {
+    display: unset;
+}
+
+body, h1, h2, h3, h4, h5, h6 {
+    letter-spacing: 0.06em;
+    text-shadow: var(--temporal-glow);
+}
+
+body nav {
+    align-items: center;
+}
+
+body {
+    decoration {
+        transition: filter 2s ease-in-out 0.25s, opacity 1.5s ease-in-out;
+    }
+
+    &[alert="grey"], &[alert="cloak"] {
+        decoration {
+            filter: grayscale(.4) brightness(0.66);
+        }
+    }
+}
+
+/* Add subtle temporal field grid pattern */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+        repeating-linear-gradient(0deg, 
+            transparent 0,
+            transparent 1px,
+            hsl(180deg 80% 60% / 4%) 1px,
+            hsl(180deg 80% 60% / 4%) 2px,
+            transparent 2px,
+            transparent 50px),
+        repeating-linear-gradient(90deg,
+            transparent 0,
+            transparent 1px,
+            hsl(180deg 80% 60% / 4%) 1px,
+            hsl(180deg 80% 60% / 4%) 2px,
+            transparent 2px,
+            transparent 50px);
+    pointer-events: none;
+    z-index: -1;
+    animation: temporal-pulse 8s ease-in-out infinite;
+}
+
+@keyframes temporal-pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.5; }
+}
+
+#fullscreen-btn {
+    top: calc(var(--main-font-size) * 6.825);
+    left: calc(var(--main-font-size) * 9);
+}
+
+#font-up-btn,
+#font-down-btn {
+    color: var(--main-color-text) !important;
+}
+
+li[is="player-display"] {
+    --pip-color: rgb(100 200 220) !important;
+}
+
+decoration {
+    z-index: -1;
+    position: absolute;
+    inset: 0;
+    padding: 0;
+    margin: 0 0.2em;
+    min-height: var(--min-decoration-height);
+    height: 100%;
+    width: calc(100% - 0.4em);
+    overflow: hidden visible;
+
+    &::-webkit-scrollbar {
+        width: 0;
+        background-color: transparent;
+        color: transparent;
+        border: 0 solid transparent;
+        appearance: none;
+    }
+
+    & > ul {
+        margin: 0;
+        padding: 0.2em;
+        display: flex;
+        flex-direction: column;
+        list-style: none;
+
+        /* last element should go to the bottom (minus margin) */
+        & > li:last-of-type {
+            position: absolute;
+            top: calc(var(--min-decoration-height) + 2.25em);
+            bottom: 0.4em;
+            height: auto;
+        }
+
+        & li {
+            min-height: 1em;
+            height: 4.25em;
+            margin: 0.2em 0;
+            display: flex;
+            flex-flow: row;
+            flex-wrap: nowrap;
+
+            & > ul {
+                margin: 0;
+                padding: 0;
+                display: flex;
+                flex-direction: row;
+                list-style: none;
+                width: 0;
+                position: relative;
+
+                & li {
+                    height: inherit;
+                    margin: 0 0.2em;
+
+                    & a {
+                        width: 12em;
+                    }
+
+                    &.font-button-up,
+                    &.font-button-down {
+                        a {
+                            width: 5em;
+                            border-style: solid;
+                            border-width: 0 1em 0 7em;
+                            border-radius: 1em;
+                            background-color: transparent;
+                            background-color: hsl(200deg 30% 8%) !important;
+                        }
+                    }
+
+                    &.font-button-up a {
+                        border-color: var(--trek-color-1) !important;
+                        box-shadow: var(--chroniton-shadow);
+                    }
+
+                    &.font-button-down a {
+                        border-color: var(--trek-color-3) !important;
+                        box-shadow: var(--quantum-glow);
+                    }
+                }
+            }
+
+            &:has(> a:hover) {
+                & > a:hover,
+                &::before,
+                & > ul > li:first-child a,
+                & > ul > li:first-child::before
+                {
+                    filter: brightness(1.35);
+                    box-shadow: var(--temporal-glow);
+                }
+            }
+
+            &:has(> ul > li:first-child a:hover) > a {
+                filter: brightness(1.35);
+            }
+
+            & a, a:link, a:visited {
+                display: flex;
+                flex-direction: column-reverse;
+                font-size: calc(var(--main-font-size) * 0.75);
+                width: 8.25em;
+                text-decoration: none;
+                text-align: right;
+                color: var(--nav-color-text);
+                background-color: var(--trek-color-1);
+                box-shadow: 0 0 12px var(--trek-color-1);
+                border: 1px solid hsl(180deg 100% 80% / 30%);
+                transition: all 0.3s ease;
+
+                &:hover {
+                    text-decoration: none;
+                    color: var(--main-color-bg);
+                    text-shadow: 0 0 8px var(--trek-color-1);
+                }
+            }
+
+            &.upper-left a {
+                flex-direction: column;
+            }
+
+            &.curve-bottom-right, &.curve-top-right {
+                --curve-section-height: 3em;
+
+                height: var(--curve-section-height);
+
+                & > ul,
+                & ul > li:first-child {
+                    margin-left: 0 !important;
+                }
+
+                & li:nth-of-type(1) {
+                    width: 4.5em;
+                }
+
+                & li:nth-of-type(1)::before {
+                    content: '';
+                    z-index: -2;
+                    height: 50%;
+                    width: calc(var(--curve-section-height) / 2);
+                    position: absolute;
+                    left: 0;
+                }
+
+                & li:nth-of-type(1)::after {
+                    content: '';
+                    z-index: -1;
+                    background-color: var(--main-color-bg);
+                    height: 100%;
+                    width: var(--curve-section-height);
+                    position: absolute;
+                    left: 0;
+                    border-radius: 50%;
+                }
+
+                & li:last-of-type > a {
+                    width: 100vw;
+                    height: 50%;
+                }
+            }
+
+            &.curve-bottom-right {
+                & > a {
+                    border-bottom-left-radius: 100%;
+                }
+
+                & ul > li {
+                    align-items: flex-end;
+
+                    & a  {
+                        min-height: 0;
+                        height: 50%;
+                    }
+                }
+
+                & li:nth-of-type(2) a {
+                    background-color: var(--trek-color-3);
+                    box-shadow: var(--quantum-glow);
+                }
+
+                & li:nth-of-type(1) a {
+                    background-color: var(--trek-color-2);
+                    min-height: 0;
+                    height: 50%;
+                    box-shadow: 0 0 12px var(--trek-color-2);
+                }
+
+                & li:nth-of-type(1)::before {
+                    background-color: var(--trek-color-2);
+                    bottom: 50%;
+                    box-shadow: 0 0 10px var(--trek-color-2);
+                }
+
+                & li:nth-of-type(1)::after {
+                    bottom: 50%;
+                }
+
+                & li:last-of-type > a {
+                    background-color: var(--trek-color-1);
+                }
+            }
+
+            &.curve-top-right {
+                & > a {
+                    border-top-left-radius: 100%;
+                }
+
+                & li:nth-of-type(1) a {
+                    background-color: var(--trek-color-1);
+                    min-height: 0;
+                    height: 50%;
+                }
+
+                & li:nth-of-type(1)::before {
+                    background-color: var(--trek-color-1);
+                    top: 50%;
+                    box-shadow: 0 0 10px var(--trek-color-1);
+                }
+
+                & li:nth-of-type(1)::after {
+                    top: 50%;
+                }
+
+                & li:nth-of-type(odd) a {
+                    min-height: 0;
+                    height: 50%;
+                }
+
+                & li:last-of-type > a {
+                    background-color: var(--trek-color-5);
+                    box-shadow: 0 0 12px var(--trek-color-5);
+                }
+            }
+
+            &:nth-of-type(1) a {
+                background-color: var(--trek-color-5);
+                box-shadow: 0 0 12px var(--trek-color-5);
+            }
+
+            &:nth-of-type(2) a {
+                background-color: var(--trek-color-2);
+                box-shadow: 0 0 12px var(--trek-color-2);
+            }
+
+            &:nth-of-type(4) a {
+                background-color: var(--trek-color-3);
+                box-shadow: var(--quantum-glow);
+            }
+
+            &:nth-of-type(5) a {
+                background-color: var(--trek-color-4);
+                box-shadow: 0 0 12px var(--trek-color-4);
+            }
+
+            &:nth-of-type(6) a {
+                background-color: var(--trek-color-2);
+                box-shadow: 0 0 12px var(--trek-color-2);
+            }
+        }
+    }
+}
+
+/* Holographic text effects for headers */
+h1, h2, h3 {
+    animation: holographic-flicker 6s ease-in-out infinite;
+}
+
+@keyframes holographic-flicker {
+    0%, 100% { 
+        text-shadow: var(--temporal-glow); 
+    }
+
+    50% { 
+        text-shadow: var(--temporal-glow), 0 0 5px var(--trek-color-3); 
+    }
+}
+
+/* Add chroniton particle effect to decoration borders */
+decoration li a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+        radial-gradient(circle at 20% 50%, hsl(180deg 100% 90% / 15%) 0%, transparent 4%),
+        radial-gradient(circle at 80% 30%, hsl(180deg 100% 90% / 15%) 0%, transparent 3%),
+        radial-gradient(circle at 60% 70%, hsl(180deg 100% 90% / 15%) 0%, transparent 2%);
+    pointer-events: none;
+    animation: chroniton-drift 12s linear infinite;
+}
+
+@keyframes chroniton-drift {
+    0% {
+        background-position: 0% 0%, 100% 0%, 50% 100%;
+    }
+
+    100% {
+        background-position: 100% 100%, 0% 100%, 0% 0%;
+    }
+}
