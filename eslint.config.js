@@ -16,7 +16,6 @@ const config = [
         definedTypes: [
           'NodeListOf',
           'FileSystemFileHandle',
-          'JSZip',
           'FocusOptions'
         ]
       }],

@@ -12,7 +12,7 @@ STA Play is a client-side web application for managing and displaying Star Trek 
 ## Technologies and Dependencies
 
 * **Languages**: ECMAScript, HTML, CSS
-* **Primary Dependencies**: [jszip, idb, @google/model-viewer]
+* **Primary Dependencies**: [fflate, idb, @google/model-viewer]
 * **Web Platform Features**: [Shadow DOM, Custom Elements, IndexedDB, PWA]
 * **Development Utilities**: [jsdoc, eslint, linthtml, stylelint]
 * **Testing**: [@web/test-runner, @web/test-runner-playwright, @esm-bundle/chai]

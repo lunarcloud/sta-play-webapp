@@ -5,20 +5,6 @@ import { PlayerInfo } from '../../../js/database/player-info.js'
 import { SceneInfo } from '../../../js/database/scene-info.js'
 import { TrackerInfo } from '../../../js/database/tracker-info.js'
 
-// Load JSZip library from the global bundle
-before(async () => {
-  if (!globalThis.JSZip) {
-    // Load the JSZip script
-    const script = document.createElement('script')
-    script.src = '/lib/jszip.min.js'
-    await new Promise((resolve, reject) => {
-      script.onload = resolve
-      script.onerror = reject
-      document.head.appendChild(script)
-    })
-  }
-})
-
 describe('BackupData', () => {
   describe('constructor', () => {
     it('should create instance with all required parameters', () => {
@@ -361,13 +347,19 @@ describe('BackupData', () => {
       const backup = new BackupData(gameInfo, [], [], [], {})
       const blob = await backup.getZip()
 
-      // Load the blob as a zip to verify compression method
-      const zip = await (new globalThis.JSZip()).loadAsync(blob)
-      const infoFile = zip.file('info.json')
+      // Read the blob as a Uint8Array to verify it's a valid ZIP file
+      const arrayBuffer = await blob.arrayBuffer()
+      const uint8Array = new Uint8Array(arrayBuffer)
 
-      // Check that the file uses DEFLATE compression (method should not be STORE)
-      // JSZip uses DEFLATE when compression is enabled
-      expect(infoFile).to.not.be.null
+      // Check for ZIP file signature (PK\x03\x04)
+      expect(uint8Array[0]).to.equal(0x50) // 'P'
+      expect(uint8Array[1]).to.equal(0x4B) // 'K'
+      expect(uint8Array[2]).to.equal(0x03)
+      expect(uint8Array[3]).to.equal(0x04)
+
+      // Check that compression method is DEFLATE (0x08) at byte offset 8
+      // in the local file header
+      expect(uint8Array[8]).to.equal(0x08) // DEFLATE compression method
     })
   })
 

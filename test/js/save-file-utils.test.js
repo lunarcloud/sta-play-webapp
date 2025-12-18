@@ -1,7 +1,10 @@
 import { expect } from '@esm-bundle/chai'
 import { saveBlob, saveText } from '../../js/save-file-utils.js'
 
-// Helper to setup mocks for URL and click
+/**
+ * Helper to setup mocks for URL and click
+ * @returns {object} mocks object with original functions and tracking properties
+ */
 function setupFileMocks () {
   const mocks = {
     originalCreateObjectURL: URL.createObjectURL,
@@ -28,7 +31,10 @@ function setupFileMocks () {
   return mocks
 }
 
-// Helper to restore mocks
+/**
+ * Helper to restore mocks
+ * @param {object} mocks - The mocks object containing original functions to restore
+ */
 function restoreMocks (mocks) {
   URL.createObjectURL = mocks.originalCreateObjectURL
   URL.revokeObjectURL = mocks.originalRevokeObjectURL

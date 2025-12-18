@@ -2,6 +2,7 @@ import { GameInfo } from './game-info.js'
 import { PlayerInfo } from './player-info.js'
 import { TrackerInfo } from './tracker-info.js'
 import { SceneInfo } from './scene-info.js'
+import { zipSync, unzipSync, strToU8, strFromU8 } from '../../lib/fflate.js'
 
 /**
  * @typedef AppEncodedFileObject
@@ -67,8 +68,15 @@ export class BackupData {
    * @returns {Promise<BackupData>} data
    */
   static async import (file) {
-    const zip = await (new globalThis.JSZip()).loadAsync(file)
-    const jsonText = await zip.file(INFO_FILE_NAME).async('string')
+    // Read the file as an ArrayBuffer and convert to Uint8Array
+    const arrayBuffer = await file.arrayBuffer()
+    const uint8Array = new Uint8Array(arrayBuffer)
+
+    // Unzip the file
+    const unzipped = unzipSync(uint8Array)
+
+    // Get the info.json content and parse it
+    const jsonText = strFromU8(unzipped[INFO_FILE_NAME])
 
     /**
      * convert the file
@@ -78,7 +86,8 @@ export class BackupData {
     async function convertFile (fileInfo) {
       if (fileInfo === undefined) { return }
 
-      const blob = await zip.file(fileInfo.reference).async('blob')
+      const uint8Data = unzipped[fileInfo.reference]
+      const blob = new Blob([uint8Data])
       return new File(
         [blob],
         fileInfo.name,
@@ -129,6 +138,7 @@ export class BackupData {
    */
   async getZip () {
     const files = new Map()
+    const zipData = {}
 
     if (this.GameInfo.shipModel instanceof File) {
       // @ts-ignore
@@ -170,18 +180,19 @@ export class BackupData {
 
     const text = JSON.stringify(this)
 
-    const zip = new globalThis.JSZip()
-    zip.file(INFO_FILE_NAME, text)
+    // Add info.json to zip data
+    zipData[INFO_FILE_NAME] = strToU8(text)
 
-    for (const guid in files) { zip.file(`${guid}`, files[guid]) }
+    // Add all referenced files to zip data
+    for (const guid in files) {
+      const file = files[guid]
+      const arrayBuffer = await file.arrayBuffer()
+      zipData[guid] = new Uint8Array(arrayBuffer)
+    }
 
-    return await zip.generateAsync({
-      type: 'blob',
-      mimeType: 'application/staplay',
-      compression: 'DEFLATE',
-      compressionOptions: {
-        level: 9
-      }
-    })
+    // Create the zip with compression level 9
+    const zipped = zipSync(zipData, { level: 9 })
+
+    return new Blob([zipped], { type: 'application/staplay' })
   }
 }

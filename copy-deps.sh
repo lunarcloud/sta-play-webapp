@@ -11,7 +11,7 @@ shx cp ./node_modules/three/build/three.module.min.js ./lib/
 shx cp ./node_modules/@google/model-viewer/dist/model-viewer.min.js ./lib/
 
 # file Saving
-shx cp ./node_modules/jszip/dist/jszip.min.js ./lib/
+shx cp ./node_modules/fflate/esm/browser.js ./lib/fflate.js
 
 # database
 shx cp ./node_modules/idb/build/index.js ./lib/idb.js
