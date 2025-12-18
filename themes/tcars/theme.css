@@ -15,6 +15,7 @@
     --main-a-hover-color: hsl(220deg 49% 38%);
     --main-a-active-color: hsl(220deg 38% 31%);
     --main-a-visited-color: hsl(268deg 23% 42%);
+    --main-font-unitless: 16;
     --void-bg: black;
     --min-decoration-height: 28em;
     --min-body-height: calc(1em + var(--min-decoration-height));
@@ -53,6 +54,7 @@ body {
     z-index: 1;
     padding: 0;
     overflow-y: hidden;
+    min-width: 60em; /* elements start looking wrong after this, but you can decrease the font size */
     grid-template-rows: 4.75em 1fr 4em;
     grid-template-columns: 8.5em 5em 9em 1fr 8.5em 15em 5em;
 
@@ -106,12 +108,13 @@ body {
         & right {
             display: block;
             position: absolute;
-            top: 15em;
+            top: 12em;
             left: unset;
-            bottom: 24.75em;
-            right: .45em;
-            width: 5em;
+            bottom: 22.125em;
+            right: 0em;
+            width: 4.5em;
             background-color: #6bf3f7;
+            clip-path: polygon(0.25em 0.25em, calc(100% - 0.4em) 0.35em, calc(100% - 0.125em) 100%, 0 100%);
         }
     }
 
@@ -120,7 +123,6 @@ body {
         grid-column: 3 / 7;
 
         content {
-            padding-top: 1em;
 
             traits {
                 position: absolute;
@@ -128,7 +130,7 @@ body {
                 flex-direction: column;
                 width: 6em;
                 left: 0.5em;
-                top: 4em;
+                top: 2.75em;
 
                 & > trait-display::part(internal) {
                     width: 100%;
@@ -138,12 +140,13 @@ body {
             }
 
             ship-alert::part(internal) {
-                margin-right: 2em;
+                margin-top: -0.5em;
             }
         }
 
         ul.players {
-            width: calc(100% - 8em);
+            width: calc(100% - 4em);
+            margin-left: -3em;
         }
     }
 
@@ -159,10 +162,10 @@ body {
             left: unset;
             right: 0.5em;
             top: 0.25em;
-            font-size: calc(var(--main-font-size)* 2);
+            font-size: calc(var(--main-font-size)* 1.5);
 
             & .edition-captains-log {
-                font-size: calc(var(--main-font-size)* 1.5);
+                font-size: calc(var(--main-font-size)* 1.25);
             }
         }
 
@@ -171,7 +174,7 @@ body {
             top: unset;
             bottom: 2em;
             right: 11em;
-            font-size: calc(var(--main-font-size) * 1.2);
+            font-size: var(--main-font-size);
         }
 
         #settings-btn {
@@ -179,15 +182,15 @@ body {
             top: unset;
             bottom: 0.5em;
             right: 11em;
-            font-size: calc(var(--main-font-size) * 1.2);
+            font-size: var(--main-font-size);
         }
 
         #font-up-btn {
             left: unset;
             top: unset;
-            bottom: 4em;
-            right: 6em;
-            font-size: calc(var(--main-font-size) * 1.2);
+            bottom: 3.5em;
+            right: 5.5em;
+            font-size: var(--main-font-size);
             transform: rotate(-53deg);
         }
 
@@ -195,8 +198,8 @@ body {
             left: unset;
             top: unset;
             bottom: 2em;
-            right: 5em;
-            font-size: calc(var(--main-font-size) * 1.2);
+            right: 4.5em;
+            font-size: var(--main-font-size);
             transform: rotate(-53deg);
         }
 
@@ -223,23 +226,23 @@ body {
             right: unset;
             left: .5em;
             bottom: 0.5em;
-            width: 9.5em;
+            width: 5.5em;
         }
 
         #threat-section {
             background: var(--trek-color-6);
             top: unset !important;
             right: unset;
-            left: 12.5em;
+            left: 7.5em;
             bottom: 0.5em;
-            width: 9.5em;
+            width: 5.5em;
         }
     }
 
     & > nav {
         position: absolute;
         top: unset !important;
-        left: 10.5em;
+        left: 3em;
         bottom: 0.5em;
         right: 20em;
         flex-flow: row nowrap;
