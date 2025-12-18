@@ -438,7 +438,7 @@ body > main {
 }
 
 /* Settings dialog styling to match theme */
-dialog {
+dialogs > dialog {
     background: linear-gradient(135deg, 
         var(--bg-darker) 0%,
         hsl(210deg 20% 12%) 50%,

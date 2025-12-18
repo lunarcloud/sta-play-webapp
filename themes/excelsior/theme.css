@@ -281,8 +281,8 @@ body {
             filter: grayscale(.66);
         }
 
-        & mission-tracker act, & trait-display, & li[is="player-display"] {
-            filter: saturate(1.25);
+        & mission-tracker act, & trait-display, & task-tracker::part(internal) {
+            filter: brightness(0.5);
             transition: filter 1s ease-in-out 0.25s;
         }
 

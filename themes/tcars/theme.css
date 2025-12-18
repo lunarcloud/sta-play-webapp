@@ -3,7 +3,7 @@
 
 :root,
 ::backdrop {
-    --main-color-bg: hsl(200deg 50% 1%); /* nearly-black */
+    --main-color-bg: lab(13 6.17 -29.46);
     --main-color-text: #ddd;
     --nav-color-bg: var(--main-color-text);
     --nav-color-text: var(--main-color-bg);
@@ -32,6 +32,21 @@
     --player-color-brown: var(--trek-color-4);
     --player-color-black: hsl(0deg 0% 13%);
     --player-color-white: hsl(0deg 0% 73%);
+
+    --tcars-accent: lab(76.48% -4.48 73.56);
+    --secondary-color-bg: lab(3.58% 1.1 -10.97);
+}
+
+@keyframes tcarsColorChange {
+    0% {
+        background-color: var(--trek-color-2);
+    }
+    20% {
+        background-color: var(--tcars-accent);
+    }
+    40% {
+        background-color: var(--trek-color-2);
+    }
 }
 
 html.alt-font {
@@ -55,8 +70,31 @@ body {
     padding: 0;
     overflow-y: hidden;
     min-width: 60em; /* elements start looking wrong after this, but you can decrease the font size */
-    grid-template-rows: 4.75em 1fr 4em;
+    grid-template-rows: 4em 1fr 4em;
     grid-template-columns: 8.5em 5em 9em 1fr 8.5em 15em 5em;
+    z-index: -100;
+    transition: background-color 2s ease-in-out 0.25s;
+
+    &[alert="grey"], &[alert="cloak"] {
+        background-color: var(--secondary-color-bg);
+
+        & nav {
+            filter: grayscale(.66);
+        }
+
+        & mission-tracker act, & trait-display, & li[is="player-display"] {
+            filter: saturate(1.25);
+            transition: filter 1s ease-in-out 0.25s;
+        }
+
+        & trait-display, & li[is="player-display"] {
+            box-shadow: 0 0 10px 0 #200505;
+        }
+
+        & > theme > decoration {
+            filter: brightness(0.5);
+        }
+    }
 
     & > theme > decoration {
         position: absolute;
@@ -65,7 +103,6 @@ body {
         overflow: hidden;
         z-index: -10;
         transition: filter 2s ease-in-out 0.25s;
-        background-color: hsl(240deg 88% 10%);
 
         & top-left,
         & top-right,
@@ -84,11 +121,48 @@ body {
             }
         }
 
-        & top-left img {
-            top: 0;
-            left: 0;
-            bottom: unset;
-            right: unset;
+        & top-left {
+
+            & > box {
+                display: block;
+                position: absolute;
+                z-index: -8;
+                height: 3.25em;
+                width: 2em;
+                color: black;
+                background-color: var(--trek-color-2);
+                animation: tcarsColorChange 4s infinite;
+                padding-left: 0.2em;
+                top: 0.45em;
+
+                &:nth-child(1) {
+                    left: 0.5em;
+                    animation-delay: 1s;
+                }
+
+                &:nth-child(2) {
+                    left: 3em;
+                    animation-delay: 3.25s;
+                }
+
+                &:nth-child(3) {
+                    left: 5.5em;
+                    animation-delay: 4.5s;
+                }
+
+                &:nth-child(4) {
+                    left: 8em;
+                    animation-delay: 6.25s;
+                }
+            }
+
+            & > img {
+                z-index: -10;
+                top: 0;
+                left: 0;
+                bottom: unset;
+                right: unset;
+            }
         }
 
         & top-right img {
@@ -153,7 +227,7 @@ body {
     & > header {
         grid-row: 1;
         grid-column: 4;
-        margin: 0 -3em;
+        margin: 0 -7em;
         background: transparent;
     }
 
@@ -230,7 +304,7 @@ body {
         }
 
         #threat-section {
-            background: var(--trek-color-6);
+            background: var(--tcars-accent);
             top: unset !important;
             right: unset;
             left: 7.5em;
@@ -280,6 +354,84 @@ body {
                     width: 16em;
                     border-radius: 0 1.5em 1.5em 0;
                 }
+            }
+        }
+    }
+}
+
+dialogs > dialog {
+
+
+    &[is="settings-dialog"] {
+        max-width: 30em;
+    }
+
+    & > header, & > footer {
+        background: var(--trek-color-1);
+        color: black;
+        font-weight: bold;
+
+        & button.close {
+            background: var(--trek-color-2);
+            text-transform: capitalize;
+
+            &:hover {
+                background-color: var(--tcars-accent);
+            }
+        }
+    }
+
+    & > footer {
+        padding: 0.5em 0;
+
+        & button.close {
+            padding: 0.25em 2.25em;
+        }
+    }
+
+    & > main {
+        background: var(--secondary-color-bg);
+        color: white;
+        font-size: calc(var(--main-font-size) * 1.2);
+
+        & dt {
+            font-weight: bold;
+        }
+
+        & dd br {
+            display: none; /* inline what otherwise is new-lined */
+        }
+
+        & button,
+        & select,
+        & input[type="file"] {
+            background-color: var(--trek-color-1);
+            border: 1px solid var(--trek-color-1);
+            border-radius: 0.5em 0 0 0.5em;
+            padding: 0.25em 0.5em;
+
+            &:hover {
+                background-color: var(--trek-color-2);
+                box-shadow: 0 0 15px hsl(190deg 75% 55% / 50%);
+                border-color: var(--trek-color-2);
+            }
+            &:focus {
+                background-color: var(--tcars-accent);
+                color: black;
+            }
+        }
+
+        & select,
+        & input[type="file"] {
+            background: var(--bg-dark-1);
+            border-radius: 0.5em 0 0 0.5em;
+            color: var(--main-color-text);
+            padding: 0.3em 0.5em;
+
+            &:focus {
+                outline: none;
+                border-color: var(--tcars-accent);
+                box-shadow: 0 0 10px hsl(190deg 75% 55% / 40%);
             }
         }
     }
