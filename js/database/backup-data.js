@@ -168,7 +168,7 @@ export class BackupData {
       }
     }
 
-    const text = JSON.stringify(this, undefined, 4)
+    const text = JSON.stringify(this)
 
     const zip = new globalThis.JSZip()
     zip.file(INFO_FILE_NAME, text)
@@ -177,7 +177,11 @@ export class BackupData {
 
     return await zip.generateAsync({
       type: 'blob',
-      mimeType: 'application/staplay'
+      mimeType: 'application/staplay',
+      compression: 'DEFLATE',
+      compressionOptions: {
+        level: 9
+      }
     })
   }
 }
