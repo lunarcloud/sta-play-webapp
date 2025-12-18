@@ -4,7 +4,6 @@
 ::backdrop {
     --main-font-body: "Jefferies", sans-serif;
     --main-font-headers: "Jefferies", sans-serif;
-    --main-font-size: 14pt;
     --main-color-bg: hsl(200deg 50% 1%); /* nearly-black */
     --void-bg: black;
     --trek-color-1: hsl(5deg 86% 44%);

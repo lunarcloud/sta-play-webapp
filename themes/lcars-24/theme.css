@@ -15,7 +15,6 @@
     --main-a-hover-color: hsl(220deg 49% 38%);
     --main-a-active-color: hsl(220deg 38% 31%);
     --main-a-visited-color: hsl(268deg 23% 42%);
-    --main-font-size: 14pt;
     --void-bg: black;
     --min-decoration-height: 28em;
     --min-body-height: calc(1em + var(--min-decoration-height));

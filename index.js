@@ -275,7 +275,7 @@ export class IndexController {
     }
 
     const value = parseFloat(savedSize)
-    document.documentElement.style.setProperty('--main-font-size', `${value}pt`)
+    document.documentElement.style.setProperty('--main-font-unitless', `${value}`)
   }
 
   /**
@@ -283,10 +283,10 @@ export class IndexController {
    * @param {number} amount amount to add
    */
   #editFontSize (amount) {
-    const valueText = getComputedStyle(document.documentElement).getPropertyValue('--main-font-size')
+    const valueText = getComputedStyle(document.documentElement).getPropertyValue('--main-font-unitless')
     let value = parseFloat(valueText)
     value += amount
-    document.documentElement.style.setProperty('--main-font-size', `${value}pt`)
+    document.documentElement.style.setProperty('--main-font-unitless', `${value}`)
     localStorage.setItem('fontSize', `${value}`)
   }
 

@@ -1,0 +1,258 @@
+@import url('../../fonts/pixelsagas.com/PS_Okuda/font.css');
+@import url('../../fonts/LCARS/font.css');
+
+:root,
+::backdrop {
+    --main-color-bg: hsl(200deg 50% 1%); /* nearly-black */
+    --main-color-text: #ddd;
+    --nav-color-bg: var(--main-color-text);
+    --nav-color-text: var(--main-color-bg);
+    --main-font-body: "Okuda", sans-serif;
+    --main-font-headers: "Okuda", sans-serif;
+    --shadow-color-text: hsl(180deg 25% 20%);
+    --dialog-color-backdrop: hsl(0deg 0% 0% / 70%);
+    --main-a-link-color: hsl(220deg 31% 41%);
+    --main-a-hover-color: hsl(220deg 49% 38%);
+    --main-a-active-color: hsl(220deg 38% 31%);
+    --main-a-visited-color: hsl(268deg 23% 42%);
+    --void-bg: black;
+    --min-decoration-height: 28em;
+    --min-body-height: calc(1em + var(--min-decoration-height));
+    --trek-color-1: lab(90.4% -50.19 -3.21);
+    --trek-color-2: lab(69.56% -23.11 -28.71);
+    --trek-color-3: hsl(243, 84%, 55%);
+    --trek-color-4: hsl(184, 79%, 76%);
+    --trek-color-5: hsl(209, 90%, 76%);
+    --trek-color-6: hsl(247, 44%, 53%);
+    --trek-color-highlight: var(--trek-color-3);
+    --player-color-red: var(--trek-color-1);
+    --player-color-blue: var(--trek-color-2);
+    --player-color-yellow: var(--trek-color-3);
+    --player-color-brown: var(--trek-color-4);
+    --player-color-black: hsl(0deg 0% 13%);
+    --player-color-white: hsl(0deg 0% 73%);
+}
+
+html.alt-font {
+    --main-font-body: "LCARS", sans-serif;
+    --main-font-headers: "LCARS", sans-serif;
+    --headers-weight: normal;
+    --headers-text-transform: uppercase;
+}
+
+.alt-font-available {
+    display: unset;
+}
+
+body, h1, h2, h3, h4, h5, h6 {
+    letter-spacing: 0.06em;
+}
+
+body nav {
+    align-items: center;
+}
+
+body {
+    z-index: 1;
+
+    decoration {
+        transition: filter 2s ease-in-out 0.25s;
+        background-color: hsl(240, 88%, 10%);
+
+        & top-left,
+        & top-right,
+        & bottom-right {
+            width: 100%;
+            height: 100%;
+            display: block;
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+
+            & img {
+                position: absolute;
+                width: 100%;
+            }
+        }
+
+        & top-left img {
+            top: 0;
+            left: 0;
+        }
+
+        & top-right img {
+            top: 0;
+            right: 0;
+        }
+
+        & bottom-right img {
+            bottom: 0;
+            right: 0;
+        }
+
+        & right {
+            display: block;
+            position: fixed;
+            top: 20vw;
+            bottom: 33vw;
+            right: .5vw;
+            width: 6.75vw;
+            background-color: #6bf3f7;
+        }
+    }
+
+    &[alert="grey"], &[alert="cloak"] {
+        decoration {
+            filter: grayscale(.4) brightness(0.66);
+        }
+    }
+}
+
+body {
+    padding-top: 0.5em;
+    padding-left: 0.5em;
+    grid-template-rows: 4.25em 1fr;
+    grid-template-columns: 8.5em 9em 1fr 8.5em 18em;
+    gap: 0;
+
+    & > main {
+        display: none;
+    }
+
+    & > header {
+        grid-row: 1;
+        grid-column: 3;
+        margin: 0 -3em;
+        background: transparent;
+    }
+
+    & > menu-items {
+
+        #game-name {
+            left: unset;
+            right: 0.5em;
+            top: 0.25em;
+            font-size: calc(var(--main-font-size)* 2);
+
+            & .edition-captains-log {
+                font-size: calc(var(--main-font-size)* 1.5);
+            }
+        }
+
+        #save-btn {
+            left: unset;
+            top: unset;
+            bottom: 2em;
+            right: 10em;
+            font-size: calc(var(--main-font-size) * 1.2);
+        }
+
+        #settings-btn {
+            left: unset;
+            top: unset;
+            bottom: 0.5em;
+            right: 10em;
+            font-size: calc(var(--main-font-size) * 1.2);
+        }
+
+        #font-up-btn {
+            left: unset;
+            top: unset;
+            bottom: 4em;
+            right: 5em;
+            font-size: calc(var(--main-font-size) * 1.2);
+            transform: rotate(-53deg);
+        }
+
+        #font-down-btn {
+            left: unset;
+            top: unset;
+            bottom: 2em;
+            right: 4em;
+            font-size: calc(var(--main-font-size) * 1.2);
+            transform: rotate(-53deg);
+        }
+
+        #momentum-section, #threat-section {
+            flex-direction: column;
+            padding: 0.5em;
+            border-radius: 1.5em 0 0 1.5em;
+
+            label {
+                text-align: right;
+            }
+
+            input {
+                background: lab(90.24% 0 -0.01 / 0.2);
+                color: black;
+                border-color: transparent;
+                border-radius: 0 0 0 .5em;
+            }
+        }
+
+        #momentum-section {
+            background: var(--trek-color-5);
+            top: unset !important;
+            right: unset;
+            left: .5em;
+            bottom: 0.5em;
+            width: 9.5em;
+        }
+
+        #threat-section {
+            background: var(--trek-color-6);
+            top: unset !important;
+            right: unset;
+            left: 12.5em;
+            bottom: 0.5em;
+            width: 9.5em;
+        }
+    }
+
+    & > nav {
+        position: absolute;
+        top: unset !important;
+        right: unset;
+        left: 10.5em;
+        bottom: 0.5em;
+        right: 20em;
+        flex-wrap: nowrap;
+        flex-direction: row;
+        height: 3.45em;
+
+        ul {
+            justify-content: flex-start;
+            flex-wrap: nowrap;
+            gap: 0 0.5em;
+            height: 100%;
+
+            li {
+                flex: unset;
+                width: 3.5em;
+                border-radius: 0 1.5em 1.5em 0;
+                line-height: 3em;
+
+                & a {
+                    line-height: unset;
+                }
+
+                &:first-child {
+                    width: 5em;
+                }
+
+                &:nth-child(2) {
+                    width: 4em;
+                }
+
+                &:nth-child(3) {
+                    width: 4.5em;
+                }
+
+                &.shipname {
+                    width: 14em;
+                    border-radius: 0 1.5em 1.5em 0;
+                }
+            }
+        }
+    }
+}

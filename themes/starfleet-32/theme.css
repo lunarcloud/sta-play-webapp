@@ -4,7 +4,7 @@
 ::backdrop {
     --main-font-body: "Okuda", sans-serif;
     --main-font-headers: "Okuda", sans-serif;
-    --main-font-size: 13pt;
+    --main-font-unitless: 13pt;
     --main-color-bg: hsl(210deg 20% 8%); /* dark blue-grey */
     --main-color-text: hsl(190deg 70% 85%);
     --nav-color-bg: var(--main-color-text);

@@ -16,7 +16,8 @@
     --main-a-hover-color: hsl(220deg 49% 38%);
     --main-a-active-color: hsl(220deg 38% 31%);
     --main-a-visited-color: hsl(268deg 23% 42%);
-    --main-font-size: 14pt;
+    --main-font-unitless: 14;
+    --main-font-size: calc(var(--main-font-unitless) * 1pt);
     --void-bg: black;
     --header-inner-bg: var(--secondary-color-bg);
     --header-outer-bg: var(--main-color-bg);
