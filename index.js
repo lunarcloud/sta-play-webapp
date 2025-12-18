@@ -2,6 +2,7 @@ import './components/input-progress/input-progress-element.js'
 import './components/welcome-dialog/welcome-dialog-element.js'
 import './components/settings-dialog/settings-dialog-element.js'
 import './components/importing-dialog/importing-dialog-element.js'
+import './components/exporting-dialog/exporting-dialog-element.js'
 import './components/message-dialog/message-dialog-element.js'
 import './components/confirm-dialog/confirm-dialog-element.js'
 import { MissionTrackerElement } from './components/mission-tracker/mission-tracker-element.js'
@@ -74,6 +75,11 @@ export class IndexController {
   confirmDialog
 
   /**
+   * @type {HTMLDialogElement|undefined}
+   */
+  exportingDialog
+
+  /**
    * Constructor.
    */
   constructor () {
@@ -140,6 +146,13 @@ export class IndexController {
     if (importingDialog instanceof HTMLDialogElement === false) {
       throw new Error('Importing dialog not setup!')
     }
+
+    // Check the exporting dialog
+    const exportingDialog = document.querySelector('dialog[is="exporting-dialog"]')
+    if (exportingDialog instanceof HTMLDialogElement === false) {
+      throw new Error('Exporting dialog not setup!')
+    }
+    this.exportingDialog = exportingDialog
 
     // Wire up the welcome dialog
     const welcomeDialog = document.querySelector('dialog[is="welcome-dialog"]')
@@ -917,9 +930,12 @@ export class IndexController {
       this.messageDialog?.show('Issue saving data.\n' + ex.message)
     }
     try {
+      this.exportingDialog?.showModal()
       await this.export(gameName)
     } catch (ex) {
       this.messageDialog?.show('Issue exporting data.\n' + ex.message)
+    } finally {
+      this.exportingDialog?.close()
     }
   }
 
