@@ -20,10 +20,10 @@
     --min-body-height: calc(1em + var(--min-decoration-height));
     --trek-color-1: lab(90.4% -50.19 -3.21);
     --trek-color-2: lab(69.56% -23.11 -28.71);
-    --trek-color-3: hsl(243, 84%, 55%);
-    --trek-color-4: hsl(184, 79%, 76%);
-    --trek-color-5: hsl(209, 90%, 76%);
-    --trek-color-6: hsl(247, 44%, 53%);
+    --trek-color-3: hsl(243deg 84% 55%);
+    --trek-color-4: hsl(184deg 79% 76%);
+    --trek-color-5: hsl(209deg 90% 76%);
+    --trek-color-6: hsl(247deg 44% 53%);
     --trek-color-highlight: var(--trek-color-3);
     --player-color-red: var(--trek-color-1);
     --player-color-blue: var(--trek-color-2);
@@ -54,10 +54,15 @@ body nav {
 
 body {
     z-index: 1;
+    padding-top: 0.5em;
+    padding-left: 0.5em;
+    grid-template-rows: 4.25em 1fr;
+    grid-template-columns: 8.5em 9em 1fr 8.5em 18em;
+    gap: 0;
 
     decoration {
         transition: filter 2s ease-in-out 0.25s;
-        background-color: hsl(240, 88%, 10%);
+        background-color: hsl(240deg 88% 10%);
 
         & top-left,
         & top-right,
@@ -106,14 +111,6 @@ body {
             filter: grayscale(.4) brightness(0.66);
         }
     }
-}
-
-body {
-    padding-top: 0.5em;
-    padding-left: 0.5em;
-    grid-template-rows: 4.25em 1fr;
-    grid-template-columns: 8.5em 9em 1fr 8.5em 18em;
-    gap: 0;
 
     & > main {
         display: none;
@@ -127,7 +124,6 @@ body {
     }
 
     & > menu-items {
-
         #game-name {
             left: unset;
             right: 0.5em;
@@ -183,7 +179,7 @@ body {
             }
 
             input {
-                background: lab(90.24% 0 -0.01 / 0.2);
+                background: lab(90.24% 0 -0.01 / 20%);
                 color: black;
                 border-color: transparent;
                 border-radius: 0 0 0 .5em;
@@ -212,12 +208,10 @@ body {
     & > nav {
         position: absolute;
         top: unset !important;
-        right: unset;
         left: 10.5em;
         bottom: 0.5em;
         right: 20em;
-        flex-wrap: nowrap;
-        flex-direction: row;
+        flex-flow: row nowrap;
         height: 3.45em;
 
         ul {
