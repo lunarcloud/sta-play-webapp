@@ -8,6 +8,8 @@
     --main-color-bg: hsl(120deg 20% 8%); /* dark green-black */
     --main-color-text: hsl(120deg 30% 75%);
     --void-bg: hsl(0deg 0% 5%);
+    --html-bg: hsl(120deg 20% 10%);
+    --body-bg: hsl(120deg 15% 5%);
     --trek-color-1: hsl(120deg 40% 30%); /* borg green */
     --trek-color-2: hsl(180deg 30% 25%); /* teal */
     --trek-color-3: hsl(120deg 50% 40%); /* bright green */
@@ -27,7 +29,7 @@
 
 html {
     min-height: 0;
-    background-color: #1a2a1a;
+    background-color: var(--html-bg);
 }
 
 html > body, decoration {
@@ -61,7 +63,7 @@ li[is="player-display"] {
 }
 
 html > body {
-    background-color: #0d0d0d;
+    background-color: var(--body-bg);
 
     & > header {
         bottom: unset;
