@@ -56,7 +56,6 @@ html.alt-font {
 
 body, h1, h2, h3, h4, h5, h6 {
     letter-spacing: 0.06em;
-    text-shadow: var(--temporal-glow);
 }
 
 body nav {
@@ -72,6 +71,10 @@ body {
         decoration {
             filter: grayscale(.4) brightness(0.66);
         }
+    }
+
+    & > header {
+        background: transparent !important;
     }
 }
 
@@ -381,18 +384,18 @@ decoration {
     }
 }
 
-/* Holographic text effects for headers */
-h1, h2, h3 {
-    animation: holographic-flicker 6s ease-in-out infinite;
+/* Holographic effect on decoration elements */
+decoration li a {
+    animation: holographic-pulse 6s ease-in-out infinite;
 }
 
-@keyframes holographic-flicker {
+@keyframes holographic-pulse {
     0%, 100% { 
-        text-shadow: var(--temporal-glow); 
+        opacity: 1;
     }
 
     50% { 
-        text-shadow: var(--temporal-glow), 0 0 5px var(--trek-color-3); 
+        opacity: 0.85;
     }
 }
 
@@ -402,19 +405,20 @@ decoration li a::after {
     position: absolute;
     inset: 0;
     background: 
-        radial-gradient(circle at 20% 50%, hsl(180deg 100% 90% / 15%) 0%, transparent 4%),
-        radial-gradient(circle at 80% 30%, hsl(180deg 100% 90% / 15%) 0%, transparent 3%),
-        radial-gradient(circle at 60% 70%, hsl(180deg 100% 90% / 15%) 0%, transparent 2%);
+        radial-gradient(circle at 20% 50%, hsl(180deg 100% 90% / 35%) 0%, transparent 8%),
+        radial-gradient(circle at 80% 30%, hsl(180deg 100% 90% / 30%) 0%, transparent 6%),
+        radial-gradient(circle at 60% 70%, hsl(180deg 100% 90% / 25%) 0%, transparent 5%),
+        radial-gradient(circle at 40% 20%, hsl(45deg 100% 80% / 20%) 0%, transparent 4%);
     pointer-events: none;
-    animation: chroniton-drift 12s linear infinite;
+    animation: chroniton-drift 8s linear infinite;
 }
 
 @keyframes chroniton-drift {
     0% {
-        background-position: 0% 0%, 100% 0%, 50% 100%;
+        background-position: 0% 0%, 100% 0%, 50% 100%, 25% 50%;
     }
 
     100% {
-        background-position: 100% 100%, 0% 100%, 0% 0%;
+        background-position: 100% 100%, 0% 100%, 0% 0%, 75% 25%;
     }
 }
