@@ -56,9 +56,8 @@ body {
     z-index: 1;
     padding-top: 0.5em;
     padding-left: 0.5em;
-    grid-template-rows: 4.25em 1fr;
-    grid-template-columns: 8.5em 9em 1fr 8.5em 18em;
-    gap: 0;
+    grid-template-rows: 4.75em 1fr 4em;
+    grid-template-columns: 8.5em 5em 9em 1fr 8.5em 15em 5em;
 
     decoration {
         transition: filter 2s ease-in-out 0.25s;
@@ -113,12 +112,34 @@ body {
     }
 
     & > main {
-        display: none;
+        grid-row: 2;
+        grid-column: 3 / 7;
+
+        content {
+            traits {
+                position: absolute;
+                display: flex;
+                flex-direction: column;
+                width: 6em;
+                left: 0.5em;
+                top: 4em;
+
+                & > trait-display::part(internal) {
+                    width: 100%;
+                    width: var(--stretch);
+                    border-radius: 0 0 .5em .5em;
+                }
+            }
+        }
+
+        ul.players {
+            width: calc(100% - 8em);
+        }
     }
 
     & > header {
         grid-row: 1;
-        grid-column: 3;
+        grid-column: 4;
         margin: 0 -3em;
         background: transparent;
     }
