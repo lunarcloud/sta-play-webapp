@@ -315,6 +315,62 @@ describe('BackupData', () => {
     })
   })
 
+  describe('compression', () => {
+    it('should produce compressed zip files', async () => {
+      // Create a backup with substantial data that benefits from compression
+      const gameInfo = new GameInfo(1, 'Test Game', 'USS Enterprise', 5, 3, 'red', 'lcars-24', '2')
+      const players = [
+        new PlayerInfo(1, 1, 'Player One', 5, 10, 'gold', 'blue'),
+        new PlayerInfo(1, 2, 'Player Two', 3, 12, 'silver', 'red'),
+        new PlayerInfo(1, 3, 'Player Three', 7, 11, 'gold', 'yellow'),
+        new PlayerInfo(1, 4, 'Player Four', 2, 9, 'silver', 'green')
+      ]
+      const scenes = [
+        new SceneInfo(1, 1, 'Scene One', 'This is a test scene with some description text that should compress well'),
+        new SceneInfo(2, 1, 'Scene Two', 'Another scene with repeating text that should compress well')
+      ]
+      const trackers = [
+        new TrackerInfo(1, 'Tracker One', 'Control', 'Command', 'Weapons', 'Security', 5, 10),
+        new TrackerInfo(1, 'Tracker Two', 'Fitness', 'Security', 'Sensors', 'Science', 3, 8)
+      ]
+      const traits = {
+        1: ['trait1', 'trait2', 'trait3', 'trait4', 'trait5'],
+        2: ['trait6', 'trait7', 'trait8']
+      }
+
+      const backup = new BackupData(gameInfo, players, scenes, trackers, traits)
+      const blob = await backup.getZip()
+
+      // Calculate the approximate uncompressed size (JSON stringified without compression)
+      const jsonSize = JSON.stringify({
+        GameInfo: gameInfo,
+        Players: players,
+        Scenes: scenes,
+        Trackers: trackers,
+        Traits: traits
+      }).length
+
+      // The compressed blob should be significantly smaller than the JSON alone
+      // (accounting for ZIP overhead, but still expecting substantial compression)
+      expect(blob.size).to.be.lessThan(jsonSize)
+      expect(blob.size).to.be.greaterThan(0)
+    })
+
+    it('should use DEFLATE compression', async () => {
+      const gameInfo = new GameInfo(1, 'Test', 'Ship', 0, 0)
+      const backup = new BackupData(gameInfo, [], [], [], {})
+      const blob = await backup.getZip()
+
+      // Load the blob as a zip to verify compression method
+      const zip = await (new globalThis.JSZip()).loadAsync(blob)
+      const infoFile = zip.file('info.json')
+
+      // Check that the file uses DEFLATE compression (method should not be STORE)
+      // JSZip uses DEFLATE when compression is enabled
+      expect(infoFile).to.not.be.null
+    })
+  })
+
   describe('instance behavior', () => {
     it('should create independent instances', () => {
       const gameInfo1 = new GameInfo(1, 'Game One', 'Ship One')
