@@ -1,8 +1,7 @@
 import './components/input-progress/input-progress-element.js'
 import './components/welcome-dialog/welcome-dialog-element.js'
 import './components/settings-dialog/settings-dialog-element.js'
-import './components/importing-dialog/importing-dialog-element.js'
-import './components/exporting-dialog/exporting-dialog-element.js'
+import './components/busy-dialog/busy-dialog-element.js'
 import './components/message-dialog/message-dialog-element.js'
 import './components/confirm-dialog/confirm-dialog-element.js'
 import { MissionTrackerElement } from './components/mission-tracker/mission-tracker-element.js'
@@ -77,7 +76,7 @@ export class IndexController {
   /**
    * @type {HTMLDialogElement|undefined}
    */
-  exportingDialog
+  busyDialog
 
   /**
    * Constructor.
@@ -141,18 +140,12 @@ export class IndexController {
     }
     alertDropdownEl.addEventListener('change', () => this.#setShipAlert(alertDropdownEl.value))
 
-    // Check the importing dialog
-    const importingDialog = document.querySelector('dialog[is="importing-dialog"]')
-    if (importingDialog instanceof HTMLDialogElement === false) {
-      throw new Error('Importing dialog not setup!')
+    // Check the busy dialog
+    const busyDialog = document.querySelector('dialog[is="busy-dialog"]')
+    if (busyDialog instanceof HTMLDialogElement === false) {
+      throw new Error('Busy dialog not setup!')
     }
-
-    // Check the exporting dialog
-    const exportingDialog = document.querySelector('dialog[is="exporting-dialog"]')
-    if (exportingDialog instanceof HTMLDialogElement === false) {
-      throw new Error('Exporting dialog not setup!')
-    }
-    this.exportingDialog = exportingDialog
+    this.busyDialog = busyDialog
 
     // Wire up the welcome dialog
     const welcomeDialog = document.querySelector('dialog[is="welcome-dialog"]')
@@ -184,7 +177,7 @@ export class IndexController {
       throw new Error('Confirm dialog not setup!')
     }
 
-    this.#setupSettings(settingsDialog, welcomeDialog, importingDialog)
+    this.#setupSettings(settingsDialog, welcomeDialog, busyDialog)
 
     // Setup Model-Viewer fullscreen view buttons
     const enterShipFullscreenBtn = document.getElementById('ship-enter-fullscreen')
@@ -441,9 +434,9 @@ export class IndexController {
    * Wire up all the settings.
    * @param {HTMLDialogElement} dialogEl          settings dialog element
    * @param {HTMLDialogElement} welcomeDialogEl   the welcome dialog element
-   * @param {HTMLDialogElement} importingDialog   the importing dialog element
+   * @param {HTMLDialogElement} busyDialog        the busy dialog element
    */
-  #setupSettings (dialogEl, welcomeDialogEl, importingDialog) {
+  #setupSettings (dialogEl, welcomeDialogEl, busyDialog) {
     document.getElementById('settings-btn').addEventListener('click', () => dialogEl.showModal())
     dialogEl.querySelector('button.clear-info').addEventListener('click', async () => {
       await this.db.clear()
@@ -458,7 +451,7 @@ export class IndexController {
       if (importEl.files.length === 0) {
         return
       }
-      importingDialog.showModal()
+      busyDialog.show('The application is loading data...')
       const file = importEl.files[0]
       try {
         if (!file.name.endsWith('.staplay')) {
@@ -471,7 +464,7 @@ export class IndexController {
         }
       } finally {
         importEl.value = null
-        importingDialog.close()
+        busyDialog.close()
       }
     })
 
@@ -930,12 +923,12 @@ export class IndexController {
       this.messageDialog?.show('Issue saving data.\n' + ex.message)
     }
     try {
-      this.exportingDialog?.showModal()
+      this.busyDialog?.show('The application is creating your file...')
       await this.export(gameName)
     } catch (ex) {
       this.messageDialog?.show('Issue exporting data.\n' + ex.message)
     } finally {
-      this.exportingDialog?.close()
+      this.busyDialog?.close()
     }
   }
 

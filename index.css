@@ -310,7 +310,7 @@ dialogs > dialog {
         }
     }
 
-    &[is="importing-dialog"] {
+    &[is="busy-dialog"] {
       width: fit-content;
 
       main {
