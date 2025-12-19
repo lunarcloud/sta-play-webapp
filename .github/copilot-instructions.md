@@ -39,44 +39,39 @@ The repository is organized as follows:
 
 Use these commands to perform common development tasks:
 
-* **Restore NPM Tools**:
+* **Initial Setup** (required before first run):
   ```bash
-  npm i
-  ```
-
-* **Set up the third-party libraries for use**:
-  ```bash
-  npm run copy-deps
+  npm i                # Install NPM dependencies
+  npm run copy-deps    # Copy third-party libraries to lib/
+  npx playwright install chromium  # Install browser for testing (one-time setup)
   ```
 
 * **Run the application locally**:
   ```bash
   npm run serve
   ```
+  Access the application at `http://localhost:3000` (default port may vary).
 
-* **Check the application for style errors**:
+* **Code Quality Checks**:
   ```bash
-  npm run lint
+  npm run lint         # Run all linters (JavaScript, HTML, CSS)
+  npm run lint-fix     # Automatically fix style errors where possible
+  npm run eslint       # Run JavaScript linter only
+  npm run htmllint     # Run HTML linter only
+  npm run csslint      # Run CSS linter only
   ```
 
-* **Perform automatic fixes for common style errors**:
+* **Testing**:
   ```bash
-  npm run lint-fix
+  npm test             # Run all tests once
+  npm run test:watch   # Run tests in watch mode (auto-rerun on changes)
+  npm run test:coverage # Run tests with coverage report
   ```
+  Coverage reports are saved to the `coverage/` directory.
 
-* **Run unit tests**:
+* **Custom Elements Manifest** (for IDE support):
   ```bash
-  npm test
-  ```
-
-* **Run unit tests in watch mode**:
-  ```bash
-  npm run test:watch
-  ```
-
-* **Run unit tests with coverage**:
-  ```bash
-  npm run test:coverage
+  npm run cem          # Generate custom elements manifest for VSCode
   ```
 
 
@@ -94,39 +89,87 @@ Use these commands to perform common development tasks:
 * Components should use CSS that is isolated either via specific identifier (i.e. "dialog[is=special-dialog] { ... }) or shadow DOM styling.
 * **Accessibility**: All text must maintain sufficient contrast with backgrounds for readability. Follow WCAG AA contrast guidelines at minimum.
 * **Validation**: Input validation should reject invalid values (e.g., empty strings where meaningful values are required) and throw appropriate errors.
+* **Module Structure**: JavaScript should use ES modules, classes, and async/await where applicable.
+* **Image Optimization**: Images should be well-optimized, modern formats (webp, svg, avif).
+* **Dependencies**: Avoid relying on CDNs and minimize adding new dependencies. All dependencies should be vendored via the copy-deps script.
 
 
 ## Quality Tools and Practices
 
-* **Code Analysis**: The project uses "lint" analyzers configured via "package.json":
-  - eslint for javascript
-  - linthtml for HTML 
-  - stylelint for CSS
+* **Code Analysis**: The project uses lint analyzers to enforce code quality:
+  - **ESLint** for JavaScript (configured in `eslint.config.js`)
+    - Uses neostandard configuration
+    - Includes JSDoc validation
+    - Special rules for test files to allow Chai assertions
+  - **linthtml** for HTML (configured in `.linthtmlrc.json`)
+    - Validates HTML structure and attributes
+    - Enforces accessibility requirements (alt text, labels)
+    - Prohibits deprecated tags
+  - **stylelint** for CSS (configured in `.stylelintrc.json`)
+    - Uses standard CSS configuration
+    - Allows vendor prefixes (needed for cross-browser support)
+    - Allows custom elements and pseudo-classes
+
+  **See [LINTING.md](.github/LINTING.md) for detailed linting documentation.**
+
 * **Unit Testing**: The project uses Web Test Runner with Playwright for browser-native ES module testing:
   - Tests are located in the `test/` directory
   - Test files follow the `*.test.js` naming convention
-  - Uses Chai for assertions
+  - Uses `@esm-bundle/chai` for assertions
   - Tests run in actual browser environments (Chromium via Playwright)
-  - All new code should include corresponding unit tests
-* **EditorConfig**: The .editorconfig file enforces consistent code style across IDEs
-* **JSDoc**: All ECMAScript methods, classes, fields, and typing information shall be documented via the jsdoc syntax.
+  - Configuration in `web-test-runner.config.js`
+  - **All new code should include corresponding unit tests**
+  - **Test Coverage Requirements**:
+    - Components: Test registration, shadow DOM structure, attributes, properties, events, and methods
+    - Utilities: Test all exported functions with edge cases
+    - Current test coverage includes ~5 components and ~5 utility modules
+    - Missing tests: busy-dialog, mission-tracker, player-display, settings-dialog, task-tracker, welcome-dialog components
+
+  **See [TESTING.md](.github/TESTING.md) for comprehensive testing documentation.**
+
+* **EditorConfig**: The `.editorconfig` file enforces consistent code style across IDEs:
+  - LF line endings
+  - 4-space indentation
+  - UTF-8 encoding for source files
+  - Trailing whitespace removal
+
+* **JSDoc**: All ECMAScript methods, classes, fields, and typing information shall be documented via JSDoc syntax:
+  - Use `@param`, `@returns`, `@throws` tags
+  - Document all public methods and properties
+  - Custom JSDoc tags: `@attr`, `@cssprop`, `@tagname` for web components
+
+* **Custom Elements Manifest**: Generated metadata for IDE support:
+  - Run `npm run cem` to generate manifest
+  - VSCode configuration in `.vscode/settings.json` uses manifest for autocomplete
 
 ### Running Quality Checks Locally
 
 Before committing code, developers should run:
 
 ```bash
-# Restore dependencies
+# Initial setup (one-time)
 npm i
+npm run copy-deps
+npx playwright install chromium
 
-# Run the Lint analyzers, automatically fixing some errors
-npm run lint-fix
+# Before each commit
+npm run lint-fix    # Auto-fix style issues
+npm test            # Run all unit tests
 
-# Run unit tests
-npm test
+# Review and fix any remaining issues reported
 ```
 
-And correct any remaining issues reported.
+### CI/CD Pipeline
+
+The GitHub Actions workflow (`.github/workflows/code-quality.yml`) runs on all pull requests:
+1. Installs dependencies
+2. Copies third-party libraries
+3. Installs Playwright browser
+4. Runs all three linters (JavaScript, HTML, CSS)
+5. Runs unit tests with coverage
+6. Uploads coverage report as artifact
+
+All checks must pass before merging.
 
 ## Boundaries and Guardrails
 
