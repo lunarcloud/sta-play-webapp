@@ -96,6 +96,19 @@ body {
         }
     }
 
+    &.edition-captains-log > theme > decoration {
+        & top-left {
+
+            & box {
+                display: none;
+            }
+
+            & > img {
+                left: -10.5em;
+            }
+        }
+    }
+
     & > theme > decoration {
         position: absolute;
         display: block;
@@ -189,6 +202,19 @@ body {
             width: 4.5em;
             background-color: #6bf3f7;
             clip-path: polygon(0.25em 0.25em, calc(100% - 0.4em) 0.35em, calc(100% - 0.125em) 100%, 0 100%);
+        }
+    }
+
+    &.edition-captains-log {
+        grid-template-columns: 5em 0 9em 1fr 8.5em 15em 5em;
+        & > main {
+            grid-column: 2 / 7;
+        }
+        & nav {
+            left: 6.5em;
+        }
+        & ship-alert::part(internal) {
+            margin-top: 0em;
         }
     }
 
