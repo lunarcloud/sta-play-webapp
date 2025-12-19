@@ -29,7 +29,7 @@ export function setupNumberInputScroll (el) {
     return
   }
 
-  if ('inputScrollSetup' in el && el.inputScrollSetup === true) {
+  if ('inputScrollSetup' in el && el.inputScrollSetup) {
     console.warn('Ignoring already setup input scrolling on element: ' + el)
     return
   }

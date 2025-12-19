@@ -236,12 +236,9 @@ export class TaskTrackerElement extends HTMLElement {
       this.#shipSystemEl, this.#shipDepartmentEl)
 
     // Ensure all this is only shown when legacy trackers is enabled
-    attributeEl.classList.add('legacy-controls')
-    departmentEl.classList.add('legacy-controls')
-    shipSystemEl.classList.add('legacy-controls')
-    shipDepartmentEl.classList.add('legacy-controls')
-    listDtEl.classList.add('legacy-controls')
-    listDdEl.classList.add('legacy-controls')
+    for (const el of [attributeEl, departmentEl, shipSystemEl, shipDepartmentEl, listDtEl, listDdEl]) {
+      el.classList.add('legacy-controls')
+    }
 
     // Allow Toggling between Character and Ship Stats
     const statsToggleParentEl = document.createElement('label')

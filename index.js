@@ -333,11 +333,11 @@ export class IndexController {
    * @param {boolean} use whether to use the alternative font
    */
   #setAltFont (use) {
-    document.documentElement.classList.toggle('alt-font', use === true)
+    document.documentElement.classList.toggle('alt-font', use)
 
     const altFontCheckbox = document.getElementById('alt-font-toggle')
     if (altFontCheckbox instanceof HTMLInputElement) {
-      altFontCheckbox.checked = use === true
+      altFontCheckbox.checked = use
     }
   }
 
@@ -351,7 +351,7 @@ export class IndexController {
       throw new Error('Theme selector element is wrong/missing!')
     }
 
-    if (['1', '2', 'captains-log'].includes(edition) === false) {
+    if (!['1', '2', 'captains-log'].includes(edition)) {
       edition = '2'
     }
 
@@ -370,16 +370,16 @@ export class IndexController {
    * @param {boolean} use whether to use the legacy task trackers
    */
   #setLegacyTaskTrackers (use) {
-    document.body.classList.toggle('legacy-task-trackers', use === true)
+    document.body.classList.toggle('legacy-task-trackers', use)
 
     const legacyTrackersCheckbox = document.getElementById('legacy-task-tracker-toggle')
     if (legacyTrackersCheckbox instanceof HTMLInputElement) {
-      legacyTrackersCheckbox.checked = use === true
+      legacyTrackersCheckbox.checked = use
     }
 
     const trackerEls = document.getElementsByTagName('task-tracker')
     for (const el of trackerEls) {
-      el.toggleAttribute('legacy-controls', use === true)
+      el.toggleAttribute('legacy-controls', use)
     }
   }
 
@@ -667,11 +667,12 @@ export class IndexController {
 
     const gameName = document.body.getAttribute('loaded-game-name') || DefaultGameName
 
-    const momentumValue = editionSelectEl.value === 'captains-log'
+    const isCaptainsLog = editionSelectEl.value === 'captains-log'
+    const momentumValue = isCaptainsLog
       ? momentumToggleEl.checked ? 1 : 0
       : momentumEl.value
 
-    const threatValue = editionSelectEl.value === 'captains-log'
+    const threatValue = isCaptainsLog
       ? threatToggleEl.checked ? 1 : 0
       : threatEl.value
 
@@ -849,8 +850,7 @@ export class IndexController {
     }
 
     newPlayerEl.setAttribute('player-index', `${playerIndex}`)
-    const playerId = `player-${playerIndex}`
-    newPlayerEl.id = playerId
+    newPlayerEl.id = `player-${playerIndex}`
 
     if (info?.image instanceof File) {
       newPlayerEl.imageFile = info.image
@@ -877,7 +877,7 @@ export class IndexController {
 
     // Add 2 threat for the new player (if not just loading)
     const threatEl = document.getElementById('threat-pool')
-    if (typeof (info) === 'undefined' && threatEl instanceof HTMLInputElement === true) {
+    if (typeof (info) === 'undefined' && threatEl instanceof HTMLInputElement) {
       const threatValue = parseInt(threatEl.value)
       threatEl.value = `${threatValue + 2}`
     }
@@ -941,12 +941,11 @@ export class IndexController {
     const shipName = document.getElementById('shipname').textContent ?? 'game'
     const fileName = gameName === DefaultGameName ? `${shipName}.${Date.now()}` : gameName
     const file = await this.db.export(gameName)
-    const mimeOpts = {
+
+    await saveBlobAs(`${fileName}.staplay`, file, {
       description: 'STA Play Backup',
       mimes: [{ 'application/staplay': '.staplay' }]
-    }
-
-    await saveBlobAs(`${fileName}.staplay`, file, mimeOpts, 'downloads', true)
+    }, 'downloads', true)
   }
 
   /**
