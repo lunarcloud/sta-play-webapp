@@ -34,10 +34,10 @@
     --ship-display-col-2: 2;
     --ship-display-row: 1;
     --main-content-col-start: 1;
-    --main-content-col-end: 4;
+    --main-content-col-end: 3;
     --main-content-row: 2;
     --controls-1-col: 1;
-    --controls-2-col: 2;
+    --controls-2-col: 2 / 5;
     --controls-row: 3;
 }
 
@@ -49,7 +49,7 @@ html {
 }
 
 body, decoration {
-    grid-template-columns: repeat(2, 27em) 1fr var(--traits-display-width);
+    grid-template-columns: 1fr 1fr var(--traits-display-width);
     grid-template-rows: var(--ship-display-height) 1fr var(--controls-height);
     gap: 0;
     height: 100dvh;
@@ -57,7 +57,7 @@ body, decoration {
     inset: 0;
     margin: 0;
     padding: 0;
-    min-width: 66em;
+    min-width: 50em;
     min-height: 30em;
 }
 
@@ -74,7 +74,7 @@ body.edition-captains-log {
     --controls-row: 4;
 
     &, & decoration {
-        grid-template-columns: repeat(2, 27em) 1fr;
+        grid-template-columns: 1fr 1fr;
         grid-template-rows: var(--ship-display-height) 4em 1fr var(--controls-height);
     }
 
@@ -311,11 +311,10 @@ body {
     & nav {
         grid-row: var(--controls-row);
         grid-column: var(--controls-2-col);
-        padding: 0 0.25em 0 1.75em;
-        margin: auto;
-        justify-content: space-evenly;
         padding-top: 0.75em;
-        height: calc(100% - 1.25em);
+        height: calc(100% - 2em);
+        padding-right: 1em;
+        padding-bottom: 0.5em;
         transition: filter 2s ease-in-out 0.25s;
         
         & ul li {
@@ -336,10 +335,7 @@ body {
         grid-row: var(--main-content-row);
         grid-column: var(--main-content-col-start) / var(--main-content-col-end);
         overflow: auto;
-        margin-top: 0.6em;
         margin-left: 1em;
-        height: calc(100% - 0.7em);
-        width: calc(100% - 1.125em);
 
         & content,
         &.players {

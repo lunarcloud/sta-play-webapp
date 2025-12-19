@@ -267,9 +267,13 @@ body {
 
     & > header {
         grid-row: 1;
-        grid-column: 4;
-        margin: 0 -7em;
-        background: transparent;
+        grid-column: 3 / 6;
+        margin: 0 -3em 0 1em;
+        clip-path: polygon(4em 0, calc(100% - 7em) 0, 100% 100%, 0 100%);
+
+        & #ship-enter-fullscreen {
+            margin-right: 2em;
+        }
     }
 
     & > menu-items {

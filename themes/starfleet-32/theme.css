@@ -486,10 +486,6 @@ dialogs > dialog {
             font-weight: bold;
         }
 
-        & dd br {
-            display: none; /* inline what otherwise is new-lined */
-        }
-
         & button,
         & select,
         & input[type="file"] {
