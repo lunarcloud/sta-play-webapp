@@ -43,6 +43,15 @@ npm run lint-fix    # Fix style issues
 npm test            # Verify all tests pass
 ```
 
+The project has three linters configured:
+- **ESLint** for JavaScript - enforces code style and JSDoc validation
+- **linthtml** for HTML - validates structure and accessibility
+- **stylelint** for CSS - ensures consistent styling
+
+📘 **For detailed information:**
+- Linting rules and configuration: [.github/LINTING.md](.github/LINTING.md)
+- Testing patterns and best practices: [.github/TESTING.md](.github/TESTING.md)
+
 ## Testing
 The project uses [@web/test-runner](https://modern-web.dev/docs/test-runner/overview/) for unit testing with browser-native ES modules support.
 

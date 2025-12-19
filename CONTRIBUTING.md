@@ -34,10 +34,14 @@ Ideally, you should be solving an open issue and including as many **screenshots
   * Avoid CSS or javascript in all HTML files. Separate responsibilities allow flexibility like the theming system.
   * This is open source software. Consider the people who will read your code, and make it look nice for them. Document as much as possible and use a neutral, objective tone.
   * Don't rely on CDNs and avoid adding dependencies as much as possible.
-  * JavaScript should be using modules, classes, async where applicable 
+  * JavaScript should be using modules, classes, async where applicable
   * Images should be well-optimized, modern formats (webp, svg, avif)
   * Follow browser compatibility guidelines - all features must work in Chrome, Edge, Safari, and Firefox
   * Maintain backwards compatibility with existing `.staplay` save files
+
+📘 **See also:**
+- [LINTING.md](.github/LINTING.md) - Detailed linting rules and configuration
+- [TESTING.md](.github/TESTING.md) - Comprehensive testing guide
 
 ## Testing Guidelines
 

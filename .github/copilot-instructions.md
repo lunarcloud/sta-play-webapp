@@ -110,6 +110,8 @@ Use these commands to perform common development tasks:
     - Allows vendor prefixes (needed for cross-browser support)
     - Allows custom elements and pseudo-classes
 
+  **See [LINTING.md](.github/LINTING.md) for detailed linting documentation.**
+
 * **Unit Testing**: The project uses Web Test Runner with Playwright for browser-native ES module testing:
   - Tests are located in the `test/` directory
   - Test files follow the `*.test.js` naming convention
@@ -122,6 +124,8 @@ Use these commands to perform common development tasks:
     - Utilities: Test all exported functions with edge cases
     - Current test coverage includes ~5 components and ~5 utility modules
     - Missing tests: busy-dialog, mission-tracker, player-display, settings-dialog, task-tracker, welcome-dialog components
+
+  **See [TESTING.md](.github/TESTING.md) for comprehensive testing documentation.**
 
 * **EditorConfig**: The `.editorconfig` file enforces consistent code style across IDEs:
   - LF line endings
