@@ -478,9 +478,12 @@ dialogs > dialog {
 
     & > main {
         background: var(--gradient-bg);
-            color: var(--main-color-text);
+        color: var(--main-color-text);
         font-size: calc(var(--main-font-size) * 1.2);
 
+        & hr {
+            border-color: var(--trek-color-highlight);
+        }
         & dt {
             font-weight: bold;
         }

@@ -251,4 +251,8 @@ dialogs > dialog {
     dd button {
         display: inline-block;
     }
+
+    &[is="settings-dialog"] {
+        min-width: 37em;
+    }
 }

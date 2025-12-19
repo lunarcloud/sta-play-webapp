@@ -239,6 +239,10 @@ body {
 
         content {
 
+            #general-text h1 {
+                text-indent: 0.5em;
+            }
+
             traits {
                 position: absolute;
                 display: flex;
@@ -485,7 +489,7 @@ dialogs > dialog {
 
         & button,
         & select,
-        & input[type="file"] {
+        & input {
             background-color: var(--trek-color-1);
             border: 1px solid var(--trek-color-1);
             border-radius: 0 0.5em 0.5em 0;
@@ -503,8 +507,8 @@ dialogs > dialog {
         }
 
         & select,
-        & input[type="file"] {
-            background: var(--bg-dark-1);
+        & input {
+            background: var(--secondary-color-bg);
             border-radius: 0.5em 0 0 0.5em;
             color: var(--main-color-text);
             padding: 0.3em 0.5em;

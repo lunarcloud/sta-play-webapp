@@ -108,9 +108,6 @@ body.edition-captains-log {
     }
 }
 
-dialogs > dialog {
-    text-shadow: none;
-}
 
 /* Decoration styling */
 
@@ -515,4 +512,89 @@ task-tracker::part(internal) {
 trait-display {
     border: 1px solid var(--trek-color-2);
     box-shadow: 0 0 3px var(--trek-color-4);
+}
+
+dialogs > dialog {
+    text-shadow: none;
+}
+
+dialogs > dialog {
+    background-color: black;
+    border-radius: 0;
+    box-shadow: 0 0 2px var(--trek-color-4);
+    border-color: var(--trek-color-highlight);
+
+    &[is="settings-dialog"] {
+        max-width: 30em;
+    }
+
+    & > header, & > footer {
+        background: var(--hex-pattern-bg);
+        background-size: 12px 21px, 12px 21px, 12px 21px, 100% 100%;
+        background-position: 0 0, 0 0, 0 0, 0 0;
+        color: black;
+        font-weight: bold;
+
+        & button.close {
+            border-radius: unset;
+        }
+    }
+
+    & > header {
+        color: var(--main-color-text);
+    }
+
+    & > footer {
+        padding: 0.5em 0;
+
+        & button.close {
+            padding: 0.25em 2.25em;
+        }
+    }
+
+    & > main {
+        background: var(--gradient-bg);
+        color: var(--main-color-text);
+        font-size: calc(var(--main-font-size) * 1.2);
+
+        & hr {
+            border-color: var(--trek-color-highlight);
+        }
+        & dt {
+            font-weight: bold;
+        }
+
+        & button,
+        & select,
+        & input {
+            background-color: black;
+            color: var(--main-color-text);
+            border: 1px solid var(--trek-color-1);
+            border-radius: 0.5em 0 0 0.5em;
+            padding: 0.25em 0.5em;
+
+            &:hover {
+                box-shadow: 0 0 15px var(--trek-color-5);
+                border-color: var(--trek-color-2);
+            }
+            &:focus {
+                box-shadow: 0 0 15px var(--trek-color-highlight);
+            }
+        }
+
+        & select,
+        & input {
+            background-color: black;
+            border-radius: 0.5em 0 0 0.5em;
+            color: var(--main-color-text);
+            padding: 0.3em 0.5em;
+            margin-bottom: 0.5em;
+
+            &:focus {
+                outline: none;
+                border-color: var(--trek-color-5);
+                box-shadow: 0 0 10px var(--trek-color-highlight);
+            }
+        }
+    }
 }
