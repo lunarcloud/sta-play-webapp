@@ -243,8 +243,7 @@ decoration {
 }
 
 dialogs > dialog {
-
-    dd input[type=file] {
+    dd input[type="file"] {
         display: block;
     }
 

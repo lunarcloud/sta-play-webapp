@@ -516,9 +516,6 @@ trait-display {
 
 dialogs > dialog {
     text-shadow: none;
-}
-
-dialogs > dialog {
     background-color: black;
     border-radius: 0;
     box-shadow: 0 0 2px var(--trek-color-4);
@@ -560,6 +557,7 @@ dialogs > dialog {
         & hr {
             border-color: var(--trek-color-highlight);
         }
+
         & dt {
             font-weight: bold;
         }
@@ -577,6 +575,7 @@ dialogs > dialog {
                 box-shadow: 0 0 15px var(--trek-color-5);
                 border-color: var(--trek-color-2);
             }
+
             &:focus {
                 box-shadow: 0 0 15px var(--trek-color-highlight);
             }

@@ -303,7 +303,7 @@ dialogs > dialog {
         font-size: calc(var(--main-font-size) * 1.1);
         max-width: 25em;
 
-        dd input[type=file] {
+        dd input[type="file"] {
             display: block;
         }
 
@@ -363,7 +363,6 @@ dialogs > dialog {
         min-height: min(1em, 10vh);
 
         & dl {
-            margin-top: 0.5em;
             margin-bottom: 0;
             margin-top: 0.125em;
         }

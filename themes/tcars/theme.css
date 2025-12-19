@@ -3,7 +3,7 @@
 
 :root,
 ::backdrop {
-    --main-color-bg: lab(13 6.17 -29.46);
+    --main-color-bg: lab(13% 6.17 -29.46);
     --main-color-text: #ddd;
     --nav-color-bg: var(--main-color-text);
     --nav-color-text: var(--main-color-bg);
@@ -32,7 +32,6 @@
     --player-color-brown: var(--trek-color-4);
     --player-color-black: hsl(0deg 0% 13%);
     --player-color-white: hsl(0deg 0% 73%);
-
     --tcars-accent: lab(76.48% -4.48 73.56);
     --secondary-color-bg: lab(3.58% 1.1 -10.97);
     --grid-bg-overlay: repeating-radial-gradient(circle at 100% 0%,
@@ -51,13 +50,15 @@
             transparent 40px);
 }
 
-@keyframes tcarsColorChange {
+@keyframes tcars-color-change {
     0% {
         background-color: var(--trek-color-2);
     }
+
     20% {
         background-color: var(--tcars-accent);
     }
+
     40% {
         background-color: var(--trek-color-2);
     }
@@ -80,7 +81,6 @@ body, h1, h2, h3, h4, h5, h6 {
 
 
 body {
-    z-index: 1;
     padding: 0;
     overflow-y: hidden;
     min-width: 60em; /* elements start looking wrong after this, but you can decrease the font size */
@@ -113,7 +113,6 @@ body {
 
     &.edition-captains-log > theme > decoration {
         & top-left {
-
             & box {
                 display: none;
             }
@@ -150,7 +149,6 @@ body {
         }
 
         & top-left {
-
             & > box {
                 display: block;
                 position: absolute;
@@ -159,7 +157,7 @@ body {
                 width: 2em;
                 color: black;
                 background-color: var(--trek-color-2);
-                animation: tcarsColorChange 4s infinite;
+                animation: tcars-color-change 4s infinite;
                 padding-left: 0.2em;
                 top: 0.45em;
 
@@ -213,7 +211,7 @@ body {
             top: 12em;
             left: unset;
             bottom: 22.125em;
-            right: 0em;
+            right: 0;
             width: 4.5em;
             background-color: #6bf3f7;
             clip-path: polygon(0.25em 0.25em, calc(100% - 0.4em) 0.35em, calc(100% - 0.125em) 100%, 0 100%);
@@ -222,14 +220,27 @@ body {
 
     &.edition-captains-log {
         grid-template-columns: 5em 0 9em 1fr 8.5em 15em 5em;
+
         & > main {
             grid-column: 2 / 7;
         }
+
         & nav {
             left: 6.5em;
+            height: 1.8em;
+
+            ul > li {
+                line-height: 1em;
+
+                &:nth-child(1),
+                &:nth-child(2) {
+                    width: 6em;
+                }
+            }
         }
+
         & ship-alert::part(internal) {
-            margin-top: 0em;
+            margin-top: 0;
         }
     }
 
@@ -238,7 +249,6 @@ body {
         grid-column: 3 / 7;
 
         content {
-
             #general-text h1 {
                 text-indent: 0.5em;
             }
@@ -378,20 +388,6 @@ body {
         }
     }
 
-
-    &.edition-captains-log nav {
-        height: 1.8em;
-
-        ul > li {
-            line-height: 1em;
-
-            &:nth-child(1),
-            &:nth-child(2) {
-                width: 6em;
-            }
-        }
-    }
-
     &:not(.edition-captains-log) nav {
         height: 3.5em;
 
@@ -445,8 +441,6 @@ body {
 }
 
 dialogs > dialog {
-
-
     &[is="settings-dialog"] {
         max-width: 30em;
     }
@@ -484,7 +478,7 @@ dialogs > dialog {
         }
 
         & dd br {
-            /*display: none; /* inline what otherwise is new-lined */
+            /* display: none; /* inline what otherwise is new-lined */
         }
 
         & button,
@@ -500,6 +494,7 @@ dialogs > dialog {
                 box-shadow: 0 0 15px hsl(190deg 75% 55% / 50%);
                 border-color: var(--trek-color-2);
             }
+
             &:focus {
                 background-color: var(--tcars-accent);
                 color: black;
