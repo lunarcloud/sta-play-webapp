@@ -12,15 +12,41 @@ Play App for Star Trek Adventures
 A utility for GMs running a game of Star Trek Adventures TTRPG or players of the Captain's Log Solo RPG to display high-level player information during a game session.
 
 ## Development Setup
+
+### Initial Setup
 ```sh
-npm i
-npm run copy-deps
-npm serve
+npm i                              # Install dependencies
+npm run copy-deps                  # Copy third-party libraries to lib/
+npx playwright install chromium    # Install browser for testing (one-time)
+npm run serve                      # Start development server
+```
+
+The application will be available at `http://localhost:3000` (or the next available port).
+
+### Available Commands
+
+| Command | Description |
+|---------|-------------|
+| `npm run serve` | Start local development server |
+| `npm run lint` | Run all linters (JavaScript, HTML, CSS) |
+| `npm run lint-fix` | Auto-fix linting issues where possible |
+| `npm test` | Run unit tests once |
+| `npm run test:watch` | Run tests in watch mode |
+| `npm run test:coverage` | Generate test coverage report |
+| `npm run cem` | Generate custom elements manifest for IDE support |
+
+### Code Quality
+
+Before committing, run:
+```sh
+npm run lint-fix    # Fix style issues
+npm test            # Verify all tests pass
 ```
 
 ## Testing
 The project uses [@web/test-runner](https://modern-web.dev/docs/test-runner/overview/) for unit testing with browser-native ES modules support.
 
+### Running Tests
 ```sh
 # Run tests once
 npm test
@@ -32,7 +58,31 @@ npm run test:watch
 npm run test:coverage
 ```
 
-Test files are located in the `test/` directory and follow the `*.test.js` naming convention.
+### Test Structure
+- Test files are located in the `test/` directory
+- Test files follow the `*.test.js` naming convention
+- Tests use Chai for assertions
+- Tests run in real browser environments (Chromium via Playwright)
+- Coverage reports are generated in the `coverage/` directory
+
+### Writing Tests
+All components and utility modules should have comprehensive tests:
+
+**For Components:**
+- Test custom element registration
+- Test shadow DOM structure
+- Test attributes and properties
+- Test event dispatching
+- Test user interactions
+- Test edge cases and error handling
+
+**For Utilities:**
+- Test all exported functions
+- Test edge cases (null, undefined, empty values)
+- Test error conditions
+- Test with various data types
+
+See `test/components/trait-display/trait-display-element.test.js` for a comprehensive example.
 
 ## Code Quality Tools
 The project has linters for the HTML, CSS, and JavaScript all setup and configured.
