@@ -667,11 +667,12 @@ export class IndexController {
 
     const gameName = document.body.getAttribute('loaded-game-name') || DefaultGameName
 
-    const momentumValue = editionSelectEl.value === 'captains-log'
+    const isCaptainsLog = editionSelectEl.value === 'captains-log'
+    const momentumValue = isCaptainsLog
       ? momentumToggleEl.checked ? 1 : 0
       : momentumEl.value
 
-    const threatValue = editionSelectEl.value === 'captains-log'
+    const threatValue = isCaptainsLog
       ? threatToggleEl.checked ? 1 : 0
       : threatEl.value
 
@@ -849,8 +850,7 @@ export class IndexController {
     }
 
     newPlayerEl.setAttribute('player-index', `${playerIndex}`)
-    const playerId = `player-${playerIndex}`
-    newPlayerEl.id = playerId
+    newPlayerEl.id = `player-${playerIndex}`
 
     if (info?.image instanceof File) {
       newPlayerEl.imageFile = info.image
@@ -941,12 +941,11 @@ export class IndexController {
     const shipName = document.getElementById('shipname').textContent ?? 'game'
     const fileName = gameName === DefaultGameName ? `${shipName}.${Date.now()}` : gameName
     const file = await this.db.export(gameName)
-    const mimeOpts = {
+
+    await saveBlobAs(`${fileName}.staplay`, file, {
       description: 'STA Play Backup',
       mimes: [{ 'application/staplay': '.staplay' }]
-    }
-
-    await saveBlobAs(`${fileName}.staplay`, file, mimeOpts, 'downloads', true)
+    }, 'downloads', true)
   }
 
   /**
