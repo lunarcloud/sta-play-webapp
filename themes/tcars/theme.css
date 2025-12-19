@@ -262,19 +262,24 @@ body {
         #font-up-btn {
             left: unset;
             top: unset;
-            bottom: 3.5em;
-            right: 5.5em;
+            bottom: 5em;
+            right: 7em;
             font-size: var(--main-font-size);
             transform: rotate(-53deg);
+            width: fit-content;
+            height: 2em;
+            line-height: 3em;
         }
 
         #font-down-btn {
             left: unset;
             top: unset;
-            bottom: 2em;
-            right: 4.5em;
+            bottom: 2.5em;
+            right: 5em;
             font-size: var(--main-font-size);
             transform: rotate(-53deg);
+            width: fit-content;
+            height: 2em;
         }
 
         #momentum-section, #threat-section {
