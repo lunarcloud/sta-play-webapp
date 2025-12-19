@@ -57,9 +57,9 @@ export function removeNumberInputScroll (el) {
  */
 export function handleScrollOnNumberInput (evt, target) {
   const el = target ?? evt.target
-  if (!(evt instanceof WheelEvent) || !('wheelDelta' in evt) ||
+  if (evt instanceof WheelEvent === false || 'wheelDelta' in evt === false ||
         !NumberInputTypes.some(e => el instanceof e) ||
-        !('valueAsNumber' in el) || typeof (el.valueAsNumber) !== 'number') { return }
+        'valueAsNumber' in el === false || typeof (el.valueAsNumber) !== 'number') { return }
 
   evt.preventDefault()
 

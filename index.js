@@ -135,21 +135,21 @@ export class IndexController {
 
     // Wire up the Alerts Selector
     const alertDropdownEl = document.getElementById('alert-dropdown')
-    if (!(alertDropdownEl instanceof HTMLSelectElement)) {
+    if (alertDropdownEl instanceof HTMLSelectElement === false) {
       throw new Error('Ship Alerts not setup correctly!')
     }
     alertDropdownEl.addEventListener('change', () => this.#setShipAlert(alertDropdownEl.value))
 
     // Check the busy dialog
     const busyDialog = document.querySelector('dialog[is="busy-dialog"]')
-    if (!(busyDialog instanceof HTMLDialogElement)) {
+    if (busyDialog instanceof HTMLDialogElement === false) {
       throw new Error('Busy dialog not setup!')
     }
     this.busyDialog = busyDialog
 
     // Wire up the welcome dialog
     const welcomeDialog = document.querySelector('dialog[is="welcome-dialog"]')
-    if (!(welcomeDialog instanceof HTMLDialogElement)) {
+    if (welcomeDialog instanceof HTMLDialogElement === false) {
       throw new Error('Welcome dialog not setup!')
     }
 
@@ -162,18 +162,18 @@ export class IndexController {
 
     // Wire up the settings dialog
     const settingsDialog = document.querySelector('dialog[is="settings-dialog"]')
-    if (!(settingsDialog instanceof HTMLDialogElement)) {
+    if (settingsDialog instanceof HTMLDialogElement === false) {
       throw new Error('HTML setup incorrect!')
     }
 
     // Get message and confirm dialogs
     this.messageDialog = document.querySelector('dialog[is="message-dialog"]')
-    if (!(this.messageDialog instanceof HTMLDialogElement)) {
+    if (this.messageDialog instanceof HTMLDialogElement === false) {
       throw new Error('Message dialog not setup!')
     }
 
     this.confirmDialog = document.querySelector('dialog[is="confirm-dialog"]')
-    if (!(this.confirmDialog instanceof HTMLDialogElement)) {
+    if (this.confirmDialog instanceof HTMLDialogElement === false) {
       throw new Error('Confirm dialog not setup!')
     }
 
@@ -207,12 +207,12 @@ export class IndexController {
 
     // Setup Theme & Selection
     const themeSelectEl = document.getElementById('select-theme')
-    if (!(themeSelectEl instanceof HTMLSelectElement)) {
+    if (themeSelectEl instanceof HTMLSelectElement === false) {
       throw new Error('Theme selector element is wrong/missing!')
     }
 
     const themeStyleEl = document.getElementById('theme-link')
-    if (!(themeStyleEl instanceof HTMLLinkElement)) {
+    if (themeStyleEl instanceof HTMLLinkElement === false) {
       throw new Error('Theme CSS link element is wrong/missing!')
     }
 
@@ -298,17 +298,17 @@ export class IndexController {
   #useTheme (theme, altFont = false) {
     // Get elements
     const themeSelectEl = document.getElementById('select-theme')
-    if (!(themeSelectEl instanceof HTMLSelectElement)) {
+    if (themeSelectEl instanceof HTMLSelectElement === false) {
       throw new Error('Theme selector element is wrong/missing!')
     }
 
     const themeStyleEl = document.getElementById('theme-link')
-    if (!(themeStyleEl instanceof HTMLLinkElement)) {
+    if (themeStyleEl instanceof HTMLLinkElement === false) {
       throw new Error('Theme CSS link element is wrong/missing!')
     }
 
     const themeEl = document.getElementsByTagName('theme')[0]
-    if (!(themeEl instanceof HTMLElement)) {
+    if (themeEl instanceof HTMLElement === false) {
       throw new Error('Theme element is wrong/missing!')
     }
 
@@ -319,7 +319,7 @@ export class IndexController {
     // Update Style and theme element contents
     themeStyleEl.href = `./themes/${theme}/theme.css`
     loadElementFromFile(`./themes/${theme}/theme.html`, 'theme').then(el => {
-      if (!(el instanceof HTMLElement)) {
+      if (el instanceof HTMLElement === false) {
         throw new Error(`Cannot find theme: "${theme}"`)
       }
       themeEl.innerHTML = el.innerHTML
@@ -347,7 +347,7 @@ export class IndexController {
    */
   #useEdition (edition) {
     const editionSelectEl = document.getElementById('select-edition')
-    if (!(editionSelectEl instanceof HTMLSelectElement)) {
+    if (editionSelectEl instanceof HTMLSelectElement === false) {
       throw new Error('Theme selector element is wrong/missing!')
     }
 
@@ -390,8 +390,8 @@ export class IndexController {
   #setShipAlert (newColor) {
     const alertEl = document.getElementsByTagName('ship-alert')[0]
     const alertDropdownEl = document.getElementById('alert-dropdown')
-    if (!(alertEl instanceof ShipAlertElement) ||
-        !(alertDropdownEl instanceof HTMLSelectElement)) {
+    if (alertEl instanceof ShipAlertElement === false ||
+        alertDropdownEl instanceof HTMLSelectElement === false) {
       throw new Error('Ship alert elements are wrong/missing!')
     }
 
@@ -443,7 +443,7 @@ export class IndexController {
       this.#loadData()
     })
     const importEl = dialogEl.querySelector('input.import-game-file')
-    if (!(importEl instanceof HTMLInputElement)) {
+    if (importEl instanceof HTMLInputElement === false) {
       throw new Error('Page setup incorrect')
     }
 
@@ -471,7 +471,7 @@ export class IndexController {
     dialogEl.querySelector('button.export-game').addEventListener('click', async () => await this.saveAndExport())
 
     const fileSelectShip = dialogEl.querySelector('input.select-ship')
-    if (!(fileSelectShip instanceof HTMLInputElement)) {
+    if (fileSelectShip instanceof HTMLInputElement === false) {
       throw new Error('Page setup incorrect')
     }
     dialogEl.querySelector('button.set-ship').addEventListener('click', () => {
@@ -482,11 +482,11 @@ export class IndexController {
     })
 
     const fileSelectPlayer = dialogEl.querySelector('.player-image-upload input.select')
-    if (!(fileSelectPlayer instanceof HTMLInputElement)) {
+    if (fileSelectPlayer instanceof HTMLInputElement === false) {
       throw new Error('Page setup incorrect')
     }
     const indexSelectPlayer = dialogEl.querySelector('.player-image-upload input.index')
-    if (!(indexSelectPlayer instanceof HTMLInputElement)) {
+    if (indexSelectPlayer instanceof HTMLInputElement === false) {
       throw new Error('Page setup incorrect')
     }
 
@@ -502,7 +502,7 @@ export class IndexController {
 
     // Setup Edition & Selection
     const editionSelectEl = document.getElementById('select-edition')
-    if (!(editionSelectEl instanceof HTMLSelectElement)) {
+    if (editionSelectEl instanceof HTMLSelectElement === false) {
       throw new Error('Theme selector element is wrong/missing!')
     }
 
@@ -520,32 +520,32 @@ export class IndexController {
     const gameInfo = await this.db.getGameInfo(gameName)
 
     const momentumEl = document.getElementById('momentum-pool')
-    if (!(momentumEl instanceof HTMLInputElement)) {
+    if (momentumEl instanceof HTMLInputElement === false) {
       throw new Error('page setup incorrectly!')
     }
 
     const momentumToggleEl = document.getElementById('momentum-toggle')
-    if (!(momentumToggleEl instanceof HTMLInputElement)) {
+    if (momentumToggleEl instanceof HTMLInputElement === false) {
       throw new Error('page setup incorrectly!')
     }
 
     const threatEl = document.getElementById('threat-pool')
-    if (!(threatEl instanceof HTMLInputElement)) {
+    if (threatEl instanceof HTMLInputElement === false) {
       throw new Error('page setup incorrectly!')
     }
 
     const threatToggleEl = document.getElementById('threat-toggle')
-    if (!(threatToggleEl instanceof HTMLInputElement)) {
+    if (threatToggleEl instanceof HTMLInputElement === false) {
       throw new Error('page setup incorrectly!')
     }
 
     const editionSelectEl = document.getElementById('select-edition')
-    if (!(editionSelectEl instanceof HTMLSelectElement)) {
+    if (editionSelectEl instanceof HTMLSelectElement === false) {
       throw new Error('Theme selector element is wrong/missing!')
     }
 
     const missionTrackerEl = document.getElementsByTagName('mission-tracker')[0]
-    if (!(missionTrackerEl instanceof MissionTrackerElement)) {
+    if (missionTrackerEl instanceof MissionTrackerElement === false) {
       throw new Error('Mission Tracker element is wrong/missing!')
     }
 
@@ -616,52 +616,52 @@ export class IndexController {
    */
   async saveData (alertAtEnd = true) {
     const momentumEl = document.getElementById('momentum-pool')
-    if (!(momentumEl instanceof HTMLInputElement)) {
+    if (momentumEl instanceof HTMLInputElement === false) {
       throw new Error('page setup incorrectly!')
     }
 
     const momentumToggleEl = document.getElementById('momentum-toggle')
-    if (!(momentumToggleEl instanceof HTMLInputElement)) {
+    if (momentumToggleEl instanceof HTMLInputElement === false) {
       throw new Error('page setup incorrectly!')
     }
 
     const threatEl = document.getElementById('threat-pool')
-    if (!(threatEl instanceof HTMLInputElement)) {
+    if (threatEl instanceof HTMLInputElement === false) {
       throw new Error('page setup incorrectly!')
     }
 
     const threatToggleEl = document.getElementById('threat-toggle')
-    if (!(threatToggleEl instanceof HTMLInputElement)) {
+    if (threatToggleEl instanceof HTMLInputElement === false) {
       throw new Error('page setup incorrectly!')
     }
 
     const editionSelectEl = document.getElementById('select-edition')
-    if (!(editionSelectEl instanceof HTMLSelectElement)) {
+    if (editionSelectEl instanceof HTMLSelectElement === false) {
       throw new Error('Edition selector element is wrong/missing!')
     }
 
     const themeSelectEl = document.getElementById('select-theme')
-    if (!(themeSelectEl instanceof HTMLSelectElement)) {
+    if (themeSelectEl instanceof HTMLSelectElement === false) {
       throw new Error('Theme selector element is wrong/missing!')
     }
 
     const altFontCheckbox = document.getElementById('alt-font-toggle')
-    if (!(altFontCheckbox instanceof HTMLInputElement)) {
+    if (altFontCheckbox instanceof HTMLInputElement === false) {
       throw new Error('Theme alt font choice is wrong/missing!')
     }
 
     const legacyTrackersCheckbox = document.getElementById('legacy-task-tracker-toggle')
-    if (!(legacyTrackersCheckbox instanceof HTMLInputElement)) {
+    if (legacyTrackersCheckbox instanceof HTMLInputElement === false) {
       throw new Error('The legacy task tracker style choice is wrong/missing!')
     }
 
     const shipAlertEl = document.getElementsByTagName('ship-alert')[0]
-    if (!(shipAlertEl instanceof ShipAlertElement)) {
+    if (shipAlertEl instanceof ShipAlertElement === false) {
       throw new Error('Ship alert element is wrong/missing!')
     }
 
     const missionTrackerEl = document.getElementsByTagName('mission-tracker')[0]
-    if (!(missionTrackerEl instanceof MissionTrackerElement)) {
+    if (missionTrackerEl instanceof MissionTrackerElement === false) {
       throw new Error('Mission Tracker element is wrong/missing!')
     }
 
@@ -719,7 +719,7 @@ export class IndexController {
 
     const players = [...document.querySelectorAll('.players > li')]
       .map((el) => {
-        if (!(el instanceof PlayerDisplayElement)) {
+        if (el instanceof PlayerDisplayElement === false) {
           return null
         }
 
@@ -739,7 +739,7 @@ export class IndexController {
 
     const trackers = [...document.querySelectorAll('task-tracker')]
       .map(el => {
-        if (!(el instanceof TaskTrackerElement)) {
+        if (el instanceof TaskTrackerElement === false) {
           return null
         }
 
@@ -772,7 +772,7 @@ export class IndexController {
    */
   addTaskTracker (info = undefined) {
     const newTrackerEl = document.createElement('task-tracker')
-    if (!(newTrackerEl instanceof TaskTrackerElement)) {
+    if (newTrackerEl instanceof TaskTrackerElement === false) {
       throw new Error('App incorrectly configured!')
     }
 
@@ -825,7 +825,7 @@ export class IndexController {
   addPlayer (info = undefined) {
     const playersEl = document.querySelector('.players')
     const newPlayerEl = document.createElement('li', { is: 'player-display' })
-    if (!(newPlayerEl instanceof PlayerDisplayElement)) {
+    if (newPlayerEl instanceof PlayerDisplayElement === false) {
       throw new Error('App incorrectly configured!')
     }
 

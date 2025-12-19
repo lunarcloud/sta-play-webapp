@@ -242,7 +242,7 @@ export class PlayerDisplayElement extends HTMLLIElement {
     stressEl.classList.add('edition-1', 'edition-2')
 
     const currentStressEl = document.createElement('input-progress')
-    if (!(currentStressEl instanceof InputProgressElement)) {
+    if (currentStressEl instanceof InputProgressElement === false) {
       throw new Error('Something went very wrong!')
     }
     this.#currentStressEl = currentStressEl
