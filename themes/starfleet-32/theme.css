@@ -460,7 +460,6 @@ dialogs > dialog {
         font-weight: bold;
 
         & button.close {
-            background: var(--bg-dark-1);
             border-radius: unset;
         }
     }
