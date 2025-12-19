@@ -292,7 +292,7 @@ body {
             }
 
             input {
-                background: lab(90.24% 0 -0.01 / 20%);
+                background: lab(90.24% 0 -0.01 / 66%);
                 color: black;
                 border-color: transparent;
                 border-radius: 0 0 0 .5em;
@@ -318,14 +318,35 @@ body {
         }
     }
 
+
+    &.edition-captains-log nav {
+        height: 1.8em;
+
+        ul > li {
+            line-height: 1em;
+
+            &:nth-child(1),
+            &:nth-child(2) {
+                width: 6em;
+            }
+        }
+    }
+
+    &:not(.edition-captains-log) nav {
+        height: 3.5em;
+
+        ul > li {
+            line-height: 3em;
+        }
+    }
+
     & > nav {
         position: absolute;
         top: unset !important;
         left: 3em;
-        bottom: 0.5em;
+        bottom: 0.35em;
         right: 20em;
         flex-flow: row nowrap;
-        height: 3.45em;
 
         ul {
             justify-content: flex-start;
@@ -337,7 +358,6 @@ body {
                 flex: unset;
                 width: 3.5em;
                 border-radius: 0 1.5em 1.5em 0;
-                line-height: 3em;
 
                 & a {
                     line-height: unset;
