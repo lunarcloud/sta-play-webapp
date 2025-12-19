@@ -9,6 +9,24 @@ This is mostly a one-dev show, but I've made this open-source for two reasons:
 I reserve the right to accept or reject any and all pull requests. 
 Ideally, you should be solving an open issue and including as many **screenshots** as is needed to demonstrate the new feature or fix.
 
+### Pull Request Requirements
+
+* All code must pass the linters (run `npm run lint`)
+* All tests must pass (run `npm test`)
+* New features should include unit tests
+* UI changes must include screenshots in the PR description
+* For new themes: Include screenshots of traits, player cards, condition red alert, and a tracker
+
+### Development Workflow
+
+1. Fork the repository and create a feature branch
+2. Install dependencies: `npm i && npm run copy-deps`
+3. Install Playwright browser (one-time): `npx playwright install chromium`
+4. Make your changes
+5. Run quality checks: `npm run lint-fix && npm test`
+6. Commit your changes with clear commit messages
+7. Push to your fork and create a pull request
+
 ## Coding conventions
 
   * Run and accept the linter's judgement as much as humanly possible.
@@ -18,6 +36,68 @@ Ideally, you should be solving an open issue and including as many **screenshots
   * Don't rely on CDNs and avoid adding dependencies as much as possible.
   * JavaScript should be using modules, classes, async where applicable 
   * Images should be well-optimized, modern formats (webp, svg, avif)
+  * Follow browser compatibility guidelines - all features must work in Chrome, Edge, Safari, and Firefox
+  * Maintain backwards compatibility with existing `.staplay` save files
+
+## Testing Guidelines
+
+### When to Write Tests
+
+* **Always** write tests for new components
+* **Always** write tests for new utility functions
+* Update existing tests when modifying behavior
+* Add regression tests when fixing bugs
+
+### What to Test
+
+**For Web Components:**
+* Custom element registration (`customElements.get()`)
+* Shadow DOM structure exists and is correct
+* Observed attributes are correct
+* Property getters and setters work
+* Events are dispatched correctly
+* User interactions work as expected
+* Edge cases and error handling
+
+**For Utility Modules:**
+* All exported functions
+* Edge cases (null, undefined, empty values)
+* Error conditions and exceptions
+* Various input data types
+
+### Test Structure
+
+Use the existing test patterns:
+```javascript
+import { expect } from '@esm-bundle/chai'
+
+describe('MyComponent', () => {
+  describe('feature group', () => {
+    it('should do something specific', () => {
+      // Arrange
+      const element = new MyComponent()
+      
+      // Act
+      element.doSomething()
+      
+      // Assert
+      expect(element.result).to.equal('expected')
+    })
+  })
+})
+```
+
+See `test/components/trait-display/trait-display-element.test.js` for a comprehensive example.
+
+## Code Review Process
+
+* All PRs are reviewed before merging
+* Expect iterative feedback on:
+  - Visual design (color contrast, readability, positioning)
+  - Code quality (duplication, maintainability)
+  - User experience (accessibility, responsive sizing)
+* Address feedback incrementally
+* CI checks must pass (linting, tests)
 
 Thanks,
 Sam
