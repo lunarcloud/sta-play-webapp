@@ -35,6 +35,20 @@
 
     --tcars-accent: lab(76.48% -4.48 73.56);
     --secondary-color-bg: lab(3.58% 1.1 -10.97);
+    --grid-bg-overlay: repeating-radial-gradient(circle at 100% 0%,
+            transparent 0,
+            transparent 1px,
+            hsl(190deg 75% 55% / 8%) 1px,
+            hsl(190deg 75% 55% / 8%) 3px,
+            transparent 3px,
+            transparent 40px),
+        repeating-radial-gradient(circle at 0% 100%,
+            transparent 0,
+            transparent 1px,
+            hsl(190deg 75% 55% / 8%) 1px,
+            hsl(190deg 75% 55% / 8%) 3px,
+            transparent 3px,
+            transparent 40px);
 }
 
 @keyframes tcarsColorChange {
@@ -74,6 +88,7 @@ body {
     grid-template-columns: 8.5em 5em 9em 1fr 8.5em 15em 5em;
     z-index: -100;
     transition: background-color 2s ease-in-out 0.25s;
+    background: var(--grid-bg-overlay);
 
     &[alert="grey"], &[alert="cloak"] {
         background-color: var(--secondary-color-bg);
