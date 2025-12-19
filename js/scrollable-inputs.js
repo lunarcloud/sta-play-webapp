@@ -29,7 +29,7 @@ export function setupNumberInputScroll (el) {
     return
   }
 
-  if ('inputScrollSetup' in el && el.inputScrollSetup === true) {
+  if ('inputScrollSetup' in el && el.inputScrollSetup) {
     console.warn('Ignoring already setup input scrolling on element: ' + el)
     return
   }
@@ -57,9 +57,9 @@ export function removeNumberInputScroll (el) {
  */
 export function handleScrollOnNumberInput (evt, target) {
   const el = target ?? evt.target
-  if (evt instanceof WheelEvent === false || 'wheelDelta' in evt === false ||
+  if (!(evt instanceof WheelEvent) || !('wheelDelta' in evt) ||
         !NumberInputTypes.some(e => el instanceof e) ||
-        'valueAsNumber' in el === false || typeof (el.valueAsNumber) !== 'number') { return }
+        !('valueAsNumber' in el) || typeof (el.valueAsNumber) !== 'number') { return }
 
   evt.preventDefault()
 

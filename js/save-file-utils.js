@@ -39,7 +39,7 @@ export async function saveBlob (filename, blobData) {
  * @param {boolean} [promptIfFallback]             whether to prompt for filename if falling back to old save method
  */
 export async function saveBlobAs (filename, blobData, mimeOptions, startIn = 'downloads', promptIfFallback = false) {
-  if (blobData instanceof Blob === false) {
+  if (!(blobData instanceof Blob)) {
     throw new Error('Cannot save a non-blob!')
   }
 

@@ -159,7 +159,7 @@ export class BackupData {
     }
 
     for (let i = 0; i < this.Players.length; i++) {
-      if (this.Players[i].image instanceof File === false) { continue }
+      if (!(this.Players[i].image instanceof File)) { continue }
 
       // @ts-ignore
       this.Players[i].image.toJSON = function () {

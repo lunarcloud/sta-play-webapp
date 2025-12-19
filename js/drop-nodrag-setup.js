@@ -4,7 +4,7 @@
  * @param {function(DragEvent):boolean} onDrop  Action to perform within the drop event handler
  */
 export function setupDropOnly (el, onDrop) {
-  if (el instanceof HTMLElement === false) {
+  if (!(el instanceof HTMLElement)) {
     throw new Error("Cannot use 'el' as HTMLElement argument!")
   }
 
@@ -13,7 +13,7 @@ export function setupDropOnly (el, onDrop) {
   el.addEventListener('dragover', event => event.preventDefault())
   el.addEventListener('dragleave', event => event.preventDefault())
   el.addEventListener('drop', event => {
-    if (event instanceof DragEvent === false || !onDrop(event)) {
+    if (!(event instanceof DragEvent) || !onDrop(event)) {
       return
     }
 

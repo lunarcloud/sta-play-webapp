@@ -67,7 +67,7 @@ export class MissionTrackerElement extends HTMLElement {
       const confirmDialog = document.querySelector('dialog[is="confirm-dialog"]')
       if (confirmDialog && typeof confirmDialog.confirm === 'function') {
         const answer = await confirmDialog.confirm('Are you sure you want to clear the mission tracker?')
-        if (answer === true) {
+        if (answer) {
           this.clear()
         }
       }

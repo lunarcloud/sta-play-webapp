@@ -35,7 +35,6 @@ export class SceneInfo extends NamedInfo {
   constructor (id, game, name = DefaultSceneName, description = DefaultSceneDescription, missionTrack = []) {
     super(name, id)
     this.game = game
-    this.name = name
     this.description = description
     this.missionTrack = missionTrack
   }
