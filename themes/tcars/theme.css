@@ -282,6 +282,17 @@ body {
             height: 2em;
         }
 
+        #fullscreen-btn {
+            left: unset;
+            top: 11.5em;
+            bottom: unset;
+            right: 0.5em;
+
+            & > symbol, & > img.symbol {
+                width: 2em;
+            }
+        }
+
         #momentum-section, #threat-section {
             flex-direction: column;
             padding: 0.5em;
