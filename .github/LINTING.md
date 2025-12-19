@@ -31,7 +31,7 @@ npm run csslint
 ### Base Configuration
 
 Uses [neostandard](https://github.com/neostandard/neostandard) (modern StandardJS):
-- Semicolons optional
+- Semicolons avoided except where required (e.g., for loops)
 - 2-space indentation
 - Single quotes for strings
 - Browser environment globals
