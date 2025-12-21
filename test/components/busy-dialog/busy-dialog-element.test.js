@@ -77,5 +77,10 @@ describe('BusyDialogElement', () => {
       const paragraph = main.querySelector('p')
       expect(paragraph).to.not.be.null
     })
+
+    it('should not have a close button', () => {
+      const closeButton = dialog.querySelector('button.close')
+      expect(closeButton).to.be.null
+    })
   })
 })
