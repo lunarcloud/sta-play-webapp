@@ -192,10 +192,10 @@ describe('TaskTrackerElement', () => {
   describe('attributeChangedCallback', () => {
     it('should update properties when attributes change', () => {
       const element = new TaskTrackerElement()
-      
+
       element.attributeChangedCallback('name', null, 'Beam Cargo')
       expect(element.name).to.equal('Beam Cargo')
-      
+
       element.attributeChangedCallback('resistance', null, '8')
       expect(element.resistance).to.equal(8)
     })
@@ -207,10 +207,10 @@ describe('TaskTrackerElement', () => {
       element.setAttribute('name', 'Scan Anomaly')
       element.setAttribute('resistance', '12')
       document.body.appendChild(element)
-      
+
       expect(element.name).to.equal('Scan Anomaly')
       expect(element.resistance).to.equal(12)
-      
+
       document.body.removeChild(element)
     })
 
@@ -220,20 +220,20 @@ describe('TaskTrackerElement', () => {
       element.resistance = 15
       element.progress = 7
       element.maxProgress = 15
-      
+
       document.body.appendChild(element)
       const nameBefore = element.name
       const resistanceBefore = element.resistance
       const progressBefore = element.progress
       const maxProgressBefore = element.maxProgress
       document.body.removeChild(element)
-      
+
       document.body.appendChild(element)
       expect(element.name).to.equal(nameBefore)
       expect(element.resistance).to.equal(resistanceBefore)
       expect(element.progress).to.equal(progressBefore)
       expect(element.maxProgress).to.equal(maxProgressBefore)
-      
+
       document.body.removeChild(element)
     })
   })

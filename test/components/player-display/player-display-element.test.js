@@ -103,7 +103,7 @@ describe('PlayerDisplayElement', () => {
       const element = document.createElement('li', { is: 'player-display' })
       const rankDisplay = element.querySelector('.rank')
       expect(rankDisplay).to.not.be.null
-      
+
       const rankSelect = rankDisplay.querySelector('select')
       expect(rankSelect).to.not.be.null
     })
@@ -112,10 +112,10 @@ describe('PlayerDisplayElement', () => {
       const element = document.createElement('li', { is: 'player-display' })
       const stress = element.querySelector('stress')
       expect(stress).to.not.be.null
-      
+
       const inputProgress = stress.querySelector('input-progress')
       expect(inputProgress).to.not.be.null
-      
+
       const maxInput = stress.querySelector('input[type="number"]')
       expect(maxInput).to.not.be.null
     })
@@ -168,10 +168,10 @@ describe('PlayerDisplayElement', () => {
   describe('attributeChangedCallback', () => {
     it('should update properties when attributes change', () => {
       const element = document.createElement('li', { is: 'player-display' })
-      
+
       element.attributeChangedCallback('name', null, 'Spock')
       expect(element.name).to.equal('Spock')
-      
+
       element.attributeChangedCallback('color', null, 'blue')
       expect(element.color).to.equal('blue')
     })
@@ -183,10 +183,10 @@ describe('PlayerDisplayElement', () => {
       element.setAttribute('name', 'Data')
       element.setAttribute('color', 'yellow')
       document.body.appendChild(element)
-      
+
       expect(element.name).to.equal('Data')
       expect(element.color).to.equal('yellow')
-      
+
       document.body.removeChild(element)
     })
 
@@ -196,20 +196,20 @@ describe('PlayerDisplayElement', () => {
       element.color = 'red'
       element.currentStress = 7
       element.maxStress = 10
-      
+
       document.body.appendChild(element)
       const nameBefore = element.name
       const colorBefore = element.color
       const stressBefore = element.currentStress
       const maxStressBefore = element.maxStress
       document.body.removeChild(element)
-      
+
       document.body.appendChild(element)
       expect(element.name).to.equal(nameBefore)
       expect(element.color).to.equal(colorBefore)
       expect(element.currentStress).to.equal(stressBefore)
       expect(element.maxStress).to.equal(maxStressBefore)
-      
+
       document.body.removeChild(element)
     })
   })

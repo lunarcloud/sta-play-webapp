@@ -107,7 +107,7 @@ describe('MissionTrackerElement', () => {
     it('should have five scenes per act', () => {
       const element = new MissionTrackerElement()
       const acts = element.shadowRoot.querySelectorAll('act')
-      
+
       acts.forEach(act => {
         const scenes = act.querySelectorAll('.scene')
         expect(scenes.length).to.equal(5)
@@ -117,7 +117,7 @@ describe('MissionTrackerElement', () => {
     it('should have select elements in each scene', () => {
       const element = new MissionTrackerElement()
       const scenes = element.shadowRoot.querySelectorAll('.scene')
-      
+
       scenes.forEach(scene => {
         const select = scene.querySelector('select')
         expect(select).to.not.be.null
@@ -138,14 +138,14 @@ describe('MissionTrackerElement', () => {
       element.act1 = '✓,✓,✓,✓,✓'
       element.act2 = '✗,✗,✗,✗,✗'
       element.act3 = '✓,✗,✓,✗,✓'
-      
+
       element.clear()
-      
+
       // After clearing, all should be empty
       const act1HasContent = element.act1.includes('✓') || element.act1.includes('✗')
       const act2HasContent = element.act2.includes('✓') || element.act2.includes('✗')
       const act3HasContent = element.act3.includes('✓') || element.act3.includes('✗')
-      
+
       expect(act1HasContent).to.be.false
       expect(act2HasContent).to.be.false
       expect(act3HasContent).to.be.false
@@ -177,9 +177,9 @@ describe('MissionTrackerElement', () => {
       const element = document.createElement('mission-tracker')
       element.setAttribute('act1', '✓, , , , ')
       document.body.appendChild(element)
-      
+
       expect(element.act1).to.be.a('string')
-      
+
       document.body.removeChild(element)
     })
 
@@ -188,18 +188,18 @@ describe('MissionTrackerElement', () => {
       element.act1 = '✓,✗, , , '
       element.act2 = ' ,✓,✗, , '
       element.act3 = ' , ,✓,✗, '
-      
+
       document.body.appendChild(element)
       const act1Before = element.act1
       const act2Before = element.act2
       const act3Before = element.act3
       document.body.removeChild(element)
-      
+
       document.body.appendChild(element)
       expect(element.act1).to.equal(act1Before)
       expect(element.act2).to.equal(act2Before)
       expect(element.act3).to.equal(act3Before)
-      
+
       document.body.removeChild(element)
     })
   })
