@@ -477,8 +477,9 @@ export class TaskTrackerElement extends HTMLElement {
    */
   set name (value) {
     // "if" so we don't do it if round-tripping or we'll reset the cursor position while typing
-    if (this.#nameEl.textContent != value)
-        this.#nameEl.textContent = value
+    if (this.#nameEl.textContent !== value) {
+      this.#nameEl.textContent = value
+    }
   }
 
   /**
