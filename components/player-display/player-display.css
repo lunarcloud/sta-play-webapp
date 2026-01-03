@@ -100,6 +100,10 @@ li[is="player-display"] {
         line-height: 1.5em;
         height: 1.5em;
 
+        &.flag {
+            box-shadow: inset white 0 0 0 3px;
+        }
+
         & select {
             position: absolute;
             inset: 0;
