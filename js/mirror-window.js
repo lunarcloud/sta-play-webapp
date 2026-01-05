@@ -13,6 +13,16 @@ export class MirrorWindow {
   static #observer = null
 
   /**
+   * @type {number|null}
+   */
+  static #syncTimer = null
+
+  /**
+   * @type {boolean}
+   */
+  static #syncScheduled = false
+
+  /**
    * Opens a mirror window that reflects the current application state.
    * @returns {Window|null} The opened window or null if it failed to open
    */
@@ -132,7 +142,7 @@ export class MirrorWindow {
         return
       }
 
-      MirrorWindow.#sync()
+      MirrorWindow.#scheduleSync()
     })
 
     // Observe changes to main content areas
@@ -179,14 +189,38 @@ export class MirrorWindow {
       attributeFilter: ['class', 'alert', 'loaded-game-name']
     })
 
-    // Set up periodic sync as fallback
-    setInterval(() => {
-      if (MirrorWindow.#window && !MirrorWindow.#window.closed) {
-        MirrorWindow.#sync()
-      } else if (MirrorWindow.#observer) {
-        MirrorWindow.#observer.disconnect()
-      }
-    }, 1000)
+    // Watch for theme stylesheet changes
+    const themeLink = document.getElementById('theme-link')
+    if (themeLink) {
+      MirrorWindow.#observer.observe(themeLink, {
+        attributes: true,
+        attributeFilter: ['href']
+      })
+    }
+  }
+
+  /**
+   * Schedules a sync operation with debouncing to prevent flickering.
+   */
+  static #scheduleSync () {
+    // If a sync is already scheduled, don't schedule another
+    if (MirrorWindow.#syncScheduled) {
+      return
+    }
+
+    MirrorWindow.#syncScheduled = true
+
+    // Clear any existing timer
+    if (MirrorWindow.#syncTimer) {
+      clearTimeout(MirrorWindow.#syncTimer)
+    }
+
+    // Schedule sync with a small delay to batch multiple changes
+    MirrorWindow.#syncTimer = setTimeout(() => {
+      MirrorWindow.#sync()
+      MirrorWindow.#syncScheduled = false
+      MirrorWindow.#syncTimer = null
+    }, 50) // 50ms debounce - batches rapid changes while staying responsive
   }
 
   /**
@@ -205,10 +239,22 @@ export class MirrorWindow {
         return
       }
 
-      // Sync body classes and attributes
-      mirrorDoc.body.className = document.body.className
+      // Sync body classes and attributes (preserve mirror class)
+      const bodyClasses = document.body.className.split(' ')
+      bodyClasses.forEach(cls => {
+        if (cls && !mirrorDoc.body.classList.contains(cls)) {
+          mirrorDoc.body.classList.add(cls)
+        }
+      })
+      // Remove classes that are no longer in main body (except mirror)
+      Array.from(mirrorDoc.body.classList).forEach(cls => {
+        if (cls !== 'mirror' && !document.body.classList.contains(cls)) {
+          mirrorDoc.body.classList.remove(cls)
+        }
+      })
+      
       Array.from(document.body.attributes).forEach(attr => {
-        if (attr.name !== 'data-mirror-window') {
+        if (attr.name !== 'data-mirror-window' && attr.name !== 'class') {
           mirrorDoc.body.setAttribute(attr.name, attr.value)
         }
       })
@@ -272,8 +318,13 @@ export class MirrorWindow {
     if (MirrorWindow.#observer) {
       MirrorWindow.#observer.disconnect()
     }
+    if (MirrorWindow.#syncTimer) {
+      clearTimeout(MirrorWindow.#syncTimer)
+    }
     MirrorWindow.#window = null
     MirrorWindow.#observer = null
+    MirrorWindow.#syncTimer = null
+    MirrorWindow.#syncScheduled = false
   }
 
   /**
