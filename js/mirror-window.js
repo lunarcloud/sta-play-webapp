@@ -259,11 +259,19 @@ export class MirrorWindow {
         }
       })
 
-      // Sync main content
+      // Sync main content by cloning to avoid custom element duplication issues
       const mainEl = document.querySelector('main')
       const mirrorMainEl = mirrorDoc.querySelector('main')
       if (mainEl && mirrorMainEl) {
-        mirrorMainEl.innerHTML = mainEl.innerHTML
+        // Clone the main element's children to preserve custom element state
+        const clone = mainEl.cloneNode(true)
+        // Clear and replace content
+        while (mirrorMainEl.firstChild) {
+          mirrorMainEl.removeChild(mirrorMainEl.firstChild)
+        }
+        while (clone.firstChild) {
+          mirrorMainEl.appendChild(clone.firstChild)
+        }
       }
 
       // Sync header (ship models)
@@ -280,18 +288,34 @@ export class MirrorWindow {
         })
       }
 
-      // Sync navigation
+      // Sync navigation by cloning to avoid custom element duplication issues
       const navEl = document.querySelector('nav')
       const mirrorNavEl = mirrorDoc.querySelector('nav')
       if (navEl && mirrorNavEl) {
-        mirrorNavEl.innerHTML = navEl.innerHTML
+        // Clone the nav element's children to preserve custom element state
+        const clone = navEl.cloneNode(true)
+        // Clear and replace content
+        while (mirrorNavEl.firstChild) {
+          mirrorNavEl.removeChild(mirrorNavEl.firstChild)
+        }
+        while (clone.firstChild) {
+          mirrorNavEl.appendChild(clone.firstChild)
+        }
       }
 
-      // Sync theme
+      // Sync theme by cloning to avoid custom element duplication issues
       const themeEl = document.querySelector('theme')
       const mirrorThemeEl = mirrorDoc.querySelector('theme')
       if (themeEl && mirrorThemeEl) {
-        mirrorThemeEl.innerHTML = themeEl.innerHTML
+        // Clone the theme element's children to preserve custom element state
+        const clone = themeEl.cloneNode(true)
+        // Clear and replace content
+        while (mirrorThemeEl.firstChild) {
+          mirrorThemeEl.removeChild(mirrorThemeEl.firstChild)
+        }
+        while (clone.firstChild) {
+          mirrorThemeEl.appendChild(clone.firstChild)
+        }
         if (themeEl.hasAttribute('value')) {
           mirrorThemeEl.setAttribute('value', themeEl.getAttribute('value'))
         }

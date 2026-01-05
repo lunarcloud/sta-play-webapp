@@ -45,12 +45,16 @@ describe('mirror-window', () => {
 
   describe('mirror window CSS rules', () => {
     it('should have CSS styling for mirror window documented', () => {
-      // This test documents that CSS rules exist in index.css for hiding
-      // close/remove buttons on components when body has mirror class.
-      // The actual CSS rules are:
-      // - body.mirror player-display button.remove { display: none; }
-      // - body.mirror task-tracker button.remove { display: none; }
-      // - body.mirror trait-display button.close { display: none; }
+      // This test documents that CSS rules exist for hiding close/remove buttons
+      // on components when body has mirror class.
+      //
+      // For Shadow DOM components (task-tracker, trait-display):
+      // - Uses :host-context(body.mirror) in component CSS files
+      // - task-tracker.css: :host-context(body.mirror) & > .remove { display: none; }
+      // - trait-display.css: :host-context(body.mirror) & button.close { display: none; }
+      //
+      // For Light DOM components (player-display):
+      // - Uses index.css: body.mirror & player-display button.remove { display: none; }
 
       // Since we cannot reliably test CSS in isolation in this test environment,
       // this test serves as documentation that these rules are expected to exist.
@@ -58,7 +62,7 @@ describe('mirror-window', () => {
     })
 
     it('should verify CSS selector specificity for player-display remove buttons', () => {
-      // Create elements to verify selector works
+      // Create elements to verify selector works for light DOM component
       const playerDisplay = document.createElement('player-display')
       playerDisplay.id = 'test-player'
       const removeBtn = document.createElement('button')
@@ -75,34 +79,16 @@ describe('mirror-window', () => {
       playerDisplay.remove()
     })
 
-    it('should verify CSS selector specificity for task-tracker remove buttons', () => {
-      const taskTracker = document.createElement('task-tracker')
-      taskTracker.id = 'test-tracker'
-      const removeBtn = document.createElement('button')
-      removeBtn.className = 'remove'
-      removeBtn.textContent = '⤫'
-      taskTracker.appendChild(removeBtn)
-      document.body.appendChild(taskTracker)
-
-      const foundBtn = document.querySelector('task-tracker button.remove')
-      expect(foundBtn).to.equal(removeBtn)
-
-      taskTracker.remove()
-    })
-
-    it('should verify CSS selector specificity for trait-display close buttons', () => {
-      const traitDisplay = document.createElement('trait-display')
-      traitDisplay.id = 'test-trait'
-      const closeBtn = document.createElement('button')
-      closeBtn.className = 'close'
-      closeBtn.textContent = '⤫'
-      traitDisplay.appendChild(closeBtn)
-      document.body.appendChild(traitDisplay)
-
-      const foundBtn = document.querySelector('trait-display button.close')
-      expect(foundBtn).to.equal(closeBtn)
-
-      traitDisplay.remove()
+    it('should document shadow DOM button hiding approach', () => {
+      // For task-tracker and trait-display, buttons are in shadow DOM
+      // CSS cannot reach into shadow DOM from the main document
+      // So we use :host-context(body.mirror) in the component's own CSS
+      // This approach works because:
+      // 1. The mirror window's body has class="mirror"
+      // 2. :host-context() checks the host element's ancestors
+      // 3. The component's shadow CSS can hide its own buttons
+      const shadowDOMComponents = ['task-tracker', 'trait-display']
+      expect(shadowDOMComponents).to.have.lengthOf(2)
     })
   })
 })

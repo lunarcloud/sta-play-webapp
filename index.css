@@ -965,10 +965,10 @@ body.mirror {
     display: none;
   }
 
-  /* Hide close/remove buttons on components */
-  & player-display button.remove,
-  & task-tracker button.remove,
-  & trait-display button.close {
+  /* Hide close/remove buttons on light DOM components */
+  /* Note: task-tracker and trait-display use shadow DOM, so their buttons
+     are hidden via :host-context(body.mirror) in their own CSS files */
+  & player-display button.remove {
     display: none;
   }
 }}
