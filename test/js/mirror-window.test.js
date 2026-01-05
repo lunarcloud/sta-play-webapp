@@ -1,43 +1,45 @@
 import { expect } from '@esm-bundle/chai'
-import { isMirrorWindowOpen, closeMirrorWindow } from '../../../js/mirror-window.js'
+import { MirrorWindow } from '../../../js/mirror-window.js'
 
 describe('mirror-window', () => {
   afterEach(() => {
     // Clean up any open mirror windows
-    closeMirrorWindow()
+    MirrorWindow.close()
   })
 
-  describe('module exports', () => {
-    it('should export openMirrorWindow function', async () => {
+  describe('MirrorWindow class', () => {
+    it('should export MirrorWindow class', async () => {
       const module = await import('../../../js/mirror-window.js')
-      expect(module.openMirrorWindow).to.be.a('function')
+      expect(module.MirrorWindow).to.be.a('function')
     })
 
-    it('should export closeMirrorWindow function', async () => {
-      const module = await import('../../../js/mirror-window.js')
-      expect(module.closeMirrorWindow).to.be.a('function')
+    it('should have open static method', () => {
+      expect(MirrorWindow.open).to.be.a('function')
     })
 
-    it('should export isMirrorWindowOpen function', async () => {
-      const module = await import('../../../js/mirror-window.js')
-      expect(module.isMirrorWindowOpen).to.be.a('function')
+    it('should have close static method', () => {
+      expect(MirrorWindow.close).to.be.a('function')
+    })
+
+    it('should have isOpen static method', () => {
+      expect(MirrorWindow.isOpen).to.be.a('function')
     })
   })
 
-  describe('isMirrorWindowOpen', () => {
+  describe('isOpen', () => {
     it('should return false when no window is open initially', () => {
-      expect(isMirrorWindowOpen()).to.be.false
+      expect(MirrorWindow.isOpen()).to.be.false
     })
   })
 
-  describe('closeMirrorWindow', () => {
+  describe('close', () => {
     it('should handle being called when no window is open', () => {
-      expect(() => closeMirrorWindow()).to.not.throw()
+      expect(() => MirrorWindow.close()).to.not.throw()
     })
 
-    it('should set isMirrorWindowOpen to false', () => {
-      closeMirrorWindow()
-      expect(isMirrorWindowOpen()).to.be.false
+    it('should set isOpen to false', () => {
+      MirrorWindow.close()
+      expect(MirrorWindow.isOpen()).to.be.false
     })
   })
 })
