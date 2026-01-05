@@ -22,8 +22,18 @@ export class MirrorWindow {
       MirrorWindow.#window.close()
     }
 
-    // Open new window
-    MirrorWindow.#window = window.open('', 'STAPlayMirror', 'width=1024,height=768')
+    // Open new window with minimal browser chrome
+    const features = [
+      'width=1024',
+      'height=768',
+      'location=no',
+      'menubar=no',
+      'toolbar=no',
+      'status=no',
+      'scrollbars=yes',
+      'resizable=yes'
+    ].join(',')
+    MirrorWindow.#window = window.open('', 'STAPlayMirror', features)
 
     if (!MirrorWindow.#window) {
       console.error('Failed to open mirror window. Popup may have been blocked.')
