@@ -63,23 +63,7 @@ export class MirrorWindow {
 
       // Mark the window as a mirror
       doc.body.setAttribute('data-mirror-window', 'true')
-
-      // Hide dialogs in mirror window
-      const dialogs = doc.querySelectorAll('dialog')
-      dialogs.forEach(dialog => {
-        dialog.style.display = 'none'
-      })
-
-      // Hide all menu-items children except fullscreen button
-      const menuItems = doc.querySelector('menu-items')
-      if (menuItems) {
-        Array.from(menuItems.children).forEach(child => {
-          // Keep fullscreen button visible, hide everything else
-          if (child.id !== 'fullscreen-btn') {
-            child.style.display = 'none'
-          }
-        })
-      }
+      doc.body.classList.add('mirror')
 
       // Re-wire fullscreen button to control mirror window
       const fsBtn = doc.querySelector('#fullscreen-btn')
@@ -101,31 +85,6 @@ export class MirrorWindow {
           newFsBtn.querySelector('.symbol.enter')?.toggleAttribute('hidden', !exiting)
           newFsBtn.querySelector('.symbol.exit')?.toggleAttribute('hidden', exiting)
         })
-      }
-
-      // Hide navigation interaction buttons (mirror is display-only)
-      // Hide "▼ Condition" button's anchor element
-      const conditionBtn = doc.querySelector('nav li:nth-child(1) a')
-      if (conditionBtn) {
-        conditionBtn.style.display = 'none'
-      }
-
-      // Hide "＋ Player" / "＋ Character" button
-      const playerAddBtn = doc.querySelector('#player-add')
-      if (playerAddBtn) {
-        playerAddBtn.style.display = 'none'
-      }
-
-      // Hide "＋ Tracker" button
-      const trackerAddBtn = doc.querySelector('#task-tracker-add')
-      if (trackerAddBtn) {
-        trackerAddBtn.style.display = 'none'
-      }
-
-      // Hide "＋ Trait" button
-      const traitAddBtn = doc.querySelector('#trait-add')
-      if (traitAddBtn) {
-        traitAddBtn.style.display = 'none'
       }
 
       // Copy all styles

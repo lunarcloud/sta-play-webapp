@@ -944,4 +944,25 @@ body.ship-fullscreen {
       }
     }
   }
+
+/* Mirror window styles */
+body.mirror {
+  /* Hide all dialogs in mirror window */
+  & dialog {
+    display: none;
+  }
+
+  /* Hide all menu-items children except fullscreen button */
+  & menu-items > *:not(#fullscreen-btn) {
+    display: none;
+  }
+
+  /* Hide navigation interaction buttons */
+  & nav li:nth-child(1) a,
+  & #player-add,
+  & #task-tracker-add,
+  & #trait-add {
+    display: none;
+  }
+}
 }
