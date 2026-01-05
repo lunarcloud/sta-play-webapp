@@ -21,6 +21,7 @@ import { BackupData } from './js/database/backup-data.js'
 import './lib/model-viewer.min.js'
 import { setupNumberInputScrollForParent } from './js/scrollable-inputs.js'
 import { Interpolate, lerp } from './js/math-utils.js'
+import { openMirrorWindow } from './js/mirror-window.js'
 
 const DefaultShipUrl = 'gltf/default-ship-1.glb'
 
@@ -499,6 +500,13 @@ export class IndexController {
     })
 
     dialogEl.querySelector('button.show-welcome').addEventListener('click', () => welcomeDialogEl?.showModal())
+
+    dialogEl.querySelector('button.open-mirror').addEventListener('click', () => {
+      const mirrorWin = openMirrorWindow()
+      if (!mirrorWin) {
+        this.messageDialog?.show('Failed to open mirror window.\nPlease check if popups are blocked.')
+      }
+    })
 
     // Setup Edition & Selection
     const editionSelectEl = document.getElementById('select-edition')
