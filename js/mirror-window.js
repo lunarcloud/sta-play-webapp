@@ -70,10 +70,35 @@ export class MirrorWindow {
         dialog.style.display = 'none'
       })
 
-      // Hide menu items in mirror window
+      // Hide menu items in mirror window (settings, save, fullscreen, font controls)
       const menuItems = doc.querySelector('menu-items')
       if (menuItems) {
         menuItems.style.display = 'none'
+      }
+
+      // Hide text in navigation buttons, keep only symbols
+      // "▼ Condition" button
+      const conditionBtn = doc.querySelector('nav li:nth-child(1) a')
+      if (conditionBtn) {
+        conditionBtn.textContent = ''
+      }
+
+      // "＋ Player" / "＋ Character" button - hide the text spans
+      const playerAddSpans = doc.querySelectorAll('#player-add span')
+      playerAddSpans.forEach(span => {
+        span.style.display = 'none'
+      })
+
+      // "＋ Tracker" button
+      const trackerAddBtn = doc.querySelector('#task-tracker-add')
+      if (trackerAddBtn) {
+        trackerAddBtn.textContent = '＋'
+      }
+
+      // "＋ Trait" button
+      const traitAddBtn = doc.querySelector('#trait-add')
+      if (traitAddBtn) {
+        traitAddBtn.textContent = '＋'
       }
 
       // Copy all styles
