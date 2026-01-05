@@ -26,10 +26,6 @@
     --trek-color-5: hsl(209deg 90% 76%);
     --trek-color-6: hsl(247deg 44% 53%);
     --trek-color-highlight: var(--trek-color-3);
-    --player-color-red: var(--trek-color-1);
-    --player-color-blue: var(--trek-color-2);
-    --player-color-yellow: var(--trek-color-3);
-    --player-color-brown: var(--trek-color-4);
     --player-color-black: hsl(0deg 0% 13%);
     --player-color-white: hsl(0deg 0% 73%);
     --tcars-accent: lab(76.48% -4.48 73.56);
@@ -420,7 +416,7 @@ body {
                 }
 
                 &:first-child {
-                    width: 5em;
+                    width: 6em;
                 }
 
                 &:nth-child(2) {

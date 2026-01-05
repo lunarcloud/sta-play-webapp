@@ -476,7 +476,10 @@ export class TaskTrackerElement extends HTMLElement {
    * @param {string} value attribute value
    */
   set name (value) {
-    this.#nameEl.textContent = value
+    // "if" so we don't do it if round-tripping or we'll reset the cursor position while typing
+    if (this.#nameEl.textContent !== value) {
+      this.#nameEl.textContent = value
+    }
   }
 
   /**

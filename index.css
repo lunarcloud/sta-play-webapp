@@ -31,12 +31,12 @@
     --trek-color-highlight: var(--trek-color-3);
     --ship-name-color: white;
     --ship-name-color-bg: transparent;
-    --player-color-red: var(--trek-color-1);
-    --player-color-blue: var(--trek-color-2);
-    --player-color-yellow: var(--trek-color-3);
-    --player-color-brown: var(--trek-color-4);
-    --player-color-black: #222;
-    --player-color-white: #bbb;
+    --player-color-red: oklab(56.546% 0.18706 0.10852);
+    --player-color-yellow: oklab(82.783% -0.01502 0.16825);
+    --player-color-blue: oklab(41.851% -0.02382 -0.18558);
+    --player-color-brown: oklab(45.985% 0.05659 0.09122);
+    --player-color-black: oklab(24.75% 0 -0.00003);
+    --player-color-white: oklab(78.9% 0 -0.00009);
 
     @supports (width: -moz-available) { --stretch: -moz-available; }
 

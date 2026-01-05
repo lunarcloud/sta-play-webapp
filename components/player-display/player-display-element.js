@@ -36,13 +36,20 @@ function PipText (solid, hollow) {
 }
 
 const Pips = [
-  { title: 'Captain', pips: PipText(4, 0) },
-  { title: 'Commander', pips: PipText(3, 0) },
-  { title: 'Lieutenant Commander', pips: PipText(2, 1) },
-  { title: 'Lieutenant', pips: PipText(2, 0) },
-  { title: 'Lieutenant Junior Grade', pips: PipText(1, 1) },
-  { title: 'Ensign', pips: PipText(1, 0) },
-  { title: 'Other', pips: PipText(0, 0) }
+  { title: 'Captain', pips: PipText(4, 0), group: 'Officer' },
+  { title: 'Commander', pips: PipText(3, 0), group: 'Officer' },
+  { title: 'Lieutenant Commander', pips: PipText(2, 1), group: 'Officer' },
+  { title: 'Lieutenant', pips: PipText(2, 0), group: 'Officer' },
+  { title: 'Lieutenant Junior Grade', pips: PipText(1, 1), group: 'Officer' },
+  { title: 'Ensign', pips: PipText(1, 0), group: 'Officer' },
+
+  { title: 'Commodore', pips: PipText(1, 0), group: 'Flag' },
+  { title: 'Rear admiral', pips: PipText(2, 0), group: 'Flag' },
+  { title: 'Vice admiral', pips: PipText(3, 0), group: 'Flag' },
+  { title: 'Admiral', pips: PipText(4, 0), group: 'Flag' },
+  { title: 'Fleet admiral', pips: PipText(5, 0), group: 'Flag' },
+
+  { title: 'Other', pips: PipText(0, 0) },
 ]
 
 const DefaultPlayerImages = [
@@ -212,18 +219,42 @@ export class PlayerDisplayElement extends HTMLLIElement {
     this.#rankSelect = document.createElement('select')
     this.#rankDisplay.appendChild(this.#rankSelect)
 
+    // For all pip ranks
+    const rankGroups = []
     for (let i = 0; i < Pips.length; i++) {
+      // Create the option element
       const optionEl = document.createElement('option')
       optionEl.title = Pips[i].title
       optionEl.textContent = Pips[i].title
-      optionEl.value = Pips[i].pips
-      if ([Pips[i].pips, Pips[i].title].includes(currentRank)) {
-        optionEl.selected = true
-        rankLabelEl.textContent = Pips[i].pips
+      optionEl.value = Pips[i].pips + ':' + Pips[i].group
+
+      // If this belongs to a group...
+      if (Pips[i].group !== undefined) {
+        // Find or create the group
+        let optGroup = rankGroups.find(e => e.label === Pips[i].group)
+        if (!optGroup) {
+          optGroup = document.createElement('optgroup')
+          optGroup.label = Pips[i].group
+
+          // Put this new group into the list
+          rankGroups.push(optGroup)
+        }
+
+        // Add to the list
+        optGroup.appendChild(optionEl)
+      } else {
+        // Not part of a group, add directly to list
+        rankGroups.push(optionEl)
       }
-      this.#rankSelect.appendChild(optionEl)
     }
+    // Add it all to the select element
+    rankGroups.forEach(e => this.#rankSelect.appendChild(e))
+
+    // Wire up change events
     this.#rankSelect.addEventListener('change', _event => this.setAttribute('rank', this.#rankSelect.value))
+
+    // Select the current rank
+    this.setAttribute('rank', currentRank)
 
     // stress input-progress of input max
     let currentStress = parseInt(this.getAttribute('current-stress'))
@@ -397,17 +428,36 @@ export class PlayerDisplayElement extends HTMLLIElement {
     if (typeof (value) !== 'string') {
       return
     }
+
+    // Convert legacy symbols to current ones
     value = value
       .replaceAll(PipCharacters.legacySolid, PipCharacters.solid)
       .replaceAll(PipCharacters.legacyHollow, PipCharacters.hollow)
+
+    // Try to find the rank value amongst the valid options
     const titleMatches = Pips.filter(e => e.title === value)
-    const pipMatches = Pips.filter(e => e.pips === value)
+    const pipMatches = Pips.filter(e => e.pips + ':' + e.group === value)
+      .concat(Pips.filter(e => e.pips + ':' + e.group === value + ':Officer'))
+
+    // Get data from the searches
+    const match = titleMatches.length > 0
+      ? titleMatches[0]
+      : pipMatches.length > 0
+        ? pipMatches[0]
+        : Pips[Pips.length - 1] // "Other"
+    const group = match.group || ''
+
+    // update the select element's value itself
     if (titleMatches.length > 0) {
-      this.setAttribute('rank', titleMatches[0].pips)
+      this.setAttribute('rank', match.pips + ':' + group)
     } else if (pipMatches.length > 0) {
-      this.#rankSelect.value = pipMatches[0].pips
+      this.#rankSelect.value = match.pips + ':' + group
     }
-    this.#rankDisplay.querySelector('label').textContent = pipMatches[0].pips
+
+    // Update the rank display
+    this.#rankDisplay.querySelector('label').textContent = match.pips
+    this.#rankDisplay.title = match.title
+    this.#rankDisplay.classList.toggle('flag', group.toLowerCase().trim() === 'flag')
   }
 
   /**
