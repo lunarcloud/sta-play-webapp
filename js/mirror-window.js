@@ -76,29 +76,29 @@ export class MirrorWindow {
         menuItems.style.display = 'none'
       }
 
-      // Hide text in navigation buttons, keep only symbols
-      // "▼ Condition" button
+      // Hide navigation interaction buttons (mirror is display-only)
+      // Hide "▼ Condition" button's anchor element
       const conditionBtn = doc.querySelector('nav li:nth-child(1) a')
       if (conditionBtn) {
-        conditionBtn.textContent = ''
+        conditionBtn.style.display = 'none'
       }
 
-      // "＋ Player" / "＋ Character" button - hide the text spans
-      const playerAddSpans = doc.querySelectorAll('#player-add span')
-      playerAddSpans.forEach(span => {
-        span.style.display = 'none'
-      })
+      // Hide "＋ Player" / "＋ Character" button
+      const playerAddBtn = doc.querySelector('#player-add')
+      if (playerAddBtn) {
+        playerAddBtn.style.display = 'none'
+      }
 
-      // "＋ Tracker" button
+      // Hide "＋ Tracker" button
       const trackerAddBtn = doc.querySelector('#task-tracker-add')
       if (trackerAddBtn) {
-        trackerAddBtn.textContent = '＋'
+        trackerAddBtn.style.display = 'none'
       }
 
-      // "＋ Trait" button
+      // Hide "＋ Trait" button
       const traitAddBtn = doc.querySelector('#trait-add')
       if (traitAddBtn) {
-        traitAddBtn.textContent = '＋'
+        traitAddBtn.style.display = 'none'
       }
 
       // Copy all styles
