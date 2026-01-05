@@ -964,5 +964,12 @@ body.mirror {
   & #trait-add {
     display: none;
   }
+
+  /* Hide close/remove buttons on components */
+  & player-display button.remove,
+  & task-tracker button.remove,
+  & trait-display button.close {
+    display: none;
+  }
 }
 }
