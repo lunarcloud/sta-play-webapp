@@ -70,40 +70,15 @@ export class MirrorWindow {
         dialog.style.display = 'none'
       })
 
-      // Hide individual menu items except fullscreen button
-      const settingsBtn = doc.querySelector('#settings-btn')
-      if (settingsBtn) {
-        settingsBtn.style.display = 'none'
-      }
-
-      const saveBtn = doc.querySelector('#save-btn')
-      if (saveBtn) {
-        saveBtn.style.display = 'none'
-      }
-
-      const fontUpBtn = doc.querySelector('#font-up-btn')
-      if (fontUpBtn) {
-        fontUpBtn.style.display = 'none'
-      }
-
-      const fontDownBtn = doc.querySelector('#font-down-btn')
-      if (fontDownBtn) {
-        fontDownBtn.style.display = 'none'
-      }
-
-      const gameNameDiv = doc.querySelector('#game-name')
-      if (gameNameDiv) {
-        gameNameDiv.style.display = 'none'
-      }
-
-      const momentumSection = doc.querySelector('#momentum-section')
-      if (momentumSection) {
-        momentumSection.style.display = 'none'
-      }
-
-      const threatSection = doc.querySelector('#threat-section')
-      if (threatSection) {
-        threatSection.style.display = 'none'
+      // Hide all menu-items children except fullscreen button
+      const menuItems = doc.querySelector('menu-items')
+      if (menuItems) {
+        Array.from(menuItems.children).forEach(child => {
+          // Keep fullscreen button visible, hide everything else
+          if (child.id !== 'fullscreen-btn') {
+            child.style.display = 'none'
+          }
+        })
       }
 
       // Re-wire fullscreen button to control mirror window
