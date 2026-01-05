@@ -70,10 +70,62 @@ export class MirrorWindow {
         dialog.style.display = 'none'
       })
 
-      // Hide menu items in mirror window (settings, save, fullscreen, font controls)
-      const menuItems = doc.querySelector('menu-items')
-      if (menuItems) {
-        menuItems.style.display = 'none'
+      // Hide individual menu items except fullscreen button
+      const settingsBtn = doc.querySelector('#settings-btn')
+      if (settingsBtn) {
+        settingsBtn.style.display = 'none'
+      }
+
+      const saveBtn = doc.querySelector('#save-btn')
+      if (saveBtn) {
+        saveBtn.style.display = 'none'
+      }
+
+      const fontUpBtn = doc.querySelector('#font-up-btn')
+      if (fontUpBtn) {
+        fontUpBtn.style.display = 'none'
+      }
+
+      const fontDownBtn = doc.querySelector('#font-down-btn')
+      if (fontDownBtn) {
+        fontDownBtn.style.display = 'none'
+      }
+
+      const gameNameDiv = doc.querySelector('#game-name')
+      if (gameNameDiv) {
+        gameNameDiv.style.display = 'none'
+      }
+
+      const momentumSection = doc.querySelector('#momentum-section')
+      if (momentumSection) {
+        momentumSection.style.display = 'none'
+      }
+
+      const threatSection = doc.querySelector('#threat-section')
+      if (threatSection) {
+        threatSection.style.display = 'none'
+      }
+
+      // Re-wire fullscreen button to control mirror window
+      const fsBtn = doc.querySelector('#fullscreen-btn')
+      if (fsBtn) {
+        // Remove existing click handlers by cloning and replacing
+        const newFsBtn = fsBtn.cloneNode(true)
+        fsBtn.parentNode.replaceChild(newFsBtn, fsBtn)
+
+        // Add new handler for mirror window
+        newFsBtn.addEventListener('click', () => {
+          const exiting = !!doc.fullscreenElement || !doc.fullscreenEnabled
+          if (exiting) {
+            doc.exitFullscreen()
+          } else {
+            doc.documentElement.requestFullscreen({ navigationUI: 'auto' })
+          }
+
+          // Update the button symbol
+          newFsBtn.querySelector('.symbol.enter')?.toggleAttribute('hidden', !exiting)
+          newFsBtn.querySelector('.symbol.exit')?.toggleAttribute('hidden', exiting)
+        })
       }
 
       // Hide navigation interaction buttons (mirror is display-only)
