@@ -305,16 +305,22 @@ export class MirrorWindow {
 
     // Sync camera orientation properties for interactive model viewing
     // These properties are updated when users interact with the model-viewer
+    // Use setAttribute to set the camera-orbit, camera-target, and field-of-view attributes
+    // which will update the view more reliably than setting properties directly
     if ('cameraOrbit' in sourceViewer && sourceViewer.cameraOrbit) {
-      targetViewer.cameraOrbit = sourceViewer.cameraOrbit
+      targetViewer.setAttribute('camera-orbit', sourceViewer.cameraOrbit)
+      // Force immediate camera update
+      if (typeof targetViewer.jumpCameraToGoal === 'function') {
+        targetViewer.jumpCameraToGoal()
+      }
     }
 
     if ('cameraTarget' in sourceViewer && sourceViewer.cameraTarget) {
-      targetViewer.cameraTarget = sourceViewer.cameraTarget
+      targetViewer.setAttribute('camera-target', sourceViewer.cameraTarget)
     }
 
     if ('fieldOfView' in sourceViewer && sourceViewer.fieldOfView) {
-      targetViewer.fieldOfView = sourceViewer.fieldOfView
+      targetViewer.setAttribute('field-of-view', sourceViewer.fieldOfView)
     }
   }
 
@@ -397,6 +403,11 @@ export class MirrorWindow {
           Array.from(shipAlert.attributes).forEach(attr => {
             mirrorShipAlert.setAttribute(attr.name, attr.value)
           })
+          // Also sync the color property in case it was set via JavaScript
+          // without updating the attribute (the setter only updates attribute if it exists)
+          if ('color' in shipAlert && shipAlert.color) {
+            mirrorShipAlert.setAttribute('color', shipAlert.color)
+          }
         }
 
         // Sync general-text contenteditable div (non-custom element)
