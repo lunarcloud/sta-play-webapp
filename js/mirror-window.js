@@ -243,6 +243,34 @@ export class MirrorWindow {
   }
 
   /**
+   * Synchronizes model-viewer properties and styles from source to target.
+   * This is needed for cloaking effects which set opacity and exposure via JavaScript.
+   * @param {Element} sourceViewer - The source model-viewer element
+   * @param {Element} targetViewer - The target model-viewer element
+   */
+  static #syncModelViewerProperties (sourceViewer, targetViewer) {
+    if (!sourceViewer || !targetViewer) return
+
+    // Sync src attribute
+    if (sourceViewer.src) {
+      targetViewer.src = sourceViewer.src
+    }
+
+    // Sync exposure property (used in cloaking effect)
+    if ('exposure' in sourceViewer) {
+      targetViewer.exposure = sourceViewer.exposure
+    }
+
+    // Sync inline style.opacity (used in cloaking effect)
+    if (sourceViewer.style.opacity !== undefined && sourceViewer.style.opacity !== '') {
+      targetViewer.style.opacity = sourceViewer.style.opacity
+    } else if (targetViewer.style.opacity !== '') {
+      // Clear opacity if source doesn't have it set
+      targetViewer.style.opacity = ''
+    }
+  }
+
+  /**
    * Schedules a sync operation with debouncing to prevent flickering.
    */
   static #scheduleSync () {
@@ -397,12 +425,12 @@ export class MirrorWindow {
       const headerEl = document.querySelector('header')
       const mirrorHeaderEl = mirrorDoc.querySelector('header')
       if (headerEl && mirrorHeaderEl) {
-        // Copy model-viewer src attributes
+        // Sync model-viewer properties including cloaking effect
         const modelViewers = headerEl.querySelectorAll('model-viewer')
         const mirrorModelViewers = mirrorHeaderEl.querySelectorAll('model-viewer')
         modelViewers.forEach((viewer, index) => {
-          if (mirrorModelViewers[index] && viewer.src) {
-            mirrorModelViewers[index].src = viewer.src
+          if (mirrorModelViewers[index]) {
+            MirrorWindow.#syncModelViewerProperties(viewer, mirrorModelViewers[index])
           }
         })
       }
