@@ -411,11 +411,16 @@ export class MirrorWindow {
               // Sync form values after innerHTML update
               MirrorWindow.#syncFormValues(player, mirrorPlayer)
             } else {
-              // Add new player by cloning (cloneNode includes all content and form values)
+              // Add new player by cloning
               const newPlayer = player.cloneNode(true)
               mirrorPlayersUl.appendChild(newPlayer)
-              // Note: Don't sync form values here - the cloned node already has them
-              // On the next sync, this player will be treated as "existing" and synced normally
+              // Defer form value sync to next frame to ensure DOM is fully settled
+              // This prevents double-contents issue when new players are added
+              requestAnimationFrame(() => {
+                if (MirrorWindow.#window && !MirrorWindow.#window.closed) {
+                  MirrorWindow.#syncFormValues(player, newPlayer)
+                }
+              })
             }
           })
         }
