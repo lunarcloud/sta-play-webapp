@@ -429,7 +429,266 @@ export class MirrorWindow {
   }
 
   /**
+   * Synchronizes body classes and attributes to mirror window.
+   * @param {Document} mirrorDoc - Mirror window document
+   */
+  static #syncBodyAttributes (mirrorDoc) {
+    // Sync body classes (preserve mirror class)
+    const bodyClasses = document.body.className.split(' ')
+    bodyClasses.forEach(cls => {
+      if (cls && !mirrorDoc.body.classList.contains(cls)) {
+        mirrorDoc.body.classList.add(cls)
+      }
+    })
+    // Remove classes that are no longer in main body (except mirror)
+    Array.from(mirrorDoc.body.classList).forEach(cls => {
+      if (cls !== 'mirror' && !document.body.classList.contains(cls)) {
+        mirrorDoc.body.classList.remove(cls)
+      }
+    })
+    
+    // Sync body attributes
+    Array.from(document.body.attributes).forEach(attr => {
+      if (attr.name !== 'data-mirror-window' && attr.name !== 'class') {
+        mirrorDoc.body.setAttribute(attr.name, attr.value)
+      }
+    })
+  }
+
+  /**
+   * Synchronizes menu items (momentum pool, threat pool, etc.).
+   * @param {Document} mirrorDoc - Mirror window document
+   */
+  static #syncMenuItems (mirrorDoc) {
+    const menuItems = document.querySelector('menu-items')
+    const mirrorMenuItems = mirrorDoc.querySelector('menu-items')
+    if (menuItems && mirrorMenuItems) {
+      MirrorWindow.#syncFormValues(menuItems, mirrorMenuItems)
+    }
+  }
+
+  /**
+   * Synchronizes ship alert element including color property.
+   * @param {Element} mainEl - Main element from source window
+   * @param {Element} mirrorMainEl - Main element from mirror window
+   */
+  static #syncShipAlert (mainEl, mirrorMainEl) {
+    const shipAlert = mainEl.querySelector('ship-alert')
+    const mirrorShipAlert = mirrorMainEl.querySelector('ship-alert')
+    if (shipAlert && mirrorShipAlert) {
+      // Copy attributes instead of cloning to preserve shadow DOM
+      Array.from(shipAlert.attributes).forEach(attr => {
+        mirrorShipAlert.setAttribute(attr.name, attr.value)
+      })
+      // Also sync the color property in case it was set via JavaScript
+      // without updating the attribute (the setter only updates attribute if it exists)
+      if (shipAlert instanceof ShipAlertElement && shipAlert.color) {
+        mirrorShipAlert.setAttribute('color', shipAlert.color)
+      }
+    }
+  }
+
+  /**
+   * Synchronizes general text contenteditable area.
+   * @param {Element} mainEl - Main element from source window
+   * @param {Element} mirrorMainEl - Main element from mirror window
+   */
+  static #syncGeneralText (mainEl, mirrorMainEl) {
+    const generalText = mainEl.querySelector('#general-text')
+    const mirrorGeneralText = mirrorMainEl.querySelector('#general-text')
+    if (generalText && mirrorGeneralText) {
+      mirrorGeneralText.innerHTML = generalText.innerHTML
+    }
+  }
+
+  /**
+   * Synchronizes task trackers with form values.
+   * @param {Element} mainEl - Main element from source window
+   * @param {Element} mirrorMainEl - Main element from mirror window
+   */
+  static #syncTaskTrackers (mainEl, mirrorMainEl) {
+    const taskTrackers = mainEl.querySelector('task-trackers')
+    const mirrorTaskTrackers = mirrorMainEl.querySelector('task-trackers')
+    if (taskTrackers && mirrorTaskTrackers) {
+      mirrorTaskTrackers.innerHTML = taskTrackers.innerHTML
+      // After innerHTML sync, copy form element values
+      MirrorWindow.#syncFormValues(taskTrackers, mirrorTaskTrackers)
+    }
+  }
+
+  /**
+   * Synchronizes trait elements.
+   * @param {Element} mainEl - Main element from source window
+   * @param {Element} mirrorMainEl - Main element from mirror window
+   */
+  static #syncTraits (mainEl, mirrorMainEl) {
+    const traits = mainEl.querySelector('traits')
+    const mirrorTraits = mirrorMainEl.querySelector('traits')
+    if (traits && mirrorTraits) {
+      mirrorTraits.innerHTML = traits.innerHTML
+    }
+  }
+
+  /**
+   * Synchronizes mission tracker attributes.
+   * @param {Element} mainEl - Main element from source window
+   * @param {Element} mirrorMainEl - Main element from mirror window
+   */
+  static #syncMissionTracker (mainEl, mirrorMainEl) {
+    const missionTracker = mainEl.querySelector('mission-tracker')
+    const mirrorMissionTracker = mirrorMainEl.querySelector('mission-tracker')
+    if (missionTracker && mirrorMissionTracker) {
+      Array.from(missionTracker.attributes).forEach(attr => {
+        mirrorMissionTracker.setAttribute(attr.name, attr.value)
+      })
+    }
+  }
+
+  /**
+   * Synchronizes player display elements (conditionally based on #syncPlayersNeeded flag).
+   * @param {Element} mainEl - Main element from source window
+   * @param {Element} mirrorMainEl - Main element from mirror window
+   */
+  static #syncPlayers (mainEl, mirrorMainEl) {
+    // Only sync players if changes affect players (to avoid flicker from header/theme updates)
+    if (!MirrorWindow.#syncPlayersNeeded) {
+      return
+    }
+
+    const playersUl = mainEl.querySelector('ul.players')
+    const mirrorPlayersUl = mirrorMainEl.querySelector('ul.players')
+    if (!playersUl || !mirrorPlayersUl) {
+      return
+    }
+
+    // Get all player-display elements from both windows
+    const players = Array.from(playersUl.querySelectorAll('li[is="player-display"]'))
+    const mirrorPlayers = Array.from(mirrorPlayersUl.querySelectorAll('li[is="player-display"]'))
+
+    // Remove extra mirror players if main has fewer
+    while (mirrorPlayers.length > players.length) {
+      const extraPlayer = mirrorPlayers.pop()
+      if (extraPlayer) {
+        extraPlayer.remove()
+      }
+    }
+
+    // Sync or add players
+    players.forEach((player, index) => {
+      if (index < mirrorPlayers.length) {
+        // Sync existing player by copying attributes and innerHTML
+        const mirrorPlayer = mirrorPlayers[index]
+        Array.from(player.attributes).forEach(attr => {
+          mirrorPlayer.setAttribute(attr.name, attr.value)
+        })
+        mirrorPlayer.innerHTML = player.innerHTML
+        // Sync form values after innerHTML update
+        MirrorWindow.#syncFormValues(player, mirrorPlayer)
+      } else {
+        // Add new player by cloning
+        const newPlayer = player.cloneNode(false)
+        if (newPlayer instanceof Element === false)
+          throw new Error("Something bad happened!")
+        mirrorPlayersUl.appendChild(newPlayer)
+        MirrorWindow.#syncFormValues(player, newPlayer)
+        // Repeat sync on next frame to ensure DOM is fully settled
+        // This prevents the image update issue when new players are added
+        requestAnimationFrame(() => MirrorWindow.#sync())
+      }
+    })
+  }
+
+  /**
+   * Synchronizes header ship models with cloaking effects.
+   * @param {Document} mirrorDoc - Mirror window document
+   */
+  static #syncHeaderModels (mirrorDoc) {
+    const headerEl = document.querySelector('header')
+    const mirrorHeaderEl = mirrorDoc.querySelector('header')
+    if (headerEl && mirrorHeaderEl) {
+      // Sync model-viewer properties including cloaking effect
+      const modelViewers = headerEl.querySelectorAll('model-viewer')
+      const mirrorModelViewers = mirrorHeaderEl.querySelectorAll('model-viewer')
+      modelViewers.forEach((viewer, index) => {
+        if (mirrorModelViewers[index]) {
+          MirrorWindow.#syncModelViewerProperties(viewer, mirrorModelViewers[index])
+        }
+      })
+    }
+  }
+
+  /**
+   * Synchronizes fullscreen ship model viewer.
+   * @param {Document} mirrorDoc - Mirror window document
+   */
+  static #syncFullscreenShip (mirrorDoc) {
+    const fullscreenShip = document.getElementById('ship-fullscreen')
+    const mirrorFullscreenShip = mirrorDoc.getElementById('ship-fullscreen')
+    if (fullscreenShip && mirrorFullscreenShip) {
+      MirrorWindow.#syncModelViewerProperties(fullscreenShip, mirrorFullscreenShip)
+    }
+  }
+
+  /**
+   * Synchronizes navigation element.
+   * @param {Document} mirrorDoc - Mirror window document
+   */
+  static #syncNavigation (mirrorDoc) {
+    const navEl = document.querySelector('nav')
+    const mirrorNavEl = mirrorDoc.querySelector('nav')
+    if (navEl && mirrorNavEl) {
+      // Clone the nav element's children to preserve custom element state
+      const clone = navEl.cloneNode(true)
+      // Clear and replace content
+      while (mirrorNavEl.firstChild) {
+        mirrorNavEl.removeChild(mirrorNavEl.firstChild)
+      }
+      while (clone.firstChild) {
+        mirrorNavEl.appendChild(clone.firstChild)
+      }
+    }
+  }
+
+  /**
+   * Synchronizes theme element.
+   * @param {Document} mirrorDoc - Mirror window document
+   */
+  static #syncTheme (mirrorDoc) {
+    const themeEl = document.querySelector('theme')
+    const mirrorThemeEl = mirrorDoc.querySelector('theme')
+    if (themeEl && mirrorThemeEl) {
+      // Clone the theme element's children to preserve custom element state
+      const clone = themeEl.cloneNode(true)
+      // Clear and replace content
+      while (mirrorThemeEl.firstChild) {
+        mirrorThemeEl.removeChild(mirrorThemeEl.firstChild)
+      }
+      while (clone.firstChild) {
+        mirrorThemeEl.appendChild(clone.firstChild)
+      }
+      if (themeEl.hasAttribute('value')) {
+        mirrorThemeEl.setAttribute('value', themeEl.getAttribute('value'))
+      }
+    }
+  }
+
+  /**
+   * Synchronizes theme stylesheet link.
+   * @param {Document} mirrorDoc - Mirror window document
+   */
+  static #syncThemeStylesheet (mirrorDoc) {
+    const themeLink = document.getElementById('theme-link')
+    const mirrorThemeLink = mirrorDoc.getElementById('theme-link')
+    if (themeLink instanceof HTMLLinkElement
+      && mirrorThemeLink instanceof HTMLLinkElement
+      && themeLink.href) {
+      mirrorThemeLink.href = themeLink.href
+    }
+  }
+
+  /**
    * Synchronizes current content to the mirror window.
+   * This is the main sync orchestrator that calls specific sync functions.
    */
   static #sync () {
     if (!MirrorWindow.#window || MirrorWindow.#window.closed) {
@@ -444,191 +703,30 @@ export class MirrorWindow {
         return
       }
 
-      // Sync body classes and attributes (preserve mirror class)
-      const bodyClasses = document.body.className.split(' ')
-      bodyClasses.forEach(cls => {
-        if (cls && !mirrorDoc.body.classList.contains(cls)) {
-          mirrorDoc.body.classList.add(cls)
-        }
-      })
-      // Remove classes that are no longer in main body (except mirror)
-      Array.from(mirrorDoc.body.classList).forEach(cls => {
-        if (cls !== 'mirror' && !document.body.classList.contains(cls)) {
-          mirrorDoc.body.classList.remove(cls)
-        }
-      })
-      
-      Array.from(document.body.attributes).forEach(attr => {
-        if (attr.name !== 'data-mirror-window' && attr.name !== 'class') {
-          mirrorDoc.body.setAttribute(attr.name, attr.value)
-        }
-      })
+      // Sync different parts of the application
+      MirrorWindow.#syncBodyAttributes(mirrorDoc)
+      MirrorWindow.#syncMenuItems(mirrorDoc)
 
-      // Sync menu-items form values (momentum pool, threat pool, etc.)
-      const menuItems = document.querySelector('menu-items')
-      const mirrorMenuItems = mirrorDoc.querySelector('menu-items')
-      if (menuItems && mirrorMenuItems) {
-        MirrorWindow.#syncFormValues(menuItems, mirrorMenuItems)
-      }
-
-      // Sync main content by syncing specific elements to avoid duplication
+      // Sync main content area
       const mainEl = document.querySelector('main')
       const mirrorMainEl = mirrorDoc.querySelector('main')
       if (mainEl && mirrorMainEl) {
-        // Sync ship-alert attributes (custom element with shadow DOM)
-        const shipAlert = mainEl.querySelector('ship-alert')
-        const mirrorShipAlert = mirrorMainEl.querySelector('ship-alert')
-        if (shipAlert && mirrorShipAlert) {
-          // Copy attributes instead of cloning to preserve shadow DOM
-          Array.from(shipAlert.attributes).forEach(attr => {
-            mirrorShipAlert.setAttribute(attr.name, attr.value)
-          })
-          // Also sync the color property in case it was set via JavaScript
-          // without updating the attribute (the setter only updates attribute if it exists)
-          if (shipAlert instanceof ShipAlertElement && shipAlert.color) {
-            mirrorShipAlert.setAttribute('color', shipAlert.color)
-          }
-        }
-
-        // Sync general-text contenteditable div (non-custom element)
-        const generalText = mainEl.querySelector('#general-text')
-        const mirrorGeneralText = mirrorMainEl.querySelector('#general-text')
-        if (generalText && mirrorGeneralText) {
-          mirrorGeneralText.innerHTML = generalText.innerHTML
-        }
-
-        // Sync task-trackers (custom element container) with form values
-        const taskTrackers = mainEl.querySelector('task-trackers')
-        const mirrorTaskTrackers = mirrorMainEl.querySelector('task-trackers')
-        if (taskTrackers && mirrorTaskTrackers) {
-          mirrorTaskTrackers.innerHTML = taskTrackers.innerHTML
-          // After innerHTML sync, copy form element values
-          MirrorWindow.#syncFormValues(taskTrackers, mirrorTaskTrackers)
-        }
-
-        // Sync traits (custom element container)
-        const traits = mainEl.querySelector('traits')
-        const mirrorTraits = mirrorMainEl.querySelector('traits')
-        if (traits && mirrorTraits) {
-          mirrorTraits.innerHTML = traits.innerHTML
-        }
-
-        // Sync mission-tracker (custom element)
-        const missionTracker = mainEl.querySelector('mission-tracker')
-        const mirrorMissionTracker = mirrorMainEl.querySelector('mission-tracker')
-        if (missionTracker && mirrorMissionTracker) {
-          Array.from(missionTracker.attributes).forEach(attr => {
-            mirrorMissionTracker.setAttribute(attr.name, attr.value)
-          })
-        }
-
-        // Sync players list only if changes affect players (to avoid flicker from header/theme updates)
-        // Always sync players if this is a full rebuild or if player changes detected
-        if (MirrorWindow.#syncPlayersNeeded) {
-          const playersUl = mainEl.querySelector('ul.players')
-          const mirrorPlayersUl = mirrorMainEl.querySelector('ul.players')
-          if (playersUl && mirrorPlayersUl) {
-            // Get all player-display elements from both windows
-            const players = Array.from(playersUl.querySelectorAll('li[is="player-display"]'))
-            const mirrorPlayers = Array.from(mirrorPlayersUl.querySelectorAll('li[is="player-display"]'))
-
-            // Remove extra mirror players if main has fewer
-            while (mirrorPlayers.length > players.length) {
-              const extraPlayer = mirrorPlayers.pop()
-              if (extraPlayer) {
-                extraPlayer.remove()
-              }
-            }
-
-            // Sync or add players
-            players.forEach((player, index) => {
-              if (index < mirrorPlayers.length) {
-                // Sync existing player by copying attributes and innerHTML
-                const mirrorPlayer = mirrorPlayers[index]
-                Array.from(player.attributes).forEach(attr => {
-                  mirrorPlayer.setAttribute(attr.name, attr.value)
-                })
-                mirrorPlayer.innerHTML = player.innerHTML
-                // Sync form values after innerHTML update
-                MirrorWindow.#syncFormValues(player, mirrorPlayer)
-              } else {
-                // Add new player by cloning
-                const newPlayer = player.cloneNode(false)
-                if (newPlayer instanceof Element === false)
-                  throw new Error("Something bad happened!")
-                mirrorPlayersUl.appendChild(newPlayer)
-                MirrorWindow.#syncFormValues(player, newPlayer)
-                // Repeat sync on next frame to ensure DOM is fully settled
-                // This prevents the image update issue when new players are added
-                requestAnimationFrame(() => this.#sync())
-              }
-            })
-          }
-        }
+        MirrorWindow.#syncShipAlert(mainEl, mirrorMainEl)
+        MirrorWindow.#syncGeneralText(mainEl, mirrorMainEl)
+        MirrorWindow.#syncTaskTrackers(mainEl, mirrorMainEl)
+        MirrorWindow.#syncTraits(mainEl, mirrorMainEl)
+        MirrorWindow.#syncMissionTracker(mainEl, mirrorMainEl)
+        MirrorWindow.#syncPlayers(mainEl, mirrorMainEl)
       }
 
-      // Sync header (ship models)
-      const headerEl = document.querySelector('header')
-      const mirrorHeaderEl = mirrorDoc.querySelector('header')
-      if (headerEl && mirrorHeaderEl) {
-        // Sync model-viewer properties including cloaking effect
-        const modelViewers = headerEl.querySelectorAll('model-viewer')
-        const mirrorModelViewers = mirrorHeaderEl.querySelectorAll('model-viewer')
-        modelViewers.forEach((viewer, index) => {
-          if (mirrorModelViewers[index]) {
-            MirrorWindow.#syncModelViewerProperties(viewer, mirrorModelViewers[index])
-          }
-        })
-      }
+      // Sync ship models
+      MirrorWindow.#syncHeaderModels(mirrorDoc)
+      MirrorWindow.#syncFullscreenShip(mirrorDoc)
 
-      // Sync fullscreen ship model-viewer
-      const fullscreenShip = document.getElementById('ship-fullscreen')
-      const mirrorFullscreenShip = mirrorDoc.getElementById('ship-fullscreen')
-      if (fullscreenShip && mirrorFullscreenShip) {
-        MirrorWindow.#syncModelViewerProperties(fullscreenShip, mirrorFullscreenShip)
-      }
-
-      // Sync navigation by cloning to avoid custom element duplication issues
-      const navEl = document.querySelector('nav')
-      const mirrorNavEl = mirrorDoc.querySelector('nav')
-      if (navEl && mirrorNavEl) {
-        // Clone the nav element's children to preserve custom element state
-        const clone = navEl.cloneNode(true)
-        // Clear and replace content
-        while (mirrorNavEl.firstChild) {
-          mirrorNavEl.removeChild(mirrorNavEl.firstChild)
-        }
-        while (clone.firstChild) {
-          mirrorNavEl.appendChild(clone.firstChild)
-        }
-      }
-
-      // Sync theme by cloning to avoid custom element duplication issues
-      const themeEl = document.querySelector('theme')
-      const mirrorThemeEl = mirrorDoc.querySelector('theme')
-      if (themeEl && mirrorThemeEl) {
-        // Clone the theme element's children to preserve custom element state
-        const clone = themeEl.cloneNode(true)
-        // Clear and replace content
-        while (mirrorThemeEl.firstChild) {
-          mirrorThemeEl.removeChild(mirrorThemeEl.firstChild)
-        }
-        while (clone.firstChild) {
-          mirrorThemeEl.appendChild(clone.firstChild)
-        }
-        if (themeEl.hasAttribute('value')) {
-          mirrorThemeEl.setAttribute('value', themeEl.getAttribute('value'))
-        }
-      }
-
-      // Sync theme stylesheet
-      const themeLink = document.getElementById('theme-link')
-      const mirrorThemeLink = mirrorDoc.getElementById('theme-link')
-      if (themeLink instanceof HTMLLinkElement
-        && mirrorThemeLink instanceof HTMLLinkElement
-        && themeLink.href) {
-        mirrorThemeLink.href = themeLink.href
-      }
+      // Sync UI chrome
+      MirrorWindow.#syncNavigation(mirrorDoc)
+      MirrorWindow.#syncTheme(mirrorDoc)
+      MirrorWindow.#syncThemeStylesheet(mirrorDoc)
     } catch (error) {
       console.error('Error syncing to mirror window:', error)
     }
