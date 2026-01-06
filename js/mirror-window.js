@@ -277,7 +277,8 @@ export class MirrorWindow {
 
   /**
    * Synchronizes model-viewer properties and styles from source to target.
-   * This is needed for cloaking effects which set opacity and exposure via JavaScript.
+   * This is needed for cloaking effects which set opacity and exposure via JavaScript,
+   * and for syncing camera orientation when users interact with the model.
    * @param {Element} sourceViewer - The source model-viewer element
    * @param {Element} targetViewer - The target model-viewer element
    */
@@ -300,6 +301,20 @@ export class MirrorWindow {
     } else if (targetViewer.style.opacity !== '') {
       // Clear opacity if source doesn't have it set
       targetViewer.style.opacity = ''
+    }
+
+    // Sync camera orientation properties for interactive model viewing
+    // These properties are updated when users interact with the model-viewer
+    if ('cameraOrbit' in sourceViewer && sourceViewer.cameraOrbit) {
+      targetViewer.cameraOrbit = sourceViewer.cameraOrbit
+    }
+
+    if ('cameraTarget' in sourceViewer && sourceViewer.cameraTarget) {
+      targetViewer.cameraTarget = sourceViewer.cameraTarget
+    }
+
+    if ('fieldOfView' in sourceViewer && sourceViewer.fieldOfView) {
+      targetViewer.fieldOfView = sourceViewer.fieldOfView
     }
   }
 
