@@ -127,6 +127,19 @@ export class MirrorWindow {
   }
 
   /**
+   * Rebuilds the entire mirror window content by re-running the setup.
+   * Used when theme changes, as it's more reliable than trying to sync all style changes.
+   */
+  static #rebuild () {
+    if (!MirrorWindow.#window || MirrorWindow.#window.closed) {
+      return
+    }
+
+    // Re-setup the mirror window with current content
+    MirrorWindow.#setup(MirrorWindow.#window)
+  }
+
+  /**
    * Sets up mutation observer to synchronize changes from main window to mirror window.
    */
   static #setupSynchronization () {
@@ -142,7 +155,27 @@ export class MirrorWindow {
         return
       }
 
-      MirrorWindow.#scheduleSync()
+      // Check if this is a theme change
+      let isThemeChange = false
+      for (const mutation of mutations) {
+        // Theme link href change
+        if (mutation.target.id === 'theme-link' && mutation.attributeName === 'href') {
+          isThemeChange = true
+          break
+        }
+        // Theme element value change
+        if (mutation.target.tagName?.toLowerCase() === 'theme' && mutation.attributeName === 'value') {
+          isThemeChange = true
+          break
+        }
+      }
+
+      // Rebuild entire mirror on theme change, otherwise just sync
+      if (isThemeChange) {
+        MirrorWindow.#rebuild()
+      } else {
+        MirrorWindow.#scheduleSync()
+      }
     })
 
     // Observe changes to main content areas
