@@ -23,6 +23,11 @@ export class MirrorWindow {
   static #syncScheduled = false
 
   /**
+   * @type {boolean}
+   */
+  static #syncPlayersNeeded = false
+
+  /**
    * Opens a mirror window that reflects the current application state.
    * @returns {Window|null} The opened window or null if it failed to open
    */
@@ -155,8 +160,10 @@ export class MirrorWindow {
         return
       }
 
-      // Check if this is a theme change
+      // Check if this is a theme change or if players need syncing
       let isThemeChange = false
+      let affectsPlayers = false
+      
       for (const mutation of mutations) {
         if (mutation.target instanceof Element === false) continue
 
@@ -170,12 +177,46 @@ export class MirrorWindow {
           isThemeChange = true
           break
         }
+        
+        // Check if mutation affects players list
+        // Skip mutations that are only in header (model-viewers) or theme decorations
+        const target = mutation.target
+        const isInHeader = target.closest && target.closest('header') !== null
+        const isThemeDecoration = target.classList && (target.classList.contains('theme-decoration') || target.closest && target.closest('.theme-decoration') !== null)
+        const isInPlayers = target.closest && target.closest('ul.players') !== null
+        const isPlayerDisplay = target.tagName?.toLowerCase() === 'li' && target.getAttribute('is') === 'player-display'
+        
+        // If mutation is in players list or affects player-display, mark for player sync
+        if (isInPlayers || isPlayerDisplay) {
+          affectsPlayers = true
+        }
+        
+        // If mutation is not in header and not theme decoration, we might need player sync
+        // (unless it's specifically a model-viewer or known non-player element)
+        if (!isInHeader && !isThemeDecoration) {
+          const isModelViewer = target.tagName?.toLowerCase() === 'model-viewer'
+          if (!isModelViewer) {
+            // For other main content changes, check if it could affect players
+            const mainEl = document.querySelector('main')
+            if (mainEl && (target === mainEl || mainEl.contains(target))) {
+              // Only mark as affecting players if it's actually in or near the players area
+              if (isInPlayers || isPlayerDisplay || 
+                  mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                affectsPlayers = true
+              }
+            }
+          }
+        }
       }
 
-      // Rebuild entire mirror on theme change, otherwise just sync
+      // Rebuild entire mirror on theme change
       if (isThemeChange) {
         MirrorWindow.#rebuild()
       } else {
+        // Mark if players need syncing
+        if (affectsPlayers) {
+          MirrorWindow.#syncPlayersNeeded = true
+        }
         MirrorWindow.#scheduleSync()
       }
     })
@@ -248,12 +289,22 @@ export class MirrorWindow {
     inputElements.forEach(element => {
       // Use 'input' event which fires on every value change
       element.addEventListener('input', () => {
+        // Check if this input is within the players area
+        const isInPlayers = element.closest && element.closest('ul.players') !== null
+        if (isInPlayers) {
+          MirrorWindow.#syncPlayersNeeded = true
+        }
         MirrorWindow.#scheduleSync()
       })
       
       // Also listen for 'change' event for select dropdowns
       if (element.tagName === 'SELECT') {
         element.addEventListener('change', () => {
+          // Check if this select is within the players area
+          const isInPlayers = element.closest && element.closest('ul.players') !== null
+          if (isInPlayers) {
+            MirrorWindow.#syncPlayersNeeded = true
+          }
           MirrorWindow.#scheduleSync()
         })
       }
@@ -372,6 +423,8 @@ export class MirrorWindow {
       MirrorWindow.#sync()
       MirrorWindow.#syncScheduled = false
       MirrorWindow.#syncTimer = null
+      // Reset player sync flag after sync completes
+      MirrorWindow.#syncPlayersNeeded = false
     })
   }
 
@@ -469,45 +522,48 @@ export class MirrorWindow {
           })
         }
 
-        // Sync players list by syncing each player-display element
-        const playersUl = mainEl.querySelector('ul.players')
-        const mirrorPlayersUl = mirrorMainEl.querySelector('ul.players')
-        if (playersUl && mirrorPlayersUl) {
-          // Get all player-display elements from both windows
-          const players = Array.from(playersUl.querySelectorAll('li[is="player-display"]'))
-          const mirrorPlayers = Array.from(mirrorPlayersUl.querySelectorAll('li[is="player-display"]'))
+        // Sync players list only if changes affect players (to avoid flicker from header/theme updates)
+        // Always sync players if this is a full rebuild or if player changes detected
+        if (MirrorWindow.#syncPlayersNeeded) {
+          const playersUl = mainEl.querySelector('ul.players')
+          const mirrorPlayersUl = mirrorMainEl.querySelector('ul.players')
+          if (playersUl && mirrorPlayersUl) {
+            // Get all player-display elements from both windows
+            const players = Array.from(playersUl.querySelectorAll('li[is="player-display"]'))
+            const mirrorPlayers = Array.from(mirrorPlayersUl.querySelectorAll('li[is="player-display"]'))
 
-          // Remove extra mirror players if main has fewer
-          while (mirrorPlayers.length > players.length) {
-            const extraPlayer = mirrorPlayers.pop()
-            if (extraPlayer) {
-              extraPlayer.remove()
+            // Remove extra mirror players if main has fewer
+            while (mirrorPlayers.length > players.length) {
+              const extraPlayer = mirrorPlayers.pop()
+              if (extraPlayer) {
+                extraPlayer.remove()
+              }
             }
+
+            // Sync or add players
+            players.forEach((player, index) => {
+              if (index < mirrorPlayers.length) {
+                // Sync existing player by copying attributes and innerHTML
+                const mirrorPlayer = mirrorPlayers[index]
+                Array.from(player.attributes).forEach(attr => {
+                  mirrorPlayer.setAttribute(attr.name, attr.value)
+                })
+                mirrorPlayer.innerHTML = player.innerHTML
+                // Sync form values after innerHTML update
+                MirrorWindow.#syncFormValues(player, mirrorPlayer)
+              } else {
+                // Add new player by cloning
+                const newPlayer = player.cloneNode(false)
+                if (newPlayer instanceof Element === false)
+                  throw new Error("Something bad happened!")
+                mirrorPlayersUl.appendChild(newPlayer)
+                MirrorWindow.#syncFormValues(player, newPlayer)
+                // Repeat sync on next frame to ensure DOM is fully settled
+                // This prevents the image update issue when new players are added
+                requestAnimationFrame(() => this.#sync())
+              }
+            })
           }
-
-          // Sync or add players
-          players.forEach((player, index) => {
-            if (index < mirrorPlayers.length) {
-              // Sync existing player by copying attributes and innerHTML
-              const mirrorPlayer = mirrorPlayers[index]
-              Array.from(player.attributes).forEach(attr => {
-                mirrorPlayer.setAttribute(attr.name, attr.value)
-              })
-              mirrorPlayer.innerHTML = player.innerHTML
-              // Sync form values after innerHTML update
-              MirrorWindow.#syncFormValues(player, mirrorPlayer)
-            } else {
-              // Add new player by cloning
-              const newPlayer = player.cloneNode(false)
-              if (newPlayer instanceof Element === false)
-                throw new Error("Something bad happened!")
-              mirrorPlayersUl.appendChild(newPlayer)
-              MirrorWindow.#syncFormValues(player, newPlayer)
-              // Repeat sync on next frame to ensure DOM is fully settled
-              // This prevents the image update issue when new players are added
-              requestAnimationFrame(() => this.#sync())
-            }
-          })
         }
       }
 
