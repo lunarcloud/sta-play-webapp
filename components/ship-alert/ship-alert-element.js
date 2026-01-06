@@ -109,7 +109,9 @@ export class ShipAlertElement extends HTMLElement {
    * @see {@link ShipAlertElement.Colors}
    */
   get color () {
-    return this.#internalEl.className
+    return this.#internalEl.classList.length > 0
+            ? this.#internalEl.className
+            : 'none'
   }
 
   /**
@@ -136,8 +138,10 @@ export class ShipAlertElement extends HTMLElement {
                     'HIDDEN'
 
     this.#conditionTextEl.hidden = ['grey', 'cloak'].includes(valueLower)
-    if (this.hasAttribute('color')) {
-      this.setAttribute('color', valueLower)
+
+    let attrValue = valueLower === '' ? 'none' : valueLower
+    if (this.getAttribute('color') != attrValue) {
+      this.setAttribute('color', attrValue)
     }
   }
 }
