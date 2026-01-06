@@ -260,18 +260,81 @@ export class MirrorWindow {
         }
       })
 
-      // Sync main content by cloning to avoid custom element duplication issues
+      // Sync main content by syncing specific elements to avoid duplication
       const mainEl = document.querySelector('main')
       const mirrorMainEl = mirrorDoc.querySelector('main')
       if (mainEl && mirrorMainEl) {
-        // Clone the main element's children to preserve custom element state
-        const clone = mainEl.cloneNode(true)
-        // Clear and replace content
-        while (mirrorMainEl.firstChild) {
-          mirrorMainEl.removeChild(mirrorMainEl.firstChild)
+        // Sync ship-alert attributes (custom element with shadow DOM)
+        const shipAlert = mainEl.querySelector('ship-alert')
+        const mirrorShipAlert = mirrorMainEl.querySelector('ship-alert')
+        if (shipAlert && mirrorShipAlert) {
+          // Copy attributes instead of cloning to preserve shadow DOM
+          Array.from(shipAlert.attributes).forEach(attr => {
+            mirrorShipAlert.setAttribute(attr.name, attr.value)
+          })
         }
-        while (clone.firstChild) {
-          mirrorMainEl.appendChild(clone.firstChild)
+
+        // Sync general-text contenteditable div (non-custom element)
+        const generalText = mainEl.querySelector('#general-text')
+        const mirrorGeneralText = mirrorMainEl.querySelector('#general-text')
+        if (generalText && mirrorGeneralText) {
+          mirrorGeneralText.innerHTML = generalText.innerHTML
+        }
+
+        // Sync task-trackers (custom element container)
+        const taskTrackers = mainEl.querySelector('task-trackers')
+        const mirrorTaskTrackers = mirrorMainEl.querySelector('task-trackers')
+        if (taskTrackers && mirrorTaskTrackers) {
+          mirrorTaskTrackers.innerHTML = taskTrackers.innerHTML
+        }
+
+        // Sync traits (custom element container)
+        const traits = mainEl.querySelector('traits')
+        const mirrorTraits = mirrorMainEl.querySelector('traits')
+        if (traits && mirrorTraits) {
+          mirrorTraits.innerHTML = traits.innerHTML
+        }
+
+        // Sync mission-tracker (custom element)
+        const missionTracker = mainEl.querySelector('mission-tracker')
+        const mirrorMissionTracker = mirrorMainEl.querySelector('mission-tracker')
+        if (missionTracker && mirrorMissionTracker) {
+          Array.from(missionTracker.attributes).forEach(attr => {
+            mirrorMissionTracker.setAttribute(attr.name, attr.value)
+          })
+        }
+
+        // Sync players list by syncing each player-display element
+        const playersUl = mainEl.querySelector('ul.players')
+        const mirrorPlayersUl = mirrorMainEl.querySelector('ul.players')
+        if (playersUl && mirrorPlayersUl) {
+          // Get all player-display elements from both windows
+          const players = Array.from(playersUl.querySelectorAll('li[is="player-display"]'))
+          const mirrorPlayers = Array.from(mirrorPlayersUl.querySelectorAll('li[is="player-display"]'))
+
+          // Remove extra mirror players if main has fewer
+          while (mirrorPlayers.length > players.length) {
+            const extraPlayer = mirrorPlayers.pop()
+            if (extraPlayer) {
+              extraPlayer.remove()
+            }
+          }
+
+          // Sync or add players
+          players.forEach((player, index) => {
+            if (index < mirrorPlayers.length) {
+              // Sync existing player by copying attributes and innerHTML
+              const mirrorPlayer = mirrorPlayers[index]
+              Array.from(player.attributes).forEach(attr => {
+                mirrorPlayer.setAttribute(attr.name, attr.value)
+              })
+              mirrorPlayer.innerHTML = player.innerHTML
+            } else {
+              // Add new player by cloning
+              const newPlayer = player.cloneNode(true)
+              mirrorPlayersUl.appendChild(newPlayer)
+            }
+          })
         }
       }
 
