@@ -158,6 +158,8 @@ export class MirrorWindow {
       // Check if this is a theme change
       let isThemeChange = false
       for (const mutation of mutations) {
+        if (mutation.target instanceof Element === false) continue
+
         // Theme link href change
         if (mutation.target.id === 'theme-link' && mutation.attributeName === 'href') {
           isThemeChange = true
@@ -362,15 +364,15 @@ export class MirrorWindow {
 
     // Clear any existing timer
     if (MirrorWindow.#syncTimer) {
-      clearTimeout(MirrorWindow.#syncTimer)
+      cancelAnimationFrame(MirrorWindow.#syncTimer)
     }
 
-    // Schedule sync with a small delay to batch multiple changes
-    MirrorWindow.#syncTimer = setTimeout(() => {
+    // Schedule sync for next frame
+    MirrorWindow.#syncTimer = requestAnimationFrame(() => {
       MirrorWindow.#sync()
       MirrorWindow.#syncScheduled = false
       MirrorWindow.#syncTimer = null
-    }, 50) // 50ms debounce - batches rapid changes while staying responsive
+    })
   }
 
   /**
@@ -430,7 +432,7 @@ export class MirrorWindow {
           })
           // Also sync the color property in case it was set via JavaScript
           // without updating the attribute (the setter only updates attribute if it exists)
-          if ('color' in shipAlert && shipAlert.color) {
+          if (shipAlert instanceof ShipAlertElement && shipAlert.color) {
             mirrorShipAlert.setAttribute('color', shipAlert.color)
           }
         }
@@ -566,7 +568,9 @@ export class MirrorWindow {
       // Sync theme stylesheet
       const themeLink = document.getElementById('theme-link')
       const mirrorThemeLink = mirrorDoc.getElementById('theme-link')
-      if (themeLink && mirrorThemeLink && themeLink.href) {
+      if (themeLink instanceof HTMLLinkElement
+        && mirrorThemeLink instanceof HTMLLinkElement
+        && themeLink.href) {
         mirrorThemeLink.href = themeLink.href
       }
     } catch (error) {

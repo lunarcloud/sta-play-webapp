@@ -14,6 +14,10 @@ export class ShipAlertElement extends HTMLElement {
 
   static Colors = [
     {
+      name: 'Hidden',
+      description: 'no alert is active'
+    },
+    {
       name: 'Yellow',
       description: 'caution'
     },
@@ -39,8 +43,6 @@ export class ShipAlertElement extends HTMLElement {
     }
   ]
 
-  #firstColorClass
-
   #internalEl
 
   #conditionTextEl
@@ -64,7 +66,7 @@ export class ShipAlertElement extends HTMLElement {
     shadow.appendChild(linkElem)
 
     const currentColor = this.getAttribute('color')
-    this.#firstColorClass = ShipAlertElement.Colors[0].name.toLowerCase()
+        ?? ShipAlertElement.Colors[0].name.toLowerCase()
 
     this.#internalEl = document.createElement('ship-alert-internal')
     this.#internalEl.setAttribute('part', 'internal')
@@ -127,7 +129,9 @@ export class ShipAlertElement extends HTMLElement {
       return
     }
 
-    const valueLower = value?.toLowerCase() ?? 'hidden'
+    let valueLower = value?.toLowerCase() ?? 'hidden'
+    valueLower = valueLower.trim().length === 0 ? 'hidden' : valueLower
+
     this.#internalEl.className = valueLower
 
     this.#colorEl.textContent = valueLower === 'grey'
@@ -139,9 +143,8 @@ export class ShipAlertElement extends HTMLElement {
 
     this.#conditionTextEl.hidden = ['grey', 'cloak'].includes(valueLower)
 
-    let attrValue = valueLower === '' ? 'none' : valueLower
-    if (this.getAttribute('color') != attrValue) {
-      this.setAttribute('color', attrValue)
+    if (this.getAttribute('color') != valueLower) {
+      this.setAttribute('color', valueLower)
     }
   }
 }
