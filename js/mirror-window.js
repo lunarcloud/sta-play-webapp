@@ -201,6 +201,48 @@ export class MirrorWindow {
   }
 
   /**
+   * Synchronizes form element values (input, select, textarea) from source to target.
+   * This is needed because innerHTML doesn't capture current form values, only initial HTML.
+   * @param {Element} sourceEl - The source element containing form inputs
+   * @param {Element} targetEl - The target element to sync form inputs to
+   */
+  static #syncFormValues (sourceEl, targetEl) {
+    if (!sourceEl || !targetEl) return
+
+    // Sync all input elements (text, number, checkbox, radio)
+    const sourceInputs = sourceEl.querySelectorAll('input')
+    const targetInputs = targetEl.querySelectorAll('input')
+    sourceInputs.forEach((input, index) => {
+      if (targetInputs[index]) {
+        if (input.type === 'checkbox' || input.type === 'radio') {
+          targetInputs[index].checked = input.checked
+        } else {
+          targetInputs[index].value = input.value
+        }
+      }
+    })
+
+    // Sync all select elements
+    const sourceSelects = sourceEl.querySelectorAll('select')
+    const targetSelects = targetEl.querySelectorAll('select')
+    sourceSelects.forEach((select, index) => {
+      if (targetSelects[index]) {
+        targetSelects[index].selectedIndex = select.selectedIndex
+        targetSelects[index].value = select.value
+      }
+    })
+
+    // Sync all textarea elements
+    const sourceTextareas = sourceEl.querySelectorAll('textarea')
+    const targetTextareas = targetEl.querySelectorAll('textarea')
+    sourceTextareas.forEach((textarea, index) => {
+      if (targetTextareas[index]) {
+        targetTextareas[index].value = textarea.value
+      }
+    })
+  }
+
+  /**
    * Schedules a sync operation with debouncing to prevent flickering.
    */
   static #scheduleSync () {
@@ -260,6 +302,13 @@ export class MirrorWindow {
         }
       })
 
+      // Sync menu-items form values (momentum pool, threat pool, etc.)
+      const menuItems = document.querySelector('menu-items')
+      const mirrorMenuItems = mirrorDoc.querySelector('menu-items')
+      if (menuItems && mirrorMenuItems) {
+        MirrorWindow.#syncFormValues(menuItems, mirrorMenuItems)
+      }
+
       // Sync main content by syncing specific elements to avoid duplication
       const mainEl = document.querySelector('main')
       const mirrorMainEl = mirrorDoc.querySelector('main')
@@ -281,11 +330,13 @@ export class MirrorWindow {
           mirrorGeneralText.innerHTML = generalText.innerHTML
         }
 
-        // Sync task-trackers (custom element container)
+        // Sync task-trackers (custom element container) with form values
         const taskTrackers = mainEl.querySelector('task-trackers')
         const mirrorTaskTrackers = mirrorMainEl.querySelector('task-trackers')
         if (taskTrackers && mirrorTaskTrackers) {
           mirrorTaskTrackers.innerHTML = taskTrackers.innerHTML
+          // After innerHTML sync, copy form element values
+          MirrorWindow.#syncFormValues(taskTrackers, mirrorTaskTrackers)
         }
 
         // Sync traits (custom element container)
@@ -329,10 +380,14 @@ export class MirrorWindow {
                 mirrorPlayer.setAttribute(attr.name, attr.value)
               })
               mirrorPlayer.innerHTML = player.innerHTML
+              // Sync form values after innerHTML update
+              MirrorWindow.#syncFormValues(player, mirrorPlayer)
             } else {
               // Add new player by cloning
               const newPlayer = player.cloneNode(true)
               mirrorPlayersUl.appendChild(newPlayer)
+              // Sync form values for the new player
+              MirrorWindow.#syncFormValues(player, newPlayer)
             }
           })
         }
