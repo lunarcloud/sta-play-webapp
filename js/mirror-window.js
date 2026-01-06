@@ -487,6 +487,13 @@ export class MirrorWindow {
         })
       }
 
+      // Sync fullscreen ship model-viewer
+      const fullscreenShip = document.getElementById('ship-fullscreen')
+      const mirrorFullscreenShip = mirrorDoc.getElementById('ship-fullscreen')
+      if (fullscreenShip && mirrorFullscreenShip) {
+        MirrorWindow.#syncModelViewerProperties(fullscreenShip, mirrorFullscreenShip)
+      }
+
       // Sync navigation by cloning to avoid custom element duplication issues
       const navEl = document.querySelector('nav')
       const mirrorNavEl = mirrorDoc.querySelector('nav')

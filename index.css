@@ -953,8 +953,8 @@ body.mirror {
     display: none !important;
   }
 
-  /* Hide all menu-items children except fullscreen button */
-  & menu-items > *:not(#fullscreen-btn) {
+  /* Hide all menu-items children except fullscreen button and pools */
+  & menu-items > *:not(#fullscreen-btn):not(#momentum-section):not(#threat-section) {
     display: none !important;
   }
 
