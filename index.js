@@ -263,6 +263,13 @@ export class IndexController {
         handlingInput = false
       }
     })
+
+    // Close mirror window when main page is reloaded or closed
+    window.addEventListener('beforeunload', () => {
+      if (MirrorWindow.isOpen()) {
+        MirrorWindow.close()
+      }
+    })
   }
 
   /**
