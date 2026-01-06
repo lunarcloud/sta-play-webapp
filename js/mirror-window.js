@@ -23,6 +23,11 @@ export class MirrorWindow {
   static #syncScheduled = false
 
   /**
+   * @type {Map<HTMLElement, Function>}
+   */
+  static #modelViewerListeners = new Map()
+
+  /**
    * Opens a mirror window that reflects the current application state.
    * @returns {Window|null} The opened window or null if it failed to open
    */
@@ -231,6 +236,69 @@ export class MirrorWindow {
         attributeFilter: ['href']
       })
     }
+
+    // Set up model-viewer interaction listeners
+    MirrorWindow.#setupModelViewerListeners()
+  }
+
+  /**
+   * Sets up listeners on model-viewer elements to recreate them in the mirror when interaction ends.
+   */
+  static #setupModelViewerListeners () {
+    // Clean up existing listeners
+    MirrorWindow.#modelViewerListeners.forEach((listener, viewer) => {
+      viewer.removeEventListener('camera-change', listener)
+    })
+    MirrorWindow.#modelViewerListeners.clear()
+
+    // Get all model-viewer elements
+    const modelViewers = document.querySelectorAll('model-viewer')
+
+    modelViewers.forEach(viewer => {
+      // Create a debounced recreation function
+      let recreateTimer = null
+      const listener = () => {
+        if (recreateTimer) {
+          clearTimeout(recreateTimer)
+        }
+        // Wait 300ms after last camera-change event to recreate
+        recreateTimer = setTimeout(() => {
+          MirrorWindow.#recreateModelViewer(viewer)
+        }, 300)
+      }
+
+      // Listen for camera-change events
+      viewer.addEventListener('camera-change', listener)
+      MirrorWindow.#modelViewerListeners.set(viewer, listener)
+    })
+  }
+
+  /**
+   * Recreates a model-viewer element in the mirror window to force camera update.
+   * @param {HTMLElement} sourceViewer The model-viewer element from the main window
+   */
+  static #recreateModelViewer (sourceViewer) {
+    if (!MirrorWindow.#window || MirrorWindow.#window.closed) {
+      return
+    }
+
+    const mirrorDoc = MirrorWindow.#window.document
+    const id = sourceViewer.id
+
+    if (!id) {
+      return // Can't identify viewer without ID
+    }
+
+    const targetViewer = mirrorDoc.getElementById(id)
+    if (!targetViewer) {
+      return
+    }
+
+    // Clone the source viewer
+    const clone = sourceViewer.cloneNode(true)
+
+    // Replace the target viewer with the clone
+    targetViewer.parentNode.replaceChild(clone, targetViewer)
   }
 
   /**
@@ -562,6 +630,12 @@ export class MirrorWindow {
     if (MirrorWindow.#syncTimer) {
       clearTimeout(MirrorWindow.#syncTimer)
     }
+    // Clean up model-viewer listeners
+    MirrorWindow.#modelViewerListeners.forEach((listener, viewer) => {
+      viewer.removeEventListener('camera-change', listener)
+    })
+    MirrorWindow.#modelViewerListeners.clear()
+
     MirrorWindow.#window = null
     MirrorWindow.#observer = null
     MirrorWindow.#syncTimer = null
