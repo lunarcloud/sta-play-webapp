@@ -412,15 +412,14 @@ export class MirrorWindow {
               MirrorWindow.#syncFormValues(player, mirrorPlayer)
             } else {
               // Add new player by cloning
-              const newPlayer = player.cloneNode(true)
+              const newPlayer = player.cloneNode(false)
+              if (newPlayer instanceof Element === false)
+                throw new Error("Something bad happened!")
               mirrorPlayersUl.appendChild(newPlayer)
-              // Defer form value sync to next frame to ensure DOM is fully settled
-              // This prevents double-contents issue when new players are added
-              requestAnimationFrame(() => {
-                if (MirrorWindow.#window && !MirrorWindow.#window.closed) {
-                  MirrorWindow.#syncFormValues(player, newPlayer)
-                }
-              })
+              MirrorWindow.#syncFormValues(player, newPlayer)
+              // Repeat sync on next frame to ensure DOM is fully settled
+              // This prevents the image update issue when new players are added
+              requestAnimationFrame(() => this.#sync())
             }
           })
         }
