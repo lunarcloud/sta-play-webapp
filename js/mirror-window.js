@@ -179,14 +179,15 @@ export class MirrorWindow {
     if (themeEl) {
       MirrorWindow.#observer.observe(themeEl, {
         childList: true,
-        attributes: true
+        attributes: true,
+        attributeFilter: ['value']
       })
     }
 
-    // Also watch body attributes for edition and alert changes
+    // Also watch body attributes for edition, alert, and other changes
     MirrorWindow.#observer.observe(document.body, {
       attributes: true,
-      attributeFilter: ['class', 'alert', 'loaded-game-name']
+      attributeFilter: ['class', 'alert', 'loaded-game-name', 'edition']
     })
 
     // Watch for theme stylesheet changes
