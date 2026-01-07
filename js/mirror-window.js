@@ -354,6 +354,35 @@ export class MirrorWindow {
   }
 
   /**
+   * Synchronizes custom element attributes (for elements with shadow DOM).
+   * Instead of copying shadow DOM internals, we sync attributes which trigger
+   * attributeChangedCallback in the custom element, allowing it to update properly.
+   * @param {Element} sourceEl - The source element to copy from
+   * @param {Element} targetEl - The target element to copy to
+   */
+  static #syncCustomElementAttributes (sourceEl, targetEl) {
+    if (!sourceEl || !targetEl) return
+
+    // List of custom elements that use shadow DOM and should have their attributes synced
+    const customElementSelectors = ['input-progress']
+
+    customElementSelectors.forEach(selector => {
+      const sourceElements = sourceEl.querySelectorAll(selector)
+      const targetElements = targetEl.querySelectorAll(selector)
+      
+      sourceElements.forEach((sourceElement, index) => {
+        const targetElement = targetElements[index]
+        if (targetElement) {
+          // Sync all attributes to trigger attributeChangedCallback
+          Array.from(sourceElement.attributes).forEach(attr => {
+            targetElement.setAttribute(attr.name, attr.value)
+          })
+        }
+      })
+    })
+  }
+
+  /**
    * Synchronizes model-viewer properties and styles from source to target.
    * This is needed for cloaking effects which set opacity and exposure via JavaScript,
    * and for syncing camera orientation when users interact with the model.
@@ -584,6 +613,8 @@ export class MirrorWindow {
         mirrorPlayer.innerHTML = player.innerHTML
         // Sync form values after innerHTML update
         MirrorWindow.#syncFormValues(player, mirrorPlayer)
+        // Sync custom element attributes (e.g., input-progress) to trigger their attributeChangedCallback
+        MirrorWindow.#syncCustomElementAttributes(player, mirrorPlayer)
       } else {
         // Add new player by cloning
         const newPlayer = player.cloneNode(false)
