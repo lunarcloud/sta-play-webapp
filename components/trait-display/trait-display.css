@@ -39,4 +39,9 @@ trait-display-internal {
         border: 0 solid transparent;
         outline: 0;
     }
+
+    /* Hide close button in mirror window */
+    :host-context(body.mirror) & button.close {
+        display: none;
+    }
 }

@@ -246,10 +246,11 @@ describe('ShipAlertElement', () => {
       expect(element.getAttribute('color')).to.equal('blue')
     })
 
-    it('should not create attribute if it does not exist', () => {
+    it('should create attribute when property is set', () => {
       const element = new ShipAlertElement()
       element.color = 'red'
-      expect(element.hasAttribute('color')).to.be.false
+      expect(element.hasAttribute('color')).to.be.true
+      expect(element.getAttribute('color')).to.equal('red')
     })
   })
 

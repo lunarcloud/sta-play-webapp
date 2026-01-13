@@ -945,3 +945,29 @@ body.ship-fullscreen {
     }
   }
 }
+
+/* Mirror window styles */
+body.mirror {
+  /* Hide all dialogs in mirror window */
+  & dialogs > dialog {
+    display: none !important;
+  }
+
+  /* Hide all menu-items children except fullscreen button and pools */
+  & menu-items > *:not(#fullscreen-btn, #momentum-section, #threat-section) {
+    display: none !important;
+  }
+
+  /* Hide navigation interaction buttons */
+  & nav ul > li:not(#shipname) > * {
+    color: transparent !important;
+  }
+
+  /* Hide close/remove buttons on light DOM components */
+
+  /* Note: task-tracker and trait-display use shadow DOM, so their buttons
+     are hidden via :host-context(body.mirror) in their own CSS files */
+  & player-display button.remove {
+    display: none !important;
+  }
+}

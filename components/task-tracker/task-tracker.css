@@ -38,6 +38,11 @@ task-tracker-internal {
         cursor: pointer;
     }
 
+    /* Hide remove button in mirror window */
+    :host-context(body.mirror) & > .remove {
+        display: none;
+    }
+
     & > .name {
         font-size: 1.5rem;
         margin: 0;

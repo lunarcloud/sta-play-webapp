@@ -323,3 +323,16 @@ decoration {
         }
     }
 }
+
+body.mirror {
+  decoration > ul > li > ul > li {
+    /* font button backgrounds should match the border so it doesn't have a big gap with the font buttons mirrored */
+    &.font-button-up a {
+        background-color: var(--trek-color-1) !important;
+    }
+
+    &.font-button-down a {
+        background-color: var(--trek-color-2) !important;
+    }
+  }
+}
