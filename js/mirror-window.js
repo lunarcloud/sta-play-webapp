@@ -25,9 +25,36 @@ export class MirrorWindow {
   static #syncScheduled = false
 
   /**
-   * @type {boolean}
+   * @type {Object}
+   * @property {boolean} body - Body attributes and classes
+   * @property {boolean} menu - Menu items (momentum/threat pools)
+   * @property {boolean} shipAlert - Ship alert element
+   * @property {boolean} generalText - General text/story notes
+   * @property {boolean} trackers - Task trackers
+   * @property {boolean} traits - Character traits
+   * @property {boolean} missionTracker - Mission tracker
+   * @property {boolean} players - Player displays
+   * @property {boolean} headerModels - Header ship models
+   * @property {boolean} fullscreenShip - Fullscreen ship model
+   * @property {boolean} navigation - Navigation element
+   * @property {boolean} theme - Theme element
+   * @property {boolean} themeStylesheet - Theme stylesheet link
    */
-  static #syncPlayersNeeded = false
+  static #syncsNeeded = {
+    body: false,
+    menu: false,
+    shipAlert: false,
+    generalText: false,
+    trackers: false,
+    traits: false,
+    missionTracker: false,
+    players: false,
+    headerModels: false,
+    fullscreenShip: false,
+    navigation: false,
+    theme: false,
+    themeStylesheet: false
+  }
 
   /**
    * Opens a mirror window that reflects the current application state.
@@ -162,9 +189,8 @@ export class MirrorWindow {
         return
       }
 
-      // Check if this is a theme change or if players need syncing
+      // Check if this is a theme change and what specific elements changed
       let isThemeChange = false
-      let affectsPlayers = false
 
       for (const mutation of mutations) {
         if (mutation.target instanceof HTMLElement === false) continue
@@ -180,33 +206,99 @@ export class MirrorWindow {
           break
         }
 
-        // Check if mutation affects players list
-        // Skip mutations that are only in header (model-viewers) or theme decorations
+        // Granular detection of what changed
         const target = mutation.target
-        const isInHeader = target.closest && target.closest('header') !== null
-        const isThemeDecoration = (target.classList.contains('theme-decoration')) || (target.closest && target.closest('.theme-decoration') !== null)
-        const isInPlayers = target.closest && target.closest('ul.players') !== null
-        const isPlayerDisplay = target.tagName?.toLowerCase() === 'li' && target.getAttribute('is') === 'player-display'
 
-        // If mutation is in players list or affects player-display, mark for player sync
-        if (isInPlayers || isPlayerDisplay) {
-          affectsPlayers = true
+        // Body attribute changes (alert, edition, etc.)
+        if (target === document.body) {
+          MirrorWindow.#syncsNeeded.body = true
+          continue
         }
 
-        // If mutation is not in header and not theme decoration, we might need player sync
-        // (unless it's specifically a model-viewer or known non-player element)
-        if (!isInHeader && !isThemeDecoration) {
-          const isModelViewer = target.tagName?.toLowerCase() === 'model-viewer'
-          if (!isModelViewer) {
-            // For other main content changes, check if it could affect players
-            const mainEl = document.querySelector('main')
-            if (mainEl && (target === mainEl || mainEl.contains(target))) {
-              // Only mark as affecting players if it's actually in or near the players area
-              if (isInPlayers || isPlayerDisplay ||
-                  (mutation.type === 'childList' && mutation.addedNodes.length > 0)) {
-                affectsPlayers = true
-              }
-            }
+        // Header changes (ship models, cloaking)
+        const isInHeader = target.closest && target.closest('header') !== null
+        if (isInHeader) {
+          // Check if it's the fullscreen ship specifically
+          if (target.id === 'ship-fullscreen' || (target.closest && target.closest('#ship-fullscreen'))) {
+            MirrorWindow.#syncsNeeded.fullscreenShip = true
+          } else {
+            // Header ship models
+            MirrorWindow.#syncsNeeded.headerModels = true
+          }
+          continue
+        }
+
+        // Navigation changes
+        const isInNav = target.closest && target.closest('nav') !== null
+        if (isInNav) {
+          MirrorWindow.#syncsNeeded.navigation = true
+          continue
+        }
+
+        // Theme decoration changes (don't trigger main content sync)
+        const isThemeDecoration = (target.classList.contains('theme-decoration')) || 
+                                  (target.closest && target.closest('.theme-decoration') !== null)
+        if (isThemeDecoration) {
+          continue // Theme decorations don't require any sync
+        }
+
+        // Theme element changes
+        if (target.tagName?.toLowerCase() === 'theme') {
+          MirrorWindow.#syncsNeeded.theme = true
+          continue
+        }
+
+        // Now check main content area elements
+        const mainEl = document.querySelector('main')
+        if (mainEl && (target === mainEl || mainEl.contains(target))) {
+          // Menu items (momentum/threat pools)
+          if (target.tagName?.toLowerCase() === 'menu-items' || 
+              (target.closest && target.closest('menu-items'))) {
+            MirrorWindow.#syncsNeeded.menu = true
+            continue
+          }
+
+          // Ship alert
+          if (target.tagName?.toLowerCase() === 'ship-alert' || 
+              (target.closest && target.closest('ship-alert'))) {
+            MirrorWindow.#syncsNeeded.shipAlert = true
+            continue
+          }
+
+          // General text (story notes)
+          if (target.id === 'general-text' || 
+              (target.closest && target.closest('#general-text'))) {
+            MirrorWindow.#syncsNeeded.generalText = true
+            continue
+          }
+
+          // Task trackers
+          if (target.tagName?.toLowerCase() === 'task-trackers' || 
+              (target.closest && target.closest('task-trackers'))) {
+            MirrorWindow.#syncsNeeded.trackers = true
+            continue
+          }
+
+          // Traits
+          const traitsSection = mainEl.querySelector('.traits-section')
+          if (traitsSection && (target === traitsSection || traitsSection.contains(target))) {
+            MirrorWindow.#syncsNeeded.traits = true
+            continue
+          }
+
+          // Mission tracker
+          if (target.tagName?.toLowerCase() === 'mission-tracker' || 
+              (target.closest && target.closest('mission-tracker'))) {
+            MirrorWindow.#syncsNeeded.missionTracker = true
+            continue
+          }
+
+          // Players
+          const isInPlayers = target.closest && target.closest('ul.players') !== null
+          const isPlayerDisplay = target.tagName?.toLowerCase() === 'li' && target.getAttribute('is') === 'player-display'
+          if (isInPlayers || isPlayerDisplay) {
+            MirrorWindow.#syncsNeeded.players = true
+            continue
           }
         }
       }
@@ -215,10 +307,7 @@ export class MirrorWindow {
       if (isThemeChange) {
         MirrorWindow.#rebuild()
       } else {
-        // Mark if players need syncing
-        if (affectsPlayers) {
-          MirrorWindow.#syncPlayersNeeded = true
-        }
+        // Schedule a targeted sync based on what changed
         MirrorWindow.#scheduleSync()
       }
     })
@@ -291,10 +380,15 @@ export class MirrorWindow {
     inputElements.forEach(element => {
       // Use 'input' event which fires on every value change
       element.addEventListener('input', () => {
-        // Check if this input is within the players area
-        const isInPlayers = element.closest && element.closest('ul.players') !== null
-        if (isInPlayers) {
-          MirrorWindow.#syncPlayersNeeded = true
+        // Determine which section this input belongs to and set the appropriate flag
+        if (element.closest && element.closest('ul.players')) {
+          MirrorWindow.#syncsNeeded.players = true
+        } else if (element.closest && element.closest('menu-items')) {
+          MirrorWindow.#syncsNeeded.menu = true
+        } else if (element.closest && element.closest('task-trackers')) {
+          MirrorWindow.#syncsNeeded.trackers = true
+        } else if (element.id === 'general-text' || (element.closest && element.closest('#general-text'))) {
+          MirrorWindow.#syncsNeeded.generalText = true
         }
         MirrorWindow.#scheduleSync()
       })
@@ -302,10 +396,13 @@ export class MirrorWindow {
       // Also listen for 'change' event for select dropdowns
       if (element.tagName === 'SELECT') {
         element.addEventListener('change', () => {
-          // Check if this select is within the players area
-          const isInPlayers = element.closest && element.closest('ul.players') !== null
-          if (isInPlayers) {
-            MirrorWindow.#syncPlayersNeeded = true
+          // Determine which section this select belongs to
+          if (element.closest && element.closest('ul.players')) {
+            MirrorWindow.#syncsNeeded.players = true
+          } else if (element.closest && element.closest('menu-items')) {
+            MirrorWindow.#syncsNeeded.menu = true
+          } else if (element.closest && element.closest('task-trackers')) {
+            MirrorWindow.#syncsNeeded.trackers = true
           }
           MirrorWindow.#scheduleSync()
         })
@@ -454,8 +551,22 @@ export class MirrorWindow {
       MirrorWindow.#sync()
       MirrorWindow.#syncScheduled = false
       MirrorWindow.#syncTimer = null
-      // Reset player sync flag after sync completes
-      MirrorWindow.#syncPlayersNeeded = false
+      // Reset all sync flags after sync completes
+      MirrorWindow.#syncsNeeded = {
+        body: false,
+        menu: false,
+        shipAlert: false,
+        generalText: false,
+        trackers: false,
+        traits: false,
+        missionTracker: false,
+        players: false,
+        headerModels: false,
+        fullscreenShip: false,
+        navigation: false,
+        theme: false,
+        themeStylesheet: false
+      }
     })
   }
 
@@ -720,7 +831,9 @@ export class MirrorWindow {
 
   /**
    * Synchronizes current content to the mirror window.
-   * This is the main sync orchestrator that calls specific sync functions.
+   * This is the main sync orchestrator that calls specific sync functions
+   * based on which flags have been set by the mutation observer.
+   * Only syncs what actually changed to prevent unnecessary flickering.
    */
   static #sync () {
     if (!MirrorWindow.#window || MirrorWindow.#window.closed) {
@@ -735,30 +848,65 @@ export class MirrorWindow {
         return
       }
 
-      // Sync different parts of the application
-      MirrorWindow.#syncBodyAttributes(mirrorDoc)
-      MirrorWindow.#syncMenuItems(mirrorDoc)
+      // Only sync parts that have changed (based on flags)
+      if (MirrorWindow.#syncsNeeded.body) {
+        MirrorWindow.#syncBodyAttributes(mirrorDoc)
+      }
 
-      // Sync main content area
+      if (MirrorWindow.#syncsNeeded.menu) {
+        MirrorWindow.#syncMenuItems(mirrorDoc)
+      }
+
+      // Sync main content area (only what changed)
       const mainEl = document.querySelector('main')
       const mirrorMainEl = mirrorDoc.querySelector('main')
       if (mainEl && mirrorMainEl) {
-        MirrorWindow.#syncShipAlert(mainEl, mirrorMainEl)
-        MirrorWindow.#syncGeneralText(mainEl, mirrorMainEl)
-        MirrorWindow.#syncTaskTrackers(mainEl, mirrorMainEl)
-        MirrorWindow.#syncTraits(mainEl, mirrorMainEl)
-        MirrorWindow.#syncMissionTracker(mainEl, mirrorMainEl)
-        MirrorWindow.#syncPlayers(mainEl, mirrorMainEl)
+        if (MirrorWindow.#syncsNeeded.shipAlert) {
+          MirrorWindow.#syncShipAlert(mainEl, mirrorMainEl)
+        }
+
+        if (MirrorWindow.#syncsNeeded.generalText) {
+          MirrorWindow.#syncGeneralText(mainEl, mirrorMainEl)
+        }
+
+        if (MirrorWindow.#syncsNeeded.trackers) {
+          MirrorWindow.#syncTaskTrackers(mainEl, mirrorMainEl)
+        }
+
+        if (MirrorWindow.#syncsNeeded.traits) {
+          MirrorWindow.#syncTraits(mainEl, mirrorMainEl)
+        }
+
+        if (MirrorWindow.#syncsNeeded.missionTracker) {
+          MirrorWindow.#syncMissionTracker(mainEl, mirrorMainEl)
+        }
+
+        if (MirrorWindow.#syncsNeeded.players) {
+          MirrorWindow.#syncPlayers(mainEl, mirrorMainEl)
+        }
       }
 
-      // Sync ship models
-      MirrorWindow.#syncHeaderModels(mirrorDoc)
-      MirrorWindow.#syncFullscreenShip(mirrorDoc)
+      // Sync ship models (only what changed)
+      if (MirrorWindow.#syncsNeeded.headerModels) {
+        MirrorWindow.#syncHeaderModels(mirrorDoc)
+      }
 
-      // Sync UI chrome
-      MirrorWindow.#syncNavigation(mirrorDoc)
-      MirrorWindow.#syncTheme(mirrorDoc)
-      MirrorWindow.#syncThemeStylesheet(mirrorDoc)
+      if (MirrorWindow.#syncsNeeded.fullscreenShip) {
+        MirrorWindow.#syncFullscreenShip(mirrorDoc)
+      }
+
+      // Sync UI chrome (only what changed)
+      if (MirrorWindow.#syncsNeeded.navigation) {
+        MirrorWindow.#syncNavigation(mirrorDoc)
+      }
+
+      if (MirrorWindow.#syncsNeeded.theme) {
+        MirrorWindow.#syncTheme(mirrorDoc)
+      }
+
+      if (MirrorWindow.#syncsNeeded.themeStylesheet) {
+        MirrorWindow.#syncThemeStylesheet(mirrorDoc)
+      }
     } catch (error) {
       console.error('Error syncing to mirror window:', error)
     }
