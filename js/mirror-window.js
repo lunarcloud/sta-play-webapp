@@ -280,8 +280,8 @@ export class MirrorWindow {
           }
 
           // Traits
-          const traitsSection = mainEl.querySelector('.traits-section')
-          if (traitsSection && (target === traitsSection || traitsSection.contains(target))) {
+          if (target.tagName?.toLowerCase() === 'traits' ||
+              (target.closest && target.closest('traits'))) {
             MirrorWindow.#syncsNeeded.traits = true
             continue
           }
@@ -644,7 +644,7 @@ export class MirrorWindow {
   }
 
   /**
-   * Synchronizes task trackers with form values.
+   * Synchronizes task trackers with form values and attributes.
    * @param {Element} mainEl - Main element from source window
    * @param {Element} mirrorMainEl - Main element from mirror window
    */
@@ -655,11 +655,24 @@ export class MirrorWindow {
       mirrorTaskTrackers.innerHTML = taskTrackers.innerHTML
       // After innerHTML sync, copy form element values
       MirrorWindow.#syncFormValues(taskTrackers, mirrorTaskTrackers)
+      
+      // Sync attributes on each task-tracker element (for h1 title in shadow DOM)
+      const sourceTrackers = taskTrackers.querySelectorAll('task-tracker')
+      const mirrorTrackers = mirrorTaskTrackers.querySelectorAll('task-tracker')
+      sourceTrackers.forEach((sourceTracker, index) => {
+        const mirrorTracker = mirrorTrackers[index]
+        if (mirrorTracker) {
+          // Copy all attributes to trigger attributeChangedCallback
+          Array.from(sourceTracker.attributes).forEach(attr => {
+            mirrorTracker.setAttribute(attr.name, attr.value)
+          })
+        }
+      })
     }
   }
 
   /**
-   * Synchronizes trait elements.
+   * Synchronizes trait elements and their attributes.
    * @param {Element} mainEl - Main element from source window
    * @param {Element} mirrorMainEl - Main element from mirror window
    */
@@ -668,6 +681,19 @@ export class MirrorWindow {
     const mirrorTraits = mirrorMainEl.querySelector('traits')
     if (traits && mirrorTraits) {
       mirrorTraits.innerHTML = traits.innerHTML
+      
+      // Sync attributes on each trait-display element (for text in shadow DOM)
+      const sourceTraitDisplays = traits.querySelectorAll('trait-display')
+      const mirrorTraitDisplays = mirrorTraits.querySelectorAll('trait-display')
+      sourceTraitDisplays.forEach((sourceTrait, index) => {
+        const mirrorTrait = mirrorTraitDisplays[index]
+        if (mirrorTrait) {
+          // Copy all attributes to trigger attributeChangedCallback
+          Array.from(sourceTrait.attributes).forEach(attr => {
+            mirrorTrait.setAttribute(attr.name, attr.value)
+          })
+        }
+      })
     }
   }
 
