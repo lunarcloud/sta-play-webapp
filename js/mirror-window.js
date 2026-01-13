@@ -25,7 +25,7 @@ export class MirrorWindow {
   static #syncScheduled = false
 
   /**
-   * @type {Object}
+   * @type {object}
    * @property {boolean} body - Body attributes and classes
    * @property {boolean} menu - Menu items (momentum/threat pools)
    * @property {boolean} shipAlert - Ship alert element
@@ -653,7 +653,7 @@ export class MirrorWindow {
     const mirrorTaskTrackers = mirrorMainEl.querySelector('task-trackers')
     if (taskTrackers && mirrorTaskTrackers) {
       mirrorTaskTrackers.innerHTML = taskTrackers.innerHTML
-      
+
       // Sync attributes on each task-tracker element (for h1 title in shadow DOM)
       const sourceTrackers = taskTrackers.querySelectorAll('task-tracker')
       const mirrorTrackers = mirrorTaskTrackers.querySelectorAll('task-tracker')
@@ -666,7 +666,7 @@ export class MirrorWindow {
           })
         }
       })
-      
+
       // Use requestAnimationFrame to sync form values after custom elements initialize
       // This prevents incorrect initial values (resistance, complication range, etc.)
       requestAnimationFrame(() => {
@@ -687,7 +687,7 @@ export class MirrorWindow {
     const mirrorTraits = mirrorMainEl.querySelector('traits')
     if (traits && mirrorTraits) {
       mirrorTraits.innerHTML = traits.innerHTML
-      
+
       // Sync attributes on each trait-display element (for text in shadow DOM)
       const sourceTraitDisplays = traits.querySelectorAll('trait-display')
       const mirrorTraitDisplays = mirrorTraits.querySelectorAll('trait-display')
@@ -716,7 +716,7 @@ export class MirrorWindow {
       Array.from(missionTracker.attributes).forEach(attr => {
         mirrorMissionTracker.setAttribute(attr.name, attr.value)
       })
-      
+
       // Also sync shadow DOM select elements directly
       // The mission-tracker has shadow DOM with select elements for each scene
       if (missionTracker.shadowRoot && mirrorMissionTracker.shadowRoot) {
