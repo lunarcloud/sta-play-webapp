@@ -65,8 +65,8 @@ export class ShipAlertElement extends HTMLElement {
     // Attach the created element to the shadow DOM
     shadow.appendChild(linkElem)
 
-    const currentColor = this.getAttribute('color')
-        ?? ShipAlertElement.Colors[0].name.toLowerCase()
+    const currentColor = this.getAttribute('color') ??
+        ShipAlertElement.Colors[0].name.toLowerCase()
 
     this.#internalEl = document.createElement('ship-alert-internal')
     this.#internalEl.setAttribute('part', 'internal')
@@ -112,8 +112,8 @@ export class ShipAlertElement extends HTMLElement {
    */
   get color () {
     return this.#internalEl.classList.length > 0
-            ? this.#internalEl.className
-            : 'none'
+      ? this.#internalEl.className
+      : 'none'
   }
 
   /**
@@ -143,7 +143,7 @@ export class ShipAlertElement extends HTMLElement {
 
     this.#conditionTextEl.hidden = ['grey', 'cloak'].includes(valueLower)
 
-    if (this.getAttribute('color') != valueLower) {
+    if (this.getAttribute('color') !== valueLower) {
       this.setAttribute('color', valueLower)
     }
   }

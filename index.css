@@ -954,7 +954,7 @@ body.mirror {
   }
 
   /* Hide all menu-items children except fullscreen button and pools */
-  & menu-items > *:not(#fullscreen-btn):not(#momentum-section):not(#threat-section) {
+  & menu-items > *:not(#fullscreen-btn, #momentum-section, #threat-section) {
     display: none !important;
   }
 
@@ -964,6 +964,7 @@ body.mirror {
   }
 
   /* Hide close/remove buttons on light DOM components */
+
   /* Note: task-tracker and trait-display use shadow DOM, so their buttons
      are hidden via :host-context(body.mirror) in their own CSS files */
   & player-display button.remove {

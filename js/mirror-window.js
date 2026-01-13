@@ -1,3 +1,5 @@
+import { ShipAlertElement } from '../components/ship-alert/ship-alert-element.js'
+
 /**
  * Static class for managing a mirror window that displays a synchronized copy of the main application.
  */
@@ -163,9 +165,9 @@ export class MirrorWindow {
       // Check if this is a theme change or if players need syncing
       let isThemeChange = false
       let affectsPlayers = false
-      
+
       for (const mutation of mutations) {
-        if (mutation.target instanceof Element === false) continue
+        if (mutation.target instanceof HTMLElement === false) continue
 
         // Theme link href change
         if (mutation.target.id === 'theme-link' && mutation.attributeName === 'href') {
@@ -177,20 +179,20 @@ export class MirrorWindow {
           isThemeChange = true
           break
         }
-        
+
         // Check if mutation affects players list
         // Skip mutations that are only in header (model-viewers) or theme decorations
         const target = mutation.target
         const isInHeader = target.closest && target.closest('header') !== null
-        const isThemeDecoration = target.classList && (target.classList.contains('theme-decoration') || target.closest && target.closest('.theme-decoration') !== null)
+        const isThemeDecoration = (target.classList.contains('theme-decoration')) || (target.closest && target.closest('.theme-decoration') !== null)
         const isInPlayers = target.closest && target.closest('ul.players') !== null
         const isPlayerDisplay = target.tagName?.toLowerCase() === 'li' && target.getAttribute('is') === 'player-display'
-        
+
         // If mutation is in players list or affects player-display, mark for player sync
         if (isInPlayers || isPlayerDisplay) {
           affectsPlayers = true
         }
-        
+
         // If mutation is not in header and not theme decoration, we might need player sync
         // (unless it's specifically a model-viewer or known non-player element)
         if (!isInHeader && !isThemeDecoration) {
@@ -200,8 +202,8 @@ export class MirrorWindow {
             const mainEl = document.querySelector('main')
             if (mainEl && (target === mainEl || mainEl.contains(target))) {
               // Only mark as affecting players if it's actually in or near the players area
-              if (isInPlayers || isPlayerDisplay || 
-                  mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+              if (isInPlayers || isPlayerDisplay ||
+                  (mutation.type === 'childList' && mutation.addedNodes.length > 0)) {
                 affectsPlayers = true
               }
             }
@@ -285,7 +287,7 @@ export class MirrorWindow {
   static #setupInputListeners () {
     // Listen for input events on all input, select, and textarea elements
     const inputElements = document.querySelectorAll('input, select, textarea')
-    
+
     inputElements.forEach(element => {
       // Use 'input' event which fires on every value change
       element.addEventListener('input', () => {
@@ -296,7 +298,7 @@ export class MirrorWindow {
         }
         MirrorWindow.#scheduleSync()
       })
-      
+
       // Also listen for 'change' event for select dropdowns
       if (element.tagName === 'SELECT') {
         element.addEventListener('change', () => {
@@ -369,7 +371,7 @@ export class MirrorWindow {
     customElementSelectors.forEach(selector => {
       const sourceElements = sourceEl.querySelectorAll(selector)
       const targetElements = targetEl.querySelectorAll(selector)
-      
+
       sourceElements.forEach((sourceElement, index) => {
         const targetElement = targetElements[index]
         if (targetElement) {
@@ -475,7 +477,7 @@ export class MirrorWindow {
         mirrorDoc.body.classList.remove(cls)
       }
     })
-    
+
     // Sync body attributes
     Array.from(document.body.attributes).forEach(attr => {
       if (attr.name !== 'data-mirror-window' && attr.name !== 'class') {
@@ -618,8 +620,7 @@ export class MirrorWindow {
       } else {
         // Add new player by cloning
         const newPlayer = player.cloneNode(false)
-        if (newPlayer instanceof Element === false)
-          throw new Error("Something bad happened!")
+        if (newPlayer instanceof Element === false) { throw new Error('Something bad happened!') }
         mirrorPlayersUl.appendChild(newPlayer)
         MirrorWindow.#syncFormValues(player, newPlayer)
         // Repeat sync on next frame to ensure DOM is fully settled
@@ -710,9 +711,9 @@ export class MirrorWindow {
   static #syncThemeStylesheet (mirrorDoc) {
     const themeLink = document.getElementById('theme-link')
     const mirrorThemeLink = mirrorDoc.getElementById('theme-link')
-    if (themeLink instanceof HTMLLinkElement
-      && mirrorThemeLink instanceof HTMLLinkElement
-      && themeLink.href) {
+    if (themeLink instanceof HTMLLinkElement &&
+      mirrorThemeLink instanceof HTMLLinkElement &&
+      themeLink.href) {
       mirrorThemeLink.href = themeLink.href
     }
   }
