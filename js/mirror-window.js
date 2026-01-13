@@ -236,7 +236,7 @@ export class MirrorWindow {
         }
 
         // Theme decoration changes (don't trigger main content sync)
-        const isThemeDecoration = (target.classList.contains('theme-decoration')) || 
+        const isThemeDecoration = (target.classList.contains('theme-decoration')) ||
                                   (target.closest && target.closest('.theme-decoration') !== null)
         if (isThemeDecoration) {
           continue // Theme decorations don't require any sync
@@ -252,28 +252,28 @@ export class MirrorWindow {
         const mainEl = document.querySelector('main')
         if (mainEl && (target === mainEl || mainEl.contains(target))) {
           // Menu items (momentum/threat pools)
-          if (target.tagName?.toLowerCase() === 'menu-items' || 
+          if (target.tagName?.toLowerCase() === 'menu-items' ||
               (target.closest && target.closest('menu-items'))) {
             MirrorWindow.#syncsNeeded.menu = true
             continue
           }
 
           // Ship alert
-          if (target.tagName?.toLowerCase() === 'ship-alert' || 
+          if (target.tagName?.toLowerCase() === 'ship-alert' ||
               (target.closest && target.closest('ship-alert'))) {
             MirrorWindow.#syncsNeeded.shipAlert = true
             continue
           }
 
           // General text (story notes)
-          if (target.id === 'general-text' || 
+          if (target.id === 'general-text' ||
               (target.closest && target.closest('#general-text'))) {
             MirrorWindow.#syncsNeeded.generalText = true
             continue
           }
 
           // Task trackers
-          if (target.tagName?.toLowerCase() === 'task-trackers' || 
+          if (target.tagName?.toLowerCase() === 'task-trackers' ||
               (target.closest && target.closest('task-trackers'))) {
             MirrorWindow.#syncsNeeded.trackers = true
             continue
@@ -287,7 +287,7 @@ export class MirrorWindow {
           }
 
           // Mission tracker
-          if (target.tagName?.toLowerCase() === 'mission-tracker' || 
+          if (target.tagName?.toLowerCase() === 'mission-tracker' ||
               (target.closest && target.closest('mission-tracker'))) {
             MirrorWindow.#syncsNeeded.missionTracker = true
             continue
@@ -693,7 +693,7 @@ export class MirrorWindow {
    */
   static #syncPlayers (mainEl, mirrorMainEl) {
     // Only sync players if changes affect players (to avoid flicker from header/theme updates)
-    if (!MirrorWindow.#syncPlayersNeeded) {
+    if (!MirrorWindow.#syncsNeeded.players) {
       return
     }
 
