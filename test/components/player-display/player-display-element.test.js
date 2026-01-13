@@ -60,8 +60,8 @@ describe('PlayerDisplayElement', () => {
 
     it('should get and set rank', () => {
       const element = document.createElement('li', { is: 'player-display' })
-      element.rank = '⬤⬤⬤⬤' // Captain
-      expect(element.rank).to.equal('⬤⬤⬤⬤')
+      element.rank = '⬤⬤⬤⬤:Officer' // Captain
+      expect(element.rank).to.equal('⬤⬤⬤⬤:Officer')
     })
 
     it('should get and set currentStress', () => {
