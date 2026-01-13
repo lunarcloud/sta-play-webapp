@@ -653,8 +653,6 @@ export class MirrorWindow {
     const mirrorTaskTrackers = mirrorMainEl.querySelector('task-trackers')
     if (taskTrackers && mirrorTaskTrackers) {
       mirrorTaskTrackers.innerHTML = taskTrackers.innerHTML
-      // After innerHTML sync, copy form element values
-      MirrorWindow.#syncFormValues(taskTrackers, mirrorTaskTrackers)
       
       // Sync attributes on each task-tracker element (for h1 title in shadow DOM)
       const sourceTrackers = taskTrackers.querySelectorAll('task-tracker')
@@ -666,6 +664,14 @@ export class MirrorWindow {
           Array.from(sourceTracker.attributes).forEach(attr => {
             mirrorTracker.setAttribute(attr.name, attr.value)
           })
+        }
+      })
+      
+      // Use requestAnimationFrame to sync form values after custom elements initialize
+      // This prevents incorrect initial values (resistance, complication range, etc.)
+      requestAnimationFrame(() => {
+        if (MirrorWindow.isOpen()) {
+          MirrorWindow.#syncFormValues(taskTrackers, mirrorTaskTrackers)
         }
       })
     }
@@ -698,7 +704,7 @@ export class MirrorWindow {
   }
 
   /**
-   * Synchronizes mission tracker attributes.
+   * Synchronizes mission tracker attributes and shadow DOM form values.
    * @param {Element} mainEl - Main element from source window
    * @param {Element} mirrorMainEl - Main element from mirror window
    */
@@ -706,9 +712,24 @@ export class MirrorWindow {
     const missionTracker = mainEl.querySelector('mission-tracker')
     const mirrorMissionTracker = mirrorMainEl.querySelector('mission-tracker')
     if (missionTracker && mirrorMissionTracker) {
+      // Sync attributes (act1, act2, act3) to trigger attributeChangedCallback
       Array.from(missionTracker.attributes).forEach(attr => {
         mirrorMissionTracker.setAttribute(attr.name, attr.value)
       })
+      
+      // Also sync shadow DOM select elements directly
+      // The mission-tracker has shadow DOM with select elements for each scene
+      if (missionTracker.shadowRoot && mirrorMissionTracker.shadowRoot) {
+        const sourceSelects = missionTracker.shadowRoot.querySelectorAll('select')
+        const mirrorSelects = mirrorMissionTracker.shadowRoot.querySelectorAll('select')
+        sourceSelects.forEach((sourceSelect, index) => {
+          const mirrorSelect = mirrorSelects[index]
+          if (mirrorSelect && sourceSelect instanceof HTMLSelectElement) {
+            mirrorSelect.value = sourceSelect.value
+            mirrorSelect.selectedIndex = sourceSelect.selectedIndex
+          }
+        })
+      }
     }
   }
 
