@@ -205,6 +205,238 @@ All checks must pass before merging.
 * **Menu and navigation**: Ensure UI controls (buttons, icons, labels) have sufficient visibility and are appropriately sized for their importance.
 
 
+## Component Architecture and Patterns
+
+### Web Component Standard Pattern
+
+All custom elements follow this consistent pattern. Use this as your template:
+
+```javascript
+/**
+ * Description of the component
+ * @tagname my-element
+ * @attr {string} attribute-name - Description
+ * @cssprop {color} --custom-property - Description
+ */
+export class MyElement extends HTMLElement {
+  static get observedAttributes() {
+    return ['attribute-name']
+  }
+
+  #privateField
+  #domReference
+
+  constructor() {
+    super()
+    const shadow = this.attachShadow({ mode: 'open' })
+    
+    // Load external CSS (always use relative path)
+    const link = document.createElement('link')
+    link.rel = 'stylesheet'
+    link.href = 'components/my-element/my-element.css'
+    shadow.appendChild(link)
+    
+    // Build DOM structure
+    const container = document.createElement('div')
+    container.className = 'container'
+    shadow.appendChild(container)
+    
+    this.#domReference = container
+  }
+
+  /**
+   * Handles attribute changes
+   * @param {string} name - Attribute name
+   * @param {string} oldValue - Previous value
+   * @param {string} newValue - New value
+   */
+  attributeChangedCallback(name, oldValue, newValue) {
+    // Convert attribute name to property (snake-case to camelCase)
+    this[snakeToCamel(name)] = newValue
+  }
+
+  /**
+   * Gets the property value
+   * @returns {string} The value
+   */
+  get propertyName() {
+    return this.#privateField
+  }
+
+  /**
+   * Sets the property value
+   * @param {string} value - The new value
+   */
+  set propertyName(value) {
+    this.#privateField = value
+    // Update DOM as needed
+  }
+}
+
+// Register the custom element
+customElements.define('my-element', MyElement)
+// Export to globalThis for testing and external access
+globalThis.MyElement = MyElement
+```
+
+### Dialog Component Pattern
+
+Dialogs use a different pattern, extending HTMLDialogElement and loading content from HTML files:
+
+```javascript
+import { animateClose } from '../../js/dialog-utils.js'
+import { loadElementFromFile } from '../../js/load-file-element.js'
+
+/**
+ * Setup function for async initialization
+ */
+const setup = async () => {
+  const dialogEl = await loadElementFromFile(
+    './components/my-dialog/my-dialog.html',
+    'dialog'
+  )
+
+  /**
+   * Description of dialog
+   * @tagname my-dialog
+   */
+  class MyDialogElement extends HTMLDialogElement {
+    constructor() {
+      super()
+      this.innerHTML = dialogEl.innerHTML
+      
+      // Setup close buttons
+      this.querySelectorAll('button.close').forEach(el => {
+        el.addEventListener('click', () => animateClose(this))
+      })
+      
+      // Additional setup
+    }
+  }
+
+  customElements.define('my-dialog', MyDialogElement, { extends: 'dialog' })
+  globalThis.MyDialogElement = MyDialogElement
+}
+
+await setup()
+```
+
+### Database Info Class Pattern
+
+Data model classes use inheritance and validation:
+
+```javascript
+import { NamedInfo } from './named-info.js'
+
+/**
+ * @typedef {object} MyInfoData
+ * @property {string} name - Name
+ * @property {number} value - Numeric value
+ */
+
+/**
+ * Description of data class
+ */
+export class MyInfo extends NamedInfo {
+  value = 0
+
+  /**
+   * @param {MyInfoData} [data] - Initial data
+   */
+  constructor(data = {}) {
+    super(data)
+    // Type coercion
+    this.value = parseInt(data.value) || 0
+  }
+
+  /**
+   * Create from plain object
+   * @param {MyInfoData} obj - Source object
+   * @returns {MyInfo} New instance
+   */
+  static assign(obj) {
+    return new MyInfo(obj)
+  }
+
+  /**
+   * Validate data integrity
+   * @throws {Error} If validation fails
+   */
+  validate() {
+    super.validate()
+    if (this.value < 0) {
+      throw new Error('Value cannot be negative')
+    }
+  }
+}
+```
+
+### Common Utilities Reference
+
+**Always use these existing utilities instead of reimplementing:**
+
+- `snakeToCamel(value)` - Convert snake-case to camelCase (for attribute → property mapping)
+- `animateClose(dialog)` - Animate dialog closing with fade-out
+- `loadElementFromFile(path, tagName)` - Load HTML from external file
+- `setupNumberInputScrollForParent(element)` - Enable mousewheel for number inputs
+- `setupDropOnly(element, callback)` - Configure drag-drop without allowing dragging
+- `showDialog(dialogId)` - Show dialog with animation
+- `dialogUtils.*` - Various dialog helper functions
+
+### Component Communication
+
+**Event Flow Pattern:**
+1. Components dispatch custom events for state changes
+2. IndexController listens to component events
+3. IndexController updates database via Info classes
+4. IndexController updates other components as needed
+
+Example:
+```javascript
+// Component dispatches event
+this.dispatchEvent(new CustomEvent('change', {
+  detail: { value: this.newValue },
+  bubbles: true
+}))
+
+// IndexController listens (in index.js)
+element.addEventListener('change', (e) => {
+  // Update database
+  // Update other components
+})
+```
+
+### State Management Pattern
+
+- **Persistence:** All game state stored in IndexedDB via `/js/database/database.js`
+- **Data Models:** Info classes (`PlayerInfo`, `TrackerInfo`, etc.) represent entities
+- **Controller:** `IndexController` class manages coordination between database and UI
+- **Components:** Stateless display/input - receive data via attributes/properties
+
+**Flow:**
+```
+User Interaction → Component Event → IndexController 
+  → Database Update → Component Property Update → DOM Render
+```
+
+### Key Configuration Patterns
+
+Components often define game rules as constants:
+
+```javascript
+// Example from TaskTrackerElement
+const AttributeNames = ['Control', 'Daring', 'Fitness', 'Insight', 'Presence', 'Reason']
+const DepartmentNames = ['Command', 'Conn', 'Security', 'Engineering', 'Science', 'Medicine']
+
+// Example from PlayerDisplayElement
+const DefaultPlayerImages = {
+  '⬤⬤⬤⬤:Officer': 'img/characters/starfleet-officer.webp',
+  // ...
+}
+```
+
+**Document these in comments as they represent game mechanics.**
+
 ## Common Pitfalls to Avoid
 
 * **Grid positioning errors**: Double-check `grid-row` and `grid-column` values match the parent grid template. For example, if the body has 4 rows, `grid-row: 2 / 4` spans rows 2-3, while `grid-row: 3` only occupies row 3.
@@ -212,3 +444,25 @@ All checks must pass before merging.
 * **Over-correcting feedback**: When asked to enhance specific UI elements for visibility, don't make global changes that affect the entire theme - target only the specified elements.
 * **Ignoring existing patterns**: Look at how similar components are structured and styled before creating new patterns.
 * **Missing component tests**: When adding or modifying custom elements, include tests that demonstrate registration, shadow DOM structure, attributes, properties, and events.
+* **Reinventing utilities**: Check the utilities in `/js/` before implementing common functionality - utilities exist for string conversion, dialog management, number input handling, etc.
+* **Hardcoding paths**: Always use relative paths for CSS and HTML loading. Paths are relative to the file location.
+* **Breaking attribute convention**: Attributes use `kebab-case`, properties use `camelCase`. Use `snakeToCamel()` for conversion.
+* **Missing JSDoc**: All public methods, properties, and classes require JSDoc comments. ESLint will fail without them.
+* **Direct DOM manipulation on other components**: Components should communicate via events, not direct property access (except via IndexController).
+
+## Priority Areas for Contributions
+
+The following components need comprehensive test coverage:
+
+1. **High Priority** (complex, untested):
+   - `task-tracker-element.js` (723 lines, complex progress/resistance logic)
+   - `mission-tracker-element.js` (mission/scene tracking)
+
+2. **Medium Priority** (simpler, untested):
+   - `busy-dialog`
+   - `settings-dialog`
+   - `welcome-dialog`
+   - Additional tests for `player-display` (some coverage exists)
+
+**When writing tests for these components, follow the pattern in:**
+`test/components/trait-display/trait-display-element.test.js`

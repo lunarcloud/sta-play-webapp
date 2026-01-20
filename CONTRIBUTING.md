@@ -40,8 +40,33 @@ Ideally, you should be solving an open issue and including as many **screenshots
   * Maintain backwards compatibility with existing `.staplay` save files
 
 📘 **See also:**
+- [ARCHITECTURE.md](.github/ARCHITECTURE.md) - Architecture, patterns, and data flow
+- [COMPONENT_TEMPLATE.md](.github/COMPONENT_TEMPLATE.md) - Step-by-step guide for creating components
 - [LINTING.md](.github/LINTING.md) - Detailed linting rules and configuration
 - [TESTING.md](.github/TESTING.md) - Comprehensive testing guide
+
+## Architecture and Patterns
+
+Before making changes, familiarize yourself with the project architecture:
+
+* **Component Pattern:** All components follow the Web Components standard with Shadow DOM
+* **Data Flow:** Unidirectional flow from user interaction → component event → IndexController → database
+* **State Management:** Three-layer architecture (component, controller, database)
+* **Communication:** Components communicate via events, never direct access
+
+See [ARCHITECTURE.md](.github/ARCHITECTURE.md) for detailed architecture documentation.
+
+## Creating New Components
+
+When adding new components, follow the established patterns:
+
+1. **Use the template:** See [COMPONENT_TEMPLATE.md](.github/COMPONENT_TEMPLATE.md) for step-by-step instructions
+2. **Reference examples:** Look at `trait-display` (simple) or `task-tracker` (complex)
+3. **Follow conventions:** 
+   - Attributes use `kebab-case`
+   - Properties use `camelCase`
+   - Private fields use `#prefix`
+   - Use `snakeToCamel()` for attribute-property sync
 
 ## Testing Guidelines
 
@@ -51,6 +76,13 @@ Ideally, you should be solving an open issue and including as many **screenshots
 * **Always** write tests for new utility functions
 * Update existing tests when modifying behavior
 * Add regression tests when fixing bugs
+
+### Priority Testing Areas
+
+The following components need comprehensive test coverage:
+- `task-tracker-element.js` (723 lines, complex logic) - **HIGH PRIORITY**
+- `mission-tracker-element.js` - **HIGH PRIORITY**
+- `busy-dialog`, `settings-dialog`, `welcome-dialog` - **MEDIUM PRIORITY**
 
 ### What to Test
 
@@ -92,6 +124,8 @@ describe('MyComponent', () => {
 ```
 
 See `test/components/trait-display/trait-display-element.test.js` for a comprehensive example.
+
+For a complete testing guide, see [TESTING.md](.github/TESTING.md).
 
 ## Code Review Process
 
