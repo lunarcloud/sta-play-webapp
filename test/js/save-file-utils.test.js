@@ -1,5 +1,5 @@
 import { expect } from '@esm-bundle/chai'
-import { saveBlob, saveText } from '../../js/save-file-utils.js'
+import { saveBlob, saveText, saveBlobAs, saveTextAs } from '../../js/save-file-utils.js'
 
 /**
  * Helper to setup mocks for URL and click
@@ -141,6 +141,296 @@ describe('Save File Utils', () => {
         restoreMocks(mocks)
         done()
       }).catch(done)
+    })
+  })
+
+  describe('saveBlobAs', () => {
+    it('should throw error for non-blob data', async () => {
+      const mimeOptions = {
+        description: 'Test files',
+        mimes: [{ 'text/plain': ['.txt'] }]
+      }
+
+      try {
+        await saveBlobAs('test.txt', 'not a blob', mimeOptions)
+        expect.fail('Should have thrown error')
+      } catch (error) {
+        expect(error.message).to.equal('Cannot save a non-blob!')
+      }
+    })
+
+    it('should use file picker API when available', async () => {
+      const testData = new Blob(['test content'], { type: 'text/plain' })
+      const filename = 'test.txt'
+      const mimeOptions = {
+        description: 'Test files',
+        mimes: [{ 'text/plain': ['.txt'] }]
+      }
+
+      let pickerCalled = false
+      let writeCalled = false
+      const mockWriteable = {
+        write: async (data) => {
+          writeCalled = true
+          expect(data).to.equal(testData)
+        },
+        close: async () => {}
+      }
+
+      const originalShowSaveFilePicker = window.showSaveFilePicker
+      window.showSaveFilePicker = async (options) => {
+        pickerCalled = true
+        expect(options.suggestedName).to.equal(filename)
+        expect(options.startIn).to.equal('downloads')
+        expect(options.types).to.deep.equal([mimeOptions])
+        return {
+          createWritable: async () => mockWriteable
+        }
+      }
+
+      try {
+        await saveBlobAs(filename, testData, mimeOptions)
+        expect(pickerCalled).to.be.true
+        expect(writeCalled).to.be.true
+      } finally {
+        window.showSaveFilePicker = originalShowSaveFilePicker
+      }
+    })
+
+    it('should handle user cancellation (AbortError)', async () => {
+      const testData = new Blob(['test content'], { type: 'text/plain' })
+      const filename = 'test.txt'
+      const mimeOptions = {
+        description: 'Test files',
+        mimes: [{ 'text/plain': ['.txt'] }]
+      }
+
+      const originalShowSaveFilePicker = window.showSaveFilePicker
+      window.showSaveFilePicker = async () => {
+        const error = new Error('User cancelled')
+        error.name = 'AbortError'
+        throw error
+      }
+
+      try {
+        // Should not throw, just return silently
+        await saveBlobAs(filename, testData, mimeOptions)
+      } finally {
+        window.showSaveFilePicker = originalShowSaveFilePicker
+      }
+    })
+
+    it('should fallback to link method when file picker fails', async () => {
+      const testData = new Blob(['test content'], { type: 'text/plain' })
+      const filename = 'test.txt'
+      const mimeOptions = {
+        description: 'Test files',
+        mimes: [{ 'text/plain': ['.txt'] }]
+      }
+
+      const originalShowSaveFilePicker = window.showSaveFilePicker
+      window.showSaveFilePicker = async () => {
+        throw new Error('File picker not supported')
+      }
+
+      const mocks = setupFileMocks()
+
+      try {
+        await saveBlobAs(filename, testData, mimeOptions)
+        expect(mocks.clickCalled).to.be.true
+      } finally {
+        window.showSaveFilePicker = originalShowSaveFilePicker
+        restoreMocks(mocks)
+      }
+    })
+
+    it('should prompt for filename when fallback with promptIfFallback=true', async () => {
+      const testData = new Blob(['test content'], { type: 'text/plain' })
+      const filename = 'test.txt'
+      const mimeOptions = {
+        description: 'Test files',
+        mimes: [{ 'text/plain': ['.txt'] }]
+      }
+
+      const originalShowSaveFilePicker = window.showSaveFilePicker
+      const originalPrompt = window.prompt
+      let promptCalled = false
+
+      window.showSaveFilePicker = async () => {
+        throw new Error('File picker not supported')
+      }
+
+      window.prompt = (message, defaultValue) => {
+        promptCalled = true
+        expect(defaultValue).to.equal(filename)
+        return 'custom-name.txt'
+      }
+
+      const mocks = setupFileMocks()
+      HTMLAnchorElement.prototype.click = function () {
+        mocks.clickCalled = true
+        expect(this.download).to.equal('custom-name.txt')
+      }
+
+      try {
+        await saveBlobAs(filename, testData, mimeOptions, 'downloads', true)
+        expect(promptCalled).to.be.true
+        expect(mocks.clickCalled).to.be.true
+      } finally {
+        window.showSaveFilePicker = originalShowSaveFilePicker
+        window.prompt = originalPrompt
+        restoreMocks(mocks)
+      }
+    })
+
+    it('should handle user cancelling prompt', async () => {
+      const testData = new Blob(['test content'], { type: 'text/plain' })
+      const filename = 'test.txt'
+      const mimeOptions = {
+        description: 'Test files',
+        mimes: [{ 'text/plain': ['.txt'] }]
+      }
+
+      const originalShowSaveFilePicker = window.showSaveFilePicker
+      const originalPrompt = window.prompt
+
+      window.showSaveFilePicker = async () => {
+        throw new Error('File picker not supported')
+      }
+
+      window.prompt = () => null // User cancelled
+
+      const mocks = setupFileMocks()
+
+      try {
+        await saveBlobAs(filename, testData, mimeOptions, 'downloads', true)
+        // Should return without clicking link
+        expect(mocks.clickCalled).to.be.false
+      } finally {
+        window.showSaveFilePicker = originalShowSaveFilePicker
+        window.prompt = originalPrompt
+        restoreMocks(mocks)
+      }
+    })
+
+    it('should use default filename if prompt fails', async () => {
+      const testData = new Blob(['test content'], { type: 'text/plain' })
+      const filename = 'test.txt'
+      const mimeOptions = {
+        description: 'Test files',
+        mimes: [{ 'text/plain': ['.txt'] }]
+      }
+
+      const originalShowSaveFilePicker = window.showSaveFilePicker
+      const originalPrompt = window.prompt
+
+      window.showSaveFilePicker = async () => {
+        throw new Error('File picker not supported')
+      }
+
+      window.prompt = () => {
+        throw new Error('Prompt failed')
+      }
+
+      const mocks = setupFileMocks()
+      HTMLAnchorElement.prototype.click = function () {
+        mocks.clickCalled = true
+        expect(this.download).to.equal(filename)
+      }
+
+      try {
+        await saveBlobAs(filename, testData, mimeOptions, 'downloads', true)
+        expect(mocks.clickCalled).to.be.true
+      } finally {
+        window.showSaveFilePicker = originalShowSaveFilePicker
+        window.prompt = originalPrompt
+        restoreMocks(mocks)
+      }
+    })
+
+    it('should use custom startIn parameter', async () => {
+      const testData = new Blob(['test content'], { type: 'text/plain' })
+      const filename = 'test.txt'
+      const mimeOptions = {
+        description: 'Test files',
+        mimes: [{ 'text/plain': ['.txt'] }]
+      }
+
+      const originalShowSaveFilePicker = window.showSaveFilePicker
+      let pickerOptions = null
+
+      window.showSaveFilePicker = async (options) => {
+        pickerOptions = options
+        return {
+          createWritable: async () => ({
+            write: async () => {},
+            close: async () => {}
+          })
+        }
+      }
+
+      try {
+        await saveBlobAs(filename, testData, mimeOptions, 'documents')
+        expect(pickerOptions.startIn).to.equal('documents')
+      } finally {
+        window.showSaveFilePicker = originalShowSaveFilePicker
+      }
+    })
+
+    it('should rethrow "already active" error', async () => {
+      const testData = new Blob(['test content'], { type: 'text/plain' })
+      const filename = 'test.txt'
+      const mimeOptions = {
+        description: 'Test files',
+        mimes: [{ 'text/plain': ['.txt'] }]
+      }
+
+      const originalShowSaveFilePicker = window.showSaveFilePicker
+      window.showSaveFilePicker = async () => {
+        throw new Error('File picker already active')
+      }
+
+      try {
+        await saveBlobAs(filename, testData, mimeOptions)
+        expect.fail('Should have thrown error')
+      } catch (error) {
+        expect(error.message).to.include('already active')
+      } finally {
+        window.showSaveFilePicker = originalShowSaveFilePicker
+      }
+    })
+  })
+
+  describe('saveTextAs', () => {
+    it('should create blob and call saveBlobAs', async () => {
+      const text = 'Hello, World!'
+      const filename = 'hello.txt'
+      const typeOption = {
+        description: 'Text files',
+        mimes: [{ 'text/plain': ['.txt'] }]
+      }
+
+      const originalShowSaveFilePicker = window.showSaveFilePicker
+      let blobReceived = null
+
+      window.showSaveFilePicker = async () => {
+        return {
+          createWritable: async () => ({
+            write: async (data) => {
+              blobReceived = data
+            },
+            close: async () => {}
+          })
+        }
+      }
+
+      try {
+        await saveTextAs(filename, text, typeOption)
+        expect(blobReceived).to.be.instanceof(Blob)
+        expect(blobReceived.type).to.equal('text/plain;charset=utf-8')
+      } finally {
+        window.showSaveFilePicker = originalShowSaveFilePicker
+      }
     })
   })
 })
