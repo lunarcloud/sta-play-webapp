@@ -23,27 +23,24 @@ STA Play is a client-side single-page application (SPA) built with vanilla JavaS
 
 ## Architecture Diagram
 
+```mermaid
+graph TD
+    HTML[index.html]
+    HTML --> Controller[index.js<br/>IndexController]
+    
+    Controller --> Database[Database Layer<br/>11 components]
+    Controller --> Components[Components<br/>11 components]
+    Controller --> Utilities[Utilities<br/>9+8 modules]
+    
+    Database --> IDB[IDB<br/>idb lib]
+    Components --> Shadow[Shadow DOM]
+    
+    style HTML fill:#e1f5ff
+    style Controller fill:#fff4e1
+    style Database fill:#ffe1e1
+    style Components fill:#e1ffe1
+    style Utilities fill:#f0e1ff
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                       index.html                            │
-│                           │                                 │
-│                           ▼                                 │
-│                       index.js                              │
-│                    (IndexController)                        │
-│                           │                                 │
-│         ┌─────────────────┼─────────────────┐              │
-│         ▼                 ▼                 ▼              │
-│   ┌──────────┐      ┌──────────┐     ┌──────────┐         │
-│   │ Database │      │Components│     │ Utilities│         │
-│   │  Layer   │      │  (11)    │     │   (9+8)  │         │
-│   └──────────┘      └──────────┘     └──────────┘         │
-│         │                 │                                │
-│         ▼                 ▼                                │
-│   ┌──────────┐      ┌──────────┐                          │
-│   │   IDB    │      │ Shadow   │                          │
-│   │ (idb lib)│      │   DOM    │                          │
-│   └──────────┘      └──────────┘                          │
-└─────────────────────────────────────────────────────────────┘
 
 Components Breakdown:
 ├─ Dialogs (5)
@@ -62,7 +59,6 @@ Components Breakdown:
    ├─ task-tracker        - Task/challenge progress
    ├─ mission-tracker     - Mission/scene tracking
    └─ input-progress      - Numeric progress widget
-```
 
 ## Component Architecture
 
@@ -155,35 +151,20 @@ await setup()
 
 ### Unidirectional Data Flow
 
-```
-┌─────────────────────────────────────────────────────────┐
-│ 1. User Interaction (click, input, drag)               │
-└────────────────────┬────────────────────────────────────┘
-                     ▼
-┌─────────────────────────────────────────────────────────┐
-│ 2. Component Dispatches Custom Event                    │
-│    this.dispatchEvent(new CustomEvent('change', {...})) │
-└────────────────────┬────────────────────────────────────┘
-                     ▼
-┌─────────────────────────────────────────────────────────┐
-│ 3. IndexController Listens to Event                     │
-│    element.addEventListener('change', handler)          │
-└────────────────────┬────────────────────────────────────┘
-                     ▼
-┌─────────────────────────────────────────────────────────┐
-│ 4. IndexController Updates Database                     │
-│    database.updatePlayer(playerInfo)                    │
-└────────────────────┬────────────────────────────────────┘
-                     ▼
-┌─────────────────────────────────────────────────────────┐
-│ 5. IndexController Updates Other Components             │
-│    element.setAttribute('property', newValue)           │
-└────────────────────┬────────────────────────────────────┘
-                     ▼
-┌─────────────────────────────────────────────────────────┐
-│ 6. Component Updates DOM via Property Setter            │
-│    set property(val) { this.#render() }                 │
-└─────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    A[1. User Interaction<br/>click, input, drag] --> B[2. Component Dispatches Custom Event<br/>this.dispatchEvent new CustomEvent 'change']
+    B --> C[3. IndexController Listens to Event<br/>element.addEventListener 'change' handler]
+    C --> D[4. IndexController Updates Database<br/>database.updatePlayer playerInfo]
+    D --> E[5. IndexController Updates Other Components<br/>element.setAttribute 'property' newValue]
+    E --> F[6. Component Updates DOM via Property Setter<br/>set property val this.#render]
+    
+    style A fill:#e1f5ff
+    style B fill:#ffe1e1
+    style C fill:#fff4e1
+    style D fill:#e1ffe1
+    style E fill:#f0e1ff
+    style F fill:#ffe1f0
 ```
 
 ### Example: Updating Player Name
@@ -201,29 +182,18 @@ await setup()
 
 ### Three-Layer State Architecture
 
-```
-┌──────────────────────────────────────────────────────────┐
-│ Layer 1: Component State (Ephemeral)                     │
-│ - DOM state (contentEditable, input values)              │
-│ - UI state (hover, focus, animations)                    │
-│ - Lives in component private fields                      │
-└────────────────────┬─────────────────────────────────────┘
-                     │ Events
-                     ▼
-┌──────────────────────────────────────────────────────────┐
-│ Layer 2: Controller State (Runtime)                      │
-│ - Current game state (IndexController)                   │
-│ - Active players, trackers, traits                       │
-│ - Represented by Info class instances                    │
-└────────────────────┬─────────────────────────────────────┘
-                     │ Database API
-                     ▼
-┌──────────────────────────────────────────────────────────┐
-│ Layer 3: Persistent State (IndexedDB)                    │
-│ - Saved games, settings, history                         │
-│ - Managed by Database class                              │
-│ - Survives page reloads                                  │
-└──────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    A[Layer 1: Component State Ephemeral<br/>- DOM state contentEditable, input values<br/>- UI state hover, focus, animations<br/>- Lives in component private fields]
+    B[Layer 2: Controller State Runtime<br/>- Current game state IndexController<br/>- Active players, trackers, traits<br/>- Represented by Info class instances]
+    C[Layer 3: Persistent State IndexedDB<br/>- Saved games, settings, history<br/>- Managed by Database class<br/>- Survives page reloads]
+    
+    A -->|Events| B
+    B -->|Database API| C
+    
+    style A fill:#e1f5ff
+    style B fill:#fff4e1
+    style C fill:#e1ffe1
 ```
 
 ### State Ownership Rules
@@ -287,59 +257,95 @@ player.name = 'New Name'
 
 ### Database Architecture
 
-```
-Database (database.js)
-├─ _db: IDBDatabase (idb library wrapper)
-├─ Methods:
-│  ├─ addGame(gameInfo)
-│  ├─ updateGame(gameInfo)
-│  ├─ deleteGame(id)
-│  ├─ getGame(id)
-│  ├─ getAllGames()
-│  └─ ... (player, tracker, trait, scene methods)
-└─ Schema:
-   ├─ games (GameInfo[])
-   ├─ players (PlayerInfo[])
-   ├─ trackers (TrackerInfo[])
-   ├─ traits (TraitInfo[])
-   └─ scenes (SceneInfo[])
+```mermaid
+classDiagram
+    class Database {
+        -_db IDBDatabase
+        +addGame(gameInfo)
+        +updateGame(gameInfo)
+        +deleteGame(id)
+        +getGame(id)
+        +getAllGames()
+        +addPlayer(playerInfo)
+        +updatePlayer(playerInfo)
+        +addTracker(trackerInfo)
+        +addTrait(traitInfo)
+        +addScene(sceneInfo)
+    }
+    
+    class Schema {
+        games GameInfo[]
+        players PlayerInfo[]
+        trackers TrackerInfo[]
+        traits TraitInfo[]
+        scenes SceneInfo[]
+    }
+    
+    Database --> Schema : manages
+    Database --> IDBLibrary : uses
+    
+    class IDBLibrary {
+        <<external>>
+        idb library wrapper
+    }
 ```
 
 ### Info Class Hierarchy
 
-```
-NamedInfo (abstract base)
-├─ id: number
-├─ name: string
-└─ Methods: constructor(), static assign(), validate()
-
-├─ PlayerInfo
-│  ├─ game: number (foreign key to GameInfo)
-│  ├─ stress: number
-│  ├─ rank: string
-│  ├─ color: string
-│  └─ image: string
-│
-├─ TrackerInfo
-│  ├─ game: number
-│  ├─ attributes: string[] (STA attributes)
-│  ├─ progress: number
-│  └─ resistance: number
-│
-├─ TraitInfo
-│  ├─ game: number
-│  └─ description: string
-│
-├─ SceneInfo
-│  ├─ game: number
-│  ├─ description: string
-│  └─ missionTrack: number
-│
-└─ GameInfo
-   ├─ players: PlayerInfo[]
-   ├─ trackers: TrackerInfo[]
-   ├─ traits: TraitInfo[]
-   └─ scenes: SceneInfo[]
+```mermaid
+classDiagram
+    class NamedInfo {
+        <<abstract>>
+        +number id
+        +string name
+        +constructor(data)
+        +assign(obj)$
+        +validate()
+    }
+    
+    class PlayerInfo {
+        +number game
+        +number stress
+        +string rank
+        +string color
+        +string image
+    }
+    
+    class TrackerInfo {
+        +number game
+        +string[] attributes
+        +number progress
+        +number resistance
+    }
+    
+    class TraitInfo {
+        +number game
+        +string description
+    }
+    
+    class SceneInfo {
+        +number game
+        +string description
+        +number missionTrack
+    }
+    
+    class GameInfo {
+        +PlayerInfo[] players
+        +TrackerInfo[] trackers
+        +TraitInfo[] traits
+        +SceneInfo[] scenes
+    }
+    
+    NamedInfo <|-- PlayerInfo
+    NamedInfo <|-- TrackerInfo
+    NamedInfo <|-- TraitInfo
+    NamedInfo <|-- SceneInfo
+    NamedInfo <|-- GameInfo
+    
+    GameInfo o-- PlayerInfo
+    GameInfo o-- TrackerInfo
+    GameInfo o-- TraitInfo
+    GameInfo o-- SceneInfo
 ```
 
 ### Database Operations Flow

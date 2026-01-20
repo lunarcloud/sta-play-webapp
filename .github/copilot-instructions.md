@@ -80,6 +80,7 @@ Use these commands to perform common development tasks:
 * Follow StandardJS conventions for ECMAScript, and the default style rules enforced by all lint utilities.
 * CSS uses nesting to specify and scope styles.
 * **CSS Maintainability**: Use CSS variables to reduce code duplication. When multiple rules share the same color, size, shadow, or border-radius values, extract them into reusable CSS variables.
+* **Diagrams and Documentation**: Use Mermaid diagrams for all block diagrams, flowcharts, and architecture visualizations in markdown documentation. Avoid ASCII art diagrams.
 * Avoid syntax that requires any pre-processing or compilation of the code. It should run in a browser directly after the third-party libraries have been copied via the "copy-deps" script.
 * Avoid any language that suggests ownership or rights over the Star Trek or Star Trek Adventures licenses.
 * Avoid usage of any artwork or other resources from outside of the application. CC0 artwork may be utilized for theme textures.
