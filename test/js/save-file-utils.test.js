@@ -236,6 +236,7 @@ describe('Save File Utils', () => {
       const mocks = setupFileMocks()
 
       try {
+        // startIn parameter is ignored when falling back to link method
         await saveBlobAs(filename, testData, mimeOptions)
         expect(mocks.clickCalled).to.be.true
       } finally {
@@ -303,7 +304,8 @@ describe('Save File Utils', () => {
       const mocks = setupFileMocks()
 
       try {
-        await saveBlobAs(filename, testData, mimeOptions, 'downloads', true)
+        // Testing prompt cancellation behavior, startIn not relevant
+        await saveBlobAs(filename, testData, mimeOptions, undefined, true)
         // Should return without clicking link
         expect(mocks.clickCalled).to.be.false
       } finally {
@@ -339,7 +341,8 @@ describe('Save File Utils', () => {
       }
 
       try {
-        await saveBlobAs(filename, testData, mimeOptions, 'downloads', true)
+        // Testing prompt failure fallback, startIn not relevant
+        await saveBlobAs(filename, testData, mimeOptions, undefined, true)
         expect(mocks.clickCalled).to.be.true
       } finally {
         window.showSaveFilePicker = originalShowSaveFilePicker

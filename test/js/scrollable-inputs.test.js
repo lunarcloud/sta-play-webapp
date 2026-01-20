@@ -162,8 +162,10 @@ describe('scrollable-inputs', () => {
     })
 
     it('should increment value on positive wheel delta', () => {
+      // Note: deltaY and wheelDelta have opposite signs
+      // Positive wheelDelta (scroll up) should increment
       const evt = new WheelEvent('wheel', { deltaY: -1 })
-      Object.defineProperty(evt, 'wheelDelta', { value: 120 })
+      Object.defineProperty(evt, 'wheelDelta', { value: 120 }) // Positive = scroll up
       Object.defineProperty(evt, 'target', { value: numberInput })
 
       handleScrollOnNumberInput(evt)
@@ -172,8 +174,10 @@ describe('scrollable-inputs', () => {
     })
 
     it('should decrement value on negative wheel delta', () => {
+      // Note: deltaY and wheelDelta have opposite signs
+      // Negative wheelDelta (scroll down) should decrement
       const evt = new WheelEvent('wheel', { deltaY: 1 })
-      Object.defineProperty(evt, 'wheelDelta', { value: -120 })
+      Object.defineProperty(evt, 'wheelDelta', { value: -120 }) // Negative = scroll down
       Object.defineProperty(evt, 'target', { value: numberInput })
 
       handleScrollOnNumberInput(evt)
