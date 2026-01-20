@@ -42,6 +42,7 @@ Ideally, you should be solving an open issue and including as many **screenshots
 📘 **See also:**
 - [ARCHITECTURE.md](.github/ARCHITECTURE.md) - Architecture, patterns, and data flow
 - [COMPONENT_TEMPLATE.md](.github/COMPONENT_TEMPLATE.md) - Step-by-step guide for creating components
+- [CODE_REVIEW_GUIDE.md](.github/CODE_REVIEW_GUIDE.md) - Common review feedback and how to address it
 - [LINTING.md](.github/LINTING.md) - Detailed linting rules and configuration
 - [TESTING.md](.github/TESTING.md) - Comprehensive testing guide
 
@@ -136,6 +137,12 @@ For a complete testing guide, see [TESTING.md](.github/TESTING.md).
   - User experience (accessibility, responsive sizing)
 * Address feedback incrementally
 * CI checks must pass (linting, tests)
+
+**See [CODE_REVIEW_GUIDE.md](.github/CODE_REVIEW_GUIDE.md) for detailed guidance on:**
+- Common feedback patterns
+- How to address specific types of feedback
+- Visual design and code quality checklists
+- Tips for smooth reviews
 
 Thanks,
 Sam

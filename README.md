@@ -49,8 +49,12 @@ The project has three linters configured:
 - **stylelint** for CSS - ensures consistent styling
 
 📘 **For detailed information:**
+- Architecture and patterns: [.github/ARCHITECTURE.md](.github/ARCHITECTURE.md)
+- Creating new components: [.github/COMPONENT_TEMPLATE.md](.github/COMPONENT_TEMPLATE.md)
+- Code review guidance: [.github/CODE_REVIEW_GUIDE.md](.github/CODE_REVIEW_GUIDE.md)
 - Linting rules and configuration: [.github/LINTING.md](.github/LINTING.md)
 - Testing patterns and best practices: [.github/TESTING.md](.github/TESTING.md)
+- Contributing guidelines: [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Testing
 The project uses [@web/test-runner](https://modern-web.dev/docs/test-runner/overview/) for unit testing with browser-native ES modules support.
