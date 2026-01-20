@@ -42,6 +42,7 @@ graph TD
     style Utilities fill:#f0e1ff
 ```
 
+```
 Components Breakdown:
 ├─ Dialogs (5)
 │  ├─ welcome-dialog      - Initial setup wizard
@@ -59,6 +60,7 @@ Components Breakdown:
    ├─ task-tracker        - Task/challenge progress
    ├─ mission-tracker     - Mission/scene tracking
    └─ input-progress      - Numeric progress widget
+```
 
 ## Component Architecture
 
