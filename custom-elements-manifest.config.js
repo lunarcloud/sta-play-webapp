@@ -4,7 +4,7 @@ export default {
   /** Globs to analyze */
   globs: ['./components/**/*.js'],
   /** Globs to exclude */
-  exclude: ['./lib/*.js'],
+  exclude: ['./js/lib/*.js'],
   /** Directory to output CEM to */
   outdir: '.cem/',
   /** Run in dev mode, provides extra logging */

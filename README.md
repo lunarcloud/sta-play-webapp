@@ -16,7 +16,7 @@ A utility for GMs running a game of Star Trek Adventures TTRPG or players of the
 ### Initial Setup
 ```sh
 npm i                              # Install dependencies
-npm run copy-deps                  # Copy third-party libraries to lib/
+npm run copy-deps                  # Copy third-party libraries to js/lib/
 npx playwright install chromium    # Install browser for testing (one-time)
 npm run serve                      # Start development server
 ```

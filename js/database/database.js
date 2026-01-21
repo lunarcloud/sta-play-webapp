@@ -1,5 +1,5 @@
 // @ts-ignore
-import { openDB, deleteDB } from '../../lib/idb.js'
+import { openDB, deleteDB } from '../lib/idb.js'
 import { DefaultGameName, GameInfo } from './game-info.js'
 import { NamedInfo } from './named-info.js'
 import { PlayerInfo } from './player-info.js'

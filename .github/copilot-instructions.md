@@ -42,7 +42,7 @@ Use these commands to perform common development tasks:
 * **Initial Setup** (required before first run):
   ```bash
   npm i                # Install NPM dependencies
-  npm run copy-deps    # Copy third-party libraries to lib/
+  npm run copy-deps    # Copy third-party libraries to js/lib/
   npx playwright install chromium  # Install browser for testing (one-time setup)
   ```
 
@@ -174,7 +174,7 @@ All checks must pass before merging.
 
 ## Boundaries and Guardrails
 
-* **NEVER** modify files within the `/node_modules/`, `/export/` or `/lib/` directories.
+* **NEVER** modify files within the `/node_modules/`, `/export/` or `/js/lib/` directories.
 * **NEVER** commit secrets, API keys, or sensitive configuration data.
 * **NEVER** disable lint warnings in the code without proper justification and review.
 * **NEVER** introduce a preprocessor (such as LESS, SCSS) or compilation step (such as using TypeScript).
