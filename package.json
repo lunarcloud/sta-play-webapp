@@ -14,7 +14,7 @@
         "test:watch": "npx web-test-runner --watch",
         "test:coverage": "npx web-test-runner --coverage",
         "serve": "serve",
-        "copy-deps": "sh copy-deps.sh",
+        "copy-deps": "node copy-deps.js",
         "cem": "npx cem analyze"
     },
     "dependencies": {
@@ -36,7 +36,6 @@
         "eslint-plugin-jsdoc": "^61.1.12",
         "neostandard": "^0.12.2",
         "serve": "^14.2.5",
-        "shx": "^0.4.0",
         "stylelint": "^16.25.0",
         "stylelint-config-standard": "^39.0.1"
     },
