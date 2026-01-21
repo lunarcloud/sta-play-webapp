@@ -2,7 +2,7 @@ import { GameInfo } from './game-info.js'
 import { PlayerInfo } from './player-info.js'
 import { TrackerInfo } from './tracker-info.js'
 import { SceneInfo } from './scene-info.js'
-import { zipSync, unzipSync, strToU8, strFromU8 } from '../../lib/fflate.js'
+import { zipSync, unzipSync, strToU8, strFromU8 } from '../lib/fflate.js'
 
 /**
  * @typedef AppEncodedFileObject

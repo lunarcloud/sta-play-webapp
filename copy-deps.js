@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Copy third-party dependencies from node_modules to lib directory
+ * Copy third-party dependencies from node_modules to js/lib directory
  * This script replaces the previous copy-deps.sh shell script
  */
 
@@ -11,21 +11,21 @@ import { fileURLToPath } from 'node:url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
-// Remove and recreate lib directory
-const libDir = join(__dirname, 'lib')
+// Remove and recreate js/lib directory
+const libDir = join(__dirname, 'js', 'lib')
 rmSync(libDir, { recursive: true, force: true })
-mkdirSync(libDir)
+mkdirSync(libDir, { recursive: true })
 
 /**
- * Copy a file from node_modules to lib directory
+ * Copy a file from node_modules to js/lib directory
  * @param {string} source - Source path relative to project root
- * @param {string} destination - Destination filename in lib directory
+ * @param {string} destination - Destination filename in js/lib directory
  */
 function copyDependency (source, destination) {
   const sourcePath = join(__dirname, source)
   const destPath = join(libDir, destination)
   copyFileSync(sourcePath, destPath)
-  console.log(`Copied ${source} -> lib/${destination}`)
+  console.log(`Copied ${source} -> js/lib/${destination}`)
 }
 
 // custom element polyfill for safari

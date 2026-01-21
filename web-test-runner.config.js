@@ -27,7 +27,7 @@ export default {
     // Include these directories in coverage
     include: ['js/**/*.js', 'components/**/*.js'],
     // Exclude these from coverage
-    exclude: ['node_modules/**', 'lib/**', 'test/**']
+    exclude: ['node_modules/**', 'js/lib/**', 'test/**']
   },
 
   // Browser configuration - using Chromium via Playwright
