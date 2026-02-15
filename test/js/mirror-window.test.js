@@ -87,8 +87,9 @@ describe('mirror-window', () => {
       // 1. The mirror window's body has class="mirror"
       // 2. :host-context() checks the host element's ancestors
       // 3. The component's shadow CSS can hide its own buttons
-      const shadowDOMComponents = ['task-tracker', 'trait-display']
-      expect(shadowDOMComponents).to.have.lengthOf(2)
+      // input-progress also uses this pattern to disable its range slider
+      const shadowDOMComponents = ['task-tracker', 'trait-display', 'input-progress']
+      expect(shadowDOMComponents).to.have.lengthOf(3)
     })
   })
 
