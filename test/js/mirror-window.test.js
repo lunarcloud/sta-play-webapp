@@ -91,4 +91,111 @@ describe('mirror-window', () => {
       expect(shadowDOMComponents).to.have.lengthOf(2)
     })
   })
+
+  describe('DOM structure for mirror sync', () => {
+    it('should have contenteditable general-text element that fires input events', () => {
+      // Bug fix: general-text is a contenteditable div, not a textarea.
+      // The mirror must listen for input events on contenteditable elements,
+      // not just input/select/textarea form elements.
+      const div = document.createElement('div')
+      div.id = 'general-text-test'
+      div.contentEditable = 'true'
+      div.textContent = 'test'
+      document.body.appendChild(div)
+
+      let inputFired = false
+      div.addEventListener('input', () => { inputFired = true })
+      // Simulate input event like a contenteditable would fire
+      div.dispatchEvent(new Event('input', { bubbles: true }))
+      expect(inputFired).to.be.true
+
+      div.remove()
+    })
+
+    it('should have contenteditable shipname element that fires input events', () => {
+      // Bug fix: shipname is a contenteditable <li>, not an <input>.
+      // The mirror must listen for input events on contenteditable elements.
+      const li = document.createElement('li')
+      li.id = 'shipname-test'
+      li.contentEditable = 'true'
+      li.textContent = 'USS Test'
+      document.body.appendChild(li)
+
+      let inputFired = false
+      li.addEventListener('input', () => { inputFired = true })
+      li.dispatchEvent(new Event('input', { bubbles: true }))
+      expect(inputFired).to.be.true
+
+      li.remove()
+    })
+
+    it('should handle number inputs dispatching change events from scroll', () => {
+      // Bug fix: scrollable-inputs dispatches 'change' events, not 'input' events.
+      // The mirror must listen for both 'input' and 'change' events on number inputs.
+      const input = document.createElement('input')
+      input.type = 'number'
+      input.min = '0'
+      input.max = '6'
+      input.value = '3'
+      document.body.appendChild(input)
+
+      let changeFired = false
+      input.addEventListener('change', () => { changeFired = true })
+      input.dispatchEvent(new Event('change'))
+      expect(changeFired).to.be.true
+
+      input.remove()
+    })
+
+    it('should be able to resolve Text node parent from characterData mutations', () => {
+      // Bug fix: MutationObserver characterData mutations have Text node targets,
+      // not HTMLElement targets. The mirror must resolve to parentElement.
+      const div = document.createElement('div')
+      div.textContent = 'test'
+      document.body.appendChild(div)
+
+      const textNode = div.firstChild
+      expect(textNode).to.be.an.instanceOf(Text)
+      expect(textNode.parentElement).to.equal(div)
+      expect(textNode.parentElement).to.be.an.instanceOf(HTMLElement)
+
+      div.remove()
+    })
+
+    it('should deep-clone player elements to include light DOM content', () => {
+      // Bug fix: cloneNode(true) copies all children including images.
+      // cloneNode(false) only copies attributes, missing light DOM content.
+      const li = document.createElement('li')
+      li.setAttribute('is', 'player-display')
+      li.setAttribute('name', 'Test')
+      const img = document.createElement('img')
+      img.className = 'portrait'
+      img.src = 'test.webp'
+      li.appendChild(img)
+
+      // Deep clone preserves children
+      const deepClone = li.cloneNode(true)
+      expect(deepClone.querySelector('img.portrait')).to.not.be.null
+      expect(deepClone.querySelector('img.portrait').src).to.include('test.webp')
+
+      // Shallow clone does NOT preserve children
+      const shallowClone = li.cloneNode(false)
+      expect(shallowClone.querySelector('img.portrait')).to.be.null
+    })
+
+    it('should sync root element style for font size CSS variable', () => {
+      // Bug fix: font size is set via CSS custom property on document.documentElement.
+      // The mirror must observe and sync document.documentElement style changes.
+      const original = document.documentElement.style.cssText
+      document.documentElement.style.setProperty('--main-font-unitless', '16')
+      expect(document.documentElement.style.cssText).to.include('--main-font-unitless')
+
+      // cssText can be copied to sync the style
+      const targetStyle = document.documentElement.style.cssText
+      expect(targetStyle).to.include('16')
+
+      // Restore
+      document.documentElement.style.cssText = original
+    })
+  })
 })

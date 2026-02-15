@@ -39,6 +39,7 @@ export class MirrorWindow {
    * @property {boolean} navigation - Navigation element
    * @property {boolean} theme - Theme element
    * @property {boolean} themeStylesheet - Theme stylesheet link
+   * @property {boolean} rootStyle - Root element style (font size)
    */
   static #syncsNeeded = {
     body: false,
@@ -53,7 +54,8 @@ export class MirrorWindow {
     fullscreenShip: false,
     navigation: false,
     theme: false,
-    themeStylesheet: false
+    themeStylesheet: false,
+    rootStyle: false
   }
 
   /**
@@ -193,25 +195,33 @@ export class MirrorWindow {
       let isThemeChange = false
 
       for (const mutation of mutations) {
-        if (mutation.target instanceof HTMLElement === false) continue
+        // For characterData mutations, the target is a Text node, not an Element.
+        // Resolve to the nearest parent element for classification.
+        const target = mutation.target instanceof HTMLElement
+          ? mutation.target
+          : mutation.target.parentElement
+        if (!target) continue
 
         // Theme link href change
-        if (mutation.target.id === 'theme-link' && mutation.attributeName === 'href') {
+        if (target.id === 'theme-link' && mutation.attributeName === 'href') {
           isThemeChange = true
           break
         }
         // Theme element value change
-        if (mutation.target.tagName?.toLowerCase() === 'theme' && mutation.attributeName === 'value') {
+        if (target.tagName?.toLowerCase() === 'theme' && mutation.attributeName === 'value') {
           isThemeChange = true
           break
         }
 
-        // Granular detection of what changed
-        const target = mutation.target
-
         // Body attribute changes (alert, edition, etc.)
         if (target === document.body) {
           MirrorWindow.#syncsNeeded.body = true
+          continue
+        }
+
+        // Root element style changes (font size via CSS custom property)
+        if (target === document.documentElement && mutation.attributeName === 'style') {
+          MirrorWindow.#syncsNeeded.rootStyle = true
           continue
         }
 
@@ -366,6 +376,12 @@ export class MirrorWindow {
       })
     }
 
+    // Watch for root element style changes (font size via CSS custom property)
+    MirrorWindow.#observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['style']
+    })
+
     // Set up input change listeners for immediate sync
     MirrorWindow.#setupInputListeners()
   }
@@ -377,44 +393,57 @@ export class MirrorWindow {
     // Listen for input events on all input, select, and textarea elements
     const inputElements = document.querySelectorAll('input, select, textarea')
 
+    /**
+     * Determines which sync flag to set based on the element's location in the DOM.
+     * @param {Element} element - The element that changed
+     */
+    const flagSyncForElement = (element) => {
+      if (element.closest && element.closest('ul.players')) {
+        MirrorWindow.#syncsNeeded.players = true
+      } else if (element.closest && element.closest('menu-items')) {
+        MirrorWindow.#syncsNeeded.menu = true
+      } else if (element.closest && element.closest('task-trackers')) {
+        MirrorWindow.#syncsNeeded.trackers = true
+      } else if (element.id === 'general-text' || (element.closest && element.closest('#general-text'))) {
+        MirrorWindow.#syncsNeeded.generalText = true
+      } else if (element.closest && element.closest('nav')) {
+        MirrorWindow.#syncsNeeded.navigation = true
+      }
+      MirrorWindow.#scheduleSync()
+    }
+
     inputElements.forEach(element => {
       // Use 'input' event which fires on every value change
-      element.addEventListener('input', () => {
-        // Determine which section this input belongs to and set the appropriate flag
-        if (element.closest && element.closest('ul.players')) {
-          MirrorWindow.#syncsNeeded.players = true
-        } else if (element.closest && element.closest('menu-items')) {
-          MirrorWindow.#syncsNeeded.menu = true
-        } else if (element.closest && element.closest('task-trackers')) {
-          MirrorWindow.#syncsNeeded.trackers = true
-        } else if (element.id === 'general-text' || (element.closest && element.closest('#general-text'))) {
-          MirrorWindow.#syncsNeeded.generalText = true
-        }
+      element.addEventListener('input', () => flagSyncForElement(element))
+
+      // Also listen for 'change' event for select dropdowns and
+      // programmatic value changes (e.g., scroll-to-change on number inputs)
+      element.addEventListener('change', () => flagSyncForElement(element))
+    })
+
+    // Listen for input events on contenteditable elements (general-text and shipname)
+    const generalText = document.getElementById('general-text')
+    if (generalText) {
+      generalText.addEventListener('input', () => {
+        MirrorWindow.#syncsNeeded.generalText = true
         MirrorWindow.#scheduleSync()
       })
+    }
 
-      // Also listen for 'change' event for select dropdowns
-      if (element.tagName === 'SELECT') {
-        element.addEventListener('change', () => {
-          // Determine which section this select belongs to
-          if (element.closest && element.closest('ul.players')) {
-            MirrorWindow.#syncsNeeded.players = true
-          } else if (element.closest && element.closest('menu-items')) {
-            MirrorWindow.#syncsNeeded.menu = true
-          } else if (element.closest && element.closest('task-trackers')) {
-            MirrorWindow.#syncsNeeded.trackers = true
-          }
-          MirrorWindow.#scheduleSync()
-        })
-      }
-    })
+    const shipname = document.getElementById('shipname')
+    if (shipname) {
+      shipname.addEventListener('input', () => {
+        MirrorWindow.#syncsNeeded.navigation = true
+        MirrorWindow.#scheduleSync()
+      })
+    }
   }
 
   /**
    * Synchronizes form element values (input, select, textarea) from source to target.
    * This is needed because innerHTML doesn't capture current form values, only initial HTML.
-   * @param {Element} sourceEl - The source element containing form inputs
-   * @param {Element} targetEl - The target element to sync form inputs to
+   * @param {Element|ShadowRoot} sourceEl - The source element containing form inputs
+   * @param {Element|ShadowRoot} targetEl - The target element to sync form inputs to
    */
   static #syncFormValues (sourceEl, targetEl) {
     if (!sourceEl || !targetEl) return
@@ -456,8 +485,8 @@ export class MirrorWindow {
    * Synchronizes custom element attributes (for elements with shadow DOM).
    * Instead of copying shadow DOM internals, we sync attributes which trigger
    * attributeChangedCallback in the custom element, allowing it to update properly.
-   * @param {Element} sourceEl - The source element to copy from
-   * @param {Element} targetEl - The target element to copy to
+   * @param {Element|ShadowRoot} sourceEl - The source element to copy from
+   * @param {Element|ShadowRoot} targetEl - The target element to copy to
    */
   static #syncCustomElementAttributes (sourceEl, targetEl) {
     if (!sourceEl || !targetEl) return
@@ -565,7 +594,8 @@ export class MirrorWindow {
         fullscreenShip: false,
         navigation: false,
         theme: false,
-        themeStylesheet: false
+        themeStylesheet: false,
+        rootStyle: false
       }
     })
   }
@@ -645,36 +675,54 @@ export class MirrorWindow {
 
   /**
    * Synchronizes task trackers with form values and attributes.
+   * Syncs each tracker individually by attributes to avoid destroying/recreating custom elements.
    * @param {Element} mainEl - Main element from source window
    * @param {Element} mirrorMainEl - Main element from mirror window
    */
   static #syncTaskTrackers (mainEl, mirrorMainEl) {
     const taskTrackers = mainEl.querySelector('task-trackers')
     const mirrorTaskTrackers = mirrorMainEl.querySelector('task-trackers')
-    if (taskTrackers && mirrorTaskTrackers) {
-      mirrorTaskTrackers.innerHTML = taskTrackers.innerHTML
+    if (!taskTrackers || !mirrorTaskTrackers) return
 
-      // Sync attributes on each task-tracker element (for h1 title in shadow DOM)
-      const sourceTrackers = taskTrackers.querySelectorAll('task-tracker')
-      const mirrorTrackers = mirrorTaskTrackers.querySelectorAll('task-tracker')
-      sourceTrackers.forEach((sourceTracker, index) => {
-        const mirrorTracker = mirrorTrackers[index]
-        if (mirrorTracker) {
-          // Copy all attributes to trigger attributeChangedCallback
-          Array.from(sourceTracker.attributes).forEach(attr => {
-            mirrorTracker.setAttribute(attr.name, attr.value)
-          })
-        }
-      })
+    const sourceTrackers = Array.from(taskTrackers.querySelectorAll('task-tracker'))
+    const mirrorTrackers = Array.from(mirrorTaskTrackers.querySelectorAll('task-tracker'))
 
-      // Use requestAnimationFrame to sync form values after custom elements initialize
-      // This prevents incorrect initial values (resistance, complication range, etc.)
-      requestAnimationFrame(() => {
-        if (MirrorWindow.isOpen()) {
-          MirrorWindow.#syncFormValues(taskTrackers, mirrorTaskTrackers)
-        }
-      })
+    // Remove extra mirror trackers if source has fewer
+    while (mirrorTrackers.length > sourceTrackers.length) {
+      const extra = mirrorTrackers.pop()
+      if (extra) extra.remove()
     }
+
+    // Sync or add trackers
+    sourceTrackers.forEach((sourceTracker, index) => {
+      if (index < mirrorTrackers.length) {
+        // Sync existing tracker by copying attributes to trigger attributeChangedCallback
+        const mirrorTracker = mirrorTrackers[index]
+        Array.from(sourceTracker.attributes).forEach(attr => {
+          mirrorTracker.setAttribute(attr.name, attr.value)
+        })
+        // Sync shadow DOM form values directly
+        if (sourceTracker.shadowRoot && mirrorTracker.shadowRoot) {
+          MirrorWindow.#syncFormValues(sourceTracker.shadowRoot, mirrorTracker.shadowRoot)
+          MirrorWindow.#syncCustomElementAttributes(sourceTracker.shadowRoot, mirrorTracker.shadowRoot)
+        }
+      } else {
+        // Add new tracker by cloning the source element
+        const newTracker = sourceTracker.cloneNode(true)
+        mirrorTaskTrackers.appendChild(newTracker)
+        // Sync attributes after append to trigger attributeChangedCallback
+        Array.from(sourceTracker.attributes).forEach(attr => {
+          newTracker.setAttribute(attr.name, attr.value)
+        })
+        // Sync shadow DOM form values on next frame after custom element initializes
+        requestAnimationFrame(() => {
+          if (MirrorWindow.isOpen() && sourceTracker.shadowRoot && newTracker.shadowRoot) {
+            MirrorWindow.#syncFormValues(sourceTracker.shadowRoot, newTracker.shadowRoot)
+            MirrorWindow.#syncCustomElementAttributes(sourceTracker.shadowRoot, newTracker.shadowRoot)
+          }
+        })
+      }
+    })
   }
 
   /**
@@ -776,11 +824,12 @@ export class MirrorWindow {
         // Sync custom element attributes (e.g., input-progress) to trigger their attributeChangedCallback
         MirrorWindow.#syncCustomElementAttributes(player, mirrorPlayer)
       } else {
-        // Add new player by cloning
-        const newPlayer = player.cloneNode(false)
-        if (newPlayer instanceof Element === false) { throw new Error('Something bad happened!') }
+        // Add new player by cloning with full content
+        const newPlayer = player.cloneNode(true)
         mirrorPlayersUl.appendChild(newPlayer)
+        // Sync form values and custom element attributes after adding
         MirrorWindow.#syncFormValues(player, newPlayer)
+        MirrorWindow.#syncCustomElementAttributes(player, newPlayer)
         // Repeat sync on next frame to ensure DOM is fully settled
         // This prevents the image update issue when new players are added
         requestAnimationFrame(() => MirrorWindow.#sync())
@@ -877,6 +926,15 @@ export class MirrorWindow {
   }
 
   /**
+   * Synchronizes root element inline style (font size via CSS custom property).
+   * @param {Document} mirrorDoc - Mirror window document
+   */
+  static #syncRootStyle (mirrorDoc) {
+    const sourceStyle = document.documentElement.style.cssText
+    mirrorDoc.documentElement.style.cssText = sourceStyle
+  }
+
+  /**
    * Synchronizes current content to the mirror window.
    * This is the main sync orchestrator that calls specific sync functions
    * based on which flags have been set by the mutation observer.
@@ -953,6 +1011,10 @@ export class MirrorWindow {
 
       if (MirrorWindow.#syncsNeeded.themeStylesheet) {
         MirrorWindow.#syncThemeStylesheet(mirrorDoc)
+      }
+
+      if (MirrorWindow.#syncsNeeded.rootStyle) {
+        MirrorWindow.#syncRootStyle(mirrorDoc)
       }
     } catch (error) {
       console.error('Error syncing to mirror window:', error)
