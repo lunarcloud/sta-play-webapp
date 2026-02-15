@@ -42,6 +42,11 @@ input-progress-internal {
         &:hover {
             opacity: 0.8;
         }
+
+        /* Make range slider read-only in mirror window */
+        :host-context(body.mirror) & {
+            pointer-events: none;
+        }
         
         &::-webkit-slider-thumb {
             -webkit-appearance: none;
