@@ -258,7 +258,7 @@ export class IndexController {
         } else if (e.ctrlKey && e.key === ',') {
           e.preventDefault()
           settingsDialog.showModal()
-        }else if (e.ctrlKey && e.altKey && e.key === 'm') {
+        } else if (e.ctrlKey && e.altKey && e.key === 'm') {
           e.preventDefault()
           MirrorWindow.open()
         }
