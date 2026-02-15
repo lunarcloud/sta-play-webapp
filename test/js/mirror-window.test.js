@@ -200,10 +200,12 @@ describe('mirror-window', () => {
   })
 
   describe('mirror window read-only behavior', () => {
+    const mirrorCssRule = 'body.mirror { & input, & select, & textarea, & [contenteditable] { pointer-events: none !important; } }'
+
     it('should disable pointer events on inputs when body has mirror class', () => {
       // Inject the mirror CSS rule to verify it works
       const style = document.createElement('style')
-      style.textContent = 'body.mirror { & input, & select, & textarea, & [contenteditable] { pointer-events: none !important; } }'
+      style.textContent = mirrorCssRule
       document.head.appendChild(style)
       document.body.classList.add('mirror')
 
@@ -222,7 +224,7 @@ describe('mirror-window', () => {
 
     it('should disable pointer events on selects when body has mirror class', () => {
       const style = document.createElement('style')
-      style.textContent = 'body.mirror { & input, & select, & textarea, & [contenteditable] { pointer-events: none !important; } }'
+      style.textContent = mirrorCssRule
       document.head.appendChild(style)
       document.body.classList.add('mirror')
 
@@ -242,7 +244,7 @@ describe('mirror-window', () => {
 
     it('should disable pointer events on contenteditable when body has mirror class', () => {
       const style = document.createElement('style')
-      style.textContent = 'body.mirror { & input, & select, & textarea, & [contenteditable] { pointer-events: none !important; } }'
+      style.textContent = mirrorCssRule
       document.head.appendChild(style)
       document.body.classList.add('mirror')
 
