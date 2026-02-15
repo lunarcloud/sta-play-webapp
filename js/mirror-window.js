@@ -442,8 +442,8 @@ export class MirrorWindow {
   /**
    * Synchronizes form element values (input, select, textarea) from source to target.
    * This is needed because innerHTML doesn't capture current form values, only initial HTML.
-   * @param {Element|ShadowRoot} sourceEl - The source element containing form inputs
-   * @param {Element|ShadowRoot} targetEl - The target element to sync form inputs to
+   * @param {Element|DocumentFragment} sourceEl - The source element containing form inputs
+   * @param {Element|DocumentFragment} targetEl - The target element to sync form inputs to
    */
   static #syncFormValues (sourceEl, targetEl) {
     if (!sourceEl || !targetEl) return
@@ -485,8 +485,8 @@ export class MirrorWindow {
    * Synchronizes custom element attributes (for elements with shadow DOM).
    * Instead of copying shadow DOM internals, we sync attributes which trigger
    * attributeChangedCallback in the custom element, allowing it to update properly.
-   * @param {Element|ShadowRoot} sourceEl - The source element to copy from
-   * @param {Element|ShadowRoot} targetEl - The target element to copy to
+   * @param {Element|DocumentFragment} sourceEl - The source element to copy from
+   * @param {Element|DocumentFragment} targetEl - The target element to copy to
    */
   static #syncCustomElementAttributes (sourceEl, targetEl) {
     if (!sourceEl || !targetEl) return
