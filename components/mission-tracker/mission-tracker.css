@@ -63,4 +63,9 @@ mission-tracker-internal {
     & act:nth-of-type(3) {
         background-color: var(--player-color-yellow, gold);
     }
+
+    /* Make select elements read-only in mirror window */
+    :host-context(body.mirror) & select {
+        pointer-events: none;
+    }
 }

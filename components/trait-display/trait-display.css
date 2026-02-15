@@ -44,4 +44,9 @@ trait-display-internal {
     :host-context(body.mirror) & button.close {
         display: none;
     }
+
+    /* Make contenteditable text read-only in mirror window */
+    :host-context(body.mirror) & [contenteditable] {
+        pointer-events: none;
+    }
 }

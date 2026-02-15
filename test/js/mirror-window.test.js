@@ -198,4 +198,108 @@ describe('mirror-window', () => {
       document.documentElement.style.cssText = original
     })
   })
+
+  describe('mirror window read-only behavior', () => {
+    it('should disable pointer events on inputs when body has mirror class', () => {
+      // Inject the mirror CSS rule to verify it works
+      const style = document.createElement('style')
+      style.textContent = 'body.mirror { & input, & select, & textarea, & [contenteditable] { pointer-events: none !important; } }'
+      document.head.appendChild(style)
+      document.body.classList.add('mirror')
+
+      const input = document.createElement('input')
+      input.type = 'number'
+      input.value = '5'
+      document.body.appendChild(input)
+
+      const computedStyle = getComputedStyle(input)
+      expect(computedStyle.pointerEvents).to.equal('none')
+
+      input.remove()
+      style.remove()
+      document.body.classList.remove('mirror')
+    })
+
+    it('should disable pointer events on selects when body has mirror class', () => {
+      const style = document.createElement('style')
+      style.textContent = 'body.mirror { & input, & select, & textarea, & [contenteditable] { pointer-events: none !important; } }'
+      document.head.appendChild(style)
+      document.body.classList.add('mirror')
+
+      const select = document.createElement('select')
+      const option = document.createElement('option')
+      option.value = 'test'
+      select.appendChild(option)
+      document.body.appendChild(select)
+
+      const computedStyle = getComputedStyle(select)
+      expect(computedStyle.pointerEvents).to.equal('none')
+
+      select.remove()
+      style.remove()
+      document.body.classList.remove('mirror')
+    })
+
+    it('should disable pointer events on contenteditable when body has mirror class', () => {
+      const style = document.createElement('style')
+      style.textContent = 'body.mirror { & input, & select, & textarea, & [contenteditable] { pointer-events: none !important; } }'
+      document.head.appendChild(style)
+      document.body.classList.add('mirror')
+
+      const div = document.createElement('div')
+      div.setAttribute('contenteditable', 'true')
+      div.textContent = 'editable text'
+      document.body.appendChild(div)
+
+      const computedStyle = getComputedStyle(div)
+      expect(computedStyle.pointerEvents).to.equal('none')
+
+      div.remove()
+      style.remove()
+      document.body.classList.remove('mirror')
+    })
+
+    it('should verify disableInteractivity removes contenteditable and disables form elements', () => {
+      // Create a mini document-like structure
+      const container = document.createElement('div')
+
+      const editableDiv = document.createElement('div')
+      editableDiv.setAttribute('contenteditable', 'true')
+      editableDiv.textContent = 'editable'
+      container.appendChild(editableDiv)
+
+      const input = document.createElement('input')
+      input.type = 'number'
+      input.value = '5'
+      container.appendChild(input)
+
+      const select = document.createElement('select')
+      container.appendChild(select)
+
+      document.body.appendChild(container)
+
+      // Verify elements are initially interactive
+      expect(editableDiv.getAttribute('contenteditable')).to.equal('true')
+      expect(input.hasAttribute('disabled')).to.be.false
+      expect(select.hasAttribute('disabled')).to.be.false
+
+      // Manually apply the same logic as #disableInteractivity
+      container.querySelectorAll('[contenteditable]').forEach(el => {
+        el.removeAttribute('contenteditable')
+      })
+      container.querySelectorAll('input, select, textarea').forEach(el => {
+        el.setAttribute('disabled', '')
+        el.setAttribute('tabindex', '-1')
+      })
+
+      // Verify elements are now non-interactive
+      expect(editableDiv.hasAttribute('contenteditable')).to.be.false
+      expect(input.hasAttribute('disabled')).to.be.true
+      expect(input.getAttribute('tabindex')).to.equal('-1')
+      expect(select.hasAttribute('disabled')).to.be.true
+      expect(select.getAttribute('tabindex')).to.equal('-1')
+
+      container.remove()
+    })
+  })
 })

@@ -43,6 +43,13 @@ task-tracker-internal {
         display: none;
     }
 
+    /* Make all form controls and contenteditable read-only in mirror window */
+    :host-context(body.mirror) & input,
+    :host-context(body.mirror) & select,
+    :host-context(body.mirror) & [contenteditable] {
+        pointer-events: none;
+    }
+
     & > .name {
         font-size: 1.5rem;
         margin: 0;

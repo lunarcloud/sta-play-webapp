@@ -157,9 +157,31 @@ export class MirrorWindow {
         newStyle.textContent = style.textContent
         doc.head.appendChild(newStyle)
       })
+
+      // Make the mirror window read-only
+      MirrorWindow.#disableInteractivity(doc)
     }
 
     initialize()
+  }
+
+  /**
+   * Disables interactive elements in the mirror document to make it read-only.
+   * Removes contenteditable attributes, disables inputs/selects/textareas,
+   * and prevents keyboard focus on interactive elements.
+   * @param {Document} doc - The mirror window document
+   */
+  static #disableInteractivity (doc) {
+    // Remove contenteditable from light DOM elements
+    doc.querySelectorAll('[contenteditable]').forEach(el => {
+      el.removeAttribute('contenteditable')
+    })
+
+    // Disable all light DOM form controls
+    doc.querySelectorAll('input, select, textarea').forEach(el => {
+      el.setAttribute('disabled', '')
+      el.setAttribute('tabindex', '-1')
+    })
   }
 
   /**
@@ -1016,6 +1038,9 @@ export class MirrorWindow {
       if (MirrorWindow.#syncsNeeded.rootStyle) {
         MirrorWindow.#syncRootStyle(mirrorDoc)
       }
+
+      // Re-disable interactivity on any newly synced elements
+      MirrorWindow.#disableInteractivity(mirrorDoc)
     } catch (error) {
       console.error('Error syncing to mirror window:', error)
     }

@@ -970,4 +970,16 @@ body.mirror {
   & player-display button.remove {
     display: none !important;
   }
+
+  /* Make all light DOM form controls read-only in mirror window */
+  & input,
+  & select,
+  & textarea {
+    pointer-events: none !important;
+  }
+
+  /* Make light DOM contenteditable elements non-editable */
+  & [contenteditable] {
+    pointer-events: none !important;
+  }
 }
