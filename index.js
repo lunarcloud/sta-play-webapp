@@ -206,6 +206,11 @@ export class IndexController {
       return true
     })
 
+    // Setup player reorder handler
+    document.querySelector('.players').addEventListener('player-reorder', (event) => {
+      this.#handlePlayerReorder(event.detail)
+    })
+
     // Setup Theme & Selection
     const themeSelectEl = document.getElementById('select-theme')
     if (themeSelectEl instanceof HTMLSelectElement === false) {
@@ -736,7 +741,7 @@ export class IndexController {
     await this.db.replaceTraits(this.currentSceneId, traits)
 
     const players = [...document.querySelectorAll('.players > li')]
-      .map((el) => {
+      .map((el, index) => {
         if (el instanceof PlayerDisplayElement === false) {
           return null
         }
@@ -749,7 +754,8 @@ export class IndexController {
           el.maxStress,
           el.rank,
           el.color,
-          el.imageFile
+          el.imageFile,
+          index
         )
         return info
       })
@@ -903,6 +909,29 @@ export class IndexController {
     // if completely new player, focus on renaming
     if (typeof (info) === 'undefined') {
       newPlayerEl.focusNameEdit()
+    }
+  }
+
+  /**
+   * Handle player reorder event
+   * @param {object} detail - Event detail with draggedElement, targetElement, and insertBefore
+   */
+  #handlePlayerReorder (detail) {
+    const { draggedElement, targetElement, insertBefore } = detail
+    if (!draggedElement || !targetElement || draggedElement === targetElement) {
+      return
+    }
+
+    const playersEl = document.querySelector('.players')
+    if (insertBefore) {
+      playersEl.insertBefore(draggedElement, targetElement)
+    } else {
+      playersEl.insertBefore(draggedElement, targetElement.nextSibling)
+    }
+
+    // Save the new order
+    if (this.safeToSaveDB) {
+      this.saveData(false)
     }
   }
 
