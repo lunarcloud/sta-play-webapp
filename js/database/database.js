@@ -203,6 +203,8 @@ export class Database {
       Object.assign(item, e)
       return item
     })
+    // Sort by order field (which defaults to playerNumber if not set)
+    data.sort((a, b) => (a.order ?? a.playerNumber) - (b.order ?? b.playerNumber))
     return data
   }
 

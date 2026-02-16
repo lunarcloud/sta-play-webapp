@@ -40,6 +40,11 @@ export class PlayerInfo extends NamedInfo {
   image
 
   /**
+   * @type {number}
+   */
+  order
+
+  /**
    * Create a Player info
    * @param {number} game                     the id of the game it is for
    * @param {number|string} playerNumber      player id
@@ -49,8 +54,9 @@ export class PlayerInfo extends NamedInfo {
    * @param {string} pips                     the pips text
    * @param {string} borderColor              the color option text
    * @param {File|undefined} [image]          image of the player's character
+   * @param {number} [order]                  display order (defaults to playerNumber)
    */
-  constructor (game, playerNumber, name, currentStress, maxStress, pips, borderColor, image = undefined) {
+  constructor (game, playerNumber, name, currentStress, maxStress, pips, borderColor, image = undefined, order = undefined) {
     super(name)
     this.game = game
     this.playerNumber = typeof (playerNumber) === 'number' ? playerNumber : parseInt(playerNumber)
@@ -59,6 +65,7 @@ export class PlayerInfo extends NamedInfo {
     this.pips = pips
     this.borderColor = borderColor
     this.image = image
+    this.order = order !== undefined ? (typeof (order) === 'number' ? order : parseInt(order)) : this.playerNumber
   }
 
   /**
@@ -75,7 +82,8 @@ export class PlayerInfo extends NamedInfo {
       obj.maxStress,
       obj.pips,
       obj.borderColor,
-      'image' in obj ? obj.image : undefined
+      'image' in obj ? obj.image : undefined,
+      'order' in obj ? obj.order : undefined
     )
   }
 

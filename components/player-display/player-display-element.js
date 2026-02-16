@@ -333,6 +333,10 @@ export class PlayerDisplayElement extends HTMLLIElement {
     // Mouse scrolling to update number inputs
     setupNumberInputScrollForParent(this)
 
+    // Setup drag and drop for reordering
+    this.#setupDragAndDrop()
+
+    // Setup drop for images
     setupDropOnly(this, event => {
       if (!event.dataTransfer.items?.[0].type.startsWith('image') ||
                 !event.dataTransfer.files?.[0]) {
@@ -341,6 +345,50 @@ export class PlayerDisplayElement extends HTMLLIElement {
 
       this.imageFile = event.dataTransfer.files?.[0]
       return true
+    })
+  }
+
+  /**
+   * Setup drag and drop functionality for reordering players
+   */
+  #setupDragAndDrop () {
+    // Make this element draggable
+    this.setAttribute('draggable', 'true')
+
+    this.addEventListener('dragstart', event => {
+      event.dataTransfer.effectAllowed = 'move'
+      event.dataTransfer.setData('text/plain', this.playerIndex.toString())
+      this.classList.add('dragging')
+    })
+
+    this.addEventListener('dragend', _event => {
+      this.classList.remove('dragging')
+    })
+
+    this.addEventListener('dragover', event => {
+      event.preventDefault()
+      event.dataTransfer.dropEffect = 'move'
+
+      // Get the dragging element
+      const draggingElement = document.querySelector('.players .dragging')
+      if (!draggingElement) {
+        return
+      }
+
+      // Determine if we should insert before or after this element
+      const rect = this.getBoundingClientRect()
+      const midpoint = rect.top + rect.height / 2
+      const insertBefore = event.clientY < midpoint
+
+      // Dispatch a reorder event
+      this.dispatchEvent(new CustomEvent('player-reorder', {
+        bubbles: true,
+        detail: {
+          draggedElement: draggingElement,
+          targetElement: this,
+          insertBefore
+        }
+      }))
     })
   }
 

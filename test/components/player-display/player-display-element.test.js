@@ -213,4 +213,88 @@ describe('PlayerDisplayElement', () => {
       document.body.removeChild(element)
     })
   })
+
+  describe('drag and drop', () => {
+    it('should be draggable', () => {
+      const element = document.createElement('li', { is: 'player-display' })
+      expect(element.getAttribute('draggable')).to.equal('true')
+    })
+
+    it('should add dragging class on dragstart', () => {
+      const element = document.createElement('li', { is: 'player-display' })
+      document.body.appendChild(element)
+
+      const dragStartEvent = new DragEvent('dragstart', {
+        bubbles: true,
+        cancelable: true,
+        dataTransfer: new DataTransfer()
+      })
+
+      element.dispatchEvent(dragStartEvent)
+      expect(element.classList.contains('dragging')).to.be.true
+
+      document.body.removeChild(element)
+    })
+
+    it('should remove dragging class on dragend', () => {
+      const element = document.createElement('li', { is: 'player-display' })
+      document.body.appendChild(element)
+
+      // Add the class first
+      element.classList.add('dragging')
+
+      const dragEndEvent = new DragEvent('dragend', {
+        bubbles: true,
+        cancelable: true
+      })
+
+      element.dispatchEvent(dragEndEvent)
+      expect(element.classList.contains('dragging')).to.be.false
+
+      document.body.removeChild(element)
+    })
+
+    it('should dispatch player-reorder event on dragover', (done) => {
+      const container = document.createElement('ul')
+      container.className = 'players'
+      document.body.appendChild(container)
+
+      const element1 = document.createElement('li', { is: 'player-display' })
+      element1.setAttribute('player-index', '0')
+      const element2 = document.createElement('li', { is: 'player-display' })
+      element2.setAttribute('player-index', '1')
+
+      container.appendChild(element1)
+      container.appendChild(element2)
+
+      // Simulate dragging element1
+      element1.classList.add('dragging')
+
+      element2.addEventListener('player-reorder', (e) => {
+        expect(e).to.be.instanceof(CustomEvent)
+        expect(e.detail.draggedElement).to.equal(element1)
+        expect(e.detail.targetElement).to.equal(element2)
+        expect(e.detail).to.have.property('insertBefore')
+
+        document.body.removeChild(container)
+        done()
+      })
+
+      // Create a proper DataTransfer mock
+      const dataTransfer = new DataTransfer()
+      Object.defineProperty(dataTransfer, 'dropEffect', {
+        value: '',
+        writable: true
+      })
+
+      const dragOverEvent = new DragEvent('dragover', {
+        bubbles: true,
+        cancelable: true,
+        clientY: element2.getBoundingClientRect().top + 5,
+        dataTransfer
+      })
+
+      element2.dispatchEvent(dragOverEvent)
+    })
+  })
 })

@@ -157,4 +157,18 @@ li[is="player-display"] {
     &[color="yellow"]     { border-color: var(--player-color-yellow, yellow); }
     &[color="black"]      { border-color: var(--player-color-black, black); }
     &[color="white"]      { border-color: var(--player-color-white, white); }
+
+    /* Drag and drop styles */
+    &.dragging {
+        opacity: 0.5;
+        cursor: move;
+    }
+
+    &[draggable="true"] {
+        cursor: grab;
+
+        &:active {
+            cursor: grabbing;
+        }
+    }
 }

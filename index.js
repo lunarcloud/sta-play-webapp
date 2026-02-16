@@ -206,6 +206,11 @@ export class IndexController {
       return true
     })
 
+    // Setup player reorder handler
+    document.querySelector('.players').addEventListener('player-reorder', (event) => {
+      this.#handlePlayerReorder(event.detail)
+    })
+
     // Setup Theme & Selection
     const themeSelectEl = document.getElementById('select-theme')
     if (themeSelectEl instanceof HTMLSelectElement === false) {
@@ -736,7 +741,7 @@ export class IndexController {
     await this.db.replaceTraits(this.currentSceneId, traits)
 
     const players = [...document.querySelectorAll('.players > li')]
-      .map((el) => {
+      .map((el, index) => {
         if (el instanceof PlayerDisplayElement === false) {
           return null
         }
@@ -749,7 +754,8 @@ export class IndexController {
           el.maxStress,
           el.rank,
           el.color,
-          el.imageFile
+          el.imageFile,
+          index
         )
         return info
       })
@@ -904,6 +910,40 @@ export class IndexController {
     if (typeof (info) === 'undefined') {
       newPlayerEl.focusNameEdit()
     }
+  }
+
+  /**
+   * Handle player reorder event
+   * @param {object} detail - Event detail with draggedElement, targetElement, and insertBefore
+   */
+  #handlePlayerReorder (detail) {
+    const { draggedElement, targetElement, insertBefore } = detail
+    if (!draggedElement || !targetElement) {
+      return
+    }
+
+    const playersEl = document.querySelector('.players')
+
+    // Calculate where the dragged element should be inserted
+    let targetPosition
+    if (insertBefore) {
+      targetPosition = targetElement
+    } else {
+      targetPosition = targetElement.nextSibling
+    }
+
+    // Check if the element is already in the correct position to avoid unnecessary DOM manipulations
+    // Case 1: Trying to insert element before itself
+    if (draggedElement === targetPosition) {
+      return
+    }
+    // Case 2: Element is already right before the target position
+    if (draggedElement.nextSibling === targetPosition) {
+      return
+    }
+
+    // Perform the reorder
+    playersEl.insertBefore(draggedElement, targetPosition)
   }
 
   /**
