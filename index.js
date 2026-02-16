@@ -202,7 +202,10 @@ export class IndexController {
         return false
       }
 
-      this.setShipModel(event.dataTransfer.files?.[0])
+      // Call async method without blocking the event handler
+      this.setShipModel(event.dataTransfer.files?.[0]).catch(err => {
+        console.error('Error setting ship model:', err)
+      })
       return true
     })
 
@@ -490,11 +493,11 @@ export class IndexController {
     if (fileSelectShip instanceof HTMLInputElement === false) {
       throw new Error('Page setup incorrect')
     }
-    dialogEl.querySelector('button.set-ship').addEventListener('click', () => {
-      this.setShipModel(fileSelectShip.files[0])
+    dialogEl.querySelector('button.set-ship').addEventListener('click', async () => {
+      await this.setShipModel(fileSelectShip.files[0])
     })
-    dialogEl.querySelector('button.clear-ship').addEventListener('click', () => {
-      this.setShipModel(undefined)
+    dialogEl.querySelector('button.clear-ship').addEventListener('click', async () => {
+      await this.setShipModel(undefined)
     })
 
     const fileSelectPlayer = dialogEl.querySelector('.player-image-upload input.select')
@@ -627,7 +630,7 @@ export class IndexController {
       document.getElementById('general-text').innerHTML = this.fallbackText
     }
 
-    this.setShipModel(gameInfo?.shipModel)
+    await this.setShipModel(gameInfo?.shipModel)
 
     this.safeToSaveDB = true
     return typeof (gameInfo) !== 'undefined'
@@ -950,7 +953,20 @@ export class IndexController {
    * Handler for new ship model drop
    * @param {File} modelFile  GLTF/GLB model file
    */
-  setShipModel (modelFile) {
+  async setShipModel (modelFile) {
+    // Check if file size exceeds 56 MB (56 * 1024 * 1024 bytes)
+    const maxSizeBytes = 56 * 1024 * 1024
+    if (modelFile && modelFile.size > maxSizeBytes) {
+      const sizeMB = (modelFile.size / (1024 * 1024)).toFixed(2)
+      const confirmed = await this.confirmDialog.confirm(
+        `This 3D model is ${sizeMB} MB in size. Large models may increase load time, use more storage space, and make import/export slower.\n\n` +
+        'Consider using a GLB compressor / 3D model optimizer to reduce the file size.\n\n' +
+        'Do you still want to use this model?'
+      )
+      if (!confirmed) {
+        return
+      }
+    }
     this.shipModel = modelFile
     this.#updateShipSrc()
   }
