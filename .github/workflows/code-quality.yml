@@ -16,7 +16,7 @@ jobs:
       actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install Tools
         run: npm ci
@@ -47,7 +47,7 @@ jobs:
 
       - name: Upload Coverage Report
         if: ${{ ! cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: coverage-report
           path: coverage/
