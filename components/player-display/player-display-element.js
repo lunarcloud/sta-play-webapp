@@ -80,7 +80,7 @@ const Pips = [
   { title: 'Petty Officer Third Class', pips: EnlistedText(1, 1), group: 'Enlisted' },
   { title: 'Crewman First Class', pips: EnlistedText(1, 0), group: 'Enlisted' },
   { title: 'Crewman Second Class', pips: EnlistedText(0, 1), group: 'Enlisted' },
-  { title: 'Crewman Third Class', pips: EnlistedText(0, 0), group: 'Enlisted' },
+  { title: 'Crewman Third Class', pips: '·', group: 'Enlisted' },
 
   // Non-Starfleet Roles
   { title: 'Civilian', pips: '', group: 'Non-Starfleet' },
@@ -94,7 +94,7 @@ const Pips = [
   { title: 'Commander', pips: '▲', group: 'Klingon' },
   { title: 'Lieutenant', pips: '△△', group: 'Klingon' },
   { title: 'Ensign', pips: '△', group: 'Klingon' },
-  { title: 'Bekk', pips: '', group: 'Klingon' },
+  { title: 'Bekk', pips: '▪', group: 'Klingon' },
 
   { title: 'Other', pips: PipText(0, 0) },
 ]
