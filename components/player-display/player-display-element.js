@@ -27,7 +27,7 @@ const PipCharacters = {
  * Unicode symbols that resemble TNG/Voyager enlisted rank insignia
  */
 const EnlistedCharacters = {
-  chevron: '›', // Right-pointing chevron (U+203A) - rotated 90 degrees
+  chevron: '❯', // Heavy Right-Pointing Angle Quotation Mark (U+276F) - thicker and more prominent
   bar: '▐' // Vertical bar (U+2590) - rotated 90 degrees
 }
 
