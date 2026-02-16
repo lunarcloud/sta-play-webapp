@@ -60,8 +60,10 @@ const setup = async () => {
     roll () {
       const diceCount = parseInt(this.#diceCountInput.value) || 2
       const targetNumber = parseInt(this.#targetNumberInput.value) || 10
-      const focusRange = parseInt(this.#focusRangeInput.value) || 0
-      const complicationRange = parseInt(this.#complicationRangeInput.value) || 0
+      const parsedFocus = parseInt(this.#focusRangeInput.value)
+      const focusRange = Number.isNaN(parsedFocus) ? 1 : parsedFocus
+      const parsedComplication = parseInt(this.#complicationRangeInput.value)
+      const complicationRange = Number.isNaN(parsedComplication) ? 1 : parsedComplication
 
       const rolls = []
       for (let i = 0; i < diceCount; i++) {

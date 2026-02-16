@@ -152,10 +152,11 @@ describe('DiceDialogElement', () => {
     })
 
     it('should clear previous results on re-roll', () => {
+      dialog.querySelector('input.dice-count').value = '3'
       dialog.roll()
       dialog.roll()
       const dieElements = dialog.querySelectorAll('.die-result')
-      expect(dieElements.length).to.equal(2) // default dice count is 2
+      expect(dieElements.length).to.equal(3)
     })
 
     it('should add success class for rolls at or under target number', () => {
@@ -210,13 +211,14 @@ describe('DiceDialogElement', () => {
     })
 
     it('should count successes correctly with target number', () => {
-      dialog.querySelector('input.dice-count').value = '5'
+      const numDice = 5
+      dialog.querySelector('input.dice-count').value = String(numDice)
       dialog.querySelector('input.target-number').value = '20'
       dialog.querySelector('input.focus-range').value = '0'
       const result = dialog.roll()
-      // With target 20 and focus 0, all dice are successes
-      // Rolls of 1 are always critical (2 successes), so total >= 5
-      expect(result.successes).to.be.at.least(5)
+      // With target 20 and focus 0, all dice are successes (at least 1 each)
+      // Rolls of 1 are always critical (2 successes), so total >= numDice
+      expect(result.successes).to.be.at.least(numDice)
     })
 
     it('should handle roll button click', () => {
