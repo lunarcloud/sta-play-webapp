@@ -33,7 +33,7 @@
         "@web/test-runner": "^0.20.2",
         "@web/test-runner-playwright": "^0.11.1",
         "custom-element-vs-code-integration": "^1.5.0",
-        "eslint": "^10.0.0",
+        "eslint": "^9.39.2",
         "eslint-plugin-editorconfig": "^4.0.3",
         "eslint-plugin-jsdoc": "^62.5.5",
         "neostandard": "^0.12.2",
