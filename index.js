@@ -932,8 +932,12 @@ export class IndexController {
       targetPosition = targetElement.nextSibling
     }
 
-    // Check if the element is already in the correct position
-    // If the dragged element is already right before the target position, don't move it
+    // Check if the element is already in the correct position to avoid unnecessary DOM manipulations
+    // Case 1: Trying to insert element before itself
+    if (draggedElement === targetPosition) {
+      return
+    }
+    // Case 2: Element is already right before the target position
     if (draggedElement.nextSibling === targetPosition) {
       return
     }
