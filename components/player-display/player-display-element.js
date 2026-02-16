@@ -24,6 +24,14 @@ const PipCharacters = {
 }
 
 /**
+ * Unicode symbols that resemble TNG/Voyager enlisted rank insignia
+ */
+const EnlistedCharacters = {
+  chevron: '❯', // Heavy Right-Pointing Angle Quotation Mark (U+276F) - thicker and more prominent
+  bar: '▐' // Vertical bar (U+2590) - rotated 90 degrees
+}
+
+/**
  * Get the text for player rank pips
  * @param {number} solid amount of solid pips
  * @param {number} hollow amount of hollow pips
@@ -35,7 +43,20 @@ function PipText (solid, hollow) {
     .padEnd(solid + hollow, PipCharacters.hollow)
 }
 
+/**
+ * Get the text for enlisted rank insignia
+ * @param {number} chevrons number of upward chevrons
+ * @param {number} bars number of horizontal bars
+ * @returns {string} text containing the chevron and bar symbols
+ */
+function EnlistedText (chevrons, bars) {
+  return ''
+    .padStart(chevrons, EnlistedCharacters.chevron)
+    .padEnd(chevrons + bars, EnlistedCharacters.bar)
+}
+
 const Pips = [
+  // Starfleet Officer Ranks
   { title: 'Captain', pips: PipText(4, 0), group: 'Officer' },
   { title: 'Commander', pips: PipText(3, 0), group: 'Officer' },
   { title: 'Lieutenant Commander', pips: PipText(2, 1), group: 'Officer' },
@@ -43,11 +64,65 @@ const Pips = [
   { title: 'Lieutenant Junior Grade', pips: PipText(1, 1), group: 'Officer' },
   { title: 'Ensign', pips: PipText(1, 0), group: 'Officer' },
 
+  // Starfleet Flag Ranks
   { title: 'Commodore', pips: PipText(1, 0), group: 'Flag' },
   { title: 'Rear admiral', pips: PipText(2, 0), group: 'Flag' },
   { title: 'Vice admiral', pips: PipText(3, 0), group: 'Flag' },
   { title: 'Admiral', pips: PipText(4, 0), group: 'Flag' },
   { title: 'Fleet admiral', pips: PipText(5, 0), group: 'Flag' },
+
+  // Starfleet Enlisted Ranks (using chevrons/bars like TNG/Voyager)
+  { title: 'Master Chief Petty Officer', pips: EnlistedText(3, 2), group: 'Enlisted' },
+  { title: 'Senior Chief Petty Officer', pips: EnlistedText(3, 1), group: 'Enlisted' },
+  { title: 'Chief Petty Officer', pips: EnlistedText(3, 0), group: 'Enlisted' },
+  { title: 'Petty Officer First Class', pips: EnlistedText(2, 1), group: 'Enlisted' },
+  { title: 'Petty Officer Second Class', pips: EnlistedText(2, 0), group: 'Enlisted' },
+  { title: 'Petty Officer Third Class', pips: EnlistedText(1, 1), group: 'Enlisted' },
+  { title: 'Crewman First Class', pips: EnlistedText(1, 0), group: 'Enlisted' },
+  { title: 'Crewman Second Class', pips: EnlistedText(0, 1), group: 'Enlisted' },
+  { title: 'Crewman Third Class', pips: '·', group: 'Enlisted' },
+
+  // Non-Starfleet Roles
+  { title: 'Civilian', pips: '', group: 'Non-Starfleet' },
+  { title: 'Diplomat', pips: '◆', group: 'Non-Starfleet' },
+  { title: 'Intelligence', pips: '◈', group: 'Non-Starfleet' },
+
+  // Klingon Defense Force Ranks (using triangle/trefoil symbols)
+  { title: 'General', pips: '▲▲▲▲', group: 'Klingon' },
+  { title: 'Brigadier', pips: '▲▲▲', group: 'Klingon' },
+  { title: 'Colonel', pips: '▲▲', group: 'Klingon' },
+  { title: 'Captain (KDF)', pips: '▲', group: 'Klingon' },
+  { title: 'Lieutenant (KDF)', pips: '△△', group: 'Klingon' },
+  { title: 'Warrior', pips: '△', group: 'Klingon' },
+  { title: 'Bekk', pips: '▪', group: 'Klingon' },
+
+  // Romulan Star Empire Ranks (using crescent and star symbols)
+  { title: 'Admiral (RSE)', pips: '★★★★', group: 'Romulan' },
+  { title: 'Commander (RSE)', pips: '★★★', group: 'Romulan' },
+  { title: 'Subcommander', pips: '★★', group: 'Romulan' },
+  { title: 'Centurion', pips: '★', group: 'Romulan' },
+  { title: 'Subcenturion', pips: '☆☆', group: 'Romulan' },
+  { title: 'Uhlan', pips: '☆', group: 'Romulan' },
+  { title: 'Soldier (RSE)', pips: '◐', group: 'Romulan' },
+
+  // Ferengi Alliance Ranks (using commercial/trade symbols)
+  { title: 'Liquidator', pips: '⊕⊕', group: 'Ferengi' },
+  { title: 'DaiMon', pips: '⊕', group: 'Ferengi' },
+  { title: 'Junior DaiMon', pips: '⊗⊗', group: 'Ferengi' },
+  { title: 'Commerce Officer', pips: '⊗', group: 'Ferengi' },
+  { title: 'Merchant', pips: '●', group: 'Ferengi' },
+
+  // Cardassian Union Ranks (using geometric shapes)
+  { title: 'Legate', pips: '◆◆◆◆', group: 'Cardassian' },
+  { title: 'Gul', pips: '◆◆◆', group: 'Cardassian' },
+  { title: 'Dal', pips: '◆◆', group: 'Cardassian' },
+  { title: 'Glinn', pips: '◆', group: 'Cardassian' },
+  { title: 'Gil', pips: '◇◇', group: 'Cardassian' },
+  { title: 'Garresh', pips: '◇', group: 'Cardassian' },
+  { title: 'Gorr', pips: '▫', group: 'Cardassian' },
+
+  // Borg Collective
+  { title: 'Drone', pips: '▣', group: 'Borg' },
 
   { title: 'Other', pips: PipText(0, 0) },
 ]

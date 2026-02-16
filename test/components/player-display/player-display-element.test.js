@@ -64,6 +64,48 @@ describe('PlayerDisplayElement', () => {
       expect(element.rank).to.equal('⬤⬤⬤⬤:Officer')
     })
 
+    it('should support enlisted ranks', () => {
+      const element = document.createElement('li', { is: 'player-display' })
+      element.rank = '❯❯❯▐:Enlisted' // Senior Chief Petty Officer
+      expect(element.rank).to.equal('❯❯❯▐:Enlisted')
+    })
+
+    it('should support Klingon ranks', () => {
+      const element = document.createElement('li', { is: 'player-display' })
+      element.rank = '▲▲▲:Klingon' // Brigadier
+      expect(element.rank).to.equal('▲▲▲:Klingon')
+    })
+
+    it('should support non-Starfleet roles', () => {
+      const element = document.createElement('li', { is: 'player-display' })
+      element.rank = '◆:Non-Starfleet' // Diplomat
+      expect(element.rank).to.equal('◆:Non-Starfleet')
+    })
+
+    it('should support Romulan ranks', () => {
+      const element = document.createElement('li', { is: 'player-display' })
+      element.rank = '★★★:Romulan' // Commander (RSE)
+      expect(element.rank).to.equal('★★★:Romulan')
+    })
+
+    it('should support Ferengi ranks', () => {
+      const element = document.createElement('li', { is: 'player-display' })
+      element.rank = '⊕:Ferengi' // DaiMon
+      expect(element.rank).to.equal('⊕:Ferengi')
+    })
+
+    it('should support Cardassian ranks', () => {
+      const element = document.createElement('li', { is: 'player-display' })
+      element.rank = '◆◆◆:Cardassian' // Gul
+      expect(element.rank).to.equal('◆◆◆:Cardassian')
+    })
+
+    it('should support Borg rank', () => {
+      const element = document.createElement('li', { is: 'player-display' })
+      element.rank = '▣:Borg' // Drone
+      expect(element.rank).to.equal('▣:Borg')
+    })
+
     it('should get and set currentStress', () => {
       const element = document.createElement('li', { is: 'player-display' })
       element.currentStress = 5
