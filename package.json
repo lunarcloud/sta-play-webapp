@@ -43,7 +43,7 @@
         "stylelint-config-standard": "^40.0.0"
     },
     "version-constraints": {
-        "eslint": "Cannot upgrade to v10 until eslint-plugin-jsdoc adds support (currently supports ^7||^8||^9)",
+        "eslint": "Cannot upgrade to v10 until eslint-plugin-jsdoc adds support (currently supports ^7 || ^8 || ^9)",
         "eslint-plugin-editorconfig": "^4.0.3 required for compatibility"
     }
 }
