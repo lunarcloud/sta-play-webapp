@@ -918,16 +918,28 @@ export class IndexController {
    */
   #handlePlayerReorder (detail) {
     const { draggedElement, targetElement, insertBefore } = detail
-    if (!draggedElement || !targetElement || draggedElement === targetElement) {
+    if (!draggedElement || !targetElement) {
       return
     }
 
     const playersEl = document.querySelector('.players')
+
+    // Calculate where the dragged element should be inserted
+    let targetPosition
     if (insertBefore) {
-      playersEl.insertBefore(draggedElement, targetElement)
+      targetPosition = targetElement
     } else {
-      playersEl.insertBefore(draggedElement, targetElement.nextSibling)
+      targetPosition = targetElement.nextSibling
     }
+
+    // Check if the element is already in the correct position
+    // If the dragged element is already right before the target position, don't move it
+    if (draggedElement.nextSibling === targetPosition) {
+      return
+    }
+
+    // Perform the reorder
+    playersEl.insertBefore(draggedElement, targetPosition)
 
     // Save the new order
     if (this.safeToSaveDB) {

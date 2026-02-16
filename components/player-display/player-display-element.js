@@ -371,7 +371,7 @@ export class PlayerDisplayElement extends HTMLLIElement {
 
       // Get the dragging element
       const draggingElement = document.querySelector('.players .dragging')
-      if (!draggingElement || draggingElement === this) {
+      if (!draggingElement) {
         return
       }
 
