@@ -944,11 +944,6 @@ export class IndexController {
 
     // Perform the reorder
     playersEl.insertBefore(draggedElement, targetPosition)
-
-    // Save the new order
-    if (this.safeToSaveDB) {
-      this.saveData(false)
-    }
   }
 
   /**

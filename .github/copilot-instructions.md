@@ -422,6 +422,16 @@ User Interaction → Component Event → IndexController
   → Database Update → Component Property Update → DOM Render
 ```
 
+**Save Behavior:**
+- **Manual Save Only**: The application uses a manual save pattern via the "Save" button (💾)
+- **NEVER** automatically call `saveData()` in response to user interactions (drag-and-drop, input changes, etc.)
+- The only exception is when explicitly saving via:
+  - Save button click
+  - Ctrl+S keyboard shortcut  
+  - Export/Import operations that require a save
+- User changes are held in memory (DOM state) until the user clicks Save
+- This gives users control over when changes are persisted to IndexedDB
+
 ### Key Configuration Patterns
 
 Components often define game rules as constants:
@@ -442,6 +452,7 @@ const DefaultPlayerImages = {
 
 ## Common Pitfalls to Avoid
 
+* **Auto-saving changes**: NEVER call `saveData()` automatically in response to user interactions. The application uses a manual save pattern - users must explicitly click the Save button or use Ctrl+S. Only save automatically during export/import operations.
 * **Grid positioning errors**: Double-check `grid-row` and `grid-column` values match the parent grid template. For example, if the body has 4 rows, `grid-row: 2 / 4` spans rows 2-3, while `grid-row: 3` only occupies row 3.
 * **Forgotten setup steps**: Remember to run `npm run copy-deps` after `npm i` before attempting to run the application locally.
 * **Over-correcting feedback**: When asked to enhance specific UI elements for visibility, don't make global changes that affect the entire theme - target only the specified elements.
