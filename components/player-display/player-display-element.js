@@ -91,9 +91,9 @@ const Pips = [
   { title: 'General', pips: '▲▲▲▲', group: 'Klingon' },
   { title: 'Brigadier', pips: '▲▲▲', group: 'Klingon' },
   { title: 'Colonel', pips: '▲▲', group: 'Klingon' },
-  { title: 'Commander', pips: '▲', group: 'Klingon' },
-  { title: 'Lieutenant', pips: '△△', group: 'Klingon' },
-  { title: 'Ensign', pips: '△', group: 'Klingon' },
+  { title: 'Captain (KDF)', pips: '▲', group: 'Klingon' },
+  { title: 'Lieutenant (KDF)', pips: '△△', group: 'Klingon' },
+  { title: 'Warrior', pips: '△', group: 'Klingon' },
   { title: 'Bekk', pips: '▪', group: 'Klingon' },
 
   { title: 'Other', pips: PipText(0, 0) },
