@@ -24,6 +24,14 @@ const PipCharacters = {
 }
 
 /**
+ * Unicode symbols that resemble TNG/Voyager enlisted rank insignia
+ */
+const EnlistedCharacters = {
+  chevron: '∧', // Upward chevron
+  bar: '—' // Horizontal bar
+}
+
+/**
  * Get the text for player rank pips
  * @param {number} solid amount of solid pips
  * @param {number} hollow amount of hollow pips
@@ -35,7 +43,20 @@ function PipText (solid, hollow) {
     .padEnd(solid + hollow, PipCharacters.hollow)
 }
 
+/**
+ * Get the text for enlisted rank insignia
+ * @param {number} chevrons number of upward chevrons
+ * @param {number} bars number of horizontal bars
+ * @returns {string} text containing the chevron and bar symbols
+ */
+function EnlistedText (chevrons, bars) {
+  return ''
+    .padStart(chevrons, EnlistedCharacters.chevron)
+    .padEnd(chevrons + bars, EnlistedCharacters.bar)
+}
+
 const Pips = [
+  // Starfleet Officer Ranks
   { title: 'Captain', pips: PipText(4, 0), group: 'Officer' },
   { title: 'Commander', pips: PipText(3, 0), group: 'Officer' },
   { title: 'Lieutenant Commander', pips: PipText(2, 1), group: 'Officer' },
@@ -43,11 +64,37 @@ const Pips = [
   { title: 'Lieutenant Junior Grade', pips: PipText(1, 1), group: 'Officer' },
   { title: 'Ensign', pips: PipText(1, 0), group: 'Officer' },
 
+  // Starfleet Flag Ranks
   { title: 'Commodore', pips: PipText(1, 0), group: 'Flag' },
   { title: 'Rear admiral', pips: PipText(2, 0), group: 'Flag' },
   { title: 'Vice admiral', pips: PipText(3, 0), group: 'Flag' },
   { title: 'Admiral', pips: PipText(4, 0), group: 'Flag' },
   { title: 'Fleet admiral', pips: PipText(5, 0), group: 'Flag' },
+
+  // Starfleet Enlisted Ranks (using chevrons/bars like TNG/Voyager)
+  { title: 'Master Chief Petty Officer', pips: EnlistedText(3, 2), group: 'Enlisted' },
+  { title: 'Senior Chief Petty Officer', pips: EnlistedText(3, 1), group: 'Enlisted' },
+  { title: 'Chief Petty Officer', pips: EnlistedText(3, 0), group: 'Enlisted' },
+  { title: 'Petty Officer First Class', pips: EnlistedText(2, 1), group: 'Enlisted' },
+  { title: 'Petty Officer Second Class', pips: EnlistedText(2, 0), group: 'Enlisted' },
+  { title: 'Petty Officer Third Class', pips: EnlistedText(1, 1), group: 'Enlisted' },
+  { title: 'Crewman First Class', pips: EnlistedText(1, 0), group: 'Enlisted' },
+  { title: 'Crewman Second Class', pips: EnlistedText(0, 1), group: 'Enlisted' },
+  { title: 'Crewman Third Class', pips: EnlistedText(0, 0), group: 'Enlisted' },
+
+  // Non-Starfleet Roles
+  { title: 'Civilian', pips: '', group: 'Non-Starfleet' },
+  { title: 'Diplomat', pips: '◆', group: 'Non-Starfleet' },
+  { title: 'Intelligence', pips: '◈', group: 'Non-Starfleet' },
+
+  // Klingon Defense Force Ranks (using triangle/trefoil symbols)
+  { title: 'General', pips: '▲▲▲▲', group: 'Klingon' },
+  { title: 'Brigadier', pips: '▲▲▲', group: 'Klingon' },
+  { title: 'Colonel', pips: '▲▲', group: 'Klingon' },
+  { title: 'Commander', pips: '▲', group: 'Klingon' },
+  { title: 'Lieutenant', pips: '△△', group: 'Klingon' },
+  { title: 'Ensign', pips: '△', group: 'Klingon' },
+  { title: 'Bekk', pips: '', group: 'Klingon' },
 
   { title: 'Other', pips: PipText(0, 0) },
 ]
