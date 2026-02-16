@@ -27,8 +27,8 @@ const PipCharacters = {
  * Unicode symbols that resemble TNG/Voyager enlisted rank insignia
  */
 const EnlistedCharacters = {
-  chevron: '∧', // Upward chevron
-  bar: '—' // Horizontal bar
+  chevron: '⌃', // Upward chevron (U+2303)
+  bar: '▬' // Horizontal bar (U+25AC)
 }
 
 /**
@@ -106,7 +106,6 @@ const Pips = [
   { title: 'Soldier (RSE)', pips: '◐', group: 'Romulan' },
 
   // Ferengi Alliance Ranks (using commercial/trade symbols)
-  { title: 'Grand Nagus', pips: '⊕⊕⊕', group: 'Ferengi' },
   { title: 'Liquidator', pips: '⊕⊕', group: 'Ferengi' },
   { title: 'DaiMon', pips: '⊕', group: 'Ferengi' },
   { title: 'Junior DaiMon', pips: '⊗⊗', group: 'Ferengi' },

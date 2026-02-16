@@ -66,8 +66,8 @@ describe('PlayerDisplayElement', () => {
 
     it('should support enlisted ranks', () => {
       const element = document.createElement('li', { is: 'player-display' })
-      element.rank = '∧∧∧—:Enlisted' // Senior Chief Petty Officer
-      expect(element.rank).to.equal('∧∧∧—:Enlisted')
+      element.rank = '⌃⌃⌃▬:Enlisted' // Senior Chief Petty Officer
+      expect(element.rank).to.equal('⌃⌃⌃▬:Enlisted')
     })
 
     it('should support Klingon ranks', () => {
