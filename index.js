@@ -4,6 +4,7 @@ import './components/settings-dialog/settings-dialog-element.js'
 import './components/busy-dialog/busy-dialog-element.js'
 import './components/message-dialog/message-dialog-element.js'
 import './components/confirm-dialog/confirm-dialog-element.js'
+import './components/dice-dialog/dice-dialog-element.js'
 import { MissionTrackerElement } from './components/mission-tracker/mission-tracker-element.js'
 import { TraitDisplayElement } from './components/trait-display/trait-display-element.js'
 import { PlayerDisplayElement } from './components/player-display/player-display-element.js'
@@ -178,6 +179,13 @@ export class IndexController {
       throw new Error('Confirm dialog not setup!')
     }
 
+    // Wire up the dice dialog
+    const diceDialog = document.querySelector('dialog[is="dice-dialog"]')
+    if (diceDialog instanceof HTMLDialogElement === false) {
+      throw new Error('Dice dialog not setup!')
+    }
+    document.getElementById('dice-btn').addEventListener('click', () => diceDialog.showModal())
+
     this.#setupSettings(settingsDialog, welcomeDialog, busyDialog)
 
     // Setup Model-Viewer fullscreen view buttons
@@ -266,6 +274,9 @@ export class IndexController {
         } else if (e.ctrlKey && e.altKey && e.key === 'm') {
           e.preventDefault()
           MirrorWindow.open()
+        } else if (e.ctrlKey && e.altKey && e.key === 'd') {
+          e.preventDefault()
+          diceDialog.showModal()
         }
       } finally {
         handlingInput = false

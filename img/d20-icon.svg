@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <polygon points="50,5 95,30 95,70 50,95 5,70 5,30" fill="none" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"></polygon>
+    <line x1="50" y1="5" x2="50" y2="95" stroke="#ffffff" stroke-width="2"></line>
+    <line x1="5" y1="30" x2="95" y2="70" stroke="#ffffff" stroke-width="2"></line>
+    <line x1="95" y1="30" x2="5" y2="70" stroke="#ffffff" stroke-width="2"></line>
+    <line x1="50" y1="5" x2="5" y2="70" stroke="#ffffff" stroke-width="2"></line>
+    <line x1="50" y1="5" x2="95" y2="70" stroke="#ffffff" stroke-width="2"></line>
+    <line x1="5" y1="30" x2="50" y2="95" stroke="#ffffff" stroke-width="2"></line>
+    <line x1="95" y1="30" x2="50" y2="95" stroke="#ffffff" stroke-width="2"></line>
+</svg>

@@ -222,6 +222,7 @@ dialog::backdrop {
 button,
 #save-btn,
 #settings-btn,
+#dice-btn,
 #fullscreen-btn,
 #font-up-btn,
 #font-down-btn {
@@ -475,6 +476,7 @@ menu-items {
 
 #settings-btn,
 #save-btn,
+#dice-btn,
 #fullscreen-btn,
 #font-up-btn,
 #font-down-btn,
@@ -525,9 +527,17 @@ menu-items {
     top: calc(var(--main-font-size) * 6.5);
 }
 
+#dice-btn {
+    top: calc(var(--main-font-size) * 7.75);
+
+    & img.symbol {
+        filter: invert(1);
+    }
+}
+
 #fullscreen-btn {
     width: 1.5em; /* This shouldn't be nearly as wide as the others */
-    top: calc(var(--main-font-size) * 7.75);
+    top: calc(var(--main-font-size) * 9);
 
     & img.symbol {
         filter: invert(1);
@@ -904,7 +914,7 @@ body.ship-fullscreen {
   min-height: 3em;
 
   main, header, footer, nav, theme,
-  #font-up-btn, #font-down-btn, #save-btn, #fullscreen-btn, #settings-btn,
+  #font-up-btn, #font-down-btn, #save-btn, #dice-btn, #fullscreen-btn, #settings-btn,
   #momentum-section, #threat-section {
     display: none;
   }

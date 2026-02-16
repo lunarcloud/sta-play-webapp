@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html>
+    <body>
+        <dialog>
+            <style>
+                dialog[is=dice-dialog] {
+                    width: fit-content;
+                    max-width: max(320px, 50%);
+                    min-width: 260px;
+
+                    main {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 0.75em;
+                        padding: 1em;
+                    }
+
+                    .dice-controls {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 0.5em;
+
+                        & label {
+                            display: flex;
+                            flex-direction: column;
+                            font-weight: bold;
+                            font-size: 0.9em;
+                        }
+
+                        & input {
+                            margin-top: 0.25em;
+                            padding: 0.25em;
+                            font-size: 1.1em;
+                            text-align: center;
+                        }
+                    }
+
+                    .roll-btn {
+                        display: block;
+                        margin: 0 auto;
+                        padding: 0.4em 1.5em;
+                        font-size: 1.1em;
+                        cursor: pointer;
+                        appearance: none;
+                        border: 2px solid #444;
+                        border-radius: 8px;
+                        background-color: #7a87f8;
+                        color: black;
+
+                        &:hover {
+                            filter: brightness(1.15);
+                        }
+
+                        &:active {
+                            filter: brightness(0.85);
+                        }
+                    }
+
+                    .dice-results {
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 0.5em;
+                        justify-content: center;
+                        min-height: 2.5em;
+                    }
+
+                    .die-result {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 2.5em;
+                        height: 2.5em;
+                        border: 2px solid #444;
+                        border-radius: 6px;
+                        font-size: 1.2em;
+                        font-weight: bold;
+                        background-color: #e0e0e0;
+                        color: #222;
+                    }
+
+                    .die-result.success {
+                        background-color: #4caf50;
+                        color: white;
+                        border-color: #2e7d32;
+                    }
+
+                    .die-result.critical {
+                        background-color: #1b5e20;
+                        color: white;
+                        border-color: #0d3d13;
+                    }
+
+                    .die-result.complication {
+                        background-color: #e53935;
+                        color: white;
+                        border-color: #b71c1c;
+                    }
+
+                    .dice-summary {
+                        text-align: center;
+                        font-size: 0.95em;
+                        min-height: 1.5em;
+                        color: #222;
+                    }
+                }
+            </style>
+            <header>
+                D20 Dice Roller
+                <button class="close" role="button">⤫</button>
+            </header>
+            <main>
+                <div class="dice-controls">
+                    <label>
+                        Number of Dice
+                        <input type="number" class="dice-count" min="1" max="5" step="1" value="2">
+                    </label>
+                    <label>
+                        Target Number
+                        <input type="number" class="target-number" min="1" max="20" step="1" value="10">
+                    </label>
+                    <label>
+                        Focus Range
+                        <input type="number" class="focus-range" min="0" max="5" step="1" value="1">
+                    </label>
+                    <label>
+                        Complication Range
+                        <input type="number" class="complication-range" min="0" max="5" step="1" value="1">
+                    </label>
+                </div>
+                <button class="roll-btn" role="button">Roll</button>
+                <div class="dice-results"></div>
+                <div class="dice-summary"></div>
+            </main>
+            <footer>
+                <button class="close" role="button">Close</button>
+            </footer>
+        </dialog>
+    </body>
+</html>
