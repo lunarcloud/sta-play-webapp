@@ -96,6 +96,35 @@ const Pips = [
   { title: 'Warrior', pips: '△', group: 'Klingon' },
   { title: 'Bekk', pips: '▪', group: 'Klingon' },
 
+  // Romulan Star Empire Ranks (using crescent and star symbols)
+  { title: 'Admiral (RSE)', pips: '★★★★', group: 'Romulan' },
+  { title: 'Commander (RSE)', pips: '★★★', group: 'Romulan' },
+  { title: 'Subcommander', pips: '★★', group: 'Romulan' },
+  { title: 'Centurion', pips: '★', group: 'Romulan' },
+  { title: 'Subcenturion', pips: '☆☆', group: 'Romulan' },
+  { title: 'Uhlan', pips: '☆', group: 'Romulan' },
+  { title: 'Soldier (RSE)', pips: '◐', group: 'Romulan' },
+
+  // Ferengi Alliance Ranks (using commercial/trade symbols)
+  { title: 'Grand Nagus', pips: '⊕⊕⊕', group: 'Ferengi' },
+  { title: 'Liquidator', pips: '⊕⊕', group: 'Ferengi' },
+  { title: 'DaiMon', pips: '⊕', group: 'Ferengi' },
+  { title: 'Junior DaiMon', pips: '⊗⊗', group: 'Ferengi' },
+  { title: 'Commerce Officer', pips: '⊗', group: 'Ferengi' },
+  { title: 'Merchant', pips: '●', group: 'Ferengi' },
+
+  // Cardassian Union Ranks (using geometric shapes)
+  { title: 'Legate', pips: '◆◆◆◆', group: 'Cardassian' },
+  { title: 'Gul', pips: '◆◆◆', group: 'Cardassian' },
+  { title: 'Dal', pips: '◆◆', group: 'Cardassian' },
+  { title: 'Glinn', pips: '◆', group: 'Cardassian' },
+  { title: 'Gil', pips: '◇◇', group: 'Cardassian' },
+  { title: 'Garresh', pips: '◇', group: 'Cardassian' },
+  { title: 'Gorr', pips: '▫', group: 'Cardassian' },
+
+  // Borg Collective
+  { title: 'Drone', pips: '▣', group: 'Borg' },
+
   { title: 'Other', pips: PipText(0, 0) },
 ]
 

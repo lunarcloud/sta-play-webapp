@@ -82,6 +82,30 @@ describe('PlayerDisplayElement', () => {
       expect(element.rank).to.equal('◆:Non-Starfleet')
     })
 
+    it('should support Romulan ranks', () => {
+      const element = document.createElement('li', { is: 'player-display' })
+      element.rank = '★★★:Romulan' // Commander (RSE)
+      expect(element.rank).to.equal('★★★:Romulan')
+    })
+
+    it('should support Ferengi ranks', () => {
+      const element = document.createElement('li', { is: 'player-display' })
+      element.rank = '⊕:Ferengi' // DaiMon
+      expect(element.rank).to.equal('⊕:Ferengi')
+    })
+
+    it('should support Cardassian ranks', () => {
+      const element = document.createElement('li', { is: 'player-display' })
+      element.rank = '◆◆◆:Cardassian' // Gul
+      expect(element.rank).to.equal('◆◆◆:Cardassian')
+    })
+
+    it('should support Borg rank', () => {
+      const element = document.createElement('li', { is: 'player-display' })
+      element.rank = '▣:Borg' // Drone
+      expect(element.rank).to.equal('▣:Borg')
+    })
+
     it('should get and set currentStress', () => {
       const element = document.createElement('li', { is: 'player-display' })
       element.currentStress = 5
