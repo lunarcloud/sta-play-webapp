@@ -50,7 +50,7 @@ describe('SceneSwitcherElement', () => {
         { id: 1, name: 'Scene 1' },
         { id: 2, name: 'Scene 2' }
       ]
-      
+
       expect(() => element.loadScenes(scenes, 1)).to.not.throw()
     })
 
@@ -60,7 +60,7 @@ describe('SceneSwitcherElement', () => {
         { id: 1, name: 'Scene 1' },
         { id: 2, name: 'Scene 2' }
       ]
-      
+
       element.loadScenes(scenes, 1)
       const sceneItems = element.querySelectorAll('.scene-item')
       expect(sceneItems.length).to.equal(2)
@@ -72,7 +72,7 @@ describe('SceneSwitcherElement', () => {
         { id: 1, name: 'Scene 1' },
         { id: 2, name: 'Scene 2' }
       ]
-      
+
       element.loadScenes(scenes, 2)
       const activeScene = element.querySelector('.scene-item.active')
       expect(activeScene).to.not.be.null
@@ -81,7 +81,7 @@ describe('SceneSwitcherElement', () => {
 
     it('should handle empty scenes array', () => {
       const element = document.createElement('dialog', { is: 'scene-switcher' })
-      
+
       expect(() => element.loadScenes([], undefined)).to.not.throw()
       const sceneItems = element.querySelectorAll('.scene-item')
       expect(sceneItems.length).to.equal(0)
@@ -115,24 +115,24 @@ describe('SceneSwitcherElement', () => {
         { id: 1, name: 'Scene 1' },
         { id: 2, name: 'Scene 2' }
       ]
-      
+
       element.loadScenes(scenes, 1)
       element.onSceneSwitch = (sceneId) => {
         expect(sceneId).to.equal(2)
         done()
       }
-      
+
       const sceneItems = element.querySelectorAll('.scene-item')
       sceneItems[1].click()
     })
 
     it('should call onSceneAdd when add button is clicked', (done) => {
       const element = document.createElement('dialog', { is: 'scene-switcher' })
-      
+
       element.onSceneAdd = () => {
         done()
       }
-      
+
       const addButton = element.querySelector('#add-scene')
       addButton.click()
     })
@@ -145,7 +145,7 @@ describe('SceneSwitcherElement', () => {
         { id: 1, name: 'Scene 1' },
         { id: 2, name: 'Scene 2' }
       ]
-      
+
       element.loadScenes(scenes, 1)
       const deleteButtons = element.querySelectorAll('.delete-scene')
       expect(deleteButtons.length).to.equal(2)
@@ -156,7 +156,7 @@ describe('SceneSwitcherElement', () => {
       const scenes = [
         { id: 1, name: 'Scene 1' }
       ]
-      
+
       element.loadScenes(scenes, 1)
       const deleteButton = element.querySelector('.delete-scene')
       expect(deleteButton.disabled).to.be.true
@@ -168,7 +168,7 @@ describe('SceneSwitcherElement', () => {
         { id: 1, name: 'Scene 1' },
         { id: 2, name: 'Scene 2' }
       ]
-      
+
       element.loadScenes(scenes, 1)
       const deleteButtons = element.querySelectorAll('.delete-scene')
       deleteButtons.forEach(button => {
@@ -184,7 +184,7 @@ describe('SceneSwitcherElement', () => {
         { id: 1, name: 'Scene 1' },
         { id: 2, name: 'Scene 2' }
       ]
-      
+
       element.loadScenes(scenes, 1)
       const renameButtons = element.querySelectorAll('.rename-scene')
       expect(renameButtons.length).to.equal(2)
@@ -196,13 +196,13 @@ describe('SceneSwitcherElement', () => {
         { id: 1, name: 'Scene 1' },
         { id: 2, name: 'Scene 2' }
       ]
-      
+
       element.loadScenes(scenes, 1)
       element.onSceneRename = (sceneId) => {
         expect(sceneId).to.equal(1)
         done()
       }
-      
+
       const renameButton = element.querySelector('.rename-scene')
       renameButton.click()
     })
@@ -212,9 +212,9 @@ describe('SceneSwitcherElement', () => {
     it('should work when added to DOM', () => {
       const element = document.createElement('dialog', { is: 'scene-switcher' })
       document.body.appendChild(element)
-      
+
       expect(element.parentNode).to.equal(document.body)
-      
+
       document.body.removeChild(element)
     })
 
@@ -223,13 +223,13 @@ describe('SceneSwitcherElement', () => {
       const scenes = [
         { id: 1, name: 'Scene 1' }
       ]
-      
+
       element.loadScenes(scenes, 1)
       document.body.appendChild(element)
-      
+
       const sceneItems = element.querySelectorAll('.scene-item')
       expect(sceneItems.length).to.equal(1)
-      
+
       document.body.removeChild(element)
     })
   })
