@@ -147,6 +147,22 @@ body {
 
 #dice-btn {
     left: 12.85em;
+
+    & img.symbol {
+      filter: invert(1) contrast(1.25);
+    }
+
+    &:hover, &:focus {
+      & img.symbol {
+        filter: invert(1) sepia(0.5) hue-rotate(275deg);
+      }
+    }
+
+    &:active {
+      & img.symbol {
+        filter: invert(1) sepia(1) hue-rotate(275deg);
+      }
+    }
 }
 
 #tables-btn {
@@ -212,24 +228,6 @@ body {
     height: fit-content;
     border: 2px solid #2412127d;
     border-top: 2px solid black;
-}
-
-#dice-btn {
-    & img.symbol {
-      filter: invert(1) contrast(1.25);
-    }
-
-    &:hover, &:focus {
-      & img.symbol {
-        filter: invert(1) sepia(0.5) hue-rotate(275deg);
-      }
-    }
-
-    &:active {
-      & img.symbol {
-        filter: invert(1) sepia(1) hue-rotate(275deg);
-      }
-    }
 }
 
 task-tracker::part(internal) {
