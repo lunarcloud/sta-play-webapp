@@ -1172,14 +1172,16 @@ export class IndexController {
    * @param {HTMLDialogElement} dialog - The roll tables dialog
    */
   async #loadRollTablesDialog (dialog) {
-    if (!this.currentGameId) return
-
-    const tables = await this.db.getRollTables(this.currentGameId)
+    // Use currentGameId if available, otherwise use a temporary ID (0)
+    // The correct game ID will be set when the user saves
+    const gameId = this.currentGameId || 0
+    
+    const tables = await this.db.getRollTables(gameId)
 
     // Add example table if no tables exist
     if (tables.length === 0) {
       const exampleTable = new RollTableInfo(
-        this.currentGameId,
+        gameId,
         'Example: Mission Complications',
         'd6',
         [
@@ -1194,7 +1196,7 @@ export class IndexController {
       tables.push(exampleTable)
     }
 
-    dialog.loadTables(this.currentGameId, tables)
+    dialog.loadTables(gameId, tables)
   }
 
   /**
@@ -1203,6 +1205,15 @@ export class IndexController {
    */
   async #saveRollTablesFromDialog (dialog) {
     const tables = dialog.getTables()
+    
+    // Update all tables with the current game ID before saving
+    // This handles the case where tables were created before the game was saved
+    if (this.currentGameId) {
+      tables.forEach(table => {
+        table.game = this.currentGameId
+      })
+    }
+    
     await this.db.replaceRollTables(tables)
   }
 }

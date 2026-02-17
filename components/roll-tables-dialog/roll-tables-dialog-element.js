@@ -271,10 +271,8 @@ const setup = async () => {
       if (!this.#currentTable.validate()) {
         const errors = []
 
-        // Check game ID
-        if (typeof this.#currentTable.game !== 'number') {
-          errors.push('- Invalid game ID')
-        }
+        // Note: Game ID is handled internally and set when the user saves the game
+        // Tables can be created with a temporary game ID before the first save
 
         // Check table name
         if (!this.#currentTable.name || this.#currentTable.name === '') {
