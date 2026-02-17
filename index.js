@@ -19,7 +19,7 @@ import { DefaultGameName, GameInfo } from './js/database/game-info.js'
 import { ShipAlertElement } from './components/ship-alert/ship-alert-element.js'
 import { setupDropOnly } from './js/drop-nodrag-setup.js'
 import { loadElementFromFile } from './js/load-file-element.js'
-import { SceneInfo } from './js/database/scene-info.js'
+import { SceneInfo, DefaultSceneName } from './js/database/scene-info.js'
 import { saveBlobAs } from './js/save-file-utils.js'
 import { BackupData } from './js/database/backup-data.js'
 import './js/lib/model-viewer.min.js'
@@ -668,7 +668,7 @@ export class IndexController {
    * @returns {Promise<boolean>}      if there was info to load
    */
   async #loadData (gameName = DefaultGameName) {
-    const gameInfo = await this.db.getGameInfo(gameName)
+    let gameInfo = await this.db.getGameInfo(gameName)
 
     const momentumEl = document.getElementById('momentum-pool')
     if (momentumEl instanceof HTMLInputElement === false) {
@@ -704,6 +704,40 @@ export class IndexController {
     document.querySelectorAll('trait-display').forEach(el => el.parentNode.removeChild(el))
     document.querySelectorAll('.players li').forEach(el => el.parentNode.removeChild(el))
     document.querySelectorAll('task-tracker').forEach(el => el.parentNode.removeChild(el))
+
+    // If no game exists (fresh database), create a default game and scene
+    if (gameInfo === undefined) {
+      const defaultGameInfo = new GameInfo(
+        undefined,
+        gameName,
+        this.fallbackShipName,
+        0, // momentum
+        0, // threat
+        '', // activeAlert (now scene-specific)
+        'lcars-24', // theme
+        '2', // edition
+        undefined, // shipModel
+        false, // altFont
+        false, // legacyTrackers
+        undefined // shipModel2
+      )
+      const savedGameId = await this.db.saveGameInfo(defaultGameInfo)
+      if (savedGameId !== undefined) {
+        defaultGameInfo.id = savedGameId
+        gameInfo = defaultGameInfo
+
+        // Create default scene for the new game
+        const defaultSceneInfo = new SceneInfo(
+          undefined,
+          savedGameId,
+          DefaultSceneName,
+          this.fallbackText,
+          ['', '', ''], // empty mission tracker
+          '' // no alert
+        )
+        await this.db.saveSceneInfo(defaultSceneInfo)
+      }
+    }
 
     this.currentGameId = gameInfo?.id
     document.body.setAttribute('loaded-game-name', gameInfo?.name ?? DefaultGameName)
