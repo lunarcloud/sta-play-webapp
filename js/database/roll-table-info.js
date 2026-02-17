@@ -69,6 +69,10 @@ export class RollTableInfo {
     if (!Array.isArray(this.entries)) {
       return false
     }
+    // Require at least one entry
+    if (this.entries.length === 0) {
+      return false
+    }
     // Validate each entry
     for (const entry of this.entries) {
       if (typeof entry.result !== 'string' || entry.result === '') {

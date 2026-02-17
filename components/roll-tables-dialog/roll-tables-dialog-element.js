@@ -120,7 +120,8 @@ const setup = async () => {
      */
     #createNewTable () {
       const RollTableInfo = globalThis.RollTableInfo
-      this.#currentTable = new RollTableInfo(this.#gameId, 'New Table', [])
+      // Start with one empty entry to help users get started
+      this.#currentTable = new RollTableInfo(this.#gameId, 'New Table', [{ result: '' }])
       this.#showEditor()
       this.#renderEditor()
     }
@@ -261,7 +262,7 @@ const setup = async () => {
         return
       }
 
-      const existingIndex = this.#tables.findIndex(t => t.id === this.#currentTable.id)
+      const existingIndex = this.#tables.findIndex(t => t.id !== undefined && t.id === this.#currentTable.id)
       if (existingIndex > -1) {
         this.#tables[existingIndex] = this.#currentTable
       } else {
