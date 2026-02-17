@@ -11,6 +11,8 @@ The project uses [@web/test-runner](https://modern-web.dev/docs/test-runner/over
 ```bash
 # One-time setup
 npx playwright install chromium
+npm i
+npm run copy-deps
 
 # Run tests
 npm test                  # Run once
