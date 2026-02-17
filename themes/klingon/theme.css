@@ -120,6 +120,7 @@ body {
 #save-btn,
 #fullscreen-btn,
 #dice-btn,
+#tables-btn,
 #font-up-btn,
 #font-down-btn {
     inset: unset;
@@ -129,8 +130,9 @@ body {
 }
 
 #fullscreen-btn,
-#dice-btn {
-    left: 13.6em;
+#dice-btn,
+#tables-btn {
+    left: 13.75em;
     width: unset !important;
 
     & > text {
@@ -142,6 +144,15 @@ body {
     }
 }
 
+
+#dice-btn {
+    left: 12.85em;
+}
+
+#tables-btn {
+    left: 14.65em;
+}
+
 #settings-btn,
 #font-up-btn,
 #fullscreen-btn {
@@ -150,7 +161,8 @@ body {
 
 #font-down-btn,
 #save-btn,
-#dice-btn {
+#dice-btn,
+#tables-btn {
     bottom: calc(var(--bottom-section-height) - 3.65em);
 }
 
@@ -188,6 +200,7 @@ body {
 #save-btn,
 #fullscreen-btn,
 #dice-btn,
+#tables-btn,
 #momentum-section,
 #threat-section,
 #font-up-btn,

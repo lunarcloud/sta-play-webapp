@@ -340,10 +340,19 @@ body {
         #dice-btn {
             left: unset;
             top: unset;
-            bottom: 8em;
-            right: 1.25em;
+            bottom: 8.5em;
+            right: 2em;
             font-size: var(--main-font-size);
-            transform: rotate(-60deg);
+            width: fit-content;
+            height: 2em;
+        }
+
+        #tables-btn {
+            left: unset;
+            top: unset;
+            bottom: 7em;
+            right: 3em;
+            font-size: var(--main-font-size);
             width: fit-content;
             height: 2em;
         }
