@@ -982,7 +982,7 @@ body.ship-fullscreen {
       bottom: unset;
       right: unset;
       left: 2mm;
-      top: calc(2mm + 9mm);
+      top: calc(2mm + 10mm);
     }
 
     & .fullscreen-btn  {
@@ -995,7 +995,6 @@ body.ship-fullscreen {
     }
 
     & #ship-autorotate-fullscreen,
-    & #ship-switch-fullscreen,
     & .fullscreen-btn {
       top: 2mm;
 
@@ -1003,6 +1002,11 @@ body.ship-fullscreen {
         height: 8mm;
         height: max(8mm, 1em);
       }
+    }
+
+    & #ship-switch-fullscreen img {
+      height: 8mm;
+      height: max(8mm, 1em);
     }
   }
 }
