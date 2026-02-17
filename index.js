@@ -1373,10 +1373,15 @@ export class IndexController {
       return
     }
 
+    // Get the current scene to preserve its name
+    const scenes = await this.db.getScenes(this.currentGameId)
+    const currentScene = scenes.find(s => s.id === this.currentSceneId)
+    const sceneName = currentScene ? currentScene.name : undefined
+
     const sceneInfo = new SceneInfo(
       this.currentSceneId,
       this.currentGameId,
-      undefined,
+      sceneName,
       document.getElementById('general-text').innerHTML,
       [
         missionTrackerEl.act1,
