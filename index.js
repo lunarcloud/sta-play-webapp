@@ -1340,15 +1340,8 @@ export class IndexController {
       return // Current scene not found
     }
 
-    // Calculate new index with wraparound
-    let newIndex
-    if (direction > 0) {
-      // Next scene
-      newIndex = currentIndex === scenes.length - 1 ? 0 : currentIndex + 1
-    } else {
-      // Previous scene
-      newIndex = currentIndex === 0 ? scenes.length - 1 : currentIndex - 1
-    }
+    // Calculate new index with wraparound using modulo
+    const newIndex = (currentIndex + direction + scenes.length) % scenes.length
 
     await this.#switchToScene(scenes[newIndex].id)
   }
