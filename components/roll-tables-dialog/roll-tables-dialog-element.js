@@ -18,9 +18,6 @@ const setup = async () => {
     /** @type {HTMLInputElement} */
     #tableNameInput
 
-    /** @type {HTMLSelectElement} */
-    #tableDiceTypeInput
-
     /** @type {HTMLElement} */
     #entriesListEl
 
@@ -47,7 +44,6 @@ const setup = async () => {
       this.#tableListEl = /** @type {HTMLElement} */ (this.querySelector('.table-list'))
       this.#tableEditorEl = /** @type {HTMLElement} */ (this.querySelector('.table-editor'))
       this.#tableNameInput = /** @type {HTMLInputElement} */ (this.querySelector('.table-name-input'))
-      this.#tableDiceTypeInput = /** @type {HTMLSelectElement} */ (this.querySelector('.table-dice-type-input'))
       this.#entriesListEl = /** @type {HTMLElement} */ (this.querySelector('.entries-list'))
       this.#rollResultEl = /** @type {HTMLElement} */ (this.querySelector('.roll-result'))
 
@@ -101,11 +97,6 @@ const setup = async () => {
         nameEl.textContent = table.name
         item.appendChild(nameEl)
 
-        const diceTypeEl = document.createElement('span')
-        diceTypeEl.className = 'table-dice-type'
-        diceTypeEl.textContent = table.diceType
-        item.appendChild(diceTypeEl)
-
         const actions = document.createElement('div')
         actions.className = 'table-actions'
 
@@ -129,7 +120,7 @@ const setup = async () => {
      */
     #createNewTable () {
       const RollTableInfo = globalThis.RollTableInfo
-      this.#currentTable = new RollTableInfo(this.#gameId, 'New Table', 'd20', [])
+      this.#currentTable = new RollTableInfo(this.#gameId, 'New Table', [])
       this.#showEditor()
       this.#renderEditor()
     }
@@ -167,7 +158,6 @@ const setup = async () => {
       if (!this.#currentTable) return
 
       this.#tableNameInput.value = this.#currentTable.name
-      this.#tableDiceTypeInput.value = this.#currentTable.diceType
 
       this.#entriesListEl.innerHTML = ''
       for (const entry of this.#currentTable.entries) {
@@ -182,33 +172,6 @@ const setup = async () => {
     #renderEntry (entry) {
       const item = document.createElement('div')
       item.className = 'entry-item'
-
-      const rangeDiv = document.createElement('div')
-      rangeDiv.className = 'entry-range'
-
-      const minInput = document.createElement('input')
-      minInput.type = 'number'
-      minInput.value = String(entry.min)
-      minInput.min = '1'
-      minInput.addEventListener('change', () => {
-        entry.min = parseInt(minInput.value) || 1
-      })
-      rangeDiv.appendChild(minInput)
-
-      const separator = document.createElement('span')
-      separator.textContent = '-'
-      rangeDiv.appendChild(separator)
-
-      const maxInput = document.createElement('input')
-      maxInput.type = 'number'
-      maxInput.value = String(entry.max)
-      maxInput.min = '1'
-      maxInput.addEventListener('change', () => {
-        entry.max = parseInt(maxInput.value) || 1
-      })
-      rangeDiv.appendChild(maxInput)
-
-      item.appendChild(rangeDiv)
 
       const resultDiv = document.createElement('div')
       resultDiv.className = 'entry-result'
@@ -245,13 +208,7 @@ const setup = async () => {
     #addEntry () {
       if (!this.#currentTable) return
 
-      const maxValue = parseInt(this.#currentTable.diceType.substring(1)) || 20
-      const lastEntry = this.#currentTable.entries[this.#currentTable.entries.length - 1]
-      const nextMin = lastEntry ? lastEntry.max + 1 : 1
-
       const newEntry = {
-        min: nextMin,
-        max: Math.min(nextMin, maxValue),
         result: ''
       }
 
@@ -266,7 +223,6 @@ const setup = async () => {
       if (!this.#currentTable) return
 
       this.#currentTable.name = this.#tableNameInput.value
-      this.#currentTable.diceType = this.#tableDiceTypeInput.value
 
       if (!this.#currentTable.validate()) {
         const errors = []
@@ -279,11 +235,6 @@ const setup = async () => {
           errors.push('- Table name cannot be empty')
         }
 
-        // Check dice type
-        if (!/^d\d+$/.test(this.#currentTable.diceType)) {
-          errors.push('- Invalid dice type (must be d4, d6, d20, etc.)')
-        }
-
         // Check entries array
         if (!Array.isArray(this.#currentTable.entries)) {
           errors.push('- Entries must be an array')
@@ -294,18 +245,8 @@ const setup = async () => {
           for (let i = 0; i < this.#currentTable.entries.length; i++) {
             const entry = this.#currentTable.entries[i]
 
-            if (typeof entry.min !== 'number' || typeof entry.max !== 'number') {
-              errors.push(`- Entry ${i + 1}: Min and max values must be numbers`)
-              break
-            }
-
             if (!entry.result || entry.result === '') {
               errors.push(`- Entry ${i + 1}: Result text cannot be empty`)
-              break
-            }
-
-            if (entry.min > entry.max) {
-              errors.push(`- Entry ${i + 1}: Min value (${entry.min}) cannot be greater than max value (${entry.max})`)
               break
             }
           }
@@ -368,10 +309,16 @@ const setup = async () => {
      * @param {import('../../js/database/roll-table-info.js').RollTableInfo} table - Table to roll on
      */
     #rollOnTable (table) {
-      const result = table.roll()
-      this.#rollResultEl.textContent = result
+      // Show "Rolling..." state
+      this.#rollResultEl.textContent = 'Rolling...'
       this.#rollResultEl.classList.add('active')
       this.#hideEditor()
+      
+      // After a brief delay, show the actual result
+      setTimeout(() => {
+        const result = table.roll()
+        this.#rollResultEl.textContent = result
+      }, 500) // 500ms delay for rolling animation
     }
   }
   customElements.define('roll-tables-dialog', RollTablesDialogElement, { extends: 'dialog' })

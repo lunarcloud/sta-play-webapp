@@ -106,23 +106,15 @@
                     }
 
                     .editor-header {
-                        display: grid;
-                        grid-template-columns: 1fr auto;
+                        display: flex;
                         gap: 0.5em;
                         align-items: center;
                     }
 
                     .editor-header input {
+                        flex: 1;
                         padding: 0.5em;
                         font-size: 1.1em;
-                        border: 1px solid #666;
-                        border-radius: 4px;
-                        background-color: #2a2a2a;
-                        color: white;
-                    }
-
-                    .editor-header select {
-                        padding: 0.5em;
                         border: 1px solid #666;
                         border-radius: 4px;
                         background-color: #2a2a2a;
@@ -137,31 +129,13 @@
 
                     .entry-item {
                         display: grid;
-                        grid-template-columns: auto 1fr auto;
+                        grid-template-columns: 1fr auto;
                         gap: 0.5em;
                         align-items: center;
                         padding: 0.5em;
                         border: 1px solid #444;
                         border-radius: 4px;
                         background-color: #2a2a2a;
-                    }
-
-                    .entry-range {
-                        display: flex;
-                        gap: 0.25em;
-                        align-items: center;
-                        font-size: 0.9em;
-                        white-space: nowrap;
-                    }
-
-                    .entry-range input {
-                        width: 3em;
-                        padding: 0.25em;
-                        text-align: center;
-                        border: 1px solid #666;
-                        border-radius: 3px;
-                        background-color: #333;
-                        color: white;
                     }
 
                     .entry-result input {
@@ -288,15 +262,6 @@
                 <div class="table-editor">
                     <div class="editor-header">
                         <input type="text" class="table-name-input" placeholder="Table Name">
-                        <select class="table-dice-type-input">
-                            <option value="d4">d4</option>
-                            <option value="d6">d6</option>
-                            <option value="d8">d8</option>
-                            <option value="d10">d10</option>
-                            <option value="d12">d12</option>
-                            <option value="d20" selected>d20</option>
-                            <option value="d100">d100</option>
-                        </select>
                     </div>
                     <div class="entries-list"></div>
                     <div class="editor-actions">

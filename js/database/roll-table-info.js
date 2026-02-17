@@ -1,8 +1,6 @@
 /**
  * @typedef {object} RollTableEntry
- * @property {number} min - Minimum dice value (inclusive)
- * @property {number} max - Maximum dice value (inclusive)
- * @property {string} result - The result text for this roll range
+ * @property {string} result - The result text for this entry
  */
 
 /**
@@ -20,11 +18,6 @@ export class RollTableInfo {
   name
 
   /**
-   * @type {string}
-   */
-  diceType
-
-  /**
    * @type {RollTableEntry[]}
    */
   entries
@@ -38,15 +31,13 @@ export class RollTableInfo {
    * Create a Roll Table info object
    * @param {number} game                     The id of the game it is for
    * @param {string} [name]                Name of the roll table
-   * @param {string} [diceType]         Type of dice (e.g., 'd20', 'd6', 'd100')
    * @param {RollTableEntry[]} [entries]   Array of table entries
    * @param {number|undefined} [id]           Database entry id or undefined if new
    */
-  constructor (game, name = '', diceType = 'd20', entries = [], id = undefined) {
+  constructor (game, name = '', entries = [], id = undefined) {
     this.id = id
     this.game = game
     this.name = name
-    this.diceType = diceType
     this.entries = entries
   }
 
@@ -59,7 +50,6 @@ export class RollTableInfo {
     return new RollTableInfo(
       obj.game,
       obj.name,
-      obj.diceType,
       obj.entries,
       obj.id
     )
@@ -76,25 +66,12 @@ export class RollTableInfo {
     if (typeof this.name !== 'string' || this.name === '') {
       return false
     }
-    if (typeof this.diceType !== 'string' || this.diceType === '') {
-      return false
-    }
-    // Validate dice type format (must be 'd' followed by a number)
-    if (!/^d\d+$/.test(this.diceType)) {
-      return false
-    }
     if (!Array.isArray(this.entries)) {
       return false
     }
     // Validate each entry
     for (const entry of this.entries) {
-      if (typeof entry.min !== 'number' || typeof entry.max !== 'number') {
-        return false
-      }
       if (typeof entry.result !== 'string' || entry.result === '') {
-        return false
-      }
-      if (entry.min > entry.max) {
         return false
       }
     }
@@ -106,17 +83,12 @@ export class RollTableInfo {
    * @returns {string} The result text
    */
   roll () {
-    // Parse dice type to get max value (e.g., "d20" -> 20)
-    const maxValue = parseInt(this.diceType.substring(1)) || 20
-    const roll = Math.floor(Math.random() * maxValue) + 1
-
-    // Find matching entry
-    for (const entry of this.entries) {
-      if (roll >= entry.min && roll <= entry.max) {
-        return `Rolled ${roll}: ${entry.result}`
-      }
+    if (this.entries.length === 0) {
+      return 'No entries in table'
     }
 
-    return `Rolled ${roll}: No result found`
+    // Randomly select an entry
+    const randomIndex = Math.floor(Math.random() * this.entries.length)
+    return this.entries[randomIndex].result
   }
 }

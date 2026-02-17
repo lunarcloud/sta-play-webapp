@@ -1183,14 +1183,13 @@ export class IndexController {
       const exampleTable = new RollTableInfo(
         gameId,
         'Example: Mission Complications',
-        'd6',
         [
-          { min: 1, max: 1, result: 'Equipment malfunction at a critical moment' },
-          { min: 2, max: 2, result: 'Unexpected enemy reinforcements arrive' },
-          { min: 3, max: 3, result: 'A trusted ally reveals hidden motives' },
-          { min: 4, max: 4, result: 'Environmental hazard escalates the danger' },
-          { min: 5, max: 5, result: 'Communication systems fail' },
-          { min: 6, max: 6, result: 'Time constraint becomes more severe' }
+          { result: 'Equipment malfunction at a critical moment' },
+          { result: 'Unexpected enemy reinforcements arrive' },
+          { result: 'A trusted ally reveals hidden motives' },
+          { result: 'Environmental hazard escalates the danger' },
+          { result: 'Communication systems fail' },
+          { result: 'Time constraint becomes more severe' }
         ]
       )
       tables.push(exampleTable)
