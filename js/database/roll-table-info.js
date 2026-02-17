@@ -79,6 +79,10 @@ export class RollTableInfo {
     if (typeof this.diceType !== 'string' || this.diceType === '') {
       return false
     }
+    // Validate dice type format (must be 'd' followed by a number)
+    if (!/^d\d+$/.test(this.diceType)) {
+      return false
+    }
     if (!Array.isArray(this.entries)) {
       return false
     }

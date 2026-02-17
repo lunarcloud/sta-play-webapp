@@ -269,7 +269,27 @@ const setup = async () => {
       this.#currentTable.diceType = this.#tableDiceTypeInput.value
 
       if (!this.#currentTable.validate()) {
-        alert('Please fill in all fields with valid data.')
+        let errorMsg = 'Please check the following:\n'
+        if (!this.#currentTable.name || this.#currentTable.name === '') {
+          errorMsg += '- Table name cannot be empty\n'
+        }
+        if (!/^d\d+$/.test(this.#currentTable.diceType)) {
+          errorMsg += '- Invalid dice type\n'
+        }
+        if (this.#currentTable.entries.length === 0) {
+          errorMsg += '- Add at least one entry\n'
+        }
+        for (const entry of this.#currentTable.entries) {
+          if (!entry.result || entry.result === '') {
+            errorMsg += '- All entries must have result text\n'
+            break
+          }
+          if (entry.min > entry.max) {
+            errorMsg += '- Entry ranges invalid (min > max)\n'
+            break
+          }
+        }
+        alert(errorMsg)
         return
       }
 
