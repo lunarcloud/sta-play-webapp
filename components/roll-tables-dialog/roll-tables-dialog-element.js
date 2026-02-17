@@ -269,27 +269,56 @@ const setup = async () => {
       this.#currentTable.diceType = this.#tableDiceTypeInput.value
 
       if (!this.#currentTable.validate()) {
-        let errorMsg = 'Please check the following:\n'
+        const errors = []
+
+        // Check game ID
+        if (typeof this.#currentTable.game !== 'number') {
+          errors.push('- Invalid game ID')
+        }
+
+        // Check table name
         if (!this.#currentTable.name || this.#currentTable.name === '') {
-          errorMsg += '- Table name cannot be empty\n'
+          errors.push('- Table name cannot be empty')
         }
+
+        // Check dice type
         if (!/^d\d+$/.test(this.#currentTable.diceType)) {
-          errorMsg += '- Invalid dice type\n'
+          errors.push('- Invalid dice type (must be d4, d6, d20, etc.)')
         }
-        if (this.#currentTable.entries.length === 0) {
-          errorMsg += '- Add at least one entry\n'
-        }
-        for (const entry of this.#currentTable.entries) {
-          if (!entry.result || entry.result === '') {
-            errorMsg += '- All entries must have result text\n'
-            break
+
+        // Check entries array
+        if (!Array.isArray(this.#currentTable.entries)) {
+          errors.push('- Entries must be an array')
+        } else if (this.#currentTable.entries.length === 0) {
+          errors.push('- Add at least one entry')
+        } else {
+          // Check each entry
+          for (let i = 0; i < this.#currentTable.entries.length; i++) {
+            const entry = this.#currentTable.entries[i]
+
+            if (typeof entry.min !== 'number' || typeof entry.max !== 'number') {
+              errors.push(`- Entry ${i + 1}: Min and max values must be numbers`)
+              break
+            }
+
+            if (!entry.result || entry.result === '') {
+              errors.push(`- Entry ${i + 1}: Result text cannot be empty`)
+              break
+            }
+
+            if (entry.min > entry.max) {
+              errors.push(`- Entry ${i + 1}: Min value (${entry.min}) cannot be greater than max value (${entry.max})`)
+              break
+            }
           }
-          if (entry.min > entry.max) {
-            errorMsg += '- Entry ranges invalid (min > max)\n'
-            break
-          }
         }
-        alert(errorMsg)
+
+        // If no specific errors were found, add a generic message
+        if (errors.length === 0) {
+          errors.push('- Unknown validation error. Please check all fields.')
+        }
+
+        alert('Please check the following:\n' + errors.join('\n'))
         return
       }
 
