@@ -527,7 +527,7 @@ menu-items {
 
   &:active {
     & text {
-      filter: contrast(1), sepia(0.5);
+      filter: contrast(1) sepia(0.5);
     }
   }
 }
