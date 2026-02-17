@@ -1,6 +1,7 @@
 import { GameInfo } from './game-info.js'
 import { PlayerInfo } from './player-info.js'
 import { TrackerInfo } from './tracker-info.js'
+import { RollTableInfo } from './roll-table-info.js'
 import { SceneInfo } from './scene-info.js'
 import { zipSync, unzipSync, strToU8, strFromU8 } from '../lib/fflate.js'
 
@@ -42,6 +43,11 @@ export class BackupData {
   Trackers
 
   /**
+   * @type {Array<RollTableInfo>}
+   */
+  RollTables
+
+  /**
    * @type {Map<number, Array<string>>}
    */
   Traits
@@ -52,14 +58,16 @@ export class BackupData {
    * @param {Array<PlayerInfo>} players               list of players info
    * @param {Array<SceneInfo>} scenes                 list of scenes info
    * @param {Array<TrackerInfo>} trackers             list of trackers
-   * @param {Map<number, Array<string>>} traits    list of traits for scenes
+   * @param {Map<number, Array<string>>} traits       list of traits for scenes
+   * @param {Array<RollTableInfo>} rollTables         list of roll tables
    */
-  constructor (gameInfo, players, scenes, trackers, traits) {
+  constructor (gameInfo, players, scenes, trackers, traits, rollTables = []) {
     this.GameInfo = gameInfo
     this.Players = players
     this.Scenes = scenes
     this.Trackers = trackers
     this.Traits = traits
+    this.RollTables = rollTables
   }
 
   /**
@@ -120,12 +128,20 @@ export class BackupData {
       trackers.push(TrackerInfo.assign(tracker))
     }
 
+    const rollTables = []
+    if (data.RollTables) {
+      for (const table of data.RollTables) {
+        rollTables.push(RollTableInfo.assign(table))
+      }
+    }
+
     const backupData = new BackupData(
       GameInfo.assign(data.GameInfo),
       players,
       scenes,
       trackers,
-      data.Traits
+      data.Traits,
+      rollTables
     )
 
     // Put it all into the object
