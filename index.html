@@ -128,7 +128,20 @@
         </header>
         <nav>
             <ul>
-                <li>
+                <li title="Add a new player character">
+                    <a id="player-add">
+                        ＋
+                        <span class="edition-1 edition-2"> Player</span>
+                        <span class="edition-captains-log"> Character</span>
+                    </a>
+                </li>
+                <li class="edition-1 edition-2" title="Add a combat or extended task tracker">
+                    <a id="task-tracker-add">＋ Tracker</a>
+                </li>
+                <li class="edition-1 edition-2" title="Add a scene trait">
+                    <a id="trait-add">＋ Trait</a>
+                </li>
+                <li id="nav-condition-select" title="Alerts and Conditions">
                     <select id="alert-dropdown">
                         <option value="" selected>None</option>
                         <option value="yellow">Yellow Alert</option>
@@ -138,18 +151,9 @@
                         <option value="black">Black Alert</option>
                         <option value="cloak">Cloak</option>
                     </select>
-                    <a>▼ Condition</a>
+                    <a>⟁<text> Condition</text></a>
                 </li>
-                <li><a id="scenes-btn">📑 Scenes</a></li>
-                <li>
-                    <a id="player-add">
-                        ＋
-                        <span class="edition-1 edition-2"> Player</span>
-                        <span class="edition-captains-log"> Character</span>
-                    </a>
-                </li>
-                <li class="edition-1 edition-2"><a id="task-tracker-add">＋ Tracker</a></li>
-                <li class="edition-1 edition-2"><a id="trait-add">＋ Trait</a></li>
+                <li><a id="scenes-btn" title="Scene Management">⧎<text> Scenes</text></a></li>
                 <li id="shipname" class="shipname" contenteditable="true" autocomplete="off" autocorrect="off" spellcheck="false">USS Winnipesaukee</li>
             </ul>
         </nav>
