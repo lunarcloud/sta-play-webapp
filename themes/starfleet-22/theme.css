@@ -498,6 +498,7 @@ body {
     & text {
         display: none;
     }
+
     & img.symbol {
         filter: unset;
     }

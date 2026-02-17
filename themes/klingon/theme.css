@@ -136,6 +136,7 @@ body {
     & > text {
         display: none;
     }
+
     & > img.symbol {
         width: 1em;
     }
@@ -201,15 +202,16 @@ body {
 }
 
 #dice-btn {
-
     & img.symbol {
       filter: invert(1) contrast(1.25);
     }
+
     &:hover, &:focus {
       & img.symbol {
         filter: invert(1) sepia(0.5) hue-rotate(275deg);
       }
     }
+
     &:active {
       & img.symbol {
         filter: invert(1) sepia(1) hue-rotate(275deg);

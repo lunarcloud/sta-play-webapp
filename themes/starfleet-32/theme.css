@@ -369,6 +369,7 @@ body::before {
         filter: sepia(1) saturate(1) hue-rotate(150deg);
       }
     }
+
     &:active {
       & img.symbol {
         filter: sepia(1) brightness(0.5) hue-rotate(150deg);

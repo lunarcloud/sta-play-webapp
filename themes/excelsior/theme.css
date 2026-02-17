@@ -474,11 +474,13 @@ body {
     & img.symbol {
       filter: sepia(1) saturate(2);
     }
+
     &:hover, &:focus {
       & img.symbol {
         filter: sepia(1) saturate(2) brightness(0.75);
       }
     }
+
     &:active {
       & img.symbol {
         filter: sepia(1) saturate(4);
