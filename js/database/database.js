@@ -22,7 +22,7 @@ import { BackupData } from './backup-data.js'
  */
 
 const DB_NAME = 'STAPlayApp'
-const DB_VERSION = 15
+const DB_VERSION = 16
 const STORE = {
   GAMES: 'games',
   SCENES: 'scenes',

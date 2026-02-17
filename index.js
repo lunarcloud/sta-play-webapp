@@ -712,7 +712,6 @@ export class IndexController {
     momentumToggleEl.checked = gameInfo?.momentum > 0
     threatEl.value = `${(gameInfo?.threat ?? 0)}`
     threatToggleEl.checked = gameInfo?.threat > 0
-    this.#setShipAlert((gameInfo?.activeAlert ?? '').trim())
     this.#useTheme(gameInfo?.theme ?? 'lcars-24', gameInfo?.altFont ?? false)
     this.#useEdition(gameInfo?.edition)
     this.#setLegacyTaskTrackers(gameInfo?.legacyTrackers ?? false)
@@ -725,6 +724,9 @@ export class IndexController {
       firstSceneInfo = sceneInfos?.[0]
       this.currentSceneId = firstSceneInfo?.id
       document.getElementById('general-text').innerHTML = firstSceneInfo?.description ?? this.fallbackText
+
+      // Load ship alert/condition from the first scene, with backwards compatibility
+      this.#setShipAlert((firstSceneInfo?.activeAlert ?? gameInfo?.activeAlert ?? '').trim())
 
       // Get all players
       const players = await this.db.getPlayers(gameInfo?.id)
@@ -834,7 +836,7 @@ export class IndexController {
       document.getElementById('shipname').textContent.trim(),
       momentumValue,
       threatValue,
-      shipAlertEl.color,
+      '', // activeAlert is now scene-specific, not game-wide
       themeSelectEl.value,
       editionSelectEl.value,
       this.shipModel,
@@ -856,7 +858,8 @@ export class IndexController {
         missionTrackerEl.act1,
         missionTrackerEl.act2,
         missionTrackerEl.act3
-      ]
+      ],
+      shipAlertEl.color
     )
     const savedSceneId = await this.db.saveSceneInfo(sceneInfo)
     if (savedSceneId !== undefined) {
@@ -1297,6 +1300,9 @@ export class IndexController {
       // Update scene description
       document.getElementById('general-text').innerHTML = scene.description || this.fallbackText
 
+      // Update ship alert/condition for this scene
+      this.#setShipAlert((scene.activeAlert ?? '').trim())
+
       // Update mission tracker
       const missionTrackerEl = document.getElementsByTagName('mission-tracker')[0]
       if (missionTrackerEl instanceof MissionTrackerElement) {
@@ -1369,7 +1375,9 @@ export class IndexController {
     }
 
     const missionTrackerEl = document.getElementsByTagName('mission-tracker')[0]
-    if (!(missionTrackerEl instanceof MissionTrackerElement)) {
+    const shipAlertEl = document.getElementsByTagName('ship-alert')[0]
+    if (!(missionTrackerEl instanceof MissionTrackerElement) ||
+        !(shipAlertEl instanceof ShipAlertElement)) {
       return
     }
 
@@ -1387,7 +1395,8 @@ export class IndexController {
         missionTrackerEl.act1,
         missionTrackerEl.act2,
         missionTrackerEl.act3
-      ]
+      ],
+      shipAlertEl.color
     )
     await this.db.saveSceneInfo(sceneInfo)
 
