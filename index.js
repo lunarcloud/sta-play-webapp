@@ -377,6 +377,12 @@ export class IndexController {
             themeSelectEl.selectedIndex--
             this.#useTheme(themeSelectEl.value)
           }
+        } else if (e.ctrlKey && e.altKey && e.key === 'ArrowLeft') {
+          e.preventDefault()
+          await this.#switchToPreviousScene()
+        } else if (e.ctrlKey && e.altKey && e.key === 'ArrowRight') {
+          e.preventDefault()
+          await this.#switchToNextScene()
         }
       } finally {
         handlingInput = false
@@ -1313,6 +1319,52 @@ export class IndexController {
         this.addTrait(trait)
       }
     }
+  }
+
+  /**
+   * Switch to the previous scene in the list
+   */
+  async #switchToPreviousScene () {
+    if (!this.currentGameId || !this.currentSceneId) {
+      return
+    }
+
+    const scenes = await this.db.getScenes(this.currentGameId)
+    if (scenes.length <= 1) {
+      return // No other scenes to switch to
+    }
+
+    const currentIndex = scenes.findIndex(s => s.id === this.currentSceneId)
+    if (currentIndex === -1) {
+      return // Current scene not found
+    }
+
+    // Calculate previous index with wraparound
+    const previousIndex = currentIndex === 0 ? scenes.length - 1 : currentIndex - 1
+    await this.#switchToScene(scenes[previousIndex].id)
+  }
+
+  /**
+   * Switch to the next scene in the list
+   */
+  async #switchToNextScene () {
+    if (!this.currentGameId || !this.currentSceneId) {
+      return
+    }
+
+    const scenes = await this.db.getScenes(this.currentGameId)
+    if (scenes.length <= 1) {
+      return // No other scenes to switch to
+    }
+
+    const currentIndex = scenes.findIndex(s => s.id === this.currentSceneId)
+    if (currentIndex === -1) {
+      return // Current scene not found
+    }
+
+    // Calculate next index with wraparound
+    const nextIndex = currentIndex === scenes.length - 1 ? 0 : currentIndex + 1
+    await this.#switchToScene(scenes[nextIndex].id)
   }
 
   /**
