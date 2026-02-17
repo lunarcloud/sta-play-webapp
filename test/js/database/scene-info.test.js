@@ -4,12 +4,13 @@ import { SceneInfo, DefaultSceneName, DefaultSceneDescription } from '../../../j
 describe('SceneInfo', () => {
   describe('constructor', () => {
     it('should create instance with all parameters', () => {
-      const info = new SceneInfo(1, 2, 'Custom Scene', 'Custom description', ['mission1', 'mission2'])
+      const info = new SceneInfo(1, 2, 'Custom Scene', 'Custom description', ['mission1', 'mission2'], 'Red Alert')
       expect(info.id).to.equal(1)
       expect(info.game).to.equal(2)
       expect(info.name).to.equal('Custom Scene')
       expect(info.description).to.equal('Custom description')
       expect(info.missionTrack).to.deep.equal(['mission1', 'mission2'])
+      expect(info.activeAlert).to.equal('Red Alert')
     })
 
     it('should use default name when not provided', () => {
@@ -25,6 +26,16 @@ describe('SceneInfo', () => {
     it('should use empty array for missionTrack when not provided', () => {
       const info = new SceneInfo(1, 2)
       expect(info.missionTrack).to.deep.equal([])
+    })
+
+    it('should use empty string for activeAlert when not provided', () => {
+      const info = new SceneInfo(1, 2)
+      expect(info.activeAlert).to.equal('')
+    })
+
+    it('should accept custom activeAlert value', () => {
+      const info = new SceneInfo(1, 2, 'Scene', 'Desc', [], 'Yellow Alert')
+      expect(info.activeAlert).to.equal('Yellow Alert')
     })
 
     it('should accept undefined as id', () => {
@@ -45,7 +56,8 @@ describe('SceneInfo', () => {
         game: 10,
         name: 'Assigned Scene',
         description: 'Assigned description',
-        missionTrack: ['track1', 'track2']
+        missionTrack: ['track1', 'track2'],
+        activeAlert: 'Red Alert'
       }
       const info = SceneInfo.assign(obj)
       expect(info.id).to.equal(5)
@@ -53,6 +65,7 @@ describe('SceneInfo', () => {
       expect(info.name).to.equal('Assigned Scene')
       expect(info.description).to.equal('Assigned description')
       expect(info.missionTrack).to.deep.equal(['track1', 'track2'])
+      expect(info.activeAlert).to.equal('Red Alert')
     })
 
     it('should use default name when not in object', () => {
@@ -71,6 +84,12 @@ describe('SceneInfo', () => {
       const obj = { id: 1, game: 2 }
       const info = SceneInfo.assign(obj)
       expect(info.missionTrack).to.deep.equal([])
+    })
+
+    it('should use empty string when activeAlert not in object', () => {
+      const obj = { id: 1, game: 2 }
+      const info = SceneInfo.assign(obj)
+      expect(info.activeAlert).to.equal('')
     })
   })
 
@@ -132,6 +151,12 @@ describe('SceneInfo', () => {
       const info = new SceneInfo(1, 2, 'Scene', 'Desc', [])
       info.missionTrack = ['new1', 'new2']
       expect(info.missionTrack).to.deep.equal(['new1', 'new2'])
+    })
+
+    it('should allow activeAlert modification', () => {
+      const info = new SceneInfo(1, 2, 'Scene', 'Desc', [], '')
+      info.activeAlert = 'Blue Alert'
+      expect(info.activeAlert).to.equal('Blue Alert')
     })
   })
 
