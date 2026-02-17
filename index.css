@@ -983,11 +983,15 @@ body.ship-fullscreen {
       right: unset;
       left: 2mm;
       top: calc(2mm + 10mm);
+      height: 1em;
+      border: 2px solid white;
+      aspect-ratio: 4 / 3;
 
       & span {
         font-size: 8mm;
         font-size: max(8mm, 1em);
-        line-height: 1;
+        line-height: 0.5em;
+        vertical-align: text-top;
         color: white;
       }
     }
