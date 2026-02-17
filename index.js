@@ -1253,17 +1253,23 @@ export class IndexController {
 
     dialog.onSceneAdd(async (sceneName) => {
       const newSceneId = await this.#addScene(sceneName)
+      // Reload dialog to refresh the scene list
+      // This ensures consistency but could be optimized by updating the list directly
       await this.#loadSceneSwitcherDialog(dialog)
       return newSceneId
     })
 
     dialog.onSceneRename(async (sceneId, newName) => {
       await this.#renameScene(sceneId, newName)
+      // Reload dialog to refresh the scene list
+      // This ensures consistency but could be optimized by updating the list directly
       await this.#loadSceneSwitcherDialog(dialog)
     })
 
     dialog.onSceneDelete(async (sceneId) => {
       await this.#deleteScene(sceneId)
+      // Reload dialog to refresh the scene list
+      // This ensures consistency but could be optimized by updating the list directly
       await this.#loadSceneSwitcherDialog(dialog)
     })
   }
@@ -1358,7 +1364,7 @@ export class IndexController {
       undefined,
       this.currentGameId,
       sceneName,
-      '<h1>Scene Notes</h1><p>The story continues...</p>',
+      this.fallbackText,
       ['', '', '']
     )
 
@@ -1399,17 +1405,8 @@ export class IndexController {
       return
     }
 
-    // Delete the scene from database
-    const db = await this.db.open()
-    await db.delete('scenes', sceneId)
-
-    // Delete all traits associated with this scene
-    const traits = await db.getAllFromIndex('traits', 'scene', sceneId)
-    for (const trait of traits) {
-      await db.delete('traits', trait.id)
-    }
-
-    db.close()
+    // Delete the scene and its associated traits using database method
+    await this.db.deleteScene(sceneId)
 
     // If we just deleted the current scene, switch to another one
     if (sceneId === this.currentSceneId) {

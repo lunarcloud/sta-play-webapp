@@ -308,6 +308,27 @@ export class Database {
   }
 
   /**
+   * Delete a scene and its associated traits from the database
+   * @param {number} sceneId - The scene ID to delete
+   * @param {IDBPDatabase|undefined} [db] - The database (else we'll open a new one)
+   */
+  async deleteScene (sceneId, db = undefined) {
+    const andClose = typeof (db) === 'undefined'
+    db ??= await this.open()
+
+    // Delete the scene
+    await db.delete(STORE.SCENES, sceneId)
+
+    // Delete all traits associated with this scene
+    const traits = await db.getAllFromIndex(STORE.TRAITS, INDEX.SCENE, sceneId)
+    for (const trait of traits) {
+      await db.delete(STORE.TRAITS, trait.id)
+    }
+
+    if (andClose) db.close()
+  }
+
+  /**
    * Replace data of a store in the database with new ones
    * @param {string} storeName                Name of the store
    * @param {string} [clearIndex]             the name of the index to clear
