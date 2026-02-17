@@ -277,6 +277,20 @@ export class IndexController {
         } else if (e.ctrlKey && e.altKey && e.key === 'd') {
           e.preventDefault()
           diceDialog.showModal()
+        } else if (e.ctrlKey && e.altKey && e.key === 'ArrowUp') {
+          e.preventDefault()
+          const themeSelectEl = document.getElementById('select-theme')
+          if (themeSelectEl instanceof HTMLSelectElement && themeSelectEl.selectedOptions[0] != themeSelectEl.lastElementChild) {
+            themeSelectEl.selectedIndex++
+            this.#useTheme(themeSelectEl.value)
+          }
+        } else if (e.ctrlKey && e.altKey && e.key === 'ArrowDown') {
+          e.preventDefault()
+          const themeSelectEl = document.getElementById('select-theme')
+          if (themeSelectEl instanceof HTMLSelectElement && themeSelectEl.selectedOptions[0] != themeSelectEl.firstElementChild) {
+            themeSelectEl.selectedIndex--
+            this.#useTheme(themeSelectEl.value)
+          }
         }
       } finally {
         handlingInput = false
