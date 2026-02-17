@@ -983,6 +983,13 @@ body.ship-fullscreen {
       right: unset;
       left: 2mm;
       top: calc(2mm + 10mm);
+
+      & span {
+        font-size: 8mm;
+        font-size: max(8mm, 1em);
+        line-height: 1;
+        color: white;
+      }
     }
 
     & .fullscreen-btn  {
@@ -1002,11 +1009,6 @@ body.ship-fullscreen {
         height: 8mm;
         height: max(8mm, 1em);
       }
-    }
-
-    & #ship-switch-fullscreen img {
-      height: 8mm;
-      height: max(8mm, 1em);
     }
   }
 }

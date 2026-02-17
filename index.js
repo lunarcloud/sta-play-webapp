@@ -226,6 +226,13 @@ export class IndexController {
         : (this.shipModel2 instanceof File ? URL.createObjectURL(this.shipModel2) : DefaultShipUrl)
 
       shipFullscreenViewer.src = url
+
+      // Update the icon to show appropriate chevron
+      // When viewing model 1, show right chevron (to switch to model 2)
+      // When viewing model 2, show left chevron (to switch back to model 1)
+      const showRightChevron = this.#currentFullscreenModel === 1
+      switchShipFullscreenBtn.querySelector('.chevron-right').toggleAttribute('hidden', !showRightChevron)
+      switchShipFullscreenBtn.querySelector('.chevron-left').toggleAttribute('hidden', showRightChevron)
     })
 
     // Setup Dropping ship's 3D model anywhere on the page
@@ -1070,6 +1077,11 @@ export class IndexController {
     const switcherBtn = document.getElementById('ship-switch-fullscreen')
     if (switcherBtn) {
       switcherBtn.style.display = hasTwoModels ? 'block' : 'none'
+      // Reset icon to show right chevron (since we're on model 1)
+      const rightChevron = switcherBtn.querySelector('.chevron-right')
+      const leftChevron = switcherBtn.querySelector('.chevron-left')
+      if (rightChevron) rightChevron.removeAttribute('hidden')
+      if (leftChevron) leftChevron.setAttribute('hidden', '')
     }
   }
 
