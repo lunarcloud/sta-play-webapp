@@ -54,6 +54,17 @@ export class IndexController {
   shipModel = undefined
 
   /**
+   * @type {object|undefined}
+   */
+  shipModel2 = undefined
+
+  /**
+   * Current model displayed in fullscreen (1 or 2)
+   * @type {number}
+   */
+  #currentFullscreenModel = 1
+
+  /**
    * Milliseconds to wait until another toggle is allowed
    * @type {number}
    */
@@ -201,6 +212,20 @@ export class IndexController {
       shipFullscreenViewer.toggleAttribute('auto-rotate')
       const interactionPrompt = shipFullscreenViewer.getAttribute('interaction-prompt') === 'auto'
       shipFullscreenViewer.setAttribute('interaction-prompt', interactionPrompt ? 'none' : 'auto')
+    })
+
+    // Setup fullscreen Model-Viewer switcher button
+    const switchShipFullscreenBtn = document.getElementById('ship-switch-fullscreen')
+    switchShipFullscreenBtn.addEventListener('click', () => {
+      // Toggle between model 1 and model 2
+      this.#currentFullscreenModel = this.#currentFullscreenModel === 1 ? 2 : 1
+
+      // Update the viewer src based on current model
+      const url = this.#currentFullscreenModel === 1
+        ? (this.shipModel instanceof File ? URL.createObjectURL(this.shipModel) : DefaultShipUrl)
+        : (this.shipModel2 instanceof File ? URL.createObjectURL(this.shipModel2) : DefaultShipUrl)
+
+      shipFullscreenViewer.src = url
     })
 
     // Setup Dropping ship's 3D model anywhere on the page
@@ -519,10 +544,21 @@ export class IndexController {
       throw new Error('Page setup incorrect')
     }
     dialogEl.querySelector('button.set-ship').addEventListener('click', async () => {
-      await this.setShipModel(fileSelectShip.files[0])
+      await this.setShipModel(fileSelectShip.files[0], 1)
     })
     dialogEl.querySelector('button.clear-ship').addEventListener('click', async () => {
-      await this.setShipModel(undefined)
+      await this.setShipModel(undefined, 1)
+    })
+
+    const fileSelectShip2 = dialogEl.querySelector('input.select-ship-2')
+    if (fileSelectShip2 instanceof HTMLInputElement === false) {
+      throw new Error('Page setup incorrect')
+    }
+    dialogEl.querySelector('button.set-ship-2').addEventListener('click', async () => {
+      await this.setShipModel(fileSelectShip2.files[0], 2)
+    })
+    dialogEl.querySelector('button.clear-ship-2').addEventListener('click', async () => {
+      await this.setShipModel(undefined, 2)
     })
 
     const fileSelectPlayer = dialogEl.querySelector('.player-image-upload input.select')
@@ -655,7 +691,8 @@ export class IndexController {
       document.getElementById('general-text').innerHTML = this.fallbackText
     }
 
-    await this.setShipModel(gameInfo?.shipModel)
+    await this.setShipModel(gameInfo?.shipModel, 1)
+    await this.setShipModel(gameInfo?.shipModel2, 2)
 
     this.safeToSaveDB = true
     return typeof (gameInfo) !== 'undefined'
@@ -738,7 +775,8 @@ export class IndexController {
       editionSelectEl.value,
       this.shipModel,
       altFontCheckbox.checked,
-      legacyTrackersCheckbox.checked
+      legacyTrackersCheckbox.checked,
+      this.shipModel2
     )
     const savedGameId = await this.db.saveGameInfo(gameInfo)
     if (savedGameId !== undefined) {
@@ -975,10 +1013,11 @@ export class IndexController {
   }
 
   /**
-   * Handler for new ship model drop
+   * Handler for new ship model drop/set
    * @param {File} modelFile  GLTF/GLB model file
+   * @param {number} [modelIndex]  Which model to set (1 or 2)
    */
-  async setShipModel (modelFile) {
+  async setShipModel (modelFile, modelIndex = 1) {
     // Check if file size exceeds 56 MB (56 * 1024 * 1024 bytes)
     const maxSizeBytes = 56 * 1024 * 1024
     if (modelFile && modelFile.size > maxSizeBytes) {
@@ -992,22 +1031,42 @@ export class IndexController {
         return
       }
     }
-    this.shipModel = modelFile
+    if (modelIndex === 2) {
+      this.shipModel2 = modelFile
+    } else {
+      this.shipModel = modelFile
+    }
     this.#updateShipSrc()
   }
 
   /**
-   * Update the model-viewers so they are using the current ship model.
+   * Update the model-viewers so they are using the current ship model(s).
    */
   #updateShipSrc () {
-    const url = this.shipModel instanceof File
+    const hasTwoModels = this.shipModel instanceof File && this.shipModel2 instanceof File
+
+    // Determine URLs for each model
+    const url1 = this.shipModel instanceof File
       ? URL.createObjectURL(this.shipModel)
       : DefaultShipUrl
-    const modelViewers = document.getElementsByTagName('model-viewer')
-    for (const viewer of modelViewers) {
-      if ('src' in viewer) {
-        viewer.src = url
-      }
+    const url2 = this.shipModel2 instanceof File
+      ? URL.createObjectURL(this.shipModel2)
+      : url1 // Use same URL as model1 if model2 not set
+
+    // Update header viewers with different models or same model
+    const shipSidewaysViewer = document.getElementById('ship-sideways')
+    const shipTopViewer = document.getElementById('ship-top')
+    if (shipSidewaysViewer) shipSidewaysViewer.src = url1
+    if (shipTopViewer) shipTopViewer.src = url2
+
+    // Update fullscreen viewer (defaults to model1)
+    const shipFullscreenViewer = document.getElementById('ship-fullscreen')
+    if (shipFullscreenViewer) shipFullscreenViewer.src = url1
+
+    // Show/hide the model switcher button based on whether we have two models
+    const switcherBtn = document.getElementById('ship-switch-fullscreen')
+    if (switcherBtn) {
+      switcherBtn.style.display = hasTwoModels ? 'block' : 'none'
     }
   }
 

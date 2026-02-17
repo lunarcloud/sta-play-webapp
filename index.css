@@ -918,7 +918,8 @@ body {
 
 
 .fullscreen-btn,
-#ship-autorotate-fullscreen {
+#ship-autorotate-fullscreen,
+#ship-switch-fullscreen {
   background-color: transparent;
   outline: none;
   border: none;
@@ -935,6 +936,10 @@ body {
   & img {
     aspect-ratio: 1;
   }
+}
+
+#ship-switch-fullscreen {
+  bottom: 3em;
 }
 
 header .fullscreen-btn img {
@@ -973,6 +978,13 @@ body.ship-fullscreen {
       left: 2mm;
     }
 
+    & #ship-switch-fullscreen {
+      bottom: unset;
+      right: unset;
+      left: 2mm;
+      top: calc(2mm + 9mm);
+    }
+
     & .fullscreen-btn  {
       bottom: unset;
       right: 2mm;
@@ -983,6 +995,7 @@ body.ship-fullscreen {
     }
 
     & #ship-autorotate-fullscreen,
+    & #ship-switch-fullscreen,
     & .fullscreen-btn {
       top: 2mm;
 
