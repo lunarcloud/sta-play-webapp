@@ -226,6 +226,8 @@ const setup = async () => {
 
   customElements.define('scene-switcher', SceneSwitcherElement, { extends: 'dialog' })
   globalThis.SceneSwitcherElement = SceneSwitcherElement
+  
+  return SceneSwitcherElement
 }
 
-await setup()
+export const SceneSwitcherElement = await setup()
