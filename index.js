@@ -348,6 +348,10 @@ export class IndexController {
         } else if (e.ctrlKey && e.altKey && e.key === 'd') {
           e.preventDefault()
           diceDialog.showModal()
+        } else if (e.ctrlKey && e.altKey && e.key === 't') {
+          e.preventDefault()
+          this.#loadRollTablesDialog(rollTablesDialog)
+          rollTablesDialog.showModal()
         } else if (e.ctrlKey && e.altKey && e.key === 'ArrowUp') {
           e.preventDefault()
           const themeSelectEl = document.getElementById('select-theme')
