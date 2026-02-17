@@ -17,6 +17,11 @@ export class GameInfo extends NamedInfo {
   shipModel
 
   /**
+   * @type {File|undefined}
+   */
+  shipModel2
+
+  /**
    * @type {number}
    */
   momentum
@@ -64,8 +69,9 @@ export class GameInfo extends NamedInfo {
    * @param {File}                [shipModel]     ship's 3D model
    * @param {boolean}             [altFont]       whether to use a theme's alternate font
    * @param {boolean}             [legacyTrackers]       whether to use the legacy trackers controls
+   * @param {File}                [shipModel2]    second ship's 3D model
    */
-  constructor (id, name, shipName, momentum = 0, threat = 0, activeAlert = '', theme = 'lcars-24', edition = '2', shipModel = undefined, altFont = false, legacyTrackers = false) {
+  constructor (id, name, shipName, momentum = 0, threat = 0, activeAlert = '', theme = 'lcars-24', edition = '2', shipModel = undefined, altFont = false, legacyTrackers = false, shipModel2 = undefined) {
     super(name ?? DefaultGameName, id)
     this.shipName = shipName
     this.momentum = typeof (momentum) === 'number' ? momentum : parseInt(momentum)
@@ -76,6 +82,7 @@ export class GameInfo extends NamedInfo {
     this.legacyTrackers = legacyTrackers
     this.setEdition(edition)
     this.shipModel = shipModel
+    this.shipModel2 = shipModel2
   }
 
   /**
@@ -95,7 +102,8 @@ export class GameInfo extends NamedInfo {
       'edition' in obj ? obj.edition : '2',
       'shipModel' in obj ? obj.shipModel : undefined,
       'altFont' in obj ? obj.altFont : false,
-      'legacyTrackers' in obj ? obj.legacyTrackers : false
+      'legacyTrackers' in obj ? obj.legacyTrackers : false,
+      'shipModel2' in obj ? obj.shipModel2 : undefined
     )
   }
 

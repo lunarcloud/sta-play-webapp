@@ -742,6 +742,12 @@ body {
 
         & > model-viewer {
             flex: 1 1 49%;
+            transition: opacity 0.2s, box-shadow 0.2s;
+        }
+        
+        & > model-viewer.drag-over {
+          opacity: 0.7;
+          box-shadow: 0 0 20px 5px var(--trek-color-highlight);
         }
 
     }
@@ -918,7 +924,8 @@ body {
 
 
 .fullscreen-btn,
-#ship-autorotate-fullscreen {
+#ship-autorotate-fullscreen,
+#ship-switch-fullscreen {
   background-color: transparent;
   outline: none;
   border: none;
@@ -937,8 +944,18 @@ body {
   }
 }
 
+#ship-switch-fullscreen {
+  bottom: 3em;
+}
+
 header .fullscreen-btn img {
   height: 1em;
+}
+
+/* Drag-over styling for model-viewer drop zones */
+model-viewer.drag-over {
+  opacity: 0.7 !important;
+  box-shadow: 0 0 20px 5px var(--trek-color-highlight) !important;
 }
 
 #fullscreen-ship {
@@ -971,6 +988,24 @@ body.ship-fullscreen {
       bottom: unset;
       right: unset;
       left: 2mm;
+    }
+
+    & #ship-switch-fullscreen {
+      bottom: unset;
+      right: unset;
+      left: 2mm;
+      top: calc(2mm + 10mm);
+      height: 1em;
+      border: 2px solid white;
+      aspect-ratio: 4 / 3;
+
+      & span {
+        font-size: 8mm;
+        font-size: max(8mm, 1em);
+        line-height: 0.5em;
+        vertical-align: text-top;
+        color: white;
+      }
     }
 
     & .fullscreen-btn  {
