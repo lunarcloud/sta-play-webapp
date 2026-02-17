@@ -1294,7 +1294,7 @@ export class IndexController {
       // Update mission tracker
       const missionTrackerEl = document.getElementsByTagName('mission-tracker')[0]
       if (missionTrackerEl instanceof MissionTrackerElement) {
-        if (scene.missionTrack.length >= 3) {
+        if (scene.missionTrack && scene.missionTrack.length === 3) {
           missionTrackerEl.act1 = scene.missionTrack[0]
           missionTrackerEl.act2 = scene.missionTrack[1]
           missionTrackerEl.act3 = scene.missionTrack[2]
