@@ -235,16 +235,34 @@ export class IndexController {
       switchShipFullscreenBtn.querySelector('.chevron-left').toggleAttribute('hidden', showRightChevron)
     })
 
-    // Setup Dropping ship's 3D model anywhere on the page
-    setupDropOnly(document.body, event => {
+    // Setup Dropping ship's 3D model on the header model viewers
+    const shipSidewaysViewer = document.getElementById('ship-sideways')
+    const shipTopViewer = document.getElementById('ship-top')
+
+    // Left side (ship-sideways) - Model 1
+    setupDropOnly(shipSidewaysViewer, event => {
       if (!event.dataTransfer.items?.[0].type.startsWith('model/gltf') ||
                 !event.dataTransfer.files?.[0]) {
         return false
       }
 
       // Call async method without blocking the event handler
-      this.setShipModel(event.dataTransfer.files?.[0]).catch(err => {
-        console.error('Error setting ship model:', err)
+      this.setShipModel(event.dataTransfer.files?.[0], 1).catch(err => {
+        console.error('Error setting ship model 1:', err)
+      })
+      return true
+    })
+
+    // Right side (ship-top) - Model 2
+    setupDropOnly(shipTopViewer, event => {
+      if (!event.dataTransfer.items?.[0].type.startsWith('model/gltf') ||
+                !event.dataTransfer.files?.[0]) {
+        return false
+      }
+
+      // Call async method without blocking the event handler
+      this.setShipModel(event.dataTransfer.files?.[0], 2).catch(err => {
+        console.error('Error setting ship model 2:', err)
       })
       return true
     })

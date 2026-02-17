@@ -9,10 +9,17 @@ export function setupDropOnly (el, onDrop) {
   }
 
   el.addEventListener('dragstart', event => event.dataTransfer.setData('text/plain', null)) // required for firefox
-  el.addEventListener('dragenter', event => event.preventDefault())
+  el.addEventListener('dragenter', event => {
+    event.preventDefault()
+    el.classList.add('drag-over')
+  })
   el.addEventListener('dragover', event => event.preventDefault())
-  el.addEventListener('dragleave', event => event.preventDefault())
+  el.addEventListener('dragleave', event => {
+    event.preventDefault()
+    el.classList.remove('drag-over')
+  })
   el.addEventListener('drop', event => {
+    el.classList.remove('drag-over')
     if (event instanceof DragEvent === false || !onDrop(event)) {
       return
     }
