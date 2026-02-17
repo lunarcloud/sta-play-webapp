@@ -6,6 +6,7 @@ import { PlayerInfo } from './player-info.js'
 import { TrackerInfo } from './tracker-info.js'
 import { TraitInfo } from './trait-info.js'
 import { SceneInfo } from './scene-info.js'
+import { RollTableInfo } from './roll-table-info.js'
 import { BackupData } from './backup-data.js'
 
 /**
@@ -21,13 +22,14 @@ import { BackupData } from './backup-data.js'
  */
 
 const DB_NAME = 'STAPlayApp'
-const DB_VERSION = 13
+const DB_VERSION = 14
 const STORE = {
   GAMES: 'games',
   SCENES: 'scenes',
   TRAITS: 'traits',
   PLAYERS: 'players',
-  TRACKERS: 'trackers'
+  TRACKERS: 'trackers',
+  ROLL_TABLES: 'rollTables'
 }
 const INDEX = {
   ID: 'id',
@@ -96,6 +98,9 @@ export class Database {
     if (db.objectStoreNames.contains(STORE.SCENES)) {
       db.deleteObjectStore(STORE.SCENES)
     }
+    if (db.objectStoreNames.contains(STORE.ROLL_TABLES)) {
+      db.deleteObjectStore(STORE.ROLL_TABLES)
+    }
 
     console.warn('cleared db for upgrade')
     const gameStore = db.createObjectStore(STORE.GAMES, { keyPath: INDEX.ID, autoIncrement: true })
@@ -116,6 +121,10 @@ export class Database {
     const sceneStore = db.createObjectStore(STORE.SCENES, { keyPath: INDEX.ID, autoIncrement: true })
     sceneStore.createIndex(INDEX.NAME, INDEX.NAME, { unique: false })
     sceneStore.createIndex(INDEX.GAME, INDEX.GAME, { unique: false })
+
+    const rollTablesStore = db.createObjectStore(STORE.ROLL_TABLES, { keyPath: INDEX.ID, autoIncrement: true })
+    rollTablesStore.createIndex(INDEX.NAME, INDEX.NAME, { unique: false })
+    rollTablesStore.createIndex(INDEX.GAME, INDEX.GAME, { unique: false })
   }
 
   /**
@@ -224,6 +233,28 @@ export class Database {
     const data = rows.map(e => {
       /** @type {TrackerInfo} */
       const item = Object.create(TrackerInfo.prototype)
+      Object.assign(item, e)
+      return item
+    })
+    return data
+  }
+
+  /**
+   * Get the roll tables from the database
+   * @param {number}  [gameId]                    the id of the game to filter by
+   * @param {IDBPDatabase|undefined} [db]         the database (else we'll open a new one)
+   * @returns {Promise<RollTableInfo[]>}          the information for all roll tables
+   */
+  async getRollTables (gameId, db = undefined) {
+    const andClose = typeof (db) === 'undefined'
+    db ??= await this.open()
+
+    const rows = await db.getAllFromIndex(STORE.ROLL_TABLES, INDEX.GAME, gameId)
+    if (andClose) db.close()
+    /** @type {RollTableInfo[]} */
+    const data = rows.map(e => {
+      /** @type {RollTableInfo} */
+      const item = Object.create(RollTableInfo.prototype)
       Object.assign(item, e)
       return item
     })
@@ -354,6 +385,22 @@ export class Database {
   }
 
   /**
+   * Replace the roll tables in the database with new ones
+   * @param {RollTableInfo[]} rollTables      all the current roll table infos
+   * @param {IDBPDatabase|IDBDatabase} [db]   the database
+   */
+  async replaceRollTables (rollTables = [], db = undefined) {
+    const invalidTables = rollTables.filter(t => !t.validate())
+    if (invalidTables.length > 0) {
+      console.error('Invalid roll tables provided: %o', invalidTables)
+      return
+    }
+
+    rollTables.forEach(t => { if (t.id === undefined) delete t.id })
+    await this.#replaceData(STORE.ROLL_TABLES, INDEX.NAME, rollTables, db)
+  }
+
+  /**
    * Export the database info for a  game to a backup data object.
    * @param {string|number}  [nameOrId]   the name of the game to load
    * @param {IDBPDatabase} [db]           the database
@@ -367,6 +414,7 @@ export class Database {
 
     const players = await this.getPlayers(gameInfo.id, db)
     const trackers = await this.getTrackers(gameInfo.id, db)
+    const rollTables = await this.getRollTables(gameInfo.id, db)
     const scenes = await this.getScenes(gameInfo.id, db)
     const traits = new Map()
 
@@ -374,7 +422,7 @@ export class Database {
       traits[scene.id] = await this.getTraits(scene.id, db)
     }
 
-    const data = new BackupData(gameInfo, players, scenes, trackers, traits)
+    const data = new BackupData(gameInfo, players, scenes, trackers, traits, rollTables)
 
     if (andClose) db.close()
     return data.getZip()
@@ -393,6 +441,7 @@ export class Database {
     await this.saveGameInfo(data.GameInfo, db)
     await this.replacePlayers(data.Players, db)
     await this.replaceTrackers(data.Trackers, db)
+    await this.replaceRollTables(data.RollTables || [], db)
 
     for (const scene of data.Scenes) {
       await this.saveSceneInfo(scene, db)

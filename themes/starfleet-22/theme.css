@@ -429,6 +429,7 @@ body {
 #save-btn,
 #fullscreen-btn,
 #dice-btn,
+#tables-btn,
 #momentum-section,
 #threat-section,
 #font-up-btn,
@@ -445,6 +446,7 @@ body {
 #save-btn,
 #fullscreen-btn,
 #dice-btn,
+#tables-btn,
 #font-up-btn,
 #font-down-btn {
     top: unset !important;
@@ -490,18 +492,27 @@ body {
     }
 }
 
-#dice-btn {
+#dice-btn,
+#tables-btn {
     left: 16em;
-    bottom: 4em;
     width: 1.25em;
 
     & text {
         display: none;
     }
+}
+
+#dice-btn {
+    bottom: 4em;
 
     & img.symbol {
         filter: unset;
     }
+}
+
+
+#tables-btn {
+    bottom: 2em;
 }
 
 #momentum-section,

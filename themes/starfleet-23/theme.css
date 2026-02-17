@@ -129,6 +129,7 @@ html > body {
 #save-btn,
 #fullscreen-btn,
 #dice-btn,
+#tables-btn,
 #font-up-btn,
 #font-down-btn  {
     position: absolute;
@@ -153,8 +154,8 @@ html > body {
 }
 
 #dice-btn {
-    left: unset;
-    right: 31.5em;
+    left: 2.5em;
+    right: unset;
 
     & img.symbol {
       filter: invert(1) contrast(1.25);
@@ -171,6 +172,11 @@ html > body {
         filter: invert(1) sepia(1) hue-rotate(275deg);
       }
     }
+}
+
+#tables-btn {
+    left: 3.75em;
+    right: unset;
 }
 
 #font-up-btn {

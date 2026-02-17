@@ -1,0 +1,286 @@
+
+<!DOCTYPE html>
+<html>
+    <body>
+        <dialog>
+            <style>
+                dialog[is=roll-tables-dialog] {
+                    width: fit-content;
+                    max-width: max(90%, 600px);
+                    min-width: 320px;
+
+                    main {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 1em;
+                        padding: 1em;
+                        max-height: 60vh;
+                        overflow-y: auto;
+                    }
+
+                    .table-list {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 0.5em;
+                        min-height: 100px;
+                    }
+
+                    .table-item {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5em;
+                        padding: 0.5em;
+                        border: 1px solid #444;
+                        border-radius: 4px;
+                        background-color: #2a2a2a;
+
+                        &:hover {
+                            background-color: #333;
+                        }
+                    }
+
+                    .table-name {
+                        flex: 1;
+                        font-weight: bold;
+                        color: #ccc;
+                    }
+
+                    .table-dice-type {
+                        color: #999;
+                        font-size: 0.9em;
+                    }
+
+                    .table-actions {
+                        display: flex;
+                        gap: 0.25em;
+                    }
+
+                    .table-actions button {
+                        padding: 0.25em 0.5em;
+                        font-size: 0.9em;
+                        border: 1px solid #666;
+                        border-radius: 4px;
+                        background-color: #444;
+                        color: white;
+                        cursor: pointer;
+
+                        &:hover {
+                            background-color: #555;
+                        }
+
+                        &:active {
+                            background-color: #333;
+                        }
+                    }
+
+                    .add-table-btn {
+                        align-self: flex-start;
+                        padding: 0.5em 1em;
+                        border: 2px solid #444;
+                        border-radius: 6px;
+                        background-color: #7a87f8;
+                        color: black;
+                        font-weight: bold;
+                        cursor: pointer;
+
+                        &:hover {
+                            filter: brightness(1.15);
+                        }
+
+                        &:active {
+                            filter: brightness(0.85);
+                        }
+                    }
+
+                    .table-editor {
+                        display: none;
+                        flex-direction: column;
+                        gap: 0.75em;
+                        padding: 1em;
+                        border: 2px solid #666;
+                        border-radius: 6px;
+                        background-color: #1a1a1a;
+
+                        &.active {
+                            display: flex;
+                        }
+                    }
+
+                    .editor-header {
+                        display: flex;
+                        gap: 0.5em;
+                        align-items: center;
+                    }
+
+                    .editor-header input {
+                        flex: 1;
+                        padding: 0.5em;
+                        font-size: 1.1em;
+                        border: 1px solid #666;
+                        border-radius: 4px;
+                        background-color: #2a2a2a;
+                        color: white;
+                    }
+
+                    .entries-list {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 0.5em;
+                    }
+
+                    .entry-item {
+                        display: grid;
+                        grid-template-columns: 1fr auto;
+                        gap: 0.5em;
+                        align-items: center;
+                        padding: 0.5em;
+                        border: 1px solid #444;
+                        border-radius: 4px;
+                        background-color: #2a2a2a;
+                    }
+
+                    .entry-result input {
+                        width: 100%;
+                        padding: 0.5em;
+                        border: 1px solid #666;
+                        border-radius: 4px;
+                        background-color: #333;
+                        color: white;
+                    }
+
+                    .entry-remove {
+                        padding: 0.25em 0.5em;
+                        border: 1px solid #666;
+                        border-radius: 4px;
+                        background-color: #d32f2f;
+                        color: white;
+                        cursor: pointer;
+
+                        &:hover {
+                            background-color: #f44336;
+                        }
+
+                        &:active {
+                            background-color: #b71c1c;
+                        }
+                    }
+
+                    .editor-actions {
+                        display: flex;
+                        gap: 0.5em;
+                        justify-content: space-between;
+                    }
+
+                    .editor-actions button {
+                        padding: 0.5em 1em;
+                        border: 1px solid #666;
+                        border-radius: 4px;
+                        cursor: pointer;
+                    }
+
+                    .add-entry-btn {
+                        background-color: #4caf50;
+                        color: white;
+
+                        &:hover {
+                            background-color: #66bb6a;
+                        }
+
+                        &:active {
+                            background-color: #388e3c;
+                        }
+                    }
+
+                    .save-table-btn {
+                        background-color: #2196f3;
+                        color: white;
+
+                        &:hover {
+                            background-color: #42a5f5;
+                        }
+
+                        &:active {
+                            background-color: #1976d2;
+                        }
+                    }
+
+                    .cancel-edit-btn {
+                        background-color: #666;
+                        color: white;
+
+                        &:hover {
+                            background-color: #777;
+                        }
+
+                        &:active {
+                            background-color: #555;
+                        }
+                    }
+
+                    .delete-table-btn {
+                        background-color: #d32f2f;
+                        color: white;
+
+                        &:hover {
+                            background-color: #f44336;
+                        }
+
+                        &:active {
+                            background-color: #b71c1c;
+                        }
+                    }
+
+                    .roll-result {
+                        padding: 1em;
+                        border: 2px solid #4caf50;
+                        border-radius: 6px;
+                        background-color: #1b5e20;
+                        color: white;
+                        text-align: center;
+                        font-size: 1.1em;
+                        display: none;
+
+                        &.active {
+                            display: block;
+                        }
+                    }
+
+                    .empty-message {
+                        padding: 2em;
+                        text-align: center;
+                        color: #999;
+                        font-style: italic;
+                    }
+                }
+            </style>
+            <header>
+                Roll Tables
+                <button class="close" role="button">⤫</button>
+            </header>
+            <main>
+                <div class="table-list"></div>
+                <button class="add-table-btn" role="button">＋ Add Roll Table</button>
+                <div class="table-editor">
+                    <div class="editor-header">
+                        <input type="text" class="table-name-input" placeholder="Table Name">
+                    </div>
+                    <div class="entries-list"></div>
+                    <div class="editor-actions">
+                        <div>
+                            <button class="add-entry-btn" role="button">＋ Add Entry</button>
+                        </div>
+                        <div style="display: flex; gap: 0.5em;">
+                            <button class="delete-table-btn" role="button">Delete Table</button>
+                            <button class="cancel-edit-btn" role="button">Cancel</button>
+                            <button class="save-table-btn" role="button">Save</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="roll-result"></div>
+            </main>
+            <footer>
+                <button class="close" role="button">Close</button>
+            </footer>
+        </dialog>
+    </body>
+</html>

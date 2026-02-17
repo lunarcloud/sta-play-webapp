@@ -74,6 +74,11 @@ body {
     left: calc(var(--main-font-size) * 5);
 }
 
+#tables-btn {
+    top: calc(var(--main-font-size) * 8.75);
+    left: calc(var(--main-font-size) * 3.5);
+}
+
 #font-up-btn,
 #font-down-btn {
     color: var(--main-color-text) !important;

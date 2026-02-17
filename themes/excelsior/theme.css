@@ -399,7 +399,8 @@ body {
 #threat-section,
 #font-up-btn,
 #font-down-btn,
-#dice-btn {
+#dice-btn,
+#tables-btn {
     background-color: hsl(0deg 0% 10%);
     color: var(--trek-color-1);
     padding: 4px;
@@ -413,7 +414,8 @@ body {
 #fullscreen-btn,
 #font-up-btn,
 #font-down-btn,
-#dice-btn {
+#dice-btn,
+#tables-btn {
     top: unset !important;
     right: unset;
     bottom: 7em;
@@ -462,7 +464,8 @@ body {
     }
 }
 
-#dice-btn {
+#dice-btn,
+#tables-btn {
     left: 15.5em;
     bottom: 4em;
     width: 1.25em;
@@ -476,16 +479,24 @@ body {
     }
 
     &:hover, &:focus {
-      & img.symbol {
+      & .symbol {
         filter: sepia(1) saturate(2) brightness(0.75);
       }
     }
 
     &:active {
-      & img.symbol {
+      & .symbol {
         filter: sepia(1) saturate(4);
       }
     }
+}
+
+#dice-btn {
+    bottom: 4em;
+}
+
+#tables-btn {
+    bottom: 2em;
 }
 
 #momentum-section,

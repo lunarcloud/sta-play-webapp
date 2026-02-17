@@ -5,12 +5,14 @@ import './components/busy-dialog/busy-dialog-element.js'
 import './components/message-dialog/message-dialog-element.js'
 import './components/confirm-dialog/confirm-dialog-element.js'
 import './components/dice-dialog/dice-dialog-element.js'
+import './components/roll-tables-dialog/roll-tables-dialog-element.js'
 import { MissionTrackerElement } from './components/mission-tracker/mission-tracker-element.js'
 import { TraitDisplayElement } from './components/trait-display/trait-display-element.js'
 import { PlayerDisplayElement } from './components/player-display/player-display-element.js'
 import { TaskTrackerElement } from './components/task-tracker/task-tracker-element.js'
 import { Database } from './js/database/database.js'
 import { TrackerInfo } from './js/database/tracker-info.js'
+import { RollTableInfo } from './js/database/roll-table-info.js'
 import { PlayerInfo } from './js/database/player-info.js'
 import { DefaultGameName, GameInfo } from './js/database/game-info.js'
 import { ShipAlertElement } from './components/ship-alert/ship-alert-element.js'
@@ -23,6 +25,9 @@ import './js/lib/model-viewer.min.js'
 import { setupNumberInputScrollForParent } from './js/scrollable-inputs.js'
 import { Interpolate, lerp } from './js/math-utils.js'
 import { MirrorWindow } from './js/mirror-window.js'
+
+// Make RollTableInfo available globally for the dialog component
+globalThis.RollTableInfo = RollTableInfo
 
 const DefaultShipUrl = 'gltf/default-ship-1.glb'
 
@@ -197,6 +202,19 @@ export class IndexController {
     }
     document.getElementById('dice-btn').addEventListener('click', () => diceDialog.showModal())
 
+    // Wire up the roll tables dialog
+    const rollTablesDialog = document.querySelector('dialog[is="roll-tables-dialog"]')
+    if (rollTablesDialog instanceof HTMLDialogElement === false) {
+      throw new Error('Roll tables dialog not setup!')
+    }
+    document.getElementById('tables-btn').addEventListener('click', () => {
+      this.#loadRollTablesDialog(rollTablesDialog)
+      rollTablesDialog.showModal()
+    })
+    rollTablesDialog.addEventListener('tables-changed', () => {
+      this.#saveRollTablesFromDialog(rollTablesDialog)
+    })
+
     this.#setupSettings(settingsDialog, welcomeDialog, busyDialog)
 
     // Setup Model-Viewer fullscreen view buttons
@@ -330,6 +348,10 @@ export class IndexController {
         } else if (e.ctrlKey && e.altKey && e.key === 'd') {
           e.preventDefault()
           diceDialog.showModal()
+        } else if (e.ctrlKey && e.altKey && e.key === 't') {
+          e.preventDefault()
+          this.#loadRollTablesDialog(rollTablesDialog)
+          rollTablesDialog.showModal()
         } else if (e.ctrlKey && e.altKey && e.key === 'ArrowUp') {
           e.preventDefault()
           const themeSelectEl = document.getElementById('select-theme')
@@ -1147,6 +1169,55 @@ export class IndexController {
     const backupData = await BackupData.import(backupFile)
     await this.db.import(backupData)
     await this.#loadData(backupData.GameInfo.name)
+  }
+
+  /**
+   * Load roll tables into the dialog
+   * @param {HTMLDialogElement} dialog - The roll tables dialog
+   */
+  async #loadRollTablesDialog (dialog) {
+    // Use currentGameId if available, otherwise use a temporary ID (0)
+    // The correct game ID will be set when the user saves
+    const gameId = this.currentGameId || 0
+
+    const tables = await this.db.getRollTables(gameId)
+
+    // Add example table if no tables exist
+    if (tables.length === 0) {
+      const exampleTable = new RollTableInfo(
+        gameId,
+        'Example: Mission Complications',
+        [
+          { result: 'Equipment malfunction at a critical moment' },
+          { result: 'Unexpected enemy reinforcements arrive' },
+          { result: 'A trusted ally reveals hidden motives' },
+          { result: 'Environmental hazard escalates the danger' },
+          { result: 'Communication systems fail' },
+          { result: 'Time constraint becomes more severe' }
+        ]
+      )
+      tables.push(exampleTable)
+    }
+
+    dialog.loadTables(gameId, tables)
+  }
+
+  /**
+   * Save roll tables from the dialog to the database
+   * @param {HTMLDialogElement} dialog - The roll tables dialog
+   */
+  async #saveRollTablesFromDialog (dialog) {
+    const tables = dialog.getTables()
+
+    // Update all tables with the current game ID before saving
+    // This handles the case where tables were created before the game was saved
+    if (this.currentGameId) {
+      tables.forEach(table => {
+        table.game = this.currentGameId
+      })
+    }
+
+    await this.db.replaceRollTables(tables)
   }
 }
 
