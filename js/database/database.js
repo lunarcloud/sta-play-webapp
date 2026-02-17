@@ -22,7 +22,7 @@ import { BackupData } from './backup-data.js'
  */
 
 const DB_NAME = 'STAPlayApp'
-const DB_VERSION = 14
+const DB_VERSION = 15
 const STORE = {
   GAMES: 'games',
   SCENES: 'scenes',
@@ -107,7 +107,7 @@ export class Database {
     gameStore.createIndex(INDEX.NAME, INDEX.NAME, { unique: true })
 
     const traitStore = db.createObjectStore(STORE.TRAITS, { keyPath: INDEX.ID, autoIncrement: true })
-    traitStore.createIndex(INDEX.NAME, INDEX.NAME, { unique: true })
+    traitStore.createIndex(INDEX.NAME, INDEX.NAME, { unique: false })
     traitStore.createIndex(INDEX.SCENE, INDEX.SCENE, { unique: false })
 
     const playerStore = db.createObjectStore(STORE.PLAYERS, { keyPath: INDEX.ID, autoIncrement: true })
