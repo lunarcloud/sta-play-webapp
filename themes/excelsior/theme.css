@@ -1,5 +1,7 @@
 @import url('../../fonts/pixelsagas.com/PS_Roddenberry/font.css');
 
+/* This is the TOS Movies / Lost Era theme */
+
 :root,
 ::backdrop {
     /* Excelsior computer displays featured amber/orange monochrome screens */
@@ -396,7 +398,8 @@ body {
 #momentum-section,
 #threat-section,
 #font-up-btn,
-#font-down-btn {
+#font-down-btn,
+#dice-btn {
     background-color: hsl(0deg 0% 10%);
     color: var(--trek-color-1);
     padding: 4px;
@@ -409,7 +412,8 @@ body {
 #save-btn,
 #fullscreen-btn,
 #font-up-btn,
-#font-down-btn {
+#font-down-btn,
+#dice-btn {
     top: unset !important;
     right: unset;
     bottom: 7em;
@@ -425,6 +429,7 @@ body {
 #save-btn {
     left: 9.25em;
 }
+
 
 #fullscreen-btn {
     left: 16.5em;
@@ -457,13 +462,37 @@ body {
     }
 }
 
+#dice-btn {
+    left: 15.5em;
+    bottom: 4em;
+    width: 1.25em;
+
+    & text {
+        display: none;
+    }
+
+    & img.symbol {
+      filter: sepia(1) saturate(2);
+    }
+    &:hover, &:focus {
+      & img.symbol {
+        filter: sepia(1) saturate(2) brightness(0.75);
+      }
+    }
+    &:active {
+      & img.symbol {
+        filter: sepia(1) saturate(4);
+      }
+    }
+}
+
 #momentum-section,
 #threat-section {
     top: unset !important;
     right: unset;
     bottom: 2em;
     left: 14em;
-    width: 14em;
+    width: 12em;
 }
 
 #momentum-section {

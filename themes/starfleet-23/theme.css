@@ -1,5 +1,7 @@
 @import url('../../fonts/pixelsagas.com/PS_Roddenberry/font.css');
 
+/* This theme is the TOS style one */
+
 :root,
 ::backdrop {
     --main-font-body: "Roddenberry", sans-serif;
@@ -126,6 +128,7 @@ html > body {
 #settings-btn,
 #save-btn,
 #fullscreen-btn,
+#dice-btn,
 #font-up-btn,
 #font-down-btn  {
     position: absolute;
@@ -147,6 +150,25 @@ html > body {
 #fullscreen-btn {
     left: 1em;
     right: unset;
+}
+
+#dice-btn {
+    left: unset;
+    right: 31.5em;
+
+    & img.symbol {
+      filter: invert(1) contrast(1.25);
+    }
+    &:hover, &:focus {
+      & img.symbol {
+        filter: invert(1) sepia(0.5) hue-rotate(275deg);
+      }
+    }
+    &:active {
+      & img.symbol {
+        filter: invert(1) sepia(1) hue-rotate(275deg);
+      }
+    }
 }
 
 #font-up-btn {
