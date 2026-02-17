@@ -6,6 +6,7 @@ import './components/message-dialog/message-dialog-element.js'
 import './components/confirm-dialog/confirm-dialog-element.js'
 import './components/dice-dialog/dice-dialog-element.js'
 import './components/roll-tables-dialog/roll-tables-dialog-element.js'
+import './components/scene-switcher/scene-switcher-element.js'
 import { MissionTrackerElement } from './components/mission-tracker/mission-tracker-element.js'
 import { TraitDisplayElement } from './components/trait-display/trait-display-element.js'
 import { PlayerDisplayElement } from './components/player-display/player-display-element.js'
@@ -215,6 +216,16 @@ export class IndexController {
       this.#saveRollTablesFromDialog(rollTablesDialog)
     })
 
+    // Wire up the scene switcher dialog
+    const sceneSwitcherDialog = document.querySelector('dialog[is="scene-switcher"]')
+    if (sceneSwitcherDialog instanceof HTMLDialogElement === false) {
+      throw new Error('Scene switcher dialog not setup!')
+    }
+    document.getElementById('scenes-btn').addEventListener('click', async () => {
+      await this.#loadSceneSwitcherDialog(sceneSwitcherDialog)
+      sceneSwitcherDialog.showModal()
+    })
+
     this.#setupSettings(settingsDialog, welcomeDialog, busyDialog)
 
     // Setup Model-Viewer fullscreen view buttons
@@ -366,6 +377,12 @@ export class IndexController {
             themeSelectEl.selectedIndex--
             this.#useTheme(themeSelectEl.value)
           }
+        } else if (e.ctrlKey && e.altKey && e.key === 'ArrowLeft') {
+          e.preventDefault()
+          await this.#switchToPreviousScene()
+        } else if (e.ctrlKey && e.altKey && e.key === 'ArrowRight') {
+          e.preventDefault()
+          await this.#switchToNextScene()
         }
       } finally {
         handlingInput = false
@@ -651,7 +668,7 @@ export class IndexController {
    * @returns {Promise<boolean>}      if there was info to load
    */
   async #loadData (gameName = DefaultGameName) {
-    const gameInfo = await this.db.getGameInfo(gameName)
+    let gameInfo = await this.db.getGameInfo(gameName)
 
     const momentumEl = document.getElementById('momentum-pool')
     if (momentumEl instanceof HTMLInputElement === false) {
@@ -688,6 +705,30 @@ export class IndexController {
     document.querySelectorAll('.players li').forEach(el => el.parentNode.removeChild(el))
     document.querySelectorAll('task-tracker').forEach(el => el.parentNode.removeChild(el))
 
+    // If no game exists (fresh database), create a default game and scene
+    if (gameInfo === undefined) {
+      const defaultGameInfo = new GameInfo(
+        undefined,
+        gameName,
+        this.fallbackShipName
+      )
+      const savedGameId = await this.db.saveGameInfo(defaultGameInfo)
+      if (savedGameId !== undefined) {
+        defaultGameInfo.id = savedGameId
+        gameInfo = defaultGameInfo
+
+        // Create default scene for the new game
+        const defaultSceneInfo = new SceneInfo(
+          undefined,
+          savedGameId,
+          undefined, // name (defaults to "Scene Notes")
+          this.fallbackText,
+          ['', '', ''] // empty mission tracker (3 acts)
+        )
+        await this.db.saveSceneInfo(defaultSceneInfo)
+      }
+    }
+
     this.currentGameId = gameInfo?.id
     document.body.setAttribute('loaded-game-name', gameInfo?.name ?? DefaultGameName)
     document.getElementById('shipname').textContent = (gameInfo?.shipName ?? this.fallbackShipName).trim()
@@ -695,7 +736,6 @@ export class IndexController {
     momentumToggleEl.checked = gameInfo?.momentum > 0
     threatEl.value = `${(gameInfo?.threat ?? 0)}`
     threatToggleEl.checked = gameInfo?.threat > 0
-    this.#setShipAlert((gameInfo?.activeAlert ?? '').trim())
     this.#useTheme(gameInfo?.theme ?? 'lcars-24', gameInfo?.altFont ?? false)
     this.#useEdition(gameInfo?.edition)
     this.#setLegacyTaskTrackers(gameInfo?.legacyTrackers ?? false)
@@ -708,6 +748,9 @@ export class IndexController {
       firstSceneInfo = sceneInfos?.[0]
       this.currentSceneId = firstSceneInfo?.id
       document.getElementById('general-text').innerHTML = firstSceneInfo?.description ?? this.fallbackText
+
+      // Load ship alert/condition from the first scene, with backwards compatibility
+      this.#setShipAlert((firstSceneInfo?.activeAlert ?? gameInfo?.activeAlert ?? '').trim())
 
       // Get all players
       const players = await this.db.getPlayers(gameInfo?.id)
@@ -817,7 +860,7 @@ export class IndexController {
       document.getElementById('shipname').textContent.trim(),
       momentumValue,
       threatValue,
-      shipAlertEl.color,
+      '', // activeAlert is now scene-specific, not game-wide
       themeSelectEl.value,
       editionSelectEl.value,
       this.shipModel,
@@ -839,7 +882,8 @@ export class IndexController {
         missionTrackerEl.act1,
         missionTrackerEl.act2,
         missionTrackerEl.act3
-      ]
+      ],
+      shipAlertEl.color
     )
     const savedSceneId = await this.db.saveSceneInfo(sceneInfo)
     if (savedSceneId !== undefined) {
@@ -1218,6 +1262,242 @@ export class IndexController {
     }
 
     await this.db.replaceRollTables(tables)
+  }
+
+  /**
+   * Load the scene switcher dialog with current scenes
+   * @param {HTMLDialogElement} dialog - The scene switcher dialog
+   */
+  async #loadSceneSwitcherDialog (dialog) {
+    const gameId = this.currentGameId
+    if (!gameId) {
+      console.warn('No game loaded, cannot show scene switcher')
+      return
+    }
+
+    const scenes = await this.db.getScenes(gameId)
+
+    // Set up the dialog with current scenes and callbacks
+    dialog.setScenes(scenes, this.currentSceneId)
+
+    dialog.onSceneSwitch(async (sceneId) => {
+      await this.#switchToScene(sceneId)
+    })
+
+    dialog.onSceneAdd(async (sceneName) => {
+      const newSceneId = await this.#addScene(sceneName)
+      // Reload dialog to refresh the scene list
+      // This ensures consistency but could be optimized by updating the list directly
+      await this.#loadSceneSwitcherDialog(dialog)
+      return newSceneId
+    })
+
+    dialog.onSceneRename(async (sceneId, newName) => {
+      await this.#renameScene(sceneId, newName)
+      // Reload dialog to refresh the scene list
+      // This ensures consistency but could be optimized by updating the list directly
+      await this.#loadSceneSwitcherDialog(dialog)
+    })
+
+    dialog.onSceneDelete(async (sceneId) => {
+      await this.#deleteScene(sceneId)
+      // Reload dialog to refresh the scene list
+      // This ensures consistency but could be optimized by updating the list directly
+      await this.#loadSceneSwitcherDialog(dialog)
+    })
+  }
+
+  /**
+   * Switch to a different scene
+   * @param {number} sceneId - The scene ID to switch to
+   */
+  async #switchToScene (sceneId) {
+    // Save current scene before switching
+    await this.#saveCurrentScene()
+
+    // Load the new scene
+    this.currentSceneId = sceneId
+    const sceneInfo = await this.db.getScenes(this.currentGameId)
+    const scene = sceneInfo.find(s => s.id === sceneId)
+
+    if (scene) {
+      // Update scene description
+      document.getElementById('general-text').innerHTML = scene.description || this.fallbackText
+
+      // Update ship alert/condition for this scene
+      this.#setShipAlert((scene.activeAlert ?? '').trim())
+
+      // Update mission tracker
+      const missionTrackerEl = document.getElementsByTagName('mission-tracker')[0]
+      if (missionTrackerEl instanceof MissionTrackerElement) {
+        if (scene.missionTrack && scene.missionTrack.length === 3) {
+          missionTrackerEl.act1 = scene.missionTrack[0]
+          missionTrackerEl.act2 = scene.missionTrack[1]
+          missionTrackerEl.act3 = scene.missionTrack[2]
+        }
+      }
+
+      // Clear existing traits
+      const traitsEl = document.querySelector('traits')
+      if (traitsEl) {
+        traitsEl.querySelectorAll('trait-display').forEach(el => el.remove())
+      }
+
+      // Load traits for this scene
+      const traits = await this.db.getTraits(sceneId)
+      for (const trait of traits) {
+        this.addTrait(trait)
+      }
+    }
+  }
+
+  /**
+   * Navigate to a scene relative to the current scene
+   * @param {number} direction - Direction to navigate: 1 for next, -1 for previous
+   */
+  async #navigateScene (direction) {
+    if (!this.currentGameId || !this.currentSceneId) {
+      return
+    }
+
+    const scenes = await this.db.getScenes(this.currentGameId)
+    if (scenes.length <= 1) {
+      return // No other scenes to switch to
+    }
+
+    const currentIndex = scenes.findIndex(s => s.id === this.currentSceneId)
+    if (currentIndex === -1) {
+      return // Current scene not found
+    }
+
+    // Calculate new index with wraparound using modulo
+    const newIndex = (currentIndex + direction + scenes.length) % scenes.length
+
+    await this.#switchToScene(scenes[newIndex].id)
+  }
+
+  /**
+   * Switch to the previous scene in the list
+   */
+  async #switchToPreviousScene () {
+    await this.#navigateScene(-1)
+  }
+
+  /**
+   * Switch to the next scene in the list
+   */
+  async #switchToNextScene () {
+    await this.#navigateScene(1)
+  }
+
+  /**
+   * Save the current scene data
+   */
+  async #saveCurrentScene () {
+    if (!this.currentSceneId || !this.currentGameId) {
+      return
+    }
+
+    const missionTrackerEl = document.getElementsByTagName('mission-tracker')[0]
+    const shipAlertEl = document.getElementsByTagName('ship-alert')[0]
+    if (!(missionTrackerEl instanceof MissionTrackerElement) ||
+        !(shipAlertEl instanceof ShipAlertElement)) {
+      return
+    }
+
+    // Get the current scene to preserve its name
+    const scenes = await this.db.getScenes(this.currentGameId)
+    const currentScene = scenes.find(s => s.id === this.currentSceneId)
+    const sceneName = currentScene ? currentScene.name : undefined
+
+    const sceneInfo = new SceneInfo(
+      this.currentSceneId,
+      this.currentGameId,
+      sceneName,
+      document.getElementById('general-text').innerHTML,
+      [
+        missionTrackerEl.act1,
+        missionTrackerEl.act2,
+        missionTrackerEl.act3
+      ],
+      shipAlertEl.color
+    )
+    await this.db.saveSceneInfo(sceneInfo)
+
+    const traits =
+      [...document.querySelectorAll('traits trait-display')]
+        .map(el => (el instanceof TraitDisplayElement ? el.text : ''))
+        .filter(el => !!el)
+        .filter((v, i, a) => a.indexOf(v) === i)
+    await this.db.replaceTraits(this.currentSceneId, traits)
+  }
+
+  /**
+   * Add a new scene
+   * @param {string} sceneName - The name of the new scene
+   * @returns {Promise<number|undefined>} The new scene ID
+   */
+  async #addScene (sceneName) {
+    if (!this.currentGameId) {
+      console.warn('No game loaded, cannot add scene')
+      return undefined
+    }
+
+    const sceneInfo = new SceneInfo(
+      undefined,
+      this.currentGameId,
+      sceneName,
+      this.fallbackText,
+      ['', '', '']
+    )
+
+    const newSceneId = await this.db.saveSceneInfo(sceneInfo)
+    return newSceneId
+  }
+
+  /**
+   * Rename a scene
+   * @param {number} sceneId - The scene ID to rename
+   * @param {string} newName - The new scene name
+   */
+  async #renameScene (sceneId, newName) {
+    const scenes = await this.db.getScenes(this.currentGameId)
+    const scene = scenes.find(s => s.id === sceneId)
+
+    if (scene) {
+      scene.name = newName
+      await this.db.saveSceneInfo(scene)
+    }
+  }
+
+  /**
+   * Delete a scene
+   * @param {number} sceneId - The scene ID to delete
+   */
+  async #deleteScene (sceneId) {
+    if (!this.currentGameId) {
+      return
+    }
+
+    // Don't allow deleting the last scene
+    const scenes = await this.db.getScenes(this.currentGameId)
+    if (scenes.length <= 1) {
+      if (this.messageDialog && typeof this.messageDialog.message === 'function') {
+        await this.messageDialog.message('Cannot delete the last scene.')
+      }
+      return
+    }
+
+    // Delete the scene and its associated traits using database method
+    await this.db.deleteScene(sceneId)
+
+    // If we just deleted the current scene, switch to another one
+    if (sceneId === this.currentSceneId) {
+      const remainingScenes = await this.db.getScenes(this.currentGameId)
+      if (remainingScenes.length > 0) {
+        await this.#switchToScene(remainingScenes[0].id)
+      }
+    }
   }
 }
 

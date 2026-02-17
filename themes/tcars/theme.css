@@ -404,11 +404,22 @@ body {
         }
     }
 
-    &:not(.edition-captains-log) nav {
+    &:not(.edition-captains-log) > nav {
         height: 3.5em;
 
         ul > li {
             line-height: 3em;
+        }
+    }
+
+    &.edition-captains-log > nav > ul > li {
+        &:first-child,
+        &:nth-child(2) {
+            width: 7em;
+        }
+
+        & text {
+            visibility: hidden;
         }
     }
 
@@ -435,16 +446,13 @@ body {
                     line-height: unset;
                 }
 
-                &:first-child {
+                &:first-child,
+                &:nth-child(2) {
                     width: 6em;
                 }
 
-                &:nth-child(2) {
-                    width: 4em;
-                }
-
                 &:nth-child(3) {
-                    width: 4.5em;
+                    width: 5em;
                 }
 
                 &.shipname {

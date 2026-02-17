@@ -228,7 +228,7 @@ button,
 #font-up-btn,
 #font-down-btn {
     user-select: none;
-    
+
     &:not(:disabled) {
         cursor: pointer;
     }
@@ -739,7 +739,7 @@ body {
         position: relative;
         display: flex;
         flex-wrap: nowrap;
-        gap: 0.25em;   
+        gap: 0.25em;
         background: transparent;
         background: linear-gradient(90deg,
           var(--header-edge-bg) 0%,
@@ -755,7 +755,7 @@ body {
             flex: 1 1 49%;
             transition: opacity 0.2s, box-shadow 0.2s;
         }
-        
+
         & > model-viewer.drag-over {
           opacity: 0.7;
           box-shadow: 0 0 20px 5px var(--trek-color-highlight);
@@ -797,7 +797,7 @@ body {
                 &:nth-of-type(4) { --trait-bg-color: var(--trek-color-4); }
             }
         }
-    
+
         & > content {
           grid-row: 1;
         }
@@ -851,7 +851,7 @@ body {
 
             & li {
                 position: relative;
-                flex: 1 0 40%;
+                flex: 1 0 29%;
                 border-radius: 8px;
                 font-size: calc(var(--main-font-size) * 0.8);
 
@@ -898,6 +898,7 @@ body {
                 }
 
                 &.shipname {
+                    flex-basis: 80%;
                     display: block;
                     text-transform: uppercase;
                     letter-spacing: 0.1em;
@@ -914,7 +915,6 @@ body {
                         filter: unset;
                     }
                 }
-
             }
         }
     }
@@ -933,6 +933,11 @@ body {
     }
 }
 
+body.edition-captains-log #momentum-section > label,
+body.edition-captains-log #threat-section > label,
+#nav-condition-select * {
+    cursor: pointer;
+}
 
 .fullscreen-btn,
 #ship-autorotate-fullscreen,

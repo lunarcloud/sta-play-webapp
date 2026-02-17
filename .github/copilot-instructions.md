@@ -128,6 +128,35 @@ Use these commands to perform common development tasks:
 
   **See [TESTING.md](.github/TESTING.md) for comprehensive testing documentation.**
 
+* **Database Testing**: Any changes to the database schema or data models require comprehensive tests:
+  - **Schema Changes**: When incrementing `DB_VERSION` in `database.js`, include tests that verify:
+    - New fields have correct default values
+    - Data migration preserves existing data
+    - Old data structures are correctly transformed to new structures
+    - Database upgrade completes without errors
+  - **Data Model Changes**: When modifying Info classes (e.g., `SceneInfo`, `GameInfo`, `PlayerInfo`):
+    - Test constructor with all new parameters
+    - Test constructor defaults for new fields
+    - Test `assign()` method handles new fields correctly
+    - Test validation logic for new constraints
+    - Test property getters/setters
+  - **Database Method Changes**: When adding or modifying database methods:
+    - Test successful operations
+    - Test error handling and edge cases
+    - Test return values and side effects
+    - Test transactional behavior if applicable
+  - **Migration Testing Pattern**:
+    ```javascript
+    it('should migrate from v14 to v15 preserving data', async () => {
+      // 1. Create database with old schema
+      // 2. Insert test data in old format
+      // 3. Trigger upgrade to new version
+      // 4. Verify data is preserved and transformed correctly
+      // 5. Verify new fields have appropriate defaults
+    })
+    ```
+  - **Database changes are NOT minimal changes** - they are major architectural updates that require thorough testing to prevent data loss
+
 * **EditorConfig**: The `.editorconfig` file enforces consistent code style across IDEs:
   - LF line endings
   - 4-space indentation
@@ -452,6 +481,7 @@ const DefaultPlayerImages = {
 
 ## Common Pitfalls to Avoid
 
+* **Database changes without tests**: ALWAYS add comprehensive tests when modifying the database schema, data models, or database methods. Database changes are major architectural updates, not minimal changes. Include migration tests to ensure existing data is preserved.
 * **Auto-saving changes**: NEVER call `saveData()` automatically in response to user interactions. The application uses a manual save pattern - users must explicitly click the Save button or use Ctrl+S. Only save automatically during export/import operations.
 * **Grid positioning errors**: Double-check `grid-row` and `grid-column` values match the parent grid template. For example, if the body has 4 rows, `grid-row: 2 / 4` spans rows 2-3, while `grid-row: 3` only occupies row 3.
 * **Forgotten setup steps**: Remember to run `npm run copy-deps` after `npm i` before attempting to run the application locally.

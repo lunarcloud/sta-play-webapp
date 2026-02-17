@@ -1,0 +1,90 @@
+
+<!DOCTYPE html>
+<html>
+    <body>
+        <dialog>
+            <style>
+                dialog[is=scene-switcher] {
+                    width: fit-content;
+                    min-width: 400px;
+                    max-width: 90%;
+
+                    main {
+                        padding: 1em;
+
+                        .scene-list {
+                            list-style: none;
+                            padding: 0;
+                            margin: 0 0 1em 0;
+                            max-height: 400px;
+                            overflow-y: auto;
+
+                            li {
+                                display: flex;
+                                gap: 0.5em;
+                                align-items: center;
+                                padding: 0.5em;
+                                margin-bottom: 0.25em;
+                                border: 1px solid var(--nav-color-text, #ccc);
+                                border-radius: 4px;
+                                cursor: pointer;
+
+                                &:hover {
+                                    background-color: rgba(255, 255, 255, 0.1);
+                                }
+
+                                &.current {
+                                    background-color: rgba(255, 255, 255, 0.2);
+                                    font-weight: bold;
+                                }
+
+                                .scene-name {
+                                    flex: 1;
+                                    min-width: 0;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                    white-space: nowrap;
+                                }
+
+                                .scene-actions {
+                                    display: flex;
+                                    gap: 0.25em;
+
+                                    button {
+                                        padding: 0.25em 0.5em;
+                                        margin: 0;
+                                        font-size: 0.9em;
+                                    }
+                                }
+                            }
+                        }
+
+                        .add-scene {
+                            display: flex;
+                            gap: 0.5em;
+                            align-items: center;
+
+                            input {
+                                flex: 1;
+                            }
+                        }
+                    }
+                }
+            </style>
+            <header>
+                Scene Manager
+                <button class="close" role="button">⤫</button>
+            </header>
+            <main>
+                <ul class="scene-list"></ul>
+                <div class="add-scene">
+                    <input type="text" class="new-scene-name" placeholder="New scene name...">
+                    <button class="add-scene-btn" role="button">Add Scene</button>
+                </div>
+            </main>
+            <footer>
+                <button class="close" role="button">Close</button>
+            </footer>
+        </dialog>
+    </body>
+</html>

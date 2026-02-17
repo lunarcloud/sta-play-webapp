@@ -73,6 +73,13 @@ body {
         grid-row: 2;
         grid-column: 3;
         margin-top: 0;
+        margin-bottom: 6px;
+    }
+
+    &.edition-captains-log {
+        nav li {
+            flex-basis: 33%;
+        }
     }
 
     & > main {
