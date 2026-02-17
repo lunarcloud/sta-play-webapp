@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <!-- Left face -->
+    <polygon points="50,5 18,38 8,65 14,20" fill="#999999" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round"></polygon>
+    <!-- Right face -->
+    <polygon points="50,5 82,38 92,65 86,20" fill="#888888" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round"></polygon>
+    <!-- Top-left face -->
+    <polygon points="50,5 18,38 50,42" fill="#cccccc" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round"></polygon>
+    <!-- Top-right face -->
+    <polygon points="50,5 82,38 50,42" fill="#aaaaaa" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round"></polygon>
+    <!-- Bottom-left face -->
+    <polygon points="18,38 50,78 8,65" fill="#999999" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round"></polygon>
+    <!-- Bottom-right face -->
+    <polygon points="82,38 50,78 92,65" fill="#bbbbbb" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round"></polygon>
+    <!-- Bottom face -->
+    <polygon points="8,65 50,78 92,65 50,95" fill="#777777" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round"></polygon>
+    <!-- Center face (front, brightest) -->
+    <polygon points="18,38 82,38 50,78" fill="#e0e0e0" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round"></polygon>
+</svg>

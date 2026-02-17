@@ -119,6 +119,7 @@ body {
 #settings-btn,
 #save-btn,
 #fullscreen-btn,
+#dice-btn,
 #font-up-btn,
 #font-down-btn {
     inset: unset;
@@ -127,23 +128,29 @@ body {
     justify-content: space-evenly;
 }
 
-#fullscreen-btn {
-    bottom: calc(var(--bottom-section-height) - 3.125em);
+#fullscreen-btn,
+#dice-btn {
     left: 13.6em;
     width: unset !important;
 
-    & img.symbol {
-        width: 2em;
+    & > text {
+        display: none;
+    }
+
+    & > img.symbol {
+        width: 1em;
     }
 }
 
 #settings-btn,
-#font-up-btn {
+#font-up-btn,
+#fullscreen-btn {
     bottom: calc(var(--bottom-section-height) - 2em);
 }
 
 #font-down-btn,
-#save-btn {
+#save-btn,
+#dice-btn {
     bottom: calc(var(--bottom-section-height) - 3.65em);
 }
 
@@ -180,6 +187,7 @@ body {
 #settings-btn,
 #save-btn,
 #fullscreen-btn,
+#dice-btn,
 #momentum-section,
 #threat-section,
 #font-up-btn,
@@ -191,6 +199,24 @@ body {
     height: fit-content;
     border: 2px solid #2412127d;
     border-top: 2px solid black;
+}
+
+#dice-btn {
+    & img.symbol {
+      filter: invert(1) contrast(1.25);
+    }
+
+    &:hover, &:focus {
+      & img.symbol {
+        filter: invert(1) sepia(0.5) hue-rotate(275deg);
+      }
+    }
+
+    &:active {
+      & img.symbol {
+        filter: invert(1) sepia(1) hue-rotate(275deg);
+      }
+    }
 }
 
 task-tracker::part(internal) {

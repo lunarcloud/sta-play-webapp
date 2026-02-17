@@ -222,6 +222,7 @@ dialog::backdrop {
 button,
 #save-btn,
 #settings-btn,
+#dice-btn,
 #fullscreen-btn,
 #font-up-btn,
 #font-down-btn {
@@ -475,6 +476,7 @@ menu-items {
 
 #settings-btn,
 #save-btn,
+#dice-btn,
 #fullscreen-btn,
 #font-up-btn,
 #font-down-btn,
@@ -500,6 +502,8 @@ menu-items {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+  transition: filter 150ms ease-out;
+  filter: unset;
 
   & text {
     padding-inline: 0.5em;
@@ -515,6 +519,17 @@ menu-items {
         rotate: 45deg;
     }
   }
+
+  &:hover, &:focus {
+    text-shadow: 0 0 11px oklab(100% 0 0 / 33%), 0 0 1px oklab(52% -0.04 -0.28);
+
+  }
+
+  &:active {
+    & text {
+      filter: contrast(1) sepia(0.5);
+    }
+  }
 }
 
 #settings-btn {
@@ -525,12 +540,45 @@ menu-items {
     top: calc(var(--main-font-size) * 6.5);
 }
 
+#dice-btn {
+    top: calc(var(--main-font-size) * 7.75);
+
+    &:hover, &:focus {
+      & img.symbol {
+        filter: sepia(0.5) hue-rotate(180deg);
+      }
+    }
+
+    &:active {
+      & img.symbol {
+        filter: sepia(1) hue-rotate(180deg);
+      }
+    }
+
+    & img.symbol {
+        height: 1em;
+        aspect-ratio: 1;
+    }
+}
+
 #fullscreen-btn {
     width: 1.5em; /* This shouldn't be nearly as wide as the others */
-    top: calc(var(--main-font-size) * 7.75);
+    top: calc(var(--main-font-size) * 9);
 
     & img.symbol {
         filter: invert(1);
+    }
+
+    &:hover, &:focus {
+      & img.symbol {
+        filter: invert(0.8);
+      }
+    }
+
+    &:active {
+      & img.symbol {
+        filter: invert(0.5);
+      }
     }
 }
 
@@ -904,7 +952,7 @@ body.ship-fullscreen {
   min-height: 3em;
 
   main, header, footer, nav, theme,
-  #font-up-btn, #font-down-btn, #save-btn, #fullscreen-btn, #settings-btn,
+  #font-up-btn, #font-down-btn, #save-btn, #dice-btn, #fullscreen-btn, #settings-btn,
   #momentum-section, #threat-section {
     display: none;
   }

@@ -428,6 +428,7 @@ body {
 #settings-btn,
 #save-btn,
 #fullscreen-btn,
+#dice-btn,
 #momentum-section,
 #threat-section,
 #font-up-btn,
@@ -443,6 +444,7 @@ body {
 #settings-btn,
 #save-btn,
 #fullscreen-btn,
+#dice-btn,
 #font-up-btn,
 #font-down-btn {
     top: unset !important;
@@ -488,21 +490,35 @@ body {
     }
 }
 
+#dice-btn {
+    left: 16em;
+    bottom: 4em;
+    width: 1.25em;
+
+    & text {
+        display: none;
+    }
+
+    & img.symbol {
+        filter: unset;
+    }
+}
+
 #momentum-section,
 #threat-section {
     top: unset !important;
     right: unset;
     bottom: 2em;
     left: 14em;
-    width: 14em;
+    width: 11.5em;
 }
 
 #momentum-section {
-    left: 2em;
+    left: 3em;
 }
 
 #threat-section {
-    left: 18em;
+    left: 18.75em;
 }
 
 

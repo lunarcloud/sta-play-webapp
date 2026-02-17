@@ -340,16 +340,8 @@ body::before {
 }
 
 #settings-btn,
-#save-btn {
-    color: var(--menu-text-bright) !important;
-    
-    & text,
-    & symbol {
-        text-shadow: var(--text-glow);
-    }
-}
-
-/* Style font buttons text like other menu items */
+#save-btn,
+#dice-btn,
 #font-up-btn,
 #font-down-btn {
     color: var(--menu-text-bright) !important;
@@ -366,6 +358,23 @@ body::before {
 
 #font-down-btn {
     top: calc(var(--main-font-size)* 9);
+}
+
+#dice-btn {
+    top: calc(var(--main-font-size)* 10.3);
+    filter: sepia(1) saturate(3) hue-rotate(150deg);
+
+    &:hover, &:focus {
+      & img.symbol {
+        filter: sepia(1) saturate(1) hue-rotate(150deg);
+      }
+    }
+
+    &:active {
+      & img.symbol {
+        filter: sepia(1) brightness(0.5) hue-rotate(150deg);
+      }
+    }
 }
 
 /* Move fullscreen button to bottom left and make it bigger */
@@ -390,6 +399,7 @@ body::before {
 #save-btn,
 #font-up-btn,
 #font-down-btn,
+#dice-btn,
 #momentum-section,
 #threat-section {
     left: 0.3em !important;
