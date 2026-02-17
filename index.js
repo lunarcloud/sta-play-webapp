@@ -710,16 +710,7 @@ export class IndexController {
       const defaultGameInfo = new GameInfo(
         undefined,
         gameName,
-        this.fallbackShipName,
-        0, // momentum
-        0, // threat
-        '', // activeAlert (now scene-specific)
-        'lcars-24', // theme
-        '2', // edition
-        undefined, // shipModel
-        false, // altFont
-        false, // legacyTrackers
-        undefined // shipModel2
+        this.fallbackShipName
       )
       const savedGameId = await this.db.saveGameInfo(defaultGameInfo)
       if (savedGameId !== undefined) {
@@ -730,10 +721,9 @@ export class IndexController {
         const defaultSceneInfo = new SceneInfo(
           undefined,
           savedGameId,
-          DefaultSceneName,
+          undefined, // name (defaults to "Scene Notes")
           this.fallbackText,
-          ['', '', ''], // empty mission tracker
-          '' // no alert
+          ['', '', ''] // empty mission tracker (3 acts)
         )
         await this.db.saveSceneInfo(defaultSceneInfo)
       }
