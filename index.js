@@ -1045,6 +1045,9 @@ export class IndexController {
   #updateShipSrc () {
     const hasTwoModels = this.shipModel instanceof File && this.shipModel2 instanceof File
 
+    // Reset fullscreen model selection to model 1 when models change
+    this.#currentFullscreenModel = 1
+
     // Determine URLs for each model
     const url1 = this.shipModel instanceof File
       ? URL.createObjectURL(this.shipModel)
