@@ -332,10 +332,11 @@ export class Database {
    * Replace data of a store in the database with new ones
    * @param {string} storeName                Name of the store
    * @param {string} [clearIndex]             the name of the index to clear
+   * @param {any} [clearValue]                the value to filter by when clearing (if undefined, clears all)
    * @param {any[]} [data]                    array of info to add
    * @param {IDBPDatabase|IDBDatabase} [db]   the database
    */
-  async #replaceData (storeName, clearIndex = INDEX.NAME, data = [], db = undefined) {
+  async #replaceData (storeName, clearIndex = INDEX.NAME, clearValue = undefined, data = [], db = undefined) {
     const andClose = typeof (db) === 'undefined'
     db ??= await this.open()
 
@@ -343,9 +344,11 @@ export class Database {
     // @ts-ignore
     const transaction = db.transaction(storeName, 'readwrite')
 
-    // clear traits
+    // clear items (filtered by clearValue if provided)
     const index = transaction.store.index(clearIndex)
-    const pdestroy = index.openCursor()
+    const pdestroy = clearValue !== undefined
+      ? index.openCursor(IDBKeyRange.only(clearValue))
+      : index.openCursor()
     await pdestroy.then(async cursor => {
       while (cursor) {
         cursor.delete()
@@ -353,7 +356,7 @@ export class Database {
       }
     })
 
-    // Add all current traits
+    // Add all current items
     const adds = []
     for (const info of data) {
       adds.push(transaction.store.add(info))
@@ -376,7 +379,7 @@ export class Database {
         delete info.id
         return info
       })
-    await this.#replaceData(STORE.TRAITS, INDEX.NAME, traits, db)
+    await this.#replaceData(STORE.TRAITS, INDEX.SCENE, sceneId, traits, db)
   }
 
   /**
@@ -392,7 +395,7 @@ export class Database {
     }
 
     trackers.forEach(t => { if (t.id === undefined) delete t.id })
-    await this.#replaceData(STORE.TRACKERS, INDEX.NAME, trackers, db)
+    await this.#replaceData(STORE.TRACKERS, INDEX.NAME, undefined, trackers, db)
   }
 
   /**
