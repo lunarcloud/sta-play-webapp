@@ -314,7 +314,7 @@ const setup = async () => {
       this.#rollResultEl.textContent = 'Rolling...'
       this.#rollResultEl.classList.add('active')
       this.#hideEditor()
-      
+
       // After a brief delay, show the actual result
       setTimeout(() => {
         const result = table.roll()

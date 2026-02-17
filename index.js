@@ -1175,7 +1175,7 @@ export class IndexController {
     // Use currentGameId if available, otherwise use a temporary ID (0)
     // The correct game ID will be set when the user saves
     const gameId = this.currentGameId || 0
-    
+
     const tables = await this.db.getRollTables(gameId)
 
     // Add example table if no tables exist
@@ -1204,7 +1204,7 @@ export class IndexController {
    */
   async #saveRollTablesFromDialog (dialog) {
     const tables = dialog.getTables()
-    
+
     // Update all tables with the current game ID before saving
     // This handles the case where tables were created before the game was saved
     if (this.currentGameId) {
@@ -1212,7 +1212,7 @@ export class IndexController {
         table.game = this.currentGameId
       })
     }
-    
+
     await this.db.replaceRollTables(tables)
   }
 }
