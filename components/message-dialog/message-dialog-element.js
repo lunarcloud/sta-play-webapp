@@ -34,6 +34,8 @@ const setup = async () => {
   }
   customElements.define('message-dialog', MessageDialogElement, { extends: 'dialog' })
   globalThis.MessageDialogElement = MessageDialogElement
+
+  return MessageDialogElement
 }
 
-await setup()
+export const MessageDialogElement = await setup()

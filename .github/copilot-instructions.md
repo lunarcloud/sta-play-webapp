@@ -3,6 +3,8 @@
 This file provides specific context and instructions for AI coding agents to
 interact effectively with this web project.
 
+**📘 Quick Reference:** See [QUICK_REFERENCE.md](.github/QUICK_REFERENCE.md) for common development tasks and commands.
+
 
 ## Project Overview
 
@@ -72,6 +74,14 @@ Use these commands to perform common development tasks:
 * **Custom Elements Manifest** (for IDE support):
   ```bash
   npm run cem          # Generate custom elements manifest for VSCode
+  ```
+
+* **Dependency Management**:
+  ```bash
+  npm outdated         # Check for available package updates (uses npm-check-updates)
+  npm run outdated:minor  # Show only minor version updates
+  npm run outdated:patch  # Show only patch version updates
+  # Note: Review version-constraints in package.json before upgrading
   ```
 
 
@@ -483,6 +493,7 @@ const DefaultPlayerImages = {
 
 * **Database changes without tests**: ALWAYS add comprehensive tests when modifying the database schema, data models, or database methods. Database changes are major architectural updates, not minimal changes. Include migration tests to ensure existing data is preserved.
 * **Auto-saving changes**: NEVER call `saveData()` automatically in response to user interactions. The application uses a manual save pattern - users must explicitly click the Save button or use Ctrl+S. Only save automatically during export/import operations.
+* **Testing dialog components**: Dialog components that use `loadElementFromFile()` require special test setup. See `test/components/dice-dialog/dice-dialog-element.test.js` for the pattern of mocking file loading in tests.
 * **Grid positioning errors**: Double-check `grid-row` and `grid-column` values match the parent grid template. For example, if the body has 4 rows, `grid-row: 2 / 4` spans rows 2-3, while `grid-row: 3` only occupies row 3.
 * **Forgotten setup steps**: Remember to run `npm run copy-deps` after `npm i` before attempting to run the application locally.
 * **Over-correcting feedback**: When asked to enhance specific UI elements for visibility, don't make global changes that affect the entire theme - target only the specified elements.
@@ -500,13 +511,18 @@ The following components need comprehensive test coverage:
 
 1. **High Priority** (complex, untested):
    - `task-tracker-element.js` (723 lines, complex progress/resistance logic)
-   - `mission-tracker-element.js` (mission/scene tracking)
+   - `player-display-element.js` (678 lines, complex display logic) - has basic tests, needs expansion
+   - `roll-tables-dialog-element.js` (329 lines, complex table management) - **NO TESTS**
 
-2. **Medium Priority** (simpler, untested):
-   - `busy-dialog`
-   - `settings-dialog`
-   - `welcome-dialog`
-   - Additional tests for `player-display` (some coverage exists)
+2. **Medium Priority** (untested):
+   - `mission-tracker-element.js` (216 lines, mission/scene tracking)
+   - `scene-switcher-element.js` (233 lines, scene navigation)
+
+3. **Low Priority** (simpler, untested):
+   - `busy-dialog` (44 lines)
+   - `settings-dialog` (24 lines)
+   - `welcome-dialog` (24 lines)
 
 **When writing tests for these components, follow the pattern in:**
-`test/components/trait-display/trait-display-element.test.js`
+`test/components/trait-display/trait-display-element.test.js` (for shadow DOM components)
+`test/components/dice-dialog/dice-dialog-element.test.js` (for dialog components that load HTML)

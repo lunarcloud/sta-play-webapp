@@ -19,6 +19,8 @@ const setup = async () => {
   }
   customElements.define('settings-dialog', SettingsDialogElement, { extends: 'dialog' })
   globalThis.SettingsDialogElement = SettingsDialogElement
+
+  return SettingsDialogElement
 }
 
-await setup()
+export const SettingsDialogElement = await setup()

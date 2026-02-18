@@ -112,6 +112,8 @@ const setup = async () => {
   }
   customElements.define('dice-dialog', DiceDialogElement, { extends: 'dialog' })
   globalThis.DiceDialogElement = DiceDialogElement
+
+  return DiceDialogElement
 }
 
-await setup()
+export const DiceDialogElement = await setup()
