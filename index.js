@@ -665,9 +665,10 @@ export class IndexController {
   /**
    * Load information from the database into the page
    * @param {string}  [gameName]      the name of the game to load
+   * @param {boolean} [isImporting]   whether this is being called during import (affects warning messages)
    * @returns {Promise<boolean>}      if there was info to load
    */
-  async #loadData (gameName = DefaultGameName) {
+  async #loadData (gameName = DefaultGameName, isImporting = false) {
     let gameInfo = await this.db.getGameInfo(gameName)
 
     const momentumEl = document.getElementById('momentum-pool')
@@ -781,8 +782,8 @@ export class IndexController {
       document.getElementById('general-text').innerHTML = this.fallbackText
     }
 
-    await this.setShipModel(gameInfo?.shipModel, 1)
-    await this.setShipModel(gameInfo?.shipModel2, 2)
+    await this.setShipModel(gameInfo?.shipModel, 1, isImporting)
+    await this.setShipModel(gameInfo?.shipModel2, 2, isImporting)
 
     this.safeToSaveDB = true
     return typeof (gameInfo) !== 'undefined'
@@ -1107,17 +1108,24 @@ export class IndexController {
    * Handler for new ship model drop/set
    * @param {File} modelFile  GLTF/GLB model file
    * @param {number} [modelIndex]  Which model to set (1 or 2)
+   * @param {boolean} [isImporting]  Whether this is being called during import (affects warning message)
    */
-  async setShipModel (modelFile, modelIndex = 1) {
+  async setShipModel (modelFile, modelIndex = 1, isImporting = false) {
     // Check if file size exceeds 56 MB (56 * 1024 * 1024 bytes)
     const maxSizeBytes = 56 * 1024 * 1024
     if (modelFile && modelFile.size > maxSizeBytes) {
       const sizeMB = (modelFile.size / (1024 * 1024)).toFixed(2)
-      const confirmed = await this.confirmDialog.confirm(
-        `This 3D model is ${sizeMB} MB in size. Large models may increase load time, use more storage space, and make import/export slower.\n\n` +
-        'Consider using a GLB compressor / 3D model optimizer to reduce the file size.\n\n' +
-        'Do you still want to use this model?'
-      )
+      let message
+      if (isImporting) {
+        message = `This campaign includes a 3D model that is ${sizeMB} MB in size. ` +
+          'Large models may take additional time to load.\n\n' +
+          'Do you want to load this model alongside the campaign data?'
+      } else {
+        message = `This 3D model is ${sizeMB} MB in size. Large models may increase load time, use more storage space, and make import/export slower.\n\n` +
+          'Consider using a GLB compressor / 3D model optimizer to reduce the file size.\n\n' +
+          'Do you still want to use this model?'
+      }
+      const confirmed = await this.confirmDialog.confirm(message)
       if (!confirmed) {
         return
       }
@@ -1212,7 +1220,7 @@ export class IndexController {
   async import (backupFile) {
     const backupData = await BackupData.import(backupFile)
     await this.db.import(backupData)
-    await this.#loadData(backupData.GameInfo.name)
+    await this.#loadData(backupData.GameInfo.name, true)
   }
 
   /**

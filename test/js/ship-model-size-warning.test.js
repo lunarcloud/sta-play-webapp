@@ -37,4 +37,57 @@ describe('Ship Model Size Warning', () => {
       expect(sizeMB).to.equal('57.50')
     })
   })
+
+  describe('warning message content', () => {
+    it('should contain import-specific text for importing scenario', () => {
+      const isImporting = true
+      const sizeMB = '60.00'
+      const message = isImporting
+        ? `This campaign includes a 3D model that is ${sizeMB} MB in size. ` +
+          'Large models may take additional time to load.\n\n' +
+          'Do you want to load this model alongside the campaign data?'
+        : `This 3D model is ${sizeMB} MB in size. Large models may increase load time, use more storage space, and make import/export slower.\n\n` +
+          'Consider using a GLB compressor / 3D model optimizer to reduce the file size.\n\n' +
+          'Do you still want to use this model?'
+
+      expect(message).to.include('campaign includes')
+      expect(message).to.include('load this model alongside the campaign data')
+      expect(message).to.not.include('GLB compressor')
+      expect(message).to.not.include('import/export slower')
+    })
+
+    it('should contain direct-selection text for normal scenario', () => {
+      const isImporting = false
+      const sizeMB = '60.00'
+      const message = isImporting
+        ? `This campaign includes a 3D model that is ${sizeMB} MB in size. ` +
+          'Large models may take additional time to load.\n\n' +
+          'Do you want to load this model alongside the campaign data?'
+        : `This 3D model is ${sizeMB} MB in size. Large models may increase load time, use more storage space, and make import/export slower.\n\n` +
+          'Consider using a GLB compressor / 3D model optimizer to reduce the file size.\n\n' +
+          'Do you still want to use this model?'
+
+      expect(message).to.include('This 3D model is')
+      expect(message).to.include('GLB compressor')
+      expect(message).to.include('import/export slower')
+      expect(message).to.include('Do you still want to use this model?')
+      expect(message).to.not.include('campaign includes')
+      expect(message).to.not.include('alongside the campaign data')
+    })
+
+    it('should include file size in both message types', () => {
+      const sizeMB = '60.00'
+
+      const importMessage = `This campaign includes a 3D model that is ${sizeMB} MB in size. ` +
+        'Large models may take additional time to load.\n\n' +
+        'Do you want to load this model alongside the campaign data?'
+
+      const directMessage = `This 3D model is ${sizeMB} MB in size. Large models may increase load time, use more storage space, and make import/export slower.\n\n` +
+        'Consider using a GLB compressor / 3D model optimizer to reduce the file size.\n\n' +
+        'Do you still want to use this model?'
+
+      expect(importMessage).to.include(sizeMB)
+      expect(directMessage).to.include(sizeMB)
+    })
+  })
 })
