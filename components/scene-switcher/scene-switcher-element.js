@@ -40,6 +40,11 @@ const setup = async () => {
     #onSceneDelete = null
 
     /**
+     * @type {number|null}
+     */
+    #renameSceneId = null
+
+    /**
      * Constructor.
      */
     constructor () {
@@ -50,30 +55,96 @@ const setup = async () => {
         el.addEventListener('click', () => animateClose(this))
       })
 
-      const addSceneBtn = this.querySelector('button.add-scene-btn')
-      const newSceneInput = this.querySelector('input.new-scene-name')
+      const actionBtn = this.querySelector('button.scene-action-btn')
+      const cancelBtn = this.querySelector('button.scene-cancel-btn')
+      const sceneInput = this.querySelector('input.scene-input')
 
-      addSceneBtn?.addEventListener('click', async () => {
-        await this.#handleAddScene()
+      actionBtn?.addEventListener('click', async () => {
+        await this.#handleSceneAction()
       })
 
-      newSceneInput?.addEventListener('keydown', async (e) => {
+      cancelBtn?.addEventListener('click', () => {
+        this.#switchToAddMode()
+      })
+
+      sceneInput?.addEventListener('keydown', async (e) => {
         if (e.key === 'Enter') {
-          await this.#handleAddScene()
+          await this.#handleSceneAction()
+        } else if (e.key === 'Escape') {
+          this.#switchToAddMode()
         }
       })
+    }
+
+    /**
+     * Switch to add mode.
+     */
+    #switchToAddMode () {
+      this.#renameSceneId = null
+      const inputArea = this.querySelector('.scene-input-area')
+      const label = this.querySelector('.scene-input-label')
+      const input = this.querySelector('input.scene-input')
+      const actionBtn = this.querySelector('button.scene-action-btn')
+      const cancelBtn = this.querySelector('button.scene-cancel-btn')
+
+      inputArea?.classList.remove('rename-mode')
+      if (label) label.textContent = 'New scene name:'
+      if (input) {
+        input.value = ''
+        input.placeholder = 'Enter scene name...'
+      }
+      if (actionBtn) actionBtn.textContent = 'Add Scene'
+      if (cancelBtn) cancelBtn.style.display = 'none'
+    }
+
+    /**
+     * Switch to rename mode.
+     * @param {number} sceneId - The scene ID to rename
+     * @param {string} currentName - The current scene name
+     */
+    #switchToRenameMode (sceneId, currentName) {
+      this.#renameSceneId = sceneId
+      const inputArea = this.querySelector('.scene-input-area')
+      const label = this.querySelector('.scene-input-label')
+      const input = this.querySelector('input.scene-input')
+      const actionBtn = this.querySelector('button.scene-action-btn')
+      const cancelBtn = this.querySelector('button.scene-cancel-btn')
+
+      inputArea?.classList.add('rename-mode')
+      if (label) label.textContent = 'Rename scene:'
+      if (input) {
+        input.value = currentName
+        input.placeholder = 'Enter new name...'
+        setTimeout(() => {
+          input.focus()
+          input.select()
+        }, 100)
+      }
+      if (actionBtn) actionBtn.textContent = 'Rename'
+      if (cancelBtn) cancelBtn.style.display = 'inline-block'
+    }
+
+    /**
+     * Handle the scene action (add or rename).
+     */
+    async #handleSceneAction () {
+      if (this.#renameSceneId !== null) {
+        await this.#handleRenameSceneAction()
+      } else {
+        await this.#handleAddScene()
+      }
     }
 
     /**
      * Handle adding a new scene.
      */
     async #handleAddScene () {
-      const newSceneInput = this.querySelector('input.new-scene-name')
-      if (!newSceneInput || !(newSceneInput instanceof HTMLInputElement)) {
+      const sceneInput = this.querySelector('input.scene-input')
+      if (!sceneInput || !(sceneInput instanceof HTMLInputElement)) {
         return
       }
 
-      const sceneName = newSceneInput.value.trim()
+      const sceneName = sceneInput.value.trim()
       if (!sceneName) {
         return
       }
@@ -81,10 +152,34 @@ const setup = async () => {
       if (this.#onSceneAdd) {
         const newSceneId = await this.#onSceneAdd(sceneName)
         if (newSceneId !== undefined) {
-          newSceneInput.value = ''
+          sceneInput.value = ''
           // The caller should refresh the scene list
         }
       }
+    }
+
+    /**
+     * Handle renaming a scene (action button clicked).
+     */
+    async #handleRenameSceneAction () {
+      const sceneInput = this.querySelector('input.scene-input')
+      if (!sceneInput || !(sceneInput instanceof HTMLInputElement)) {
+        return
+      }
+
+      const newName = sceneInput.value.trim()
+      if (!newName || this.#renameSceneId === null) {
+        return
+      }
+
+      const scene = this.#scenes.find(s => s.id === this.#renameSceneId)
+      if (scene && newName !== scene.name) {
+        if (this.#onSceneRename) {
+          await this.#onSceneRename(this.#renameSceneId, newName)
+        }
+      }
+
+      this.#switchToAddMode()
     }
 
     /**
@@ -95,12 +190,7 @@ const setup = async () => {
       const scene = this.#scenes.find(s => s.id === sceneId)
       if (!scene) return
 
-      const newName = prompt('Enter new scene name:', scene.name)
-      if (newName && newName.trim() && newName !== scene.name) {
-        if (this.#onSceneRename) {
-          await this.#onSceneRename(sceneId, newName.trim())
-        }
-      }
+      this.#switchToRenameMode(sceneId, scene.name)
     }
 
     /**
@@ -188,6 +278,7 @@ const setup = async () => {
     setScenes (scenes, currentSceneId) {
       this.#scenes = scenes
       this.#currentSceneId = currentSceneId
+      this.#switchToAddMode()
       this.#renderSceneList()
     }
 

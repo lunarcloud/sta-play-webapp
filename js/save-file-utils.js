@@ -72,11 +72,17 @@ export async function saveBlobAs (filename, blobData, mimeOptions, startIn = 'do
 
     if (promptIfFallback) {
       try {
-      // Use the browser prompt for name selection
-        filename = prompt('Enter file name for download', filename)
-        if (typeof (filename) !== 'string') { return } // user chose to cancel
+        // Use the custom input dialog for name selection
+        const inputDialog = document.querySelector('dialog[is="input-dialog"]')
+        if (inputDialog && typeof inputDialog.prompt === 'function') {
+          const result = await inputDialog.prompt('Enter file name for download', filename)
+          if (typeof result !== 'string' || result === null) { return } // user chose to cancel
+          filename = result
+        } else {
+          console.warn('Input dialog not available, using default filename.')
+        }
       } catch (ex) {
-        console.warn('Prompt failed, using default filename. ', ex)
+        console.warn('Input dialog failed, using default filename. ', ex)
       }
     }
 

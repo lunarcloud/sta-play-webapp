@@ -217,6 +217,7 @@ All checks must pass before merging.
 * **NEVER** commit secrets, API keys, or sensitive configuration data.
 * **NEVER** disable lint warnings in the code without proper justification and review.
 * **NEVER** introduce a preprocessor (such as LESS, SCSS) or compilation step (such as using TypeScript).
+* **NEVER** use native browser dialogs (`prompt()`, `confirm()`, or `alert()`) as they kick users out of itch.io fullscreen mode. Use custom dialog components instead (e.g., `input-dialog`, `confirm-dialog`, `message-dialog`).
 * **ASK FIRST** before introducing a new CSS or HTML library.
 * **ASK FIRST** before making significant architectural changes to the application logic.
 
