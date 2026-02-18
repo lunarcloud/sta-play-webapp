@@ -28,8 +28,8 @@ graph TD
     HTML[index.html]
     HTML --> Controller[index.js<br/>IndexController]
     
-    Controller --> Database[Database Layer<br/>11 components]
-    Controller --> Components[Components<br/>11 components]
+    Controller --> Database[Database Layer<br/>14 components]
+    Controller --> Components[Components<br/>14 components]
     Controller --> Utilities[Utilities<br/>9+8 modules]
     
     Database --> IDB[IDB<br/>idb lib]
@@ -44,21 +44,24 @@ graph TD
 
 ```
 Components Breakdown:
-├─ Dialogs (5)
+├─ Dialogs (7)
 │  ├─ welcome-dialog      - Initial setup wizard
 │  ├─ settings-dialog     - App configuration
 │  ├─ busy-dialog         - Loading indicator
 │  ├─ message-dialog      - Info/alerts
-│  └─ confirm-dialog      - Yes/no confirmations
+│  ├─ confirm-dialog      - Yes/no confirmations
+│  ├─ dice-dialog         - Dice rolling interface
+│  └─ roll-tables-dialog  - Random table rolling
 │
 ├─ Displays (3)
 │  ├─ player-display      - Player card with stats
 │  ├─ trait-display       - Individual trait/aspect
 │  └─ ship-alert          - Ship alert status (3D model)
 │
-└─ Trackers (3)
+└─ Trackers/Navigation (4)
    ├─ task-tracker        - Task/challenge progress
    ├─ mission-tracker     - Mission/scene tracking
+   ├─ scene-switcher      - Scene navigation controls
    └─ input-progress      - Numeric progress widget
 ```
 
@@ -66,7 +69,7 @@ Components Breakdown:
 
 ### Web Components (Shadow DOM)
 
-All 11 components use Web Components API with Shadow DOM for encapsulation:
+All 14 components use Web Components API with Shadow DOM for encapsulation:
 
 **Standard Component:**
 ```javascript
