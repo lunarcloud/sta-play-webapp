@@ -9,6 +9,12 @@ updates:
       interval: "weekly"
       day: "thursday"
     open-pull-requests-limit: 10
+    ignore:
+      # eslint v10 is not compatible with eslint-plugin-jsdoc until it adds support
+      # See package.json version-constraints for details
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
+        versions: [">=10.0.0"]
     groups:
       npm-dependencies:
         patterns:
