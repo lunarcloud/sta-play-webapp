@@ -124,7 +124,7 @@ describe('Example Files Import', () => {
       expect(backupData.Trackers).to.be.an('array')
 
       const idb = await db.open()
-      
+
       // Clear database before importing next file
       const clearTx = idb.transaction(['games', 'players', 'trackers', 'rollTables', 'scenes', 'traits'], 'readwrite')
       await clearTx.objectStore('games').clear()
