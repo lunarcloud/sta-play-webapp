@@ -66,7 +66,7 @@ export class SceneSwitcherElement extends HTMLDialogElement {
       this.#switchToAddMode()
     })
 
-    sceneInput?.addEventListener('keydown', async (e) => {
+    sceneInput?.addEventListener('keydown', async (/** @type {KeyboardEvent} */ e) => {
       if (e.key === 'Enter') {
         await this.#handleSceneAction()
       } else if (e.key === 'Escape') {
@@ -82,9 +82,9 @@ export class SceneSwitcherElement extends HTMLDialogElement {
     this.#renameSceneId = null
     const inputArea = this.querySelector('.scene-input-area')
     const label = this.querySelector('.scene-input-label')
-    const input = this.querySelector('input.scene-input')
-    const actionBtn = this.querySelector('button.scene-action-btn')
-    const cancelBtn = this.querySelector('button.scene-cancel-btn')
+    const input = /** @type {HTMLInputElement|null} */ (this.querySelector('input.scene-input'))
+    const actionBtn = /** @type {HTMLElement|null} */ (this.querySelector('button.scene-action-btn'))
+    const cancelBtn = /** @type {HTMLElement|null} */ (this.querySelector('button.scene-cancel-btn'))
 
     inputArea?.classList.remove('rename-mode')
     if (label) label.textContent = 'New scene name:'
@@ -105,9 +105,9 @@ export class SceneSwitcherElement extends HTMLDialogElement {
     this.#renameSceneId = sceneId
     const inputArea = this.querySelector('.scene-input-area')
     const label = this.querySelector('.scene-input-label')
-    const input = this.querySelector('input.scene-input')
-    const actionBtn = this.querySelector('button.scene-action-btn')
-    const cancelBtn = this.querySelector('button.scene-cancel-btn')
+    const input = /** @type {HTMLInputElement|null} */ (this.querySelector('input.scene-input'))
+    const actionBtn = /** @type {HTMLElement|null} */ (this.querySelector('button.scene-action-btn'))
+    const cancelBtn = /** @type {HTMLElement|null} */ (this.querySelector('button.scene-cancel-btn'))
 
     inputArea?.classList.add('rename-mode')
     if (label) label.textContent = 'Rename scene:'
@@ -200,7 +200,7 @@ export class SceneSwitcherElement extends HTMLDialogElement {
     const scene = this.#scenes.find(s => s.id === sceneId)
     if (!scene) return
 
-    const confirmDialog = document.querySelector('dialog[is="confirm-dialog"]')
+    const confirmDialog = /** @type {HTMLDialogElement & {confirm: (message: string) => Promise<boolean>}} */ (document.querySelector('dialog[is="confirm-dialog"]'))
     if (confirmDialog && typeof confirmDialog.confirm === 'function') {
       const confirmed = await confirmDialog.confirm(`Are you sure you want to delete scene "${scene.name}"?`)
       if (confirmed && this.#onSceneDelete) {
@@ -315,4 +315,3 @@ export class SceneSwitcherElement extends HTMLDialogElement {
 }
 
 customElements.define('scene-switcher', SceneSwitcherElement, { extends: 'dialog' })
-globalThis.SceneSwitcherElement = SceneSwitcherElement

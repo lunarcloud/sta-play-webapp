@@ -110,4 +110,3 @@ export class DiceDialogElement extends HTMLDialogElement {
   }
 }
 customElements.define('dice-dialog', DiceDialogElement, { extends: 'dialog' })
-globalThis.DiceDialogElement = DiceDialogElement

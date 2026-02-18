@@ -7,8 +7,9 @@ describe('TraitDisplayElement', () => {
       expect(customElements.get('trait-display')).to.equal(TraitDisplayElement)
     })
 
-    it('should be accessible via globalThis', () => {
-      expect(globalThis.TraitDisplayElement).to.equal(TraitDisplayElement)
+    it('should export a class constructor', () => {
+      expect(TraitDisplayElement).to.be.a('function')
+      expect(TraitDisplayElement.prototype).to.be.an.instanceof(HTMLElement)
     })
   })
 

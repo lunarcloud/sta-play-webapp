@@ -100,4 +100,3 @@ export class InputDialogElement extends HTMLDialogElement {
   }
 }
 customElements.define('input-dialog', InputDialogElement, { extends: 'dialog' })
-globalThis.InputDialogElement = InputDialogElement

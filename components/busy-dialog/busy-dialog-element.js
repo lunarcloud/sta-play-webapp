@@ -18,7 +18,7 @@ export class BusyDialogElement extends HTMLDialogElement {
   constructor () {
     super()
     this.innerHTML = dialogEl.innerHTML
-    this.querySelectorAll('button.close').forEach(el => el.addEventListener('click', () => animateClose(this)))
+    this.querySelectorAll('button.close').forEach(el => el.addEventListener('click', () => animateClose(/** @type {HTMLDialogElement} */ (/** @type {unknown} */ (this)))))
     // Cache the message element for better performance
     this.#messageElement = this.querySelector('main p')
   }
@@ -37,4 +37,3 @@ export class BusyDialogElement extends HTMLDialogElement {
   }
 }
 customElements.define('busy-dialog', BusyDialogElement, { extends: 'dialog' })
-globalThis.BusyDialogElement = BusyDialogElement

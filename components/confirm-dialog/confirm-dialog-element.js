@@ -72,4 +72,3 @@ export class ConfirmDialogElement extends HTMLDialogElement {
   }
 }
 customElements.define('confirm-dialog', ConfirmDialogElement, { extends: 'dialog' })
-globalThis.ConfirmDialogElement = ConfirmDialogElement

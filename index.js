@@ -28,9 +28,6 @@ import { setupNumberInputScrollForParent } from './js/scrollable-inputs.js'
 import { Interpolate, lerp } from './js/math-utils.js'
 import { MirrorWindow } from './js/mirror-window.js'
 
-// Make RollTableInfo available globally for the dialog component
-globalThis.RollTableInfo = RollTableInfo
-
 const DefaultShipUrl = 'gltf/default-ship-1.glb'
 
 /**

@@ -7,8 +7,9 @@ describe('TaskTrackerElement', () => {
       expect(customElements.get('task-tracker')).to.equal(TaskTrackerElement)
     })
 
-    it('should be accessible via globalThis', () => {
-      expect(globalThis.TaskTrackerElement).to.equal(TaskTrackerElement)
+    it('should export a class constructor', () => {
+      expect(TaskTrackerElement).to.be.a('function')
+      expect(TaskTrackerElement.prototype).to.be.an.instanceof(HTMLElement)
     })
   })
 

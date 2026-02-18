@@ -1,5 +1,6 @@
 import { animateClose } from '../../js/dialog-utils.js'
 import { loadElementFromFile } from '../../js/load-file-element.js'
+import { RollTableInfo } from '../../js/database/roll-table-info.js'
 
 const dialogEl = await loadElementFromFile('./components/roll-tables-dialog/roll-tables-dialog.html', 'dialog')
 
@@ -118,7 +119,6 @@ export class RollTablesDialogElement extends HTMLDialogElement {
    * Create a new table
    */
   #createNewTable () {
-    const RollTableInfo = globalThis.RollTableInfo
     // Start with one empty entry to help users get started
     this.#currentTable = new RollTableInfo(this.#gameId, 'New Table', [{ result: '' }])
     this.#showEditor()
@@ -257,7 +257,7 @@ export class RollTablesDialogElement extends HTMLDialogElement {
         errors.push('- Unknown validation error. Please check all fields.')
       }
 
-      const messageDialog = document.querySelector('dialog[is="message-dialog"]')
+      const messageDialog = /** @type {HTMLDialogElement & {show: (message: string) => void}} */ (document.querySelector('dialog[is="message-dialog"]'))
       if (messageDialog && typeof messageDialog.show === 'function') {
         await messageDialog.show('Please check the following:\n' + errors.join('\n'))
       }
@@ -325,4 +325,3 @@ export class RollTablesDialogElement extends HTMLDialogElement {
   }
 }
 customElements.define('roll-tables-dialog', RollTablesDialogElement, { extends: 'dialog' })
-globalThis.RollTablesDialogElement = RollTablesDialogElement

@@ -1,5 +1,5 @@
 import { expect } from '@esm-bundle/chai'
-import '../../../components/welcome-dialog/welcome-dialog-element.js'
+import { WelcomeDialogElement } from '../../../components/welcome-dialog/welcome-dialog-element.js'
 
 describe('WelcomeDialogElement', () => {
   let dialog
@@ -20,11 +20,12 @@ describe('WelcomeDialogElement', () => {
 
   describe('custom element registration', () => {
     it('should be defined as a custom element', () => {
-      expect(customElements.get('welcome-dialog')).to.equal(globalThis.WelcomeDialogElement)
+      expect(customElements.get('welcome-dialog')).to.equal(WelcomeDialogElement)
     })
 
-    it('should be accessible via globalThis', () => {
-      expect(globalThis.WelcomeDialogElement).to.not.be.undefined
+    it('should export a class constructor', () => {
+      expect(WelcomeDialogElement).to.be.a('function')
+      expect(WelcomeDialogElement.prototype).to.be.an.instanceof(HTMLDialogElement)
     })
   })
 

@@ -7,8 +7,9 @@ describe('PlayerDisplayElement', () => {
       expect(customElements.get('player-display')).to.equal(PlayerDisplayElement)
     })
 
-    it('should be accessible via globalThis', () => {
-      expect(globalThis.PlayerDisplayElement).to.equal(PlayerDisplayElement)
+    it('should export a class constructor', () => {
+      expect(PlayerDisplayElement).to.be.a('function')
+      expect(PlayerDisplayElement.prototype).to.be.an.instanceof(HTMLLIElement)
     })
   })
 

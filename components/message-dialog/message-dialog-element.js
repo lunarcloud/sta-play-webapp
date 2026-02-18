@@ -32,4 +32,3 @@ export class MessageDialogElement extends HTMLDialogElement {
   }
 }
 customElements.define('message-dialog', MessageDialogElement, { extends: 'dialog' })
-globalThis.MessageDialogElement = MessageDialogElement

@@ -1,5 +1,5 @@
 import { expect } from '@esm-bundle/chai'
-import '../../../components/dice-dialog/dice-dialog-element.js'
+import { DiceDialogElement } from '../../../components/dice-dialog/dice-dialog-element.js'
 
 describe('DiceDialogElement', () => {
   let dialog
@@ -20,11 +20,12 @@ describe('DiceDialogElement', () => {
 
   describe('custom element registration', () => {
     it('should be defined as a custom element', () => {
-      expect(customElements.get('dice-dialog')).to.equal(globalThis.DiceDialogElement)
+      expect(customElements.get('dice-dialog')).to.equal(DiceDialogElement)
     })
 
-    it('should be accessible via globalThis', () => {
-      expect(globalThis.DiceDialogElement).to.not.be.undefined
+    it('should export a class constructor', () => {
+      expect(DiceDialogElement).to.be.a('function')
+      expect(DiceDialogElement.prototype).to.be.an.instanceof(HTMLDialogElement)
     })
   })
 

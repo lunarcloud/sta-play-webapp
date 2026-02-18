@@ -7,8 +7,9 @@ describe('MissionTrackerElement', () => {
       expect(customElements.get('mission-tracker')).to.equal(MissionTrackerElement)
     })
 
-    it('should be accessible via globalThis', () => {
-      expect(globalThis.MissionTrackerElement).to.equal(MissionTrackerElement)
+    it('should export a class constructor', () => {
+      expect(MissionTrackerElement).to.be.a('function')
+      expect(MissionTrackerElement.prototype).to.be.an.instanceof(HTMLElement)
     })
   })
 

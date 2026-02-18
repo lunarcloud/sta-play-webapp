@@ -1,5 +1,5 @@
 import { expect } from '@esm-bundle/chai'
-import '../../../components/input-dialog/input-dialog-element.js'
+import { InputDialogElement } from '../../../components/input-dialog/input-dialog-element.js'
 
 describe('InputDialogElement', () => {
   let dialog
@@ -20,11 +20,12 @@ describe('InputDialogElement', () => {
 
   describe('custom element registration', () => {
     it('should be defined as a custom element', () => {
-      expect(customElements.get('input-dialog')).to.equal(globalThis.InputDialogElement)
+      expect(customElements.get('input-dialog')).to.equal(InputDialogElement)
     })
 
-    it('should be accessible via globalThis', () => {
-      expect(globalThis.InputDialogElement).to.not.be.undefined
+    it('should export a class constructor', () => {
+      expect(InputDialogElement).to.be.a('function')
+      expect(InputDialogElement.prototype).to.be.an.instanceof(HTMLDialogElement)
     })
   })
 

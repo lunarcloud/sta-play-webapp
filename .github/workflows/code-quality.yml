@@ -46,6 +46,10 @@ jobs:
         if: ${{ ! cancelled() }}
         run: npm run csslint
 
+      - name: Type Check
+        if: ${{ ! cancelled() }}
+        run: npm run typecheck
+
       - name: Run Unit Tests with Coverage
         if: ${{ ! cancelled() }}
         run: npm run test:coverage

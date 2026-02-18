@@ -73,7 +73,7 @@ export async function saveBlobAs (filename, blobData, mimeOptions, startIn = 'do
     if (promptIfFallback) {
       try {
         // Use the custom input dialog for name selection
-        const inputDialog = document.querySelector('dialog[is="input-dialog"]')
+        const inputDialog = /** @type {HTMLDialogElement & {prompt: (message: string, defaultValue: string) => Promise<string|null>}} */ (document.querySelector('dialog[is="input-dialog"]'))
         if (inputDialog && typeof inputDialog.prompt === 'function') {
           const result = await inputDialog.prompt('Enter file name for download', filename)
           if (typeof result !== 'string' || result === null) { return } // user chose to cancel

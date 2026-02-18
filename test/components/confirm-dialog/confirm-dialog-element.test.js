@@ -1,5 +1,5 @@
 import { expect } from '@esm-bundle/chai'
-import '../../../components/confirm-dialog/confirm-dialog-element.js'
+import { ConfirmDialogElement } from '../../../components/confirm-dialog/confirm-dialog-element.js'
 
 describe('ConfirmDialogElement', () => {
   let dialog
@@ -20,11 +20,12 @@ describe('ConfirmDialogElement', () => {
 
   describe('custom element registration', () => {
     it('should be defined as a custom element', () => {
-      expect(customElements.get('confirm-dialog')).to.equal(globalThis.ConfirmDialogElement)
+      expect(customElements.get('confirm-dialog')).to.equal(ConfirmDialogElement)
     })
 
-    it('should be accessible via globalThis', () => {
-      expect(globalThis.ConfirmDialogElement).to.not.be.undefined
+    it('should export a class constructor', () => {
+      expect(ConfirmDialogElement).to.be.a('function')
+      expect(ConfirmDialogElement.prototype).to.be.an.instanceof(HTMLDialogElement)
     })
   })
 

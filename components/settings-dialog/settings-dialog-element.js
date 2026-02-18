@@ -17,4 +17,3 @@ export class SettingsDialogElement extends HTMLDialogElement {
   }
 }
 customElements.define('settings-dialog', SettingsDialogElement, { extends: 'dialog' })
-globalThis.SettingsDialogElement = SettingsDialogElement

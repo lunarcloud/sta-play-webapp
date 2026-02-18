@@ -4,5 +4,13 @@
         "module": "ESNext",
         "checkJs": true,
         "pretty": true
-    }
+    },
+    "include": [
+        "components/**/*.js",
+        "js/**/*.js"
+    ],
+    "exclude": [
+        "node_modules",
+        "js/lib/**"
+    ]
 }

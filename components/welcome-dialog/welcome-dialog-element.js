@@ -17,4 +17,3 @@ export class WelcomeDialogElement extends HTMLDialogElement {
   }
 }
 customElements.define('welcome-dialog', WelcomeDialogElement, { extends: 'dialog' })
-globalThis.WelcomeDialogElement = WelcomeDialogElement
