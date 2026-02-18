@@ -13,6 +13,7 @@
         "csslint-fix": "npx stylelint \"**/*.css\" --quiet-deprecation-warnings --fix",
         "lint": "npm run eslint; npm run htmllint; npm run csslint",
         "lint-fix": "npm run eslint-fix; npm run htmllint; npm run csslint-fix",
+        "typecheck": "npx tsc --noEmit --project jsconfig.json --pretty false 2>&1 | grep -v '^js/lib/' > /tmp/typecheck-out.txt; if grep -q 'error TS' /tmp/typecheck-out.txt; then cat /tmp/typecheck-out.txt; exit 1; fi",
         "test": "npx web-test-runner",
         "test:watch": "npx web-test-runner --watch",
         "test:coverage": "npx web-test-runner --coverage",
@@ -43,7 +44,8 @@
         "npm-check-updates": "^19.3.2",
         "serve": "^14.2.5",
         "stylelint": "^17.3.0",
-        "stylelint-config-standard": "^40.0.0"
+        "stylelint-config-standard": "^40.0.0",
+        "typescript": "^5.9.3"
     },
     "version-constraints": {
         "eslint": "Cannot upgrade to v10 until eslint-plugin-jsdoc adds support (currently supports ^7 || ^8 || ^9). Track: https://github.com/gajus/eslint-plugin-jsdoc/issues",

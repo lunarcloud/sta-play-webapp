@@ -7,8 +7,9 @@ describe('ShipAlertElement', () => {
       expect(customElements.get('ship-alert')).to.equal(ShipAlertElement)
     })
 
-    it('should be accessible via globalThis', () => {
-      expect(globalThis.ShipAlertElement).to.equal(ShipAlertElement)
+    it('should export a class constructor', () => {
+      expect(ShipAlertElement).to.be.a('function')
+      expect(ShipAlertElement.prototype).to.be.an.instanceof(HTMLElement)
     })
   })
 

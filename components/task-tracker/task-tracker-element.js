@@ -720,4 +720,3 @@ export class TaskTrackerElement extends HTMLElement {
 
 // Register element
 customElements.define('task-tracker', TaskTrackerElement)
-globalThis.TaskTrackerElement = TaskTrackerElement

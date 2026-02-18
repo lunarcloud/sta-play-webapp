@@ -1,5 +1,5 @@
 import { expect } from '@esm-bundle/chai'
-import '../../../components/settings-dialog/settings-dialog-element.js'
+import { SettingsDialogElement } from '../../../components/settings-dialog/settings-dialog-element.js'
 
 describe('SettingsDialogElement', () => {
   let dialog
@@ -20,11 +20,12 @@ describe('SettingsDialogElement', () => {
 
   describe('custom element registration', () => {
     it('should be defined as a custom element', () => {
-      expect(customElements.get('settings-dialog')).to.equal(globalThis.SettingsDialogElement)
+      expect(customElements.get('settings-dialog')).to.equal(SettingsDialogElement)
     })
 
-    it('should be accessible via globalThis', () => {
-      expect(globalThis.SettingsDialogElement).to.not.be.undefined
+    it('should export a class constructor', () => {
+      expect(SettingsDialogElement).to.be.a('function')
+      expect(SettingsDialogElement.prototype).to.be.an.instanceof(HTMLDialogElement)
     })
   })
 

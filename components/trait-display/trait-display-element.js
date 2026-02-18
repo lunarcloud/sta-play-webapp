@@ -122,4 +122,3 @@ export class TraitDisplayElement extends HTMLElement {
 
 // Register element
 customElements.define('trait-display', TraitDisplayElement)
-globalThis.TraitDisplayElement = TraitDisplayElement

@@ -1,5 +1,5 @@
 import { expect } from '@esm-bundle/chai'
-import '../../../components/busy-dialog/busy-dialog-element.js'
+import { BusyDialogElement } from '../../../components/busy-dialog/busy-dialog-element.js'
 
 describe('BusyDialogElement', () => {
   let dialog
@@ -20,11 +20,12 @@ describe('BusyDialogElement', () => {
 
   describe('custom element registration', () => {
     it('should be defined as a custom element', () => {
-      expect(customElements.get('busy-dialog')).to.equal(globalThis.BusyDialogElement)
+      expect(customElements.get('busy-dialog')).to.equal(BusyDialogElement)
     })
 
-    it('should be accessible via globalThis', () => {
-      expect(globalThis.BusyDialogElement).to.not.be.undefined
+    it('should export a class constructor', () => {
+      expect(BusyDialogElement).to.be.a('function')
+      expect(BusyDialogElement.prototype).to.be.an.instanceof(HTMLDialogElement)
     })
   })
 

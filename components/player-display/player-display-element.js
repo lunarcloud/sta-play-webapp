@@ -675,4 +675,3 @@ export class PlayerDisplayElement extends HTMLLIElement {
 
 // Register element
 customElements.define('player-display', PlayerDisplayElement, { extends: 'li' })
-globalThis.PlayerDisplayElement = PlayerDisplayElement

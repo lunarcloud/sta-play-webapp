@@ -163,4 +163,3 @@ export class InputProgressElement extends HTMLElement {
 
 // Register element
 customElements.define('input-progress', InputProgressElement)
-globalThis.InputProgressElement = InputProgressElement

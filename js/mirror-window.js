@@ -125,7 +125,7 @@ export class MirrorWindow {
       const fsBtn = doc.querySelector('#fullscreen-btn')
       if (fsBtn) {
         // Remove existing click handlers by cloning and replacing
-        const newFsBtn = fsBtn.cloneNode(true)
+        const newFsBtn = /** @type {Element} */ (fsBtn.cloneNode(true))
         fsBtn.parentNode.replaceChild(newFsBtn, fsBtn)
 
         // Add new handler for mirror window
@@ -144,7 +144,7 @@ export class MirrorWindow {
       }
 
       // Copy all styles
-      document.querySelectorAll('link[rel="stylesheet"]').forEach(link => {
+      document.querySelectorAll('link[rel="stylesheet"]').forEach((/** @type {HTMLLinkElement} */ link) => {
         const newLink = doc.createElement('link')
         newLink.rel = 'stylesheet'
         newLink.href = link.href
@@ -536,20 +536,20 @@ export class MirrorWindow {
    * Synchronizes model-viewer properties and styles from source to target.
    * This is needed for cloaking effects which set opacity and exposure via JavaScript,
    * and for syncing camera orientation when users interact with the model.
-   * @param {Element} sourceViewer - The source model-viewer element
-   * @param {Element} targetViewer - The target model-viewer element
+   * @param {HTMLElement} sourceViewer - The source model-viewer element
+   * @param {HTMLElement} targetViewer - The target model-viewer element
    */
   static #syncModelViewerProperties (sourceViewer, targetViewer) {
     if (!sourceViewer || !targetViewer) return
 
     // Sync src attribute
-    if (sourceViewer.src) {
-      targetViewer.src = sourceViewer.src
+    if ('src' in sourceViewer) {
+      targetViewer.setAttribute('src', /** @type {string} */ (sourceViewer['src']))
     }
 
     // Sync exposure property (used in cloaking effect)
     if ('exposure' in sourceViewer) {
-      targetViewer.exposure = sourceViewer.exposure
+      targetViewer['exposure'] = sourceViewer['exposure']
     }
 
     // Sync inline style.opacity (used in cloaking effect)
@@ -564,20 +564,20 @@ export class MirrorWindow {
     // These properties are updated when users interact with the model-viewer
     // Use setAttribute to set the camera-orbit, camera-target, and field-of-view attributes
     // which will update the view more reliably than setting properties directly
-    if ('cameraOrbit' in sourceViewer && sourceViewer.cameraOrbit) {
-      targetViewer.setAttribute('camera-orbit', sourceViewer.cameraOrbit)
+    if ('cameraOrbit' in sourceViewer && sourceViewer['cameraOrbit']) {
+      targetViewer.setAttribute('camera-orbit', /** @type {string} */ (sourceViewer['cameraOrbit']))
       // Force immediate camera update
-      if (typeof targetViewer.jumpCameraToGoal === 'function') {
-        targetViewer.jumpCameraToGoal()
+      if ('jumpCameraToGoal' in targetViewer && typeof targetViewer['jumpCameraToGoal'] === 'function') {
+        targetViewer['jumpCameraToGoal']()
       }
     }
 
-    if ('cameraTarget' in sourceViewer && sourceViewer.cameraTarget) {
-      targetViewer.setAttribute('camera-target', sourceViewer.cameraTarget)
+    if ('cameraTarget' in sourceViewer && sourceViewer['cameraTarget']) {
+      targetViewer.setAttribute('camera-target', /** @type {string} */ (sourceViewer['cameraTarget']))
     }
 
-    if ('fieldOfView' in sourceViewer && sourceViewer.fieldOfView) {
-      targetViewer.setAttribute('field-of-view', sourceViewer.fieldOfView)
+    if ('fieldOfView' in sourceViewer && sourceViewer['fieldOfView']) {
+      targetViewer.setAttribute('field-of-view', /** @type {string} */ (sourceViewer['fieldOfView']))
     }
   }
 
@@ -730,7 +730,7 @@ export class MirrorWindow {
         }
       } else {
         // Add new tracker by cloning the source element
-        const newTracker = sourceTracker.cloneNode(true)
+        const newTracker = /** @type {Element} */ (sourceTracker.cloneNode(true))
         mirrorTaskTrackers.appendChild(newTracker)
         // Sync attributes after append to trigger attributeChangedCallback
         Array.from(sourceTracker.attributes).forEach(attr => {
@@ -847,7 +847,7 @@ export class MirrorWindow {
         MirrorWindow.#syncCustomElementAttributes(player, mirrorPlayer)
       } else {
         // Add new player by cloning with full content
-        const newPlayer = player.cloneNode(true)
+        const newPlayer = /** @type {Element} */ (player.cloneNode(true))
         mirrorPlayersUl.appendChild(newPlayer)
         // Sync form values and custom element attributes after adding
         MirrorWindow.#syncFormValues(player, newPlayer)
@@ -872,7 +872,7 @@ export class MirrorWindow {
       const mirrorModelViewers = mirrorHeaderEl.querySelectorAll('model-viewer')
       modelViewers.forEach((viewer, index) => {
         if (mirrorModelViewers[index]) {
-          MirrorWindow.#syncModelViewerProperties(viewer, mirrorModelViewers[index])
+          MirrorWindow.#syncModelViewerProperties(/** @type {HTMLElement} */ (viewer), /** @type {HTMLElement} */ (mirrorModelViewers[index]))
         }
       })
     }

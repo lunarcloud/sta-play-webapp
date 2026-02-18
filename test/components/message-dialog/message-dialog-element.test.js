@@ -1,5 +1,5 @@
 import { expect } from '@esm-bundle/chai'
-import '../../../components/message-dialog/message-dialog-element.js'
+import { MessageDialogElement } from '../../../components/message-dialog/message-dialog-element.js'
 
 describe('MessageDialogElement', () => {
   let dialog
@@ -18,11 +18,12 @@ describe('MessageDialogElement', () => {
 
   describe('custom element registration', () => {
     it('should be defined as a custom element', () => {
-      expect(customElements.get('message-dialog')).to.equal(globalThis.MessageDialogElement)
+      expect(customElements.get('message-dialog')).to.equal(MessageDialogElement)
     })
 
-    it('should be accessible via globalThis', () => {
-      expect(globalThis.MessageDialogElement).to.not.be.undefined
+    it('should export a class constructor', () => {
+      expect(MessageDialogElement).to.be.a('function')
+      expect(MessageDialogElement.prototype).to.be.an.instanceof(HTMLDialogElement)
     })
   })
 

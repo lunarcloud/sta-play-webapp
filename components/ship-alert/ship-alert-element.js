@@ -151,4 +151,3 @@ export class ShipAlertElement extends HTMLElement {
 
 // Register element
 customElements.define('ship-alert', ShipAlertElement)
-globalThis.ShipAlertElement = ShipAlertElement

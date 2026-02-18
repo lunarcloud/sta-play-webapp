@@ -7,8 +7,9 @@ describe('SceneSwitcherElement', () => {
       expect(customElements.get('scene-switcher')).to.equal(SceneSwitcherElement)
     })
 
-    it('should be accessible via globalThis', () => {
-      expect(globalThis.SceneSwitcherElement).to.equal(SceneSwitcherElement)
+    it('should export a class constructor', () => {
+      expect(SceneSwitcherElement).to.be.a('function')
+      expect(SceneSwitcherElement.prototype).to.be.an.instanceof(HTMLDialogElement)
     })
 
     it('should extend HTMLDialogElement', () => {

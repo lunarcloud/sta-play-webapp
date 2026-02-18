@@ -7,8 +7,9 @@ describe('InputProgressElement', () => {
       expect(customElements.get('input-progress')).to.equal(InputProgressElement)
     })
 
-    it('should be accessible via globalThis', () => {
-      expect(globalThis.InputProgressElement).to.equal(InputProgressElement)
+    it('should export a class constructor', () => {
+      expect(InputProgressElement).to.be.a('function')
+      expect(InputProgressElement.prototype).to.be.an.instanceof(HTMLElement)
     })
   })
 
