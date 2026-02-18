@@ -95,10 +95,13 @@ const setup = async () => {
       const scene = this.#scenes.find(s => s.id === sceneId)
       if (!scene) return
 
-      const newName = prompt('Enter new scene name:', scene.name)
-      if (newName && newName.trim() && newName !== scene.name) {
-        if (this.#onSceneRename) {
-          await this.#onSceneRename(sceneId, newName.trim())
+      const inputDialog = document.querySelector('dialog[is="input-dialog"]')
+      if (inputDialog && typeof inputDialog.prompt === 'function') {
+        const newName = await inputDialog.prompt('Enter new scene name:', scene.name)
+        if (newName && newName.trim() && newName !== scene.name) {
+          if (this.#onSceneRename) {
+            await this.#onSceneRename(sceneId, newName.trim())
+          }
         }
       }
     }

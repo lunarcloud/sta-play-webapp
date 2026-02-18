@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html>
+    <body>
+        <dialog>
+            <style>
+                dialog[is=input-dialog] {
+                    width: fit-content;
+                    max-width: max(320px, 90%);
+
+                    main {
+                        padding: 1.5em;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 1em;
+
+                        label {
+                            text-align: center;
+                        }
+
+                        input {
+                            padding: 0.5em;
+                            font-size: 1em;
+                        }
+                    }
+
+                    footer {
+                        display: flex;
+                        gap: 1em;
+                        flex-direction: row;
+                        justify-content: center;
+
+                        & > button {
+                            margin: 0 !important;
+                        }
+                    }
+                }
+            </style>
+            <header>
+                Input
+                <button class="close" role="button">⤫</button>
+            </header>
+            <main>
+                <label for="input-field"></label>
+                <input id="input-field" type="text">
+            </main>
+            <footer>
+                <button class="cancel" role="button">Cancel</button>
+                <button class="confirm" role="button">OK</button>
+            </footer>
+        </dialog>
+    </body>
+</html>

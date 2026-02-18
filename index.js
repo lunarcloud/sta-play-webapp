@@ -4,6 +4,7 @@ import { SettingsDialogElement } from './components/settings-dialog/settings-dia
 import { BusyDialogElement } from './components/busy-dialog/busy-dialog-element.js'
 import { MessageDialogElement } from './components/message-dialog/message-dialog-element.js'
 import { ConfirmDialogElement } from './components/confirm-dialog/confirm-dialog-element.js'
+import { InputDialogElement } from './components/input-dialog/input-dialog-element.js'
 import { DiceDialogElement } from './components/dice-dialog/dice-dialog-element.js'
 import { RollTablesDialogElement } from './components/roll-tables-dialog/roll-tables-dialog-element.js'
 import { SceneSwitcherElement } from './components/scene-switcher/scene-switcher-element.js'
@@ -194,6 +195,11 @@ export class IndexController {
     this.confirmDialog = document.querySelector('dialog[is="confirm-dialog"]')
     if (this.confirmDialog instanceof ConfirmDialogElement === false) {
       throw new Error('Confirm dialog not setup!')
+    }
+
+    this.inputDialog = document.querySelector('dialog[is="input-dialog"]')
+    if (this.inputDialog instanceof InputDialogElement === false) {
+      throw new Error('Input dialog not setup!')
     }
 
     // Wire up the dice dialog

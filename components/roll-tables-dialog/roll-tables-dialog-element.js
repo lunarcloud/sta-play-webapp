@@ -258,7 +258,10 @@ const setup = async () => {
           errors.push('- Unknown validation error. Please check all fields.')
         }
 
-        alert('Please check the following:\n' + errors.join('\n'))
+        const messageDialog = document.querySelector('dialog[is="message-dialog"]')
+        if (messageDialog && typeof messageDialog.show === 'function') {
+          await messageDialog.show('Please check the following:\n' + errors.join('\n'))
+        }
         return
       }
 
