@@ -405,7 +405,7 @@ export class Database {
    */
   async replacePlayers (players = [], db = undefined) {
     players.forEach(p => { if (p.id === undefined) delete p.id })
-    await this.#replaceData(STORE.PLAYERS, INDEX.NAME, players, db)
+    await this.#replaceData(STORE.PLAYERS, INDEX.NAME, undefined, players, db)
   }
 
   /**
@@ -421,7 +421,7 @@ export class Database {
     }
 
     rollTables.forEach(t => { if (t.id === undefined) delete t.id })
-    await this.#replaceData(STORE.ROLL_TABLES, INDEX.NAME, rollTables, db)
+    await this.#replaceData(STORE.ROLL_TABLES, INDEX.NAME, undefined, rollTables, db)
   }
 
   /**
