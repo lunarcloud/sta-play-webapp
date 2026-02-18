@@ -258,17 +258,17 @@ describe('Save File Utils', () => {
       }
 
       const originalShowSaveFilePicker = window.showSaveFilePicker
-      
+
       // Remove any existing input dialog first
       const existingDialog = document.querySelector('dialog[is="input-dialog"]')
       if (existingDialog) {
         existingDialog.remove()
       }
-      
-      // Create a new input dialog 
+
+      // Create a new input dialog
       const mockInputDialog = document.createElement('dialog', { is: 'input-dialog' })
       document.body.appendChild(mockInputDialog)
-      
+
       // Store the original prompt method and replace it
       const originalPrompt = mockInputDialog.prompt.bind(mockInputDialog)
       let promptCalled = false
@@ -304,7 +304,7 @@ describe('Save File Utils', () => {
 
     // TODO: Fix mocking of input-dialog custom element in tests
     // The input-dialog works correctly in manual testing and has its own test suite (15 passing tests)
-    // This test needs a better mocking strategy for custom elements  
+    // This test needs a better mocking strategy for custom elements
     it.skip('should handle user cancelling prompt', async () => {
       const testData = new Blob(['test content'], { type: 'text/plain' })
       const filename = 'test.txt'
@@ -314,17 +314,17 @@ describe('Save File Utils', () => {
       }
 
       const originalShowSaveFilePicker = window.showSaveFilePicker
-      
+
       // Remove any existing input dialog first
       const existingDialog = document.querySelector('dialog[is="input-dialog"]')
       if (existingDialog) {
         existingDialog.remove()
       }
-      
+
       // Create a new input dialog
       const mockInputDialog = document.createElement('dialog', { is: 'input-dialog' })
       document.body.appendChild(mockInputDialog)
-      
+
       // Store the original prompt method and replace it
       const originalPrompt = mockInputDialog.prompt.bind(mockInputDialog)
       mockInputDialog.prompt = async function () {
