@@ -34,6 +34,9 @@ The application will be available at `http://localhost:3000` (or the next availa
 | `npm run test:watch` | Run tests in watch mode |
 | `npm run test:coverage` | Generate test coverage report |
 | `npm run cem` | Generate custom elements manifest for IDE support |
+| `npm run outdated` | Check for available package updates |
+| `npm run outdated:minor` | Check for minor version updates only |
+| `npm run outdated:patch` | Check for patch version updates only |
 
 ### Code Quality
 
@@ -100,3 +103,17 @@ See `test/components/trait-display/trait-display-element.test.js` for a comprehe
 ## Code Quality Tools
 The project has linters for the HTML, CSS, and JavaScript all setup and configured.
 Simply run `npm run lint-fix` to run all of them in "fix what you can automatically" mode.
+
+### Dependency Security
+
+The project uses `npm audit` to check for security vulnerabilities. However, be aware that:
+- Many reported vulnerabilities are in **dev dependencies only** and don't affect the production application
+- The production app is client-side only and doesn't process user input in ways that trigger most vulnerabilities
+- See [npm audit: Broken by Design](https://overreacted.io/npm-audit-broken-by-design/) for context on false positives
+
+Check for actual outdated packages using:
+```sh
+npm run outdated
+```
+
+Before upgrading packages, review the `version-constraints` section in `package.json` for known compatibility issues.

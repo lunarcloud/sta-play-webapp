@@ -18,7 +18,10 @@
         "test:coverage": "npx web-test-runner --coverage",
         "serve": "serve",
         "copy-deps": "node copy-deps.js",
-        "cem": "npx cem analyze"
+        "cem": "npx cem analyze",
+        "outdated": "npx npm-check-updates",
+        "outdated:minor": "npx npm-check-updates --target minor",
+        "outdated:patch": "npx npm-check-updates --target patch"
     },
     "dependencies": {
         "@google/model-viewer": "^4.1.0",
@@ -43,7 +46,8 @@
         "stylelint-config-standard": "^40.0.0"
     },
     "version-constraints": {
-        "eslint": "Cannot upgrade to v10 until eslint-plugin-jsdoc adds support (currently supports ^7 || ^8 || ^9)",
-        "eslint-plugin-editorconfig": "^4.0.3 required for compatibility"
+        "eslint": "Cannot upgrade to v10 until eslint-plugin-jsdoc adds support (currently supports ^7 || ^8 || ^9). Track: https://github.com/gajus/eslint-plugin-jsdoc/issues",
+        "eslint-plugin-editorconfig": "^4.0.3 required for ESLint 9+ flat config compatibility",
+        "notes": "Check 'npm outdated' regularly. Use 'npm audit' with caution - many vulnerabilities are in dev dependencies and don't affect production. See https://overreacted.io/npm-audit-broken-by-design/"
     }
 }

@@ -27,6 +27,17 @@ Ideally, you should be solving an open issue and including as many **screenshots
 6. Commit your changes with clear commit messages
 7. Push to your fork and create a pull request
 
+### Checking for Package Updates
+
+Before submitting PRs that update dependencies, use:
+```bash
+npm run outdated          # Check all updates
+npm run outdated:minor    # Check minor updates only
+npm run outdated:patch    # Check patch updates only
+```
+
+Review `version-constraints` in `package.json` for known compatibility issues before upgrading.
+
 ## Coding conventions
 
   * Run and accept the linter's judgement as much as humanly possible.
@@ -82,8 +93,11 @@ When adding new components, follow the established patterns:
 
 The following components need comprehensive test coverage:
 - `task-tracker-element.js` (723 lines, complex logic) - **HIGH PRIORITY**
-- `mission-tracker-element.js` - **HIGH PRIORITY**
-- `busy-dialog`, `settings-dialog`, `welcome-dialog` - **MEDIUM PRIORITY**
+- `player-display-element.js` (678 lines, complex display logic) - has basic tests, needs expansion - **HIGH PRIORITY**
+- `roll-tables-dialog-element.js` (329 lines, complex table management) - **NO TESTS** - **HIGH PRIORITY**
+- `mission-tracker-element.js` (216 lines) - **MEDIUM PRIORITY**
+- `scene-switcher-element.js` (233 lines) - **MEDIUM PRIORITY**
+- `busy-dialog`, `settings-dialog`, `welcome-dialog` - **LOW PRIORITY** (simple dialogs)
 
 ### What to Test
 
