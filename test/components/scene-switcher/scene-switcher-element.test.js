@@ -31,7 +31,7 @@ describe('SceneSwitcherElement', () => {
 
     it('should have add scene button', () => {
       const element = document.createElement('dialog', { is: 'scene-switcher' })
-      const addButton = element.querySelector('.add-scene-btn')
+      const addButton = element.querySelector('.scene-action-btn')
       expect(addButton).to.not.be.null
       expect(addButton.textContent.trim()).to.equal('Add Scene')
     })

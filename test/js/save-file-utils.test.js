@@ -1,5 +1,6 @@
 import { expect } from '@esm-bundle/chai'
 import { saveBlob, saveText, saveBlobAs, saveTextAs } from '../../js/save-file-utils.js'
+import '../../components/input-dialog/input-dialog-element.js'
 
 /**
  * Helper to setup mocks for URL and click
@@ -254,17 +255,28 @@ describe('Save File Utils', () => {
       }
 
       const originalShowSaveFilePicker = window.showSaveFilePicker
-      const originalPrompt = window.prompt
-      let promptCalled = false
-
-      window.showSaveFilePicker = async () => {
-        throw new Error('File picker not supported')
+      
+      // Remove any existing input dialog first
+      const existingDialog = document.querySelector('dialog[is="input-dialog"]')
+      if (existingDialog) {
+        existingDialog.remove()
       }
-
-      window.prompt = (message, defaultValue) => {
+      
+      // Create a mock input dialog and add it to DOM FIRST
+      const mockInputDialog = document.createElement('dialog', { is: 'input-dialog' })
+      
+      let promptCalled = false
+      // Set the mock method BEFORE adding to DOM
+      mockInputDialog.prompt = async (message, defaultValue) => {
         promptCalled = true
         expect(defaultValue).to.equal(filename)
         return 'custom-name.txt'
+      }
+      
+      document.body.appendChild(mockInputDialog)
+
+      window.showSaveFilePicker = async () => {
+        throw new Error('File picker not supported')
       }
 
       const mocks = setupFileMocks()
@@ -279,7 +291,9 @@ describe('Save File Utils', () => {
         expect(mocks.clickCalled).to.be.true
       } finally {
         window.showSaveFilePicker = originalShowSaveFilePicker
-        window.prompt = originalPrompt
+        if (mockInputDialog.parentNode) {
+          document.body.removeChild(mockInputDialog)
+        }
         restoreMocks(mocks)
       }
     })
@@ -293,13 +307,23 @@ describe('Save File Utils', () => {
       }
 
       const originalShowSaveFilePicker = window.showSaveFilePicker
-      const originalPrompt = window.prompt
+      
+      // Remove any existing input dialog first
+      const existingDialog = document.querySelector('dialog[is="input-dialog"]')
+      if (existingDialog) {
+        existingDialog.remove()
+      }
+      
+      // Create a mock input dialog
+      const mockInputDialog = document.createElement('dialog', { is: 'input-dialog' })
+      
+      mockInputDialog.prompt = async () => null // User cancelled
+      
+      document.body.appendChild(mockInputDialog)
 
       window.showSaveFilePicker = async () => {
         throw new Error('File picker not supported')
       }
-
-      window.prompt = () => null // User cancelled
 
       const mocks = setupFileMocks()
 
@@ -310,7 +334,9 @@ describe('Save File Utils', () => {
         expect(mocks.clickCalled).to.be.false
       } finally {
         window.showSaveFilePicker = originalShowSaveFilePicker
-        window.prompt = originalPrompt
+        if (mockInputDialog.parentNode) {
+          document.body.removeChild(mockInputDialog)
+        }
         restoreMocks(mocks)
       }
     })
