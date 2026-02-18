@@ -74,6 +74,8 @@ const setup = async () => {
   }
   customElements.define('confirm-dialog', ConfirmDialogElement, { extends: 'dialog' })
   globalThis.ConfirmDialogElement = ConfirmDialogElement
+
+  return ConfirmDialogElement
 }
 
-await setup()
+export const ConfirmDialogElement = await setup()

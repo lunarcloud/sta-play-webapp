@@ -324,6 +324,8 @@ const setup = async () => {
   }
   customElements.define('roll-tables-dialog', RollTablesDialogElement, { extends: 'dialog' })
   globalThis.RollTablesDialogElement = RollTablesDialogElement
+
+  return RollTablesDialogElement
 }
 
-await setup()
+export const RollTablesDialogElement = await setup()

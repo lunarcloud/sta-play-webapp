@@ -1,12 +1,12 @@
 import './components/input-progress/input-progress-element.js'
-import './components/welcome-dialog/welcome-dialog-element.js'
-import './components/settings-dialog/settings-dialog-element.js'
-import './components/busy-dialog/busy-dialog-element.js'
-import './components/message-dialog/message-dialog-element.js'
-import './components/confirm-dialog/confirm-dialog-element.js'
-import './components/dice-dialog/dice-dialog-element.js'
-import './components/roll-tables-dialog/roll-tables-dialog-element.js'
-import './components/scene-switcher/scene-switcher-element.js'
+import { WelcomeDialogElement } from './components/welcome-dialog/welcome-dialog-element.js'
+import { SettingsDialogElement } from './components/settings-dialog/settings-dialog-element.js'
+import { BusyDialogElement } from './components/busy-dialog/busy-dialog-element.js'
+import { MessageDialogElement } from './components/message-dialog/message-dialog-element.js'
+import { ConfirmDialogElement } from './components/confirm-dialog/confirm-dialog-element.js'
+import { DiceDialogElement } from './components/dice-dialog/dice-dialog-element.js'
+import { RollTablesDialogElement } from './components/roll-tables-dialog/roll-tables-dialog-element.js'
+import { SceneSwitcherElement } from './components/scene-switcher/scene-switcher-element.js'
 import { MissionTrackerElement } from './components/mission-tracker/mission-tracker-element.js'
 import { TraitDisplayElement } from './components/trait-display/trait-display-element.js'
 import { PlayerDisplayElement } from './components/player-display/player-display-element.js'
@@ -83,17 +83,17 @@ export class IndexController {
   #shipAlertTransitionID = 0
 
   /**
-   * @type {HTMLDialogElement|undefined}
+   * @type {MessageDialogElement|undefined}
    */
   messageDialog
 
   /**
-   * @type {HTMLDialogElement|undefined}
+   * @type {ConfirmDialogElement|undefined}
    */
   confirmDialog
 
   /**
-   * @type {HTMLDialogElement|undefined}
+   * @type {BusyDialogElement|undefined}
    */
   busyDialog
 
@@ -161,14 +161,14 @@ export class IndexController {
 
     // Check the busy dialog
     const busyDialog = document.querySelector('dialog[is="busy-dialog"]')
-    if (busyDialog instanceof HTMLDialogElement === false) {
+    if (busyDialog instanceof BusyDialogElement === false) {
       throw new Error('Busy dialog not setup!')
     }
     this.busyDialog = busyDialog
 
     // Wire up the welcome dialog
     const welcomeDialog = document.querySelector('dialog[is="welcome-dialog"]')
-    if (welcomeDialog instanceof HTMLDialogElement === false) {
+    if (welcomeDialog instanceof WelcomeDialogElement === false) {
       throw new Error('Welcome dialog not setup!')
     }
 
@@ -181,31 +181,31 @@ export class IndexController {
 
     // Wire up the settings dialog
     const settingsDialog = document.querySelector('dialog[is="settings-dialog"]')
-    if (settingsDialog instanceof HTMLDialogElement === false) {
+    if (settingsDialog instanceof SettingsDialogElement === false) {
       throw new Error('HTML setup incorrect!')
     }
 
     // Get message and confirm dialogs
     this.messageDialog = document.querySelector('dialog[is="message-dialog"]')
-    if (this.messageDialog instanceof HTMLDialogElement === false) {
+    if (this.messageDialog instanceof MessageDialogElement === false) {
       throw new Error('Message dialog not setup!')
     }
 
     this.confirmDialog = document.querySelector('dialog[is="confirm-dialog"]')
-    if (this.confirmDialog instanceof HTMLDialogElement === false) {
+    if (this.confirmDialog instanceof ConfirmDialogElement === false) {
       throw new Error('Confirm dialog not setup!')
     }
 
     // Wire up the dice dialog
     const diceDialog = document.querySelector('dialog[is="dice-dialog"]')
-    if (diceDialog instanceof HTMLDialogElement === false) {
+    if (diceDialog instanceof DiceDialogElement === false) {
       throw new Error('Dice dialog not setup!')
     }
     document.getElementById('dice-btn').addEventListener('click', () => diceDialog.showModal())
 
     // Wire up the roll tables dialog
     const rollTablesDialog = document.querySelector('dialog[is="roll-tables-dialog"]')
-    if (rollTablesDialog instanceof HTMLDialogElement === false) {
+    if (rollTablesDialog instanceof RollTablesDialogElement === false) {
       throw new Error('Roll tables dialog not setup!')
     }
     document.getElementById('tables-btn').addEventListener('click', () => {
@@ -218,7 +218,7 @@ export class IndexController {
 
     // Wire up the scene switcher dialog
     const sceneSwitcherDialog = document.querySelector('dialog[is="scene-switcher"]')
-    if (sceneSwitcherDialog instanceof HTMLDialogElement === false) {
+    if (sceneSwitcherDialog instanceof SceneSwitcherElement === false) {
       throw new Error('Scene switcher dialog not setup!')
     }
     document.getElementById('scenes-btn').addEventListener('click', async () => {
@@ -565,9 +565,9 @@ export class IndexController {
 
   /**
    * Wire up all the settings.
-   * @param {HTMLDialogElement} dialogEl          settings dialog element
-   * @param {HTMLDialogElement} welcomeDialogEl   the welcome dialog element
-   * @param {HTMLDialogElement} busyDialog        the busy dialog element
+   * @param {SettingsDialogElement} dialogEl          settings dialog element
+   * @param {WelcomeDialogElement} welcomeDialogEl   the welcome dialog element
+   * @param {BusyDialogElement} busyDialog        the busy dialog element
    */
   #setupSettings (dialogEl, welcomeDialogEl, busyDialog) {
     document.getElementById('settings-btn').addEventListener('click', () => dialogEl.showModal())
@@ -1217,7 +1217,7 @@ export class IndexController {
 
   /**
    * Load roll tables into the dialog
-   * @param {HTMLDialogElement} dialog - The roll tables dialog
+   * @param {RollTablesDialogElement} dialog - The roll tables dialog
    */
   async #loadRollTablesDialog (dialog) {
     // Use currentGameId if available, otherwise use a temporary ID (0)
@@ -1248,7 +1248,7 @@ export class IndexController {
 
   /**
    * Save roll tables from the dialog to the database
-   * @param {HTMLDialogElement} dialog - The roll tables dialog
+   * @param {RollTablesDialogElement} dialog - The roll tables dialog
    */
   async #saveRollTablesFromDialog (dialog) {
     const tables = dialog.getTables()
@@ -1266,7 +1266,7 @@ export class IndexController {
 
   /**
    * Load the scene switcher dialog with current scenes
-   * @param {HTMLDialogElement} dialog - The scene switcher dialog
+   * @param {SceneSwitcherElement} dialog - The scene switcher dialog
    */
   async #loadSceneSwitcherDialog (dialog) {
     const gameId = this.currentGameId

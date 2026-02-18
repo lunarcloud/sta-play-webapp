@@ -39,6 +39,8 @@ const setup = async () => {
   }
   customElements.define('busy-dialog', BusyDialogElement, { extends: 'dialog' })
   globalThis.BusyDialogElement = BusyDialogElement
+
+  return BusyDialogElement
 }
 
-await setup()
+export const BusyDialogElement = await setup()
