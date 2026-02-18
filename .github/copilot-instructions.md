@@ -3,6 +3,8 @@
 This file provides specific context and instructions for AI coding agents to
 interact effectively with this web project.
 
+**📘 Quick Reference:** See [QUICK_REFERENCE.md](.github/QUICK_REFERENCE.md) for common development tasks and commands.
+
 
 ## Project Overview
 

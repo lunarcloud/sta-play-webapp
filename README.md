@@ -52,6 +52,7 @@ The project has three linters configured:
 - **stylelint** for CSS - ensures consistent styling
 
 📘 **For detailed information:**
+- Quick reference for common tasks: [.github/QUICK_REFERENCE.md](.github/QUICK_REFERENCE.md)
 - Architecture and patterns: [.github/ARCHITECTURE.md](.github/ARCHITECTURE.md)
 - Creating new components: [.github/COMPONENT_TEMPLATE.md](.github/COMPONENT_TEMPLATE.md)
 - Code review guidance: [.github/CODE_REVIEW_GUIDE.md](.github/CODE_REVIEW_GUIDE.md)

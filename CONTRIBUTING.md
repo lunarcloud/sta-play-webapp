@@ -51,6 +51,7 @@ Review `version-constraints` in `package.json` for known compatibility issues be
   * Maintain backwards compatibility with existing `.staplay` save files
 
 📘 **See also:**
+- [QUICK_REFERENCE.md](.github/QUICK_REFERENCE.md) - Quick reference for common tasks
 - [ARCHITECTURE.md](.github/ARCHITECTURE.md) - Architecture, patterns, and data flow
 - [COMPONENT_TEMPLATE.md](.github/COMPONENT_TEMPLATE.md) - Step-by-step guide for creating components
 - [CODE_REVIEW_GUIDE.md](.github/CODE_REVIEW_GUIDE.md) - Common review feedback and how to address it
