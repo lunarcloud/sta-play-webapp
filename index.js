@@ -782,8 +782,10 @@ export class IndexController {
       document.getElementById('general-text').innerHTML = this.fallbackText
     }
 
-    await this.setShipModel(gameInfo?.shipModel, 1, isImporting)
-    await this.setShipModel(gameInfo?.shipModel2, 2, isImporting)
+    // When loading from database (including after import), skip the prompt
+    // Prompts are handled during import in the import() function
+    await this.setShipModel(gameInfo?.shipModel, 1, false, true)
+    await this.setShipModel(gameInfo?.shipModel2, 2, false, true)
 
     this.safeToSaveDB = true
     return typeof (gameInfo) !== 'undefined'
@@ -1109,11 +1111,12 @@ export class IndexController {
    * @param {File} modelFile  GLTF/GLB model file
    * @param {number} [modelIndex]  Which model to set (1 or 2)
    * @param {boolean} [isImporting]  Whether this is being called during import (affects warning message)
+   * @param {boolean} [skipPrompt]  Whether to skip the size warning prompt (for loading from database)
    */
-  async setShipModel (modelFile, modelIndex = 1, isImporting = false) {
+  async setShipModel (modelFile, modelIndex = 1, isImporting = false, skipPrompt = false) {
     // Check if file size exceeds 56 MB (56 * 1024 * 1024 bytes)
     const maxSizeBytes = 56 * 1024 * 1024
-    if (modelFile && modelFile.size > maxSizeBytes) {
+    if (modelFile && modelFile.size > maxSizeBytes && !skipPrompt) {
       const sizeMB = (modelFile.size / (1024 * 1024)).toFixed(2)
       let message
       if (isImporting) {
@@ -1219,6 +1222,28 @@ export class IndexController {
    */
   async import (backupFile) {
     const backupData = await BackupData.import(backupFile)
+
+    // Check and prompt for large models BEFORE importing to database
+    const maxSizeBytes = 56 * 1024 * 1024
+    const models = [
+      { key: 'shipModel', label: 'a 3D model' },
+      { key: 'shipModel2', label: 'a second 3D model' }
+    ]
+
+    for (const { key, label } of models) {
+      const model = backupData.GameInfo[key]
+      if (model instanceof File && model.size > maxSizeBytes) {
+        const sizeMB = (model.size / (1024 * 1024)).toFixed(2)
+        const message = `This campaign includes ${label} that is ${sizeMB} MB in size. ` +
+          'Large models may take additional time to load.\n\n' +
+          'Do you want to load this model alongside the campaign data?'
+        const confirmed = await this.confirmDialog.confirm(message)
+        if (!confirmed) {
+          backupData.GameInfo[key] = undefined
+        }
+      }
+    }
+
     await this.db.import(backupData)
     await this.#loadData(backupData.GameInfo.name, true)
   }
