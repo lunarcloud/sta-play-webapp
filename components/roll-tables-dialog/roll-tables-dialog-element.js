@@ -220,7 +220,7 @@ const setup = async () => {
     /**
      * Save the current table
      */
-    #saveCurrentTable () {
+    async #saveCurrentTable () {
       if (!this.#currentTable) return
 
       this.#currentTable.name = this.#tableNameInput.value

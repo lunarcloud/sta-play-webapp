@@ -70,10 +70,10 @@ const setup = async () => {
     /**
      * Show the dialog with an input prompt.
      * @param {string} message - The message to display
-     * @param {string} [defaultValue=''] - The default value for the input
+     * @param {string} defaultValue - The default value for the input
      * @returns {Promise<string|null>} Promise that resolves to the input value, or null if cancelled
      */
-    async prompt (message, defaultValue = '') {
+    async prompt (message, defaultValue) {
       const labelEl = this.querySelector('label')
       const inputEl = this.querySelector('input')
 
@@ -81,7 +81,7 @@ const setup = async () => {
         labelEl.textContent = message
       }
       if (inputEl) {
-        inputEl.value = defaultValue
+        inputEl.value = defaultValue || ''
       }
 
       this.returnValue = ''
