@@ -103,6 +103,7 @@ See `test/components/dice-dialog/dice-dialog-element.test.js` for testing compon
 - **.github/TESTING.md** - Comprehensive testing guide
 - **.github/QUICK_REFERENCE.md** - This file!
 - **.github/copilot-instructions.md** - AI coding agent instructions
+- **.github/agents/** - Custom Copilot agent profiles (game reviewer, code quality, test writer, component builder)
 
 ## NPM Scripts Reference
 

@@ -6,6 +6,20 @@ interact effectively with this web project.
 **📘 Quick Reference:** See [QUICK_REFERENCE.md](.github/QUICK_REFERENCE.md) for common development tasks and commands.
 
 
+## Custom Agents
+
+This project provides specialized Copilot agents in `.github/agents/` for focused tasks:
+
+| Agent | Purpose |
+|-------|---------|
+| **sta-game-reviewer** | Reviews changes for Star Trek Adventures TTRPG accuracy — game mechanics, terminology, and lore |
+| **code-quality** | Reviews and fixes code quality, accessibility, CSS maintainability, and standards compliance |
+| **test-writer** | Writes and improves unit tests following project patterns (Web Test Runner + Chai) |
+| **component-builder** | Creates and modifies web components following established Shadow DOM and dialog patterns |
+
+Use the **sta-game-reviewer** agent when changes involve game mechanics, character attributes, dice rolling, or any STA-specific terminology. Use **code-quality** for general code review. Use **test-writer** when adding test coverage. Use **component-builder** when creating or modifying custom elements.
+
+
 ## Project Overview
 
 STA Play is a client-side web application for managing and displaying Star Trek Adventures TTRPG game information.
