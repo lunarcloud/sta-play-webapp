@@ -478,7 +478,7 @@ export class IndexController {
   }
 
   /**
-   * Set the page's text to a particular gaem edition
+   * Set the page's text to a particular game edition
    * @param {string} edition   the number of the rules edition to use
    */
   #useEdition (edition) {

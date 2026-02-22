@@ -1,0 +1,45 @@
+# Project-Specific Technical Terms
+# This dictionary contains words specific to the STA Play webapp project,
+# including tool names, file formats, and code identifiers.
+
+# Project Name & Formats
+staplay
+webapp
+
+# Web Technologies & Standards
+autorotate
+contenteditable
+gltf
+GLTF
+skybox
+textareas
+Textareas
+webmanifest
+webp
+
+# Dependencies & Tools
+csslint
+cssprop
+eslint
+fflate
+htmllint
+linthtml
+lunarcloud
+neostandard
+packagejson
+pixelsagas
+stylelint
+ungap
+
+# Code Identifiers
+IDBP
+lerp
+nodrag
+pdestroy
+shipname
+tinypop
+unitless
+émojis
+
+# Test Values
+alreadylowercase

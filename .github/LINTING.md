@@ -4,10 +4,11 @@ This document explains the linting setup and configuration for the STA Play proj
 
 ## Overview
 
-The project uses three linters to ensure code quality:
+The project uses four linters to ensure code quality:
 - **ESLint** for JavaScript
 - **linthtml** for HTML
 - **stylelint** for CSS
+- **cspell** for spell checking
 
 ## Quick Start
 
@@ -22,6 +23,7 @@ npm run lint-fix
 npm run eslint
 npm run htmllint
 npm run csslint
+npm run spellcheck
 ```
 
 ## ESLint (JavaScript)
@@ -155,6 +157,35 @@ dialog[is=confirm-dialog]::part(internal) {
 
 See `.stylelintignore` for files that skip CSS linting.
 
+## cspell (Spell Checking)
+
+**Configuration:** `cspell.json`
+
+### Overview
+
+The project uses [cspell](https://cspell.org/) to catch spelling mistakes in JavaScript, HTML, CSS, Markdown, and JSON files.
+
+Two custom dictionaries supplement the standard English dictionary:
+
+- **sta-terms** (`.cspell/sta-terms.txt`): Star Trek canon words, STA game terminology, species names, ranks, and proper nouns from the Star Trek universe.
+- **project-terms** (`.cspell/project-terms.txt`): Project-specific technical terms, dependency names, and code identifiers.
+
+### Adding New Words
+
+When the spell checker flags a legitimate word:
+
+1. **Star Trek / STA terms** (species, ranks, ship names, game mechanics): Add to `.cspell/sta-terms.txt`
+2. **Project-specific terms** (tool names, code identifiers, file formats): Add to `.cspell/project-terms.txt`
+
+Keep each dictionary file sorted alphabetically within its categories.
+
+### Ignored Files
+
+The `cspell.json` configuration excludes:
+- `node_modules/` and `js/lib/` (third-party code)
+- Binary files (images, fonts, 3D models)
+- `package-lock.json` and `.cem/` (generated files)
+
 ## Common Issues and Solutions
 
 ### ESLint
@@ -212,6 +243,13 @@ See `.stylelintignore` for files that skip CSS linting.
 }
 ```
 
+### cspell
+
+**Issue:** "Unknown word (Klingon)"
+**Solution:** Add the word to the appropriate custom dictionary:
+- Star Trek terms → `.cspell/sta-terms.txt`
+- Project terms → `.cspell/project-terms.txt`
+
 ## CI/CD Integration
 
 The GitHub Actions workflow (`.github/workflows/code-quality.yml`) runs all linters on every pull request. All checks must pass before merging.
@@ -220,7 +258,8 @@ The workflow runs:
 1. `npm run eslint` - JavaScript linting
 2. `npm run htmllint` - HTML linting  
 3. `npm run csslint` - CSS linting
-4. `npm test` - Unit tests
+4. `npm run spellcheck` - Spell checking
+5. `npm test` - Unit tests
 
 ## Editor Integration
 

@@ -221,7 +221,7 @@ export class TaskTrackerElement extends HTMLElement {
 
     this.#addDataListItem(listEl, 'complication-range', 'Complication Range', this.#complicationRangeEl)
 
-    // Stats elemnts
+    // Stats elements
     const [attributeEl, departmentEl] = this.#createStatEls(true)
     this.#attributeEl = attributeEl
     this.#departmentEl = departmentEl
@@ -363,7 +363,7 @@ export class TaskTrackerElement extends HTMLElement {
         // yellow squares for unearned 50% or 75% auto breakthrough (2e)
         this.#progressVisualizeEl.textContent += '🟨'
       } else {
-        // white squares for the other uneared blocks
+        // white squares for the other unearned blocks
         this.#progressVisualizeEl.textContent += '⬜'
       }
     }

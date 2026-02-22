@@ -1,0 +1,85 @@
+# Star Trek Adventures (STA) Game Terms
+# This dictionary contains Star Trek canon words, STA game terminology,
+# and proper nouns from the Star Trek universe.
+
+# Species / Factions
+Andorian
+Bajoran
+Betazoid
+Bolian
+Borg
+Cardassian
+Changeling
+Edo
+Ferengi
+Klingon
+Ktarian
+Orion
+Risan
+Romulan
+Trill
+Vulcan
+
+# Starfleet & Federation
+Starfleet
+starfleet
+
+# Klingon Ranks & Terms
+Bekk
+
+# Romulan Ranks & Terms
+Centurion
+Subcenturion
+Subcommander
+Uhlan
+
+# Ferengi Ranks & Terms
+DaiMon
+
+# Cardassian Ranks & Terms
+Dal
+Garresh
+Gil
+Glinn
+Gorr
+Gul
+Legate
+
+# Star Trek Technologies & Concepts
+holodeck
+LCARS
+lcars
+phaser
+PADD
+transporter
+tricorder
+viewscreen
+warp
+
+# LCARS Theme Variants
+TCARS
+tcars
+
+# Ship Names & Registries
+Excelsior
+Voyager
+
+# Star Trek Character Names
+Okuda
+Worf
+
+# STA-Specific Names & Series
+Modiphius
+TTRPG
+
+# Named References in App
+Jefferies
+Sarette
+Winnipesaukee
+
+# Klingon-Style Character Names
+J'larr
+J'lin
+J'Tag
+Sh'Doe
+Th'Doe

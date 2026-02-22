@@ -62,12 +62,12 @@ export class TrackerInfo extends NamedInfo {
    * @param {string} attribute                    the applicable attribute
    * @param {string} department                   the applicable discipline/department
    * @param {string} shipSystem                   the applicable ship system
-   * @param {string} shipDepartment               the applicable sihp department
+   * @param {string} shipDepartment               the applicable ship department
    * @param {number|string} progressTrack         the amount of progress earned
    * @param {number|string} maxProgressTrack      the amount of progress to reach
    * @param {number|string} [resistance]          the amount of resistance
    * @param {number|string} [complicationRange]   the complication range
-   * @param {number|string} [breakthroughs]       the number of acheived breakthroughs
+   * @param {number|string} [breakthroughs]       the number of achieved breakthroughs
    */
   constructor (game, name, attribute, department, shipSystem, shipDepartment, progressTrack, maxProgressTrack, resistance = 0, complicationRange = 0, breakthroughs = 0) {
     super(name)

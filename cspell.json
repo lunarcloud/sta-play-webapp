@@ -1,0 +1,50 @@
+{
+    "version": "0.2",
+    "language": "en",
+    "dictionaries": [
+        "sta-terms",
+        "project-terms"
+    ],
+    "dictionaryDefinitions": [
+        {
+            "name": "sta-terms",
+            "path": ".cspell/sta-terms.txt",
+            "addWords": true,
+            "description": "Star Trek Adventures canon words and game terminology"
+        },
+        {
+            "name": "project-terms",
+            "path": ".cspell/project-terms.txt",
+            "addWords": true,
+            "description": "Project-specific technical terms and tool names"
+        }
+    ],
+    "ignorePaths": [
+        "node_modules",
+        "js/lib",
+        "package-lock.json",
+        ".cem",
+        "coverage",
+        "fonts",
+        "gltf",
+        "*.webp",
+        "*.png",
+        "*.svg",
+        "*.ico",
+        "*.woff",
+        "*.woff2",
+        "*.ttf",
+        "*.otf",
+        "*.gltf",
+        "*.glb",
+        "*.bin"
+    ],
+    "files": [
+        "**/*.js",
+        "**/*.html",
+        "**/*.css",
+        "**/*.md",
+        "**/*.json"
+    ],
+    "useGitignore": true
+}
