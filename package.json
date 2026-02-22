@@ -13,7 +13,7 @@
         "csslint-fix": "npx stylelint \"**/*.css\" --quiet-deprecation-warnings --fix",
         "spellcheck": "npx cspell --no-progress --unique",
         "lint": "npm run eslint; npm run htmllint; npm run csslint; npm run spellcheck",
-        "lint-fix": "npm run eslint-fix; npm run htmllint; npm run csslint-fix",
+        "lint-fix": "npm run eslint-fix; npm run htmllint; npm run csslint-fix; npm run spellcheck",
         "typecheck": "npx tsc --noEmit --project jsconfig.json --pretty false 2>&1 | grep -v '^js/lib/' > /tmp/typecheck-out.txt; if grep -q 'error TS' /tmp/typecheck-out.txt; then cat /tmp/typecheck-out.txt; exit 1; fi",
         "test": "npx web-test-runner",
         "test:watch": "npx web-test-runner --watch",
