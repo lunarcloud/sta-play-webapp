@@ -12,7 +12,6 @@ import { MissionTrackerElement } from './components/mission-tracker/mission-trac
 import { TraitDisplayElement } from './components/trait-display/trait-display-element.js'
 import { PlayerDisplayElement } from './components/player-display/player-display-element.js'
 import { TaskTrackerElement } from './components/task-tracker/task-tracker-element.js'
-import { StardateDisplayElement } from './components/stardate-display/stardate-display-element.js'
 import { StardateDialogElement } from './components/stardate-dialog/stardate-dialog-element.js'
 import { Database } from './js/database/database.js'
 import { TrackerInfo } from './js/database/tracker-info.js'
@@ -159,9 +158,9 @@ export class IndexController {
     }
 
     // Wire up the stardate edit button
-    const stardateDisplayEl = document.querySelector('stardate-display')
-    if (stardateDisplayEl instanceof StardateDisplayElement) {
-      stardateDisplayEl.addEventListener('edit', () => this.#openStardateDialog())
+    const stardateBtnEl = document.getElementById('stardate-btn')
+    if (stardateBtnEl instanceof HTMLElement) {
+      stardateBtnEl.addEventListener('click', () => this.#openStardateDialog())
     }
 
     // Wire up the Alerts Selector
@@ -554,10 +553,20 @@ export class IndexController {
    * @param {string} value  the stardate string
    */
   #setStardate (value) {
-    const stardateDisplayEl = document.querySelector('stardate-display')
-    if (stardateDisplayEl instanceof StardateDisplayElement) {
-      stardateDisplayEl.value = value ?? ''
+    const textEl = document.querySelector('#stardate-btn text')
+    if (textEl instanceof HTMLElement) {
+      const display = value?.trim() || '—'
+      textEl.textContent = ` ${display}`
     }
+  }
+
+  /**
+   * Get the current stardate value from the display button.
+   * @returns {string} the current stardate value, or empty string if unset
+   */
+  #getStardateValue () {
+    const raw = document.querySelector('#stardate-btn text')?.textContent?.trim() ?? ''
+    return raw === '—' ? '' : raw
   }
 
   /**
@@ -568,10 +577,7 @@ export class IndexController {
     if (stardateDialog instanceof StardateDialogElement === false) {
       return
     }
-    const stardateDisplayEl = document.querySelector('stardate-display')
-    const current = stardateDisplayEl instanceof StardateDisplayElement
-      ? stardateDisplayEl.value
-      : ''
+    const current = this.#getStardateValue()
     const result = await stardateDialog.editStardate(current)
     if (result !== null) {
       this.#setStardate(result)
@@ -934,7 +940,7 @@ export class IndexController {
       altFontCheckbox.checked,
       legacyTrackersCheckbox.checked,
       this.shipModel2,
-      document.querySelector('stardate-display')?.value ?? '',
+      this.#getStardateValue(),
       document.getElementById('show-stardate-toggle')?.checked ?? false
     )
     const savedGameId = await this.db.saveGameInfo(gameInfo)

@@ -915,23 +915,6 @@ body {
                         filter: unset;
                     }
                 }
-
-                &#stardate-item {
-                    flex-basis: 80%;
-                    text-transform: uppercase;
-                    letter-spacing: 0.1em;
-                    border-radius: 0.8em;
-                    color: var(--ship-name-color);
-                    background-color: var(--ship-name-color-bg) !important;
-                    padding: 0.4em 0 0.4em 0.8em;
-                    border-color: var(--ship-name-color-border, var(--trek-color-highlight));
-                    border-width: 0.2em;
-                    border-style: solid;
-
-                    &:hover {
-                        filter: unset;
-                    }
-                }
             }
         }
     }
