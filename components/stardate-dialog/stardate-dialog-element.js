@@ -1,6 +1,6 @@
 import { animateClose } from '../../js/dialog-utils.js'
 import { loadElementFromFile } from '../../js/load-file-element.js'
-import { dateToStardate, formatStardate } from '../../js/stardate-utils.js'
+import { dateToStardate, formatStardate, dateToTOSStardate } from '../../js/stardate-utils.js'
 import { getEraContext } from '../../js/stardate-eras.js'
 
 const dialogEl = await loadElementFromFile('./components/stardate-dialog/stardate-dialog.html', 'dialog')
@@ -51,6 +51,38 @@ export class StardateDialogElement extends HTMLDialogElement {
 
     this.querySelector('button.use-calculated')?.addEventListener('click', () => {
       const value = resultEl.textContent?.trim() ?? ''
+      this.#resolve(value)
+    })
+
+    // TOS/Pre-TNG calculator
+    const tosYearInput = /** @type {HTMLInputElement} */ (this.querySelector('input.tos-year'))
+    const tosMonthInput = /** @type {HTMLInputElement} */ (this.querySelector('input.tos-month'))
+    const tosDayInput = /** @type {HTMLInputElement} */ (this.querySelector('input.tos-day'))
+    const tosResultEl = /** @type {HTMLElement} */ (this.querySelector('.tos-result-value'))
+    const tosEraContextEl = /** @type {HTMLElement} */ (this.querySelector('.tos-era-context'))
+    const tosEraSeriesEl = /** @type {HTMLElement} */ (this.querySelector('.tos-era-series'))
+    const tosEraEventsEl = /** @type {HTMLElement} */ (this.querySelector('.tos-era-events'))
+
+    const recalculateTOS = () => {
+      const year = Math.min(2322, Math.max(2151, parseInt(tosYearInput.value) || 2266))
+      const month = Math.max(1, Math.min(12, parseInt(tosMonthInput.value) || 1))
+      const day = Math.max(1, Math.min(31, parseInt(tosDayInput.value) || 1))
+      const stardate = dateToTOSStardate(year, month, day)
+      tosResultEl.textContent = formatStardate(stardate)
+
+      const context = getEraContext(year)
+      tosEraSeriesEl.textContent = context.series
+      tosEraEventsEl.textContent = context.events
+      tosEraContextEl.removeAttribute('hidden')
+    }
+
+    tosYearInput.addEventListener('input', recalculateTOS)
+    tosMonthInput.addEventListener('input', recalculateTOS)
+    tosDayInput.addEventListener('input', recalculateTOS)
+    recalculateTOS()
+
+    this.querySelector('button.use-tos')?.addEventListener('click', () => {
+      const value = tosResultEl.textContent?.trim() ?? ''
       this.#resolve(value)
     })
 
