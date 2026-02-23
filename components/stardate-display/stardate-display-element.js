@@ -51,7 +51,7 @@ export class StardateDisplayElement extends HTMLElement {
     editBtn.className = 'edit-btn'
     editBtn.type = 'button'
     editBtn.title = 'Edit stardate'
-    editBtn.textContent = '✎'
+    editBtn.textContent = '📅'
     editBtn.addEventListener('click', () => {
       this.dispatchEvent(new CustomEvent('edit', { bubbles: true }))
     })
