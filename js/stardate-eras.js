@@ -116,7 +116,7 @@ const ERA_DATA = [
     startYear: 2268,
     endYear: 2269,
     context: {
-      series: 'The Original Series (TOS) Season 3',
+      series: 'The Original Series (TOS) Season 3 / STA Living Campaign',
       events: 'Five-year mission concludes'
     }
   },
@@ -213,7 +213,7 @@ const ERA_DATA = [
     endYear: 2369,
     context: {
       series: 'TNG Season 6 / DS9 Season 1',
-      events: 'DS9 station established, Bajoran wormhole to Gamma Quadrant discovered'
+      events: 'DS9 station established, Bajoran wormhole to Gamma Quadrant discovered, Narendra Station operational'
     }
   },
   {
@@ -228,8 +228,8 @@ const ERA_DATA = [
     startYear: 2371,
     endYear: 2371,
     context: {
-      series: 'DS9 Season 3 / Voyager (VOY) Season 1',
-      events: 'Voyager lost in Delta Quadrant, Dominion threat escalates, Defiant launched'
+      series: 'DS9 Season 3 / Voyager (VOY) Season 1 / STA Living Campaign',
+      events: 'Voyager lost in Delta Quadrant, Dominion threat escalates, Defiant launched, Starfleet and KDF explore the Shackleton Expanse'
     }
   },
   {
