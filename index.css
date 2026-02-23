@@ -8,6 +8,7 @@
     --nav-color-text: var(--main-color-bg);
     --main-font-body: sans-serif;
     --main-font-headers: sans-serif;
+    --emoji-font: 'Noto Emoji', monospace;
     --headers-weight: bold;
     --headers-text-transform: unset;
     --shadow-color-text: hsl(180deg 25% 20%);
@@ -137,6 +138,13 @@ html {
     font-family: var(--main-font-body);
     font-size: var(--main-font-size);
     font-variant: proportional-width;
+}
+
+emoji,
+.text-n-symbol-btn symbol {
+    display: inline;
+    font-family: var(--emoji-font);
+    font-variant-emoji: text;
 }
 
 html:focus-within {
@@ -512,7 +520,6 @@ menu-items {
   }
 
   & > symbol, & > img.symbol {
-    font-family: monospace;
     width: 1.125em;
     text-align: center;
     vertical-align: middle;
@@ -863,6 +870,9 @@ body {
                     padding: 0.5em 0 0.5em 0.5em;
                     cursor: pointer;
                     line-height: 1.2em;
+
+                    /* ensure icons or emoji aren't colorful here */
+                    filter: grayscale(1) contrast(1.25);
                 }
 
                 & #alert-dropdown {
@@ -897,6 +907,14 @@ body {
                     background-color: var(--trek-color-4);
                 }
 
+                &:nth-of-type(5) {
+                    background-color: var(--trek-color-1);
+                }
+
+                &:nth-of-type(6) {
+                    background-color: var(--trek-color-5);
+                }
+
                 &.shipname {
                     flex-basis: 80%;
                     display: block;
@@ -906,7 +924,7 @@ body {
                     text-decoration: none !important;
                     color: var(--ship-name-color);
                     background-color: var(--ship-name-color-bg) !important;
-                    padding: 0.6em 0 0.6em 0.8em;
+                    padding: 0.4em 0 0.4em 0.8em;
                     border-color: var(--ship-name-color-border, var(--trek-color-highlight));
                     border-width: 0.2em;
                     border-style: solid;
@@ -1058,7 +1076,7 @@ body.mirror {
   }
 
   /* Hide navigation interaction buttons */
-  & nav ul > li:not(#shipname) > * {
+  & nav ul > li:not(#shipname, #stardate-item) > * {
     color: transparent !important;
   }
 

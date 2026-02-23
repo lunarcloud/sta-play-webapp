@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <dialog>
+            <style>
+                dialog[is=stardate-dialog] {
+                    width: fit-content;
+                    max-width: max(340px, 55%);
+                    min-width: 280px;
+
+                    main {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 1em;
+                        padding: 1em;
+                    }
+
+                    fieldset {
+                        border: 1px solid currentcolor;
+                        border-radius: 4px;
+                        padding: 0.75em;
+                        display: none;
+
+                        &.active {
+                            display: block;
+                        }
+
+                        & legend {
+                            font-weight: bold;
+                            font-size: 0.9em;
+                            padding: 0 0.4em;
+                        }
+                    }
+
+                    .date-row {
+                        display: grid;
+                        grid-template-columns: 2fr 1fr 1fr;
+                        gap: 0.5em;
+                        align-items: end;
+
+                        & label {
+                            display: flex;
+                            flex-direction: column;
+                            font-size: 0.9em;
+                            font-weight: bold;
+                            gap: 0.25em;
+                        }
+
+                        & input {
+                            padding: 0.25em;
+                            font-size: 1em;
+                            text-align: center;
+                            width: 100%;
+                            box-sizing: border-box;
+                        }
+                    }
+
+                    .calc-result {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5em;
+                        font-size: 1em;
+
+                        & .stardate-input {
+                            flex: 1;
+                            padding: 0.2em 0.4em;
+                            font-size: 1.1em;
+                            font-weight: bold;
+                            text-align: right;
+                        }
+
+                        & button {
+                            margin-left: auto;
+                        }
+                    }
+
+                    .mode-switcher {
+                        display: flex;
+                        gap: 0.4em;
+
+                        & button {
+                            flex: 1;
+                            padding: 0.4em 0.6em;
+                            font-size: 0.85em;
+                            font-weight: bold;
+                            cursor: pointer;
+                            border: 1px solid currentcolor;
+                            border-radius: 4px;
+                            background: transparent;
+                            opacity: 0.55;
+                        }
+
+                        & button.active {
+                            opacity: 1;
+                            background: color-mix(in srgb, currentcolor 15%, transparent);
+                        }
+                    }
+
+                    .current-stardate {
+                        text-align: center;
+                        font-size: 0.9em;
+                        opacity: 0.7;
+                    }
+
+                    .era-context,
+                    .tos-era-context {
+                        font-size: 0.88em;
+                        border-left: 3px solid currentcolor;
+                        padding: 0.4em 0.6em;
+                        opacity: 0.85;
+
+                        & .era-series {
+                            font-weight: bold;
+                            margin-bottom: 0.2em;
+                        }
+
+                        & .era-events {
+                            font-style: italic;
+                        }
+                    }
+                }
+            </style>
+            <header>
+                Stardate
+                <button class="close" role="button">⤫</button>
+            </header>
+            <main>
+                <p class="current-stardate">Current: <strong class="current-value">—</strong></p>
+
+                <div class="mode-switcher">
+                    <button class="mode-btn active" data-mode="tng" type="button">TNG Era</button>
+                    <button class="mode-btn" data-mode="tos" type="button">TOS Era</button>
+                </div>
+
+                <fieldset data-mode="tng" class="active">
+                    <legend>TNG Calculator (2323+)</legend>
+                    <div class="date-row">
+                        <label>
+                            Year
+                            <input type="number" class="calc-year" min="2323" step="1" value="2371">
+                        </label>
+                        <label>
+                            Month
+                            <input type="number" class="calc-month" min="1" max="12" step="1" value="1">
+                        </label>
+                        <label>
+                            Day
+                            <input type="number" class="calc-day" min="1" max="31" step="1" value="1">
+                        </label>
+                    </div>
+                    <div class="calc-result">
+                        <label>Stardate:</label>
+                        <input type="text" class="tng-stardate stardate-input" placeholder="—" inputmode="decimal">
+                        <button class="use-calculated" type="button">Use</button>
+                    </div>
+                    <div class="era-context" hidden>
+                        <div class="era-series"></div>
+                        <div class="era-events"></div>
+                    </div>
+                </fieldset>
+
+                <fieldset data-mode="tos">
+                    <legend>TOS/DIS Calculator (2255–2322)</legend>
+                    <div class="date-row">
+                        <label>
+                            Year
+                            <input type="number" class="tos-year" min="2255" max="2322" step="1" value="2266">
+                        </label>
+                        <label>
+                            Month
+                            <input type="number" class="tos-month" min="1" max="12" step="1" value="1">
+                        </label>
+                        <label>
+                            Day
+                            <input type="number" class="tos-day" min="1" max="31" step="1" value="1">
+                        </label>
+                    </div>
+                    <div class="calc-result">
+                        <label>Stardate:</label>
+                        <input type="text" class="tos-stardate stardate-input" placeholder="—" inputmode="decimal">
+                        <button class="use-tos" type="button">Use</button>
+                    </div>
+                    <div class="tos-era-context" hidden>
+                        <div class="era-series tos-era-series"></div>
+                        <div class="era-events tos-era-events"></div>
+                    </div>
+                </fieldset>
+
+            </main>
+            <footer>
+                <button class="close" role="button">Close</button>
+            </footer>
+        </dialog>
+    </body>
+</html>

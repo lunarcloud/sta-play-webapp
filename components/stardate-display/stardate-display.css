@@ -1,0 +1,29 @@
+:host {
+    display: contents;
+}
+
+stardate-display-internal {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    white-space: nowrap;
+}
+
+.value {
+    font-weight: bold;
+    margin-left: 0.4em;
+}
+
+.edit-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0 0.4em;
+    font-size: 1.1em;
+    line-height: 1;
+    margin-left: auto;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
