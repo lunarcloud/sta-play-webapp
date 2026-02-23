@@ -20,8 +20,8 @@ describe('Stardate Utils', () => {
       expect(TNG_EPOCH_YEAR).to.equal(2323)
     })
 
-    it('should export TOS_EPOCH_YEAR as 2265', () => {
-      expect(TOS_EPOCH_YEAR).to.equal(2265)
+    it('should export TOS_EPOCH_YEAR as 2255', () => {
+      expect(TOS_EPOCH_YEAR).to.equal(2255)
     })
 
     it('should export TOS_SWITCHOVER_YEAR as 2323 (after 2300)', () => {
@@ -150,25 +150,30 @@ describe('Stardate Utils', () => {
   })
 
   describe('dateToTOSStardate', () => {
-    it('should return 0 for January 1st at the TOS epoch year 2265', () => {
-      const result = dateToTOSStardate(2265, 1, 1)
+    it('should return 0 for January 1st at the TOS epoch year 2255', () => {
+      const result = dateToTOSStardate(2255, 1, 1)
       expect(result).to.be.closeTo(0, 0.1)
     })
 
-    it('should return ~1000 for January 1st, 2266 (TOS Season 1)', () => {
-      const result = dateToTOSStardate(2266, 1, 1)
+    it('should return ~1000 for January 1st, 2256 (DIS Season 1 era)', () => {
+      const result = dateToTOSStardate(2256, 1, 1)
       expect(result).to.be.closeTo(1000, 1)
     })
 
-    it('should return ~4000 for January 1st, 2269 (end of TOS)', () => {
-      const result = dateToTOSStardate(2269, 1, 1)
+    it('should return ~11000 for January 1st, 2266 (TOS Season 1)', () => {
+      const result = dateToTOSStardate(2266, 1, 1)
+      expect(result).to.be.closeTo(11000, 1)
+    })
+
+    it('should return ~4000 for January 1st, 2259 (4 years after epoch)', () => {
+      const result = dateToTOSStardate(2259, 1, 1)
       expect(result).to.be.closeTo(4000, 1)
     })
 
     it('should increase by ~1000 per year', () => {
-      const sd2266 = dateToTOSStardate(2266, 1, 1)
-      const sd2267 = dateToTOSStardate(2267, 1, 1)
-      expect(sd2267 - sd2266).to.be.closeTo(1000, 3)
+      const sd2256 = dateToTOSStardate(2256, 1, 1)
+      const sd2257 = dateToTOSStardate(2257, 1, 1)
+      expect(sd2257 - sd2256).to.be.closeTo(1000, 3)
     })
 
     it('should return a higher stardate for later dates within the same year', () => {
@@ -178,19 +183,19 @@ describe('Stardate Utils', () => {
     })
 
     it('should return a non-negative stardate for years at or after TOS_EPOCH_YEAR', () => {
-      expect(dateToTOSStardate(2265, 1, 1)).to.be.at.least(0)
+      expect(dateToTOSStardate(2255, 1, 1)).to.be.at.least(0)
     })
   })
 
   describe('tosStardateToDate', () => {
-    it('should return year 2265 for TOS stardate 0', () => {
+    it('should return year 2255 for TOS stardate 0', () => {
       const result = tosStardateToDate(0)
-      expect(result.year).to.equal(2265)
+      expect(result.year).to.equal(2255)
     })
 
-    it('should return approximately year 2266 for TOS stardate 1000', () => {
+    it('should return approximately year 2256 for TOS stardate 1000', () => {
       const result = tosStardateToDate(1000)
-      expect(result.year).to.equal(2266)
+      expect(result.year).to.equal(2256)
     })
 
     it('should round-trip: date → TOS stardate → date', () => {

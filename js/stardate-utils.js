@@ -4,9 +4,10 @@
  * Supports two stardate systems:
  *
  * TOS era (pre-2323):
- *   Approximate formula used by the fan community.
- *   Year 2265 = stardate 0.0, each year = 1000 units.
- *   TOS Season 1 (2266) ≈ 1000, Season 3 end (2269) ≈ 4000.
+ *   Approximate formula aligned to Discovery-era stardates.
+ *   Year 2255 = stardate 0.0, each year = 1000 units.
+ *   DIS Season 1 (2256) ≈ 1000 (matching Memory Alpha's ~1207 for mid-season).
+ *   TOS Season 1 (2266) ≈ 11000.
  *
  * TNG era (2323+):
  *   Year 2323 = stardate 0.0, each year = 1000 units.
@@ -19,10 +20,12 @@
 
 /**
  * The epoch year for the TOS-era stardate approximation.
- * Stardate 0.0 corresponds to the start of year 2265.
+ * Stardate 0.0 corresponds to the start of year 2255, placing Discovery Season 1
+ * (2256) at approximately stardate 1000–2000 — consistent with Memory Alpha's
+ * documented DIS stardates such as 1207.3 for 2256.
  * @type {number}
  */
-export const TOS_EPOCH_YEAR = 2265
+export const TOS_EPOCH_YEAR = 2255
 
 /**
  * The first year that uses the TNG stardate system.
