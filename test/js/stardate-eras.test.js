@@ -8,6 +8,23 @@ describe('Stardate Eras', () => {
       expect(ctx.series).to.include('TOS')
     })
 
+    it('should return Discovery S1-2 era for year 2257', () => {
+      const ctx = getEraContext(2257)
+      expect(ctx.series).to.include('DIS')
+      expect(ctx.events).to.include('Klingon')
+    })
+
+    it('should return SNW+TOS era for year 2262', () => {
+      const ctx = getEraContext(2262)
+      expect(ctx.series).to.include('SNW')
+      expect(ctx.series).to.include('TOS')
+    })
+
+    it('should return TAS era for year 2272', () => {
+      const ctx = getEraContext(2272)
+      expect(ctx.series).to.include('TAS')
+    })
+
     it('should return TNG era for year 2366', () => {
       const ctx = getEraContext(2366)
       expect(ctx.series).to.include('TNG')
@@ -32,6 +49,11 @@ describe('Stardate Eras', () => {
     it('should return Post-Burn info for year 3100', () => {
       const ctx = getEraContext(3100)
       expect(ctx.events).to.include('dilithium')
+    })
+
+    it('should return early Starfleet era for year 2240', () => {
+      const ctx = getEraContext(2240)
+      expect(ctx.series).to.include('early Starfleet')
     })
 
     it('should return pre-Enterprise era for year 2100', () => {

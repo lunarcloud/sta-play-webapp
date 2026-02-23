@@ -42,6 +42,30 @@ const ERA_DATA = [
   },
   {
     startYear: 2233,
+    endYear: 2255,
+    context: {
+      series: 'Pre-series (early Starfleet)',
+      events: 'Starfleet expansion, USS Discovery commissioned'
+    }
+  },
+  {
+    startYear: 2256,
+    endYear: 2258,
+    context: {
+      series: 'During Discovery (DIS) Seasons 1–2',
+      events: 'Federation-Klingon War, Red Angel temporal crisis'
+    }
+  },
+  {
+    startYear: 2259,
+    endYear: 2265,
+    context: {
+      series: 'During Strange New Worlds (SNW) and The Original Series (TOS)',
+      events: 'Pike commands the Enterprise, early Kirk five-year mission'
+    }
+  },
+  {
+    startYear: 2266,
     endYear: 2269,
     context: {
       series: 'During The Original Series (TOS)',
@@ -52,7 +76,7 @@ const ERA_DATA = [
     startYear: 2270,
     endYear: 2293,
     context: {
-      series: 'During The Animated Series / TOS Films',
+      series: 'During The Animated Series (TAS) and TOS Films',
       events: 'Khitomer Accords, end of Klingon-Federation hostilities'
     }
   },
