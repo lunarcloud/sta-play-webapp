@@ -45,8 +45,11 @@ export class StardateDialogElement extends HTMLDialogElement {
     }
 
     yearInput.addEventListener('input', recalculate)
+    yearInput.addEventListener('change', recalculate)
     monthInput.addEventListener('input', recalculate)
+    monthInput.addEventListener('change', recalculate)
     dayInput.addEventListener('input', recalculate)
+    dayInput.addEventListener('change', recalculate)
     recalculate()
 
     this.querySelector('button.use-calculated')?.addEventListener('click', () => {
@@ -64,7 +67,7 @@ export class StardateDialogElement extends HTMLDialogElement {
     const tosEraEventsEl = /** @type {HTMLElement} */ (this.querySelector('.tos-era-events'))
 
     const recalculateTOS = () => {
-      const year = Math.min(2322, Math.max(2151, parseInt(tosYearInput.value) || 2266))
+      const year = Math.min(2322, Math.max(2265, parseInt(tosYearInput.value) || 2266))
       const month = Math.max(1, Math.min(12, parseInt(tosMonthInput.value) || 1))
       const day = Math.max(1, Math.min(31, parseInt(tosDayInput.value) || 1))
       const stardate = dateToTOSStardate(year, month, day)
@@ -77,8 +80,11 @@ export class StardateDialogElement extends HTMLDialogElement {
     }
 
     tosYearInput.addEventListener('input', recalculateTOS)
+    tosYearInput.addEventListener('change', recalculateTOS)
     tosMonthInput.addEventListener('input', recalculateTOS)
+    tosMonthInput.addEventListener('change', recalculateTOS)
     tosDayInput.addEventListener('input', recalculateTOS)
+    tosDayInput.addEventListener('change', recalculateTOS)
     recalculateTOS()
 
     this.querySelector('button.use-tos')?.addEventListener('click', () => {

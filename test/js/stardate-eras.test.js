@@ -20,9 +20,32 @@ describe('Stardate Eras', () => {
       expect(ctx.series).to.include('TOS')
     })
 
-    it('should return TAS era for year 2272', () => {
-      const ctx = getEraContext(2272)
+    it('should return TAS era for year 2270', () => {
+      const ctx = getEraContext(2270)
       expect(ctx.series).to.include('TAS')
+    })
+
+    it('should return TOS Films era for year 2275', () => {
+      const ctx = getEraContext(2275)
+      expect(ctx.series).to.include('TOS Films')
+    })
+
+    it('should return season-level detail for TNG S3 (year 2366)', () => {
+      const ctx = getEraContext(2366)
+      expect(ctx.series).to.include('Season 3')
+    })
+
+    it('should return season-level detail for DS9 S3 / VOY S1 (year 2371)', () => {
+      const ctx = getEraContext(2371)
+      expect(ctx.series).to.include('DS9')
+      expect(ctx.series).to.include('VOY')
+      expect(ctx.series).to.include('Season')
+    })
+
+    it('should return ENT season detail for year 2153', () => {
+      const ctx = getEraContext(2153)
+      expect(ctx.series).to.include('ENT')
+      expect(ctx.series).to.include('Season 3')
     })
 
     it('should return TNG era for year 2366', () => {
