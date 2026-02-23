@@ -17,8 +17,8 @@
 const THEME_ERA_RANGES = [
   { theme: 'starfleet-22', label: '22nd Century', startYear: 2100, endYear: 2232 },
   { theme: 'starfleet-23', label: 'Mid-23rd Century', startYear: 2233, endYear: 2270 },
-  { theme: 'excelsior', label: 'Late-23rd Century', startYear: 2271, endYear: 2322 },
-  { theme: 'lcars-24', label: 'Mid 24th Century', startYear: 2323, endYear: 2370 },
+  { theme: 'excelsior', label: 'Late-23rd Century', startYear: 2271, endYear: 2364 },
+  { theme: 'lcars-24', label: 'Mid 24th Century', startYear: 2364, endYear: 2370 },
   { theme: 'lcars-late-24', label: 'Late 24th Century', startYear: 2371, endYear: 2399 },
   { theme: 'lcars-holo', label: 'Late 24th Century', startYear: 2371, endYear: 2399 },
   { theme: 'lcars-25', label: 'Early 25th Century', startYear: 2400, endYear: 2499 },
