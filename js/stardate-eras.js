@@ -85,7 +85,7 @@ const ERA_DATA = [
     endYear: 2261,
     context: {
       series: 'Strange New Worlds (SNW) Seasons 1–2',
-      events: 'Pike commands the Enterprise, early Federation diplomacy'
+      events: 'Enterprise exploration missions, early Federation diplomacy'
     }
   },
   {
@@ -93,7 +93,7 @@ const ERA_DATA = [
     endYear: 2265,
     context: {
       series: 'Strange New Worlds (SNW) Season 3 / early TOS',
-      events: 'Pike–Kirk command transition, Enterprise exploration missions'
+      events: 'Enterprise command transition, Federation-Klingon border tensions'
     }
   },
   {
@@ -101,7 +101,7 @@ const ERA_DATA = [
     endYear: 2266,
     context: {
       series: 'The Original Series (TOS) Season 1',
-      events: "Kirk's five-year mission begins, Corbomite Maneuver, first Klingon encounters"
+      events: 'Five-year mission begins, first contact with many new species, Klingon border conflicts'
     }
   },
   {
@@ -117,7 +117,7 @@ const ERA_DATA = [
     endYear: 2269,
     context: {
       series: 'The Original Series (TOS) Season 3',
-      events: 'Five-year mission concludes, Turnabout Intruder'
+      events: 'Five-year mission concludes'
     }
   },
   {
@@ -133,7 +133,7 @@ const ERA_DATA = [
     endYear: 2285,
     context: {
       series: 'TOS Films: The Motion Picture to The Search for Spock',
-      events: "V'Ger encounter, Khan's revenge, Genesis Project, Spock revived"
+      events: "V'Ger crisis, Genesis Project, Klingon-Federation tensions rise"
     }
   },
   {
@@ -141,7 +141,7 @@ const ERA_DATA = [
     endYear: 2293,
     context: {
       series: 'TOS Films: The Voyage Home to The Undiscovered Country',
-      events: 'Probe crisis, Sybok and Sha Ka Ree, Khitomer Accords'
+      events: 'Probe crisis, Khitomer Accords signed'
     }
   },
   {
@@ -181,7 +181,7 @@ const ERA_DATA = [
     endYear: 2365,
     context: {
       series: 'The Next Generation (TNG) Season 2',
-      events: 'Borg first encountered, Guinan joins crew'
+      events: 'Borg first encountered in the Delta Quadrant'
     }
   },
   {
@@ -189,7 +189,7 @@ const ERA_DATA = [
     endYear: 2366,
     context: {
       series: 'The Next Generation (TNG) Season 3',
-      events: 'Borg invasion, Picard assimilated, Battle of Wolf 359'
+      events: 'Borg invasion of the Alpha Quadrant, Battle of Wolf 359'
     }
   },
   {
@@ -253,7 +253,7 @@ const ERA_DATA = [
     endYear: 2374,
     context: {
       series: 'DS9 Season 6 / VOY Season 4',
-      events: 'Dominion occupies DS9, retaken by Federation, Seven of Nine joins Voyager'
+      events: 'Dominion occupies DS9, retaken by Federation, Borg collective infiltrated'
     }
   },
   {
@@ -261,7 +261,7 @@ const ERA_DATA = [
     endYear: 2375,
     context: {
       series: 'DS9 Season 7 / VOY Season 5',
-      events: 'Dominion War ends, Cardassia Prime devastated, Odo returns to the Link'
+      events: 'Dominion War ends, Cardassia Prime devastated, Dominion withdraws to Gamma Quadrant'
     }
   },
   {
@@ -292,24 +292,40 @@ const ERA_DATA = [
     startYear: 2380,
     endYear: 2381,
     context: {
-      series: 'Lower Decks (LD) Seasons 1–2 / Prodigy (PRO) Season 1',
+      series: 'Lower Decks (LD) Seasons 1–2',
       events: 'Post-Dominion War Federation recovery, new crew assignments fleet-wide'
     }
   },
   {
     startYear: 2382,
+    endYear: 2383,
+    context: {
+      series: 'Lower Decks (LD) Seasons 3–4 / Prodigy (PRO) Season 1',
+      events: 'Romulan supernova relief efforts begin, young cadets encounter Starfleet'
+    }
+  },
+  {
+    startYear: 2384,
     endYear: 2384,
     context: {
-      series: 'Lower Decks (LD) Seasons 3–4 / Prodigy (PRO) Season 2',
-      events: 'Romulan supernova relief efforts, synth research controversy'
+      series: 'Lower Decks (LD) Season 5',
+      events: 'Federation fleet assignments, Romulan relief preparations'
     }
   },
   {
     startYear: 2385,
+    endYear: 2385,
+    context: {
+      series: 'Prodigy (PRO) Season 2',
+      events: 'Synth attack on Mars / Utopia Planitia destroys Romulan relief fleet, synthetic life banned'
+    }
+  },
+  {
+    startYear: 2386,
     endYear: 2399,
     context: {
       series: 'Pre-Picard / Star Trek: Picard (PIC) Seasons 1–2',
-      events: 'Romulan supernova destroys Romulus (2387), synth ban, Picard retired'
+      events: 'Romulan supernova destroys Romulus (2387), Federation withdraws from relief efforts, synth ban in effect'
     }
   },
   {

@@ -89,6 +89,29 @@ describe('Stardate Eras', () => {
       expect(ctx.series).to.include('Far future')
     })
 
+    it('should return LD Season 5 for year 2384', () => {
+      const ctx = getEraContext(2384)
+      expect(ctx.series).to.include('LD')
+      expect(ctx.series).to.include('Season 5')
+    })
+
+    it('should return PRO Season 2 / Mars attack for year 2385', () => {
+      const ctx = getEraContext(2385)
+      expect(ctx.series).to.include('PRO')
+      expect(ctx.events).to.include('Mars')
+      expect(ctx.events).to.include('synth')
+    })
+
+    it('should not describe individual crew member actions in events', () => {
+      const individualPhrases = ['Guinan joins', 'Seven of Nine', 'Picard assimilated', 'Picard retired', 'Odo returns', "Kirk's five-year", 'Spock revived', "Khan's revenge"]
+      for (let year = 2151; year <= 3200; year++) {
+        const ctx = getEraContext(year)
+        for (const phrase of individualPhrases) {
+          expect(ctx.events, `year ${year} should not mention "${phrase}"`).to.not.include(phrase)
+        }
+      }
+    })
+
     it('should return an object with series and events strings', () => {
       const ctx = getEraContext(2370)
       expect(ctx).to.have.property('series').that.is.a('string')

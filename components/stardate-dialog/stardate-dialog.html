@@ -19,6 +19,11 @@
                         border: 1px solid currentcolor;
                         border-radius: 4px;
                         padding: 0.75em;
+                        display: none;
+
+                        &.active {
+                            display: block;
+                        }
 
                         & legend {
                             font-weight: bold;
@@ -78,6 +83,28 @@
                         }
                     }
 
+                    .mode-switcher {
+                        display: flex;
+                        gap: 0.4em;
+
+                        & button {
+                            flex: 1;
+                            padding: 0.4em 0.6em;
+                            font-size: 0.85em;
+                            font-weight: bold;
+                            cursor: pointer;
+                            border: 1px solid currentcolor;
+                            border-radius: 4px;
+                            background: transparent;
+                            opacity: 0.55;
+                        }
+
+                        & button.active {
+                            opacity: 1;
+                            background: color-mix(in srgb, currentcolor 15%, transparent);
+                        }
+                    }
+
                     .current-stardate {
                         text-align: center;
                         font-size: 0.9em;
@@ -109,8 +136,14 @@
             <main>
                 <p class="current-stardate">Current: <strong class="current-value">—</strong></p>
 
-                <fieldset>
-                    <legend>TNG Calculator</legend>
+                <div class="mode-switcher">
+                    <button class="mode-btn active" data-mode="tng" type="button">TNG Era</button>
+                    <button class="mode-btn" data-mode="tos" type="button">TOS Era</button>
+                    <button class="mode-btn" data-mode="manual" type="button">Manual</button>
+                </div>
+
+                <fieldset data-mode="tng" class="active">
+                    <legend>TNG Calculator (2323+)</legend>
                     <div class="date-row">
                         <label>
                             Year
@@ -136,8 +169,8 @@
                     </div>
                 </fieldset>
 
-                <fieldset>
-                    <legend>TOS/Pre-TNG Calculator (pre-2323)</legend>
+                <fieldset data-mode="tos">
+                    <legend>TOS Calculator (pre-2323)</legend>
                     <div class="date-row">
                         <label>
                             Year
@@ -163,7 +196,7 @@
                     </div>
                 </fieldset>
 
-                <fieldset>
+                <fieldset data-mode="manual">
                     <legend>Manual Entry</legend>
                     <div class="manual-row">
                         <input type="text" class="manual-stardate" placeholder="e.g. 48315.6">

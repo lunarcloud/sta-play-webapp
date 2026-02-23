@@ -23,6 +23,17 @@ export class StardateDialogElement extends HTMLDialogElement {
     this.innerHTML = dialogEl.innerHTML
     this.querySelectorAll('button.close').forEach(el => el.addEventListener('click', () => this.#handleCancel()))
 
+    // Mode switcher: show only the active fieldset at a time
+    this.querySelectorAll('.mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const mode = /** @type {HTMLElement} */ (btn).dataset.mode
+        this.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b === btn))
+        this.querySelectorAll('fieldset[data-mode]').forEach(fs => {
+          fs.classList.toggle('active', /** @type {HTMLElement} */ (fs).dataset.mode === mode)
+        })
+      })
+    })
+
     const yearInput = /** @type {HTMLInputElement} */ (this.querySelector('input.calc-year'))
     const monthInput = /** @type {HTMLInputElement} */ (this.querySelector('input.calc-month'))
     const dayInput = /** @type {HTMLInputElement} */ (this.querySelector('input.calc-day'))
