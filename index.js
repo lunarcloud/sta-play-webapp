@@ -13,6 +13,8 @@ import { TraitDisplayElement } from './components/trait-display/trait-display-el
 import { PlayerDisplayElement } from './components/player-display/player-display-element.js'
 import { TaskTrackerElement } from './components/task-tracker/task-tracker-element.js'
 import { StardateDialogElement } from './components/stardate-dialog/stardate-dialog-element.js'
+import { stardateToDate, tosStardateToDate } from './js/stardate-utils.js'
+import { getSuggestedTheme } from './js/theme-era-map.js'
 import { Database } from './js/database/database.js'
 import { TrackerInfo } from './js/database/tracker-info.js'
 import { RollTableInfo } from './js/database/roll-table-info.js'
@@ -581,6 +583,36 @@ export class IndexController {
     const result = await stardateDialog.editStardate(current)
     if (result !== null) {
       this.#setStardate(result)
+      await this.#suggestThemeForStardate(result)
+    }
+  }
+
+  /**
+   * Suggest a theme switch if the chosen stardate is outside the current theme's era.
+   * @param {string} stardateValue  The newly-set stardate string
+   */
+  async #suggestThemeForStardate (stardateValue) {
+    const num = parseFloat(stardateValue)
+    if (!stardateValue || isNaN(num)) return
+
+    // Negative stardates are TOS-era (before TOS_EPOCH_YEAR 2265); use TOS conversion.
+    // Non-negative values are treated as TNG-era stardates (the common/default calculator).
+    const dateInfo = num < 0 ? tosStardateToDate(num) : stardateToDate(num)
+    const year = dateInfo.year
+
+    // Get the active theme from the select element
+    const themeSelectEl = document.getElementById('select-theme')
+    if (themeSelectEl instanceof HTMLSelectElement === false) return
+    const currentTheme = themeSelectEl.value
+
+    const suggestion = getSuggestedTheme(year, currentTheme)
+    if (!suggestion) return
+
+    const confirmed = await this.confirmDialog.confirm(
+      `The stardate you entered corresponds to the ${suggestion.label} era. Switch to the matching theme?`
+    )
+    if (confirmed) {
+      this.#useTheme(suggestion.theme)
     }
   }
 
