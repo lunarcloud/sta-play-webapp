@@ -111,6 +111,7 @@ export class BackupData {
 
     // re-hydrate the files
     if (data.GameInfo.shipModel) { data.GameInfo.shipModel = await convertFile(data.GameInfo.shipModel) }
+    if (data.GameInfo.shipModel2) { data.GameInfo.shipModel2 = await convertFile(data.GameInfo.shipModel2) }
 
     const players = []
     for (const player of data.Players) {
@@ -159,6 +160,24 @@ export class BackupData {
     if (this.GameInfo.shipModel instanceof File) {
       // @ts-ignore
       this.GameInfo.shipModel.toJSON = function () {
+        /** @type {AppEncodedFileObject} */
+        const value = {
+          lastModified: this.lastModified,
+          name: this.name,
+          size: this.size,
+          type: this.type,
+          webkitRelativePath: this.webkitRelativePath,
+          isReferencedFile: true,
+          reference: crypto.randomUUID()
+        }
+        files[value.reference] = this
+        return value
+      }
+    }
+
+    if (this.GameInfo.shipModel2 instanceof File) {
+      // @ts-ignore
+      this.GameInfo.shipModel2.toJSON = function () {
         /** @type {AppEncodedFileObject} */
         const value = {
           lastModified: this.lastModified,

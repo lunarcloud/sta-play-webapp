@@ -387,6 +387,49 @@ describe('Database', () => {
       idb.close()
     })
 
+    it('should export and import both ship models', async () => {
+      const idb = await db.open()
+
+      // Create a game with two ship models
+      const shipModel1 = new File(['model1 data'], 'ship1.glb', { type: 'model/gltf-binary' })
+      const shipModel2 = new File(['model2 data'], 'ship2.glb', { type: 'model/gltf-binary' })
+      const gameInfo = new GameInfo(undefined, 'Ship Model Test', 'USS Two Ships', 0, 0, '', 'lcars-24', '2', shipModel1, false, false, shipModel2)
+      delete gameInfo.id
+      const gameTx = idb.transaction('games', 'readwrite')
+      await gameTx.store.add(gameInfo)
+      await gameTx.done
+
+      // Export
+      const blob = await db.export('Ship Model Test', idb)
+      const file = new File([blob], 'ship-model-test.staplay', { type: 'application/staplay' })
+      const backupData = await BackupData.import(file)
+
+      // Verify both ship models are present in the backup data
+      expect(backupData.GameInfo.shipModel).to.be.instanceOf(File)
+      expect(backupData.GameInfo.shipModel.name).to.equal('ship1.glb')
+      expect(backupData.GameInfo.shipModel2).to.be.instanceOf(File)
+      expect(backupData.GameInfo.shipModel2.name).to.equal('ship2.glb')
+
+      // Clear and re-import
+      const clearTx = idb.transaction(['games'], 'readwrite')
+      await clearTx.objectStore('games').clear()
+      await clearTx.done
+
+      await db.import(backupData, idb)
+
+      const tx2 = idb.transaction('games', 'readonly')
+      const importedGames = await tx2.store.getAll()
+      await tx2.done
+
+      expect(importedGames).to.have.lengthOf(1)
+      expect(importedGames[0].shipModel).to.be.instanceOf(File)
+      expect(importedGames[0].shipModel.name).to.equal('ship1.glb')
+      expect(importedGames[0].shipModel2).to.be.instanceOf(File)
+      expect(importedGames[0].shipModel2.name).to.equal('ship2.glb')
+
+      idb.close()
+    })
+
     it('should successfully import data with roll tables', async () => {
       const idb = await db.open()
 
