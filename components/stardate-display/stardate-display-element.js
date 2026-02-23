@@ -19,6 +19,11 @@ export class StardateDisplayElement extends HTMLElement {
   #valueEl
 
   /**
+   * @type {string}
+   */
+  #value = ''
+
+  /**
    * Constructor.
    */
   constructor () {
@@ -75,7 +80,7 @@ export class StardateDisplayElement extends HTMLElement {
    * @returns {string} the stardate value
    */
   get value () {
-    return this.#valueEl.textContent === '—' ? '' : this.#valueEl.textContent
+    return this.#value
   }
 
   /**
@@ -83,9 +88,10 @@ export class StardateDisplayElement extends HTMLElement {
    * @param {string} newValue  the new stardate value
    */
   set value (newValue) {
-    this.#valueEl.textContent = newValue?.trim() || '—'
-    if (this.getAttribute('value') !== newValue) {
-      this.setAttribute('value', newValue ?? '')
+    this.#value = newValue?.trim() ?? ''
+    this.#valueEl.textContent = this.#value || '—'
+    if (this.getAttribute('value') !== this.#value) {
+      this.setAttribute('value', this.#value)
     }
   }
 }
