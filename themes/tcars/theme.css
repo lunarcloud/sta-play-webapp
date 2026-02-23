@@ -418,7 +418,7 @@ body {
             width: 7em;
         }
 
-        & text {
+        &:not(#stardate-item) text {
             visibility: hidden;
         }
     }
@@ -455,8 +455,12 @@ body {
                     width: 5em;
                 }
 
+                &#stardate-item {
+                    width: 9em
+                }
+
                 &.shipname {
-                    width: 16em;
+                    width: auto;
                     border-radius: 0 1.5em 1.5em 0;
                 }
             }
