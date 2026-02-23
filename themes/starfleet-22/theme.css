@@ -398,9 +398,14 @@ body {
             }
 
             & > trait-display::part(internal) {
-                width: 100%;
+                --trait-display-white-space: normal;
+                max-width: 100%;
+                margin-right: 0.15em;
                 width: var(--stretch);
+                overflow: clip;
+                overflow-wrap: anywhere;
             }
+        }
         }
     }
 }

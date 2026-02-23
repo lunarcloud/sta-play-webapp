@@ -9,6 +9,7 @@ trait-display-internal {
 
     & > .name {
         display: inline-block;
+        text-align: start;
         color: black;
         outline: none;
         border: none;
@@ -21,7 +22,8 @@ trait-display-internal {
         line-height: inherit;
         background: unset;
         user-select: text;
-        white-space: nowrap;
+        white-space: var(--trait-display-white-space, nowrap);
+        word-break: break-all;
         field-sizing: content;
         box-sizing: border-box;
     }
