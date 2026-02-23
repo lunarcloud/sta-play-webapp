@@ -12,6 +12,8 @@ import { MissionTrackerElement } from './components/mission-tracker/mission-trac
 import { TraitDisplayElement } from './components/trait-display/trait-display-element.js'
 import { PlayerDisplayElement } from './components/player-display/player-display-element.js'
 import { TaskTrackerElement } from './components/task-tracker/task-tracker-element.js'
+import { StardateDisplayElement } from './components/stardate-display/stardate-display-element.js'
+import { StardateDialogElement } from './components/stardate-dialog/stardate-dialog-element.js'
 import { Database } from './js/database/database.js'
 import { TrackerInfo } from './js/database/tracker-info.js'
 import { RollTableInfo } from './js/database/roll-table-info.js'
@@ -148,6 +150,18 @@ export class IndexController {
     const legacyTrackersCheckbox = document.getElementById('legacy-task-tracker-toggle')
     if (legacyTrackersCheckbox instanceof HTMLInputElement) {
       legacyTrackersCheckbox.addEventListener('change', () => this.#setLegacyTaskTrackers(legacyTrackersCheckbox.checked))
+    }
+
+    // Wire up Show Stardate checkbox
+    const showStardateCheckbox = document.getElementById('show-stardate-toggle')
+    if (showStardateCheckbox instanceof HTMLInputElement) {
+      showStardateCheckbox.addEventListener('change', () => this.#setShowStardate(showStardateCheckbox.checked))
+    }
+
+    // Wire up the stardate edit button
+    const stardateDisplayEl = document.querySelector('stardate-display')
+    if (stardateDisplayEl instanceof StardateDisplayElement) {
+      stardateDisplayEl.addEventListener('edit', () => this.#openStardateDialog())
     }
 
     // Wire up the Alerts Selector
@@ -520,6 +534,51 @@ export class IndexController {
   }
 
   /**
+   * Toggle the stardate display visibility.
+   * @param {boolean} show  whether to show the stardate
+   */
+  #setShowStardate (show) {
+    const stardateItemEl = document.getElementById('stardate-item')
+    if (stardateItemEl instanceof HTMLElement) {
+      stardateItemEl.toggleAttribute('hidden', !show)
+    }
+
+    const showStardateCheckbox = document.getElementById('show-stardate-toggle')
+    if (showStardateCheckbox instanceof HTMLInputElement) {
+      showStardateCheckbox.checked = show
+    }
+  }
+
+  /**
+   * Set the displayed stardate value.
+   * @param {string} value  the stardate string
+   */
+  #setStardate (value) {
+    const stardateDisplayEl = document.querySelector('stardate-display')
+    if (stardateDisplayEl instanceof StardateDisplayElement) {
+      stardateDisplayEl.value = value ?? ''
+    }
+  }
+
+  /**
+   * Open the stardate editor dialog.
+   */
+  async #openStardateDialog () {
+    const stardateDialog = document.querySelector('dialog[is="stardate-dialog"]')
+    if (stardateDialog instanceof StardateDialogElement === false) {
+      return
+    }
+    const stardateDisplayEl = document.querySelector('stardate-display')
+    const current = stardateDisplayEl instanceof StardateDisplayElement
+      ? stardateDisplayEl.value
+      : ''
+    const result = await stardateDialog.editStardate(current)
+    if (result !== null) {
+      this.#setStardate(result)
+    }
+  }
+
+  /**
    * Update the ship alert
    * @param {string} newColor color to use
    */
@@ -743,6 +802,8 @@ export class IndexController {
     this.#useTheme(gameInfo?.theme ?? 'lcars-24', gameInfo?.altFont ?? false)
     this.#useEdition(gameInfo?.edition)
     this.#setLegacyTaskTrackers(gameInfo?.legacyTrackers ?? false)
+    this.#setShowStardate(gameInfo?.showStardate ?? false)
+    this.#setStardate(gameInfo?.stardate ?? '')
 
     /** @type {SceneInfo} */
     let firstSceneInfo
@@ -872,7 +933,9 @@ export class IndexController {
       this.shipModel,
       altFontCheckbox.checked,
       legacyTrackersCheckbox.checked,
-      this.shipModel2
+      this.shipModel2,
+      document.querySelector('stardate-display')?.value ?? '',
+      document.getElementById('show-stardate-toggle')?.checked ?? false
     )
     const savedGameId = await this.db.saveGameInfo(gameInfo)
     if (savedGameId !== undefined) {

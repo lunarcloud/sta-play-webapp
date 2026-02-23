@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <dialog>
+            <style>
+                dialog[is=stardate-dialog] {
+                    width: fit-content;
+                    max-width: max(340px, 55%);
+                    min-width: 280px;
+
+                    main {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 1em;
+                        padding: 1em;
+                    }
+
+                    fieldset {
+                        border: 1px solid currentcolor;
+                        border-radius: 4px;
+                        padding: 0.75em;
+
+                        & legend {
+                            font-weight: bold;
+                            font-size: 0.9em;
+                            padding: 0 0.4em;
+                        }
+                    }
+
+                    .date-row {
+                        display: grid;
+                        grid-template-columns: 2fr 1fr 1fr;
+                        gap: 0.5em;
+                        align-items: end;
+
+                        & label {
+                            display: flex;
+                            flex-direction: column;
+                            font-size: 0.9em;
+                            font-weight: bold;
+                            gap: 0.25em;
+                        }
+
+                        & input {
+                            padding: 0.25em;
+                            font-size: 1em;
+                            text-align: center;
+                            width: 100%;
+                            box-sizing: border-box;
+                        }
+                    }
+
+                    .calc-result {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5em;
+                        font-size: 1em;
+
+                        & .result-value {
+                            font-weight: bold;
+                            font-size: 1.2em;
+                        }
+
+                        & button {
+                            margin-left: auto;
+                        }
+                    }
+
+                    .manual-row {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5em;
+
+                        & input {
+                            flex: 1;
+                            padding: 0.25em 0.4em;
+                            font-size: 1.1em;
+                        }
+                    }
+
+                    .current-stardate {
+                        text-align: center;
+                        font-size: 0.9em;
+                        opacity: 0.7;
+                    }
+                }
+            </style>
+            <header>
+                Stardate
+                <button class="close" role="button">⤫</button>
+            </header>
+            <main>
+                <p class="current-stardate">Current: <strong class="current-value">—</strong></p>
+
+                <fieldset>
+                    <legend>TNG Calculator</legend>
+                    <div class="date-row">
+                        <label>
+                            Year
+                            <input type="number" class="calc-year" min="2323" max="3200" step="1" value="2371">
+                        </label>
+                        <label>
+                            Month
+                            <input type="number" class="calc-month" min="1" max="12" step="1" value="1">
+                        </label>
+                        <label>
+                            Day
+                            <input type="number" class="calc-day" min="1" max="31" step="1" value="1">
+                        </label>
+                    </div>
+                    <div class="calc-result">
+                        <span>Stardate:</span>
+                        <span class="result-value">—</span>
+                        <button class="use-calculated" type="button">Use</button>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Manual Entry</legend>
+                    <div class="manual-row">
+                        <input type="text" class="manual-stardate" placeholder="e.g. 48315.6">
+                        <button class="use-manual" type="button">Use</button>
+                    </div>
+                </fieldset>
+            </main>
+            <footer>
+                <button class="close" role="button">Close</button>
+            </footer>
+        </dialog>
+    </body>
+</html>

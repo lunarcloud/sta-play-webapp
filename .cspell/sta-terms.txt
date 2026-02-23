@@ -83,3 +83,9 @@ J'lin
 J'Tag
 Sh'Doe
 Th'Doe
+
+# Stardates
+stardate
+Stardates
+stardate-display
+stardate-dialog
