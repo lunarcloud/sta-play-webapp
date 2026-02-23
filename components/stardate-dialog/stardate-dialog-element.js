@@ -1,6 +1,7 @@
 import { animateClose } from '../../js/dialog-utils.js'
 import { loadElementFromFile } from '../../js/load-file-element.js'
 import { dateToStardate, formatStardate } from '../../js/stardate-utils.js'
+import { getEraContext } from '../../js/stardate-eras.js'
 
 const dialogEl = await loadElementFromFile('./components/stardate-dialog/stardate-dialog.html', 'dialog')
 
@@ -26,6 +27,9 @@ export class StardateDialogElement extends HTMLDialogElement {
     const monthInput = /** @type {HTMLInputElement} */ (this.querySelector('input.calc-month'))
     const dayInput = /** @type {HTMLInputElement} */ (this.querySelector('input.calc-day'))
     const resultEl = /** @type {HTMLElement} */ (this.querySelector('.result-value'))
+    const eraContextEl = /** @type {HTMLElement} */ (this.querySelector('.era-context'))
+    const eraSeriesEl = /** @type {HTMLElement} */ (this.querySelector('.era-series'))
+    const eraEventsEl = /** @type {HTMLElement} */ (this.querySelector('.era-events'))
 
     const recalculate = () => {
       const year = parseInt(yearInput.value) || 2371
@@ -33,6 +37,11 @@ export class StardateDialogElement extends HTMLDialogElement {
       const day = Math.max(1, Math.min(31, parseInt(dayInput.value) || 1))
       const stardate = dateToStardate(year, month, day)
       resultEl.textContent = formatStardate(stardate)
+
+      const context = getEraContext(year)
+      eraSeriesEl.textContent = context.series
+      eraEventsEl.textContent = context.events
+      eraContextEl.removeAttribute('hidden')
     }
 
     yearInput.addEventListener('input', recalculate)

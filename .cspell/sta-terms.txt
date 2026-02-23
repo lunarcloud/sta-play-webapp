@@ -89,3 +89,18 @@ stardate
 Stardates
 stardate-display
 stardate-dialog
+
+# Stardate Era Context Terms
+Cardassian
+Bajoran
+Romulan
+Khitomer
+Maquis
+Dominion
+Shinzon
+Voyager
+dilithium
+supernova
+Synth
+Picard
+Discovery

@@ -83,6 +83,22 @@
                         font-size: 0.9em;
                         opacity: 0.7;
                     }
+
+                    .era-context {
+                        font-size: 0.88em;
+                        border-left: 3px solid currentcolor;
+                        padding: 0.4em 0.6em;
+                        opacity: 0.85;
+
+                        & .era-series {
+                            font-weight: bold;
+                            margin-bottom: 0.2em;
+                        }
+
+                        & .era-events {
+                            font-style: italic;
+                        }
+                    }
                 }
             </style>
             <header>
@@ -112,6 +128,10 @@
                         <span>Stardate:</span>
                         <span class="result-value">—</span>
                         <button class="use-calculated" type="button">Use</button>
+                    </div>
+                    <div class="era-context" hidden>
+                        <div class="era-series"></div>
+                        <div class="era-events"></div>
                     </div>
                 </fieldset>
 
