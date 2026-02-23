@@ -59,14 +59,16 @@ warp
 # LCARS Theme Variants
 TCARS
 tcars
+holo
 
 # Ship Names & Registries
 Excelsior
 Voyager
 
-# Star Trek Character Names
+# Star Trek Character Names (used in tests to verify they do NOT appear in era data)
 Okuda
 Worf
+Guinan
 
 # STA-Specific Names & Series
 Modiphius
@@ -92,6 +94,8 @@ stardate-dialog
 
 # Stardate Era Context Terms
 Cardassian
+Cardassians
+Cardassia
 Bajoran
 Romulan
 Khitomer
@@ -104,3 +108,8 @@ supernova
 Synth
 Picard
 Discovery
+Xindi
+Narendra
+transwarp
+Planitia
+Tribbles

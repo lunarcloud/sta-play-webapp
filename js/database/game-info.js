@@ -67,6 +67,11 @@ export class GameInfo extends NamedInfo {
   showStardate
 
   /**
+   * @type {boolean}
+   */
+  stardateIsTOS
+
+  /**
    * Create a new General Info object
    * @param {number|undefined}    id              database entry id or undefined if new
    * @param {string|undefined}    name            name of the game
@@ -82,8 +87,9 @@ export class GameInfo extends NamedInfo {
    * @param {File}                [shipModel2]    second ship's 3D model
    * @param {string}              [stardate]      the current in-universe stardate
    * @param {boolean}             [showStardate]  whether to display the stardate
+   * @param {boolean}             [stardateIsTOS] whether the stardate uses the TOS system
    */
-  constructor (id, name, shipName, momentum = 0, threat = 0, activeAlert = '', theme = 'lcars-24', edition = '2', shipModel = undefined, altFont = false, legacyTrackers = false, shipModel2 = undefined, stardate = '', showStardate = false) {
+  constructor (id, name, shipName, momentum = 0, threat = 0, activeAlert = '', theme = 'lcars-24', edition = '2', shipModel = undefined, altFont = false, legacyTrackers = false, shipModel2 = undefined, stardate = '', showStardate = false, stardateIsTOS = false) {
     super(name ?? DefaultGameName, id)
     this.shipName = shipName
     this.momentum = typeof (momentum) === 'number' ? momentum : parseInt(momentum)
@@ -97,6 +103,7 @@ export class GameInfo extends NamedInfo {
     this.shipModel2 = shipModel2
     this.stardate = stardate ?? ''
     this.showStardate = showStardate ?? false
+    this.stardateIsTOS = stardateIsTOS ?? false
   }
 
   /**
@@ -119,7 +126,8 @@ export class GameInfo extends NamedInfo {
       'legacyTrackers' in obj ? obj.legacyTrackers : false,
       'shipModel2' in obj ? obj.shipModel2 : undefined,
       'stardate' in obj ? obj.stardate : '',
-      'showStardate' in obj ? obj.showStardate : false
+      'showStardate' in obj ? obj.showStardate : false,
+      'stardateIsTOS' in obj ? obj.stardateIsTOS : false
     )
   }
 

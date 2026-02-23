@@ -15,12 +15,17 @@ export class StardateDialogElement extends HTMLDialogElement {
    */
   #resolvePromise = null
 
+  /** @type {string} */ #activeMode = 'tng'
+
   /** @type {HTMLInputElement|null} */ #yearInput = null
   /** @type {HTMLInputElement|null} */ #monthInput = null
   /** @type {HTMLInputElement|null} */ #dayInput = null
+  /** @type {HTMLInputElement|null} */ #tngStardateInput = null
+
   /** @type {HTMLInputElement|null} */ #tosYearInput = null
   /** @type {HTMLInputElement|null} */ #tosMonthInput = null
   /** @type {HTMLInputElement|null} */ #tosDayInput = null
+  /** @type {HTMLInputElement|null} */ #tosStardateInput = null
 
   /**
    * Constructor.
@@ -32,94 +37,131 @@ export class StardateDialogElement extends HTMLDialogElement {
 
     // Mode switcher: show only the active fieldset at a time
     this.querySelectorAll('.mode-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const mode = /** @type {HTMLElement} */ (btn).dataset.mode
-        this.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b === btn))
-        this.querySelectorAll('fieldset[data-mode]').forEach(fs => {
-          fs.classList.toggle('active', /** @type {HTMLElement} */ (fs).dataset.mode === mode)
-        })
-      })
+      btn.addEventListener('click', () => this.#switchMode(/** @type {HTMLElement} */ (btn).dataset.mode))
     })
 
+    // --- TNG calculator (bidirectional) ---
     this.#yearInput = /** @type {HTMLInputElement} */ (this.querySelector('input.calc-year'))
     this.#monthInput = /** @type {HTMLInputElement} */ (this.querySelector('input.calc-month'))
     this.#dayInput = /** @type {HTMLInputElement} */ (this.querySelector('input.calc-day'))
-    const resultEl = /** @type {HTMLElement} */ (this.querySelector('.result-value'))
+    this.#tngStardateInput = /** @type {HTMLInputElement} */ (this.querySelector('input.tng-stardate'))
     const eraContextEl = /** @type {HTMLElement} */ (this.querySelector('.era-context'))
     const eraSeriesEl = /** @type {HTMLElement} */ (this.querySelector('.era-series'))
     const eraEventsEl = /** @type {HTMLElement} */ (this.querySelector('.era-events'))
 
-    const recalculate = () => {
+    let tngSync = false
+
+    /**
+     * @param {number} year
+     */
+    const tngUpdateEra = (year) => {
+      const ctx = getEraContext(year)
+      eraSeriesEl.textContent = ctx.series
+      eraEventsEl.textContent = ctx.events
+      eraContextEl.removeAttribute('hidden')
+    }
+
+    const tngDateChanged = () => {
+      if (tngSync) return
+      tngSync = true
       const year = Math.max(2323, parseInt(this.#yearInput.value) || 2371)
       const month = Math.max(1, Math.min(12, parseInt(this.#monthInput.value) || 1))
       const day = Math.max(1, Math.min(31, parseInt(this.#dayInput.value) || 1))
       this.#yearInput.value = String(year)
       this.#monthInput.value = String(month)
       this.#dayInput.value = String(day)
-      const stardate = dateToStardate(year, month, day)
-      resultEl.textContent = formatStardate(stardate)
-
-      const context = getEraContext(year)
-      eraSeriesEl.textContent = context.series
-      eraEventsEl.textContent = context.events
-      eraContextEl.removeAttribute('hidden')
+      this.#tngStardateInput.value = formatStardate(dateToStardate(year, month, day))
+      tngUpdateEra(year)
+      tngSync = false
     }
 
-    this.#yearInput.addEventListener('input', recalculate)
-    this.#yearInput.addEventListener('change', recalculate)
-    this.#monthInput.addEventListener('input', recalculate)
-    this.#monthInput.addEventListener('change', recalculate)
-    this.#dayInput.addEventListener('input', recalculate)
-    this.#dayInput.addEventListener('change', recalculate)
-    recalculate()
+    const tngStardateChanged = () => {
+      if (tngSync) return
+      tngSync = true
+      const num = parseFloat(this.#tngStardateInput.value)
+      if (!isNaN(num)) {
+        const d = stardateToDate(num)
+        const year = Math.max(2323, d.year)
+        this.#yearInput.value = String(year)
+        this.#monthInput.value = String(d.month)
+        this.#dayInput.value = String(d.day)
+        tngUpdateEra(year)
+      }
+      tngSync = false
+    }
+
+    ;[this.#yearInput, this.#monthInput, this.#dayInput].forEach(el => {
+      el.addEventListener('input', tngDateChanged)
+      el.addEventListener('change', tngDateChanged)
+    })
+    this.#tngStardateInput.addEventListener('input', tngStardateChanged)
+    this.#tngStardateInput.addEventListener('change', tngStardateChanged)
+    tngDateChanged()
 
     this.querySelector('button.use-calculated')?.addEventListener('click', () => {
-      const value = resultEl.textContent?.trim() ?? ''
-      this.#resolve(value)
+      this.#resolve(this.#tngStardateInput?.value?.trim() ?? '')
     })
 
-    // TOS/Pre-TNG calculator
+    // --- TOS calculator (bidirectional) ---
     this.#tosYearInput = /** @type {HTMLInputElement} */ (this.querySelector('input.tos-year'))
     this.#tosMonthInput = /** @type {HTMLInputElement} */ (this.querySelector('input.tos-month'))
     this.#tosDayInput = /** @type {HTMLInputElement} */ (this.querySelector('input.tos-day'))
-    const tosResultEl = /** @type {HTMLElement} */ (this.querySelector('.tos-result-value'))
+    this.#tosStardateInput = /** @type {HTMLInputElement} */ (this.querySelector('input.tos-stardate'))
     const tosEraContextEl = /** @type {HTMLElement} */ (this.querySelector('.tos-era-context'))
     const tosEraSeriesEl = /** @type {HTMLElement} */ (this.querySelector('.tos-era-series'))
     const tosEraEventsEl = /** @type {HTMLElement} */ (this.querySelector('.tos-era-events'))
 
-    const recalculateTOS = () => {
+    let tosSync = false
+
+    /**
+     * @param {number} year
+     */
+    const tosUpdateEra = (year) => {
+      const ctx = getEraContext(year)
+      tosEraSeriesEl.textContent = ctx.series
+      tosEraEventsEl.textContent = ctx.events
+      tosEraContextEl.removeAttribute('hidden')
+    }
+
+    const tosDateChanged = () => {
+      if (tosSync) return
+      tosSync = true
       const year = Math.min(2322, Math.max(2265, parseInt(this.#tosYearInput.value) || 2266))
       const month = Math.max(1, Math.min(12, parseInt(this.#tosMonthInput.value) || 1))
       const day = Math.max(1, Math.min(31, parseInt(this.#tosDayInput.value) || 1))
       this.#tosYearInput.value = String(year)
       this.#tosMonthInput.value = String(month)
       this.#tosDayInput.value = String(day)
-      const stardate = dateToTOSStardate(year, month, day)
-      tosResultEl.textContent = formatStardate(stardate)
-
-      const context = getEraContext(year)
-      tosEraSeriesEl.textContent = context.series
-      tosEraEventsEl.textContent = context.events
-      tosEraContextEl.removeAttribute('hidden')
+      this.#tosStardateInput.value = formatStardate(dateToTOSStardate(year, month, day))
+      tosUpdateEra(year)
+      tosSync = false
     }
 
-    this.#tosYearInput.addEventListener('input', recalculateTOS)
-    this.#tosYearInput.addEventListener('change', recalculateTOS)
-    this.#tosMonthInput.addEventListener('input', recalculateTOS)
-    this.#tosMonthInput.addEventListener('change', recalculateTOS)
-    this.#tosDayInput.addEventListener('input', recalculateTOS)
-    this.#tosDayInput.addEventListener('change', recalculateTOS)
-    recalculateTOS()
+    const tosStardateChanged = () => {
+      if (tosSync) return
+      tosSync = true
+      const num = parseFloat(this.#tosStardateInput.value)
+      if (!isNaN(num)) {
+        const d = tosStardateToDate(num)
+        const year = Math.min(2322, Math.max(2265, d.year))
+        this.#tosYearInput.value = String(year)
+        this.#tosMonthInput.value = String(d.month)
+        this.#tosDayInput.value = String(d.day)
+        tosUpdateEra(year)
+      }
+      tosSync = false
+    }
+
+    ;[this.#tosYearInput, this.#tosMonthInput, this.#tosDayInput].forEach(el => {
+      el.addEventListener('input', tosDateChanged)
+      el.addEventListener('change', tosDateChanged)
+    })
+    this.#tosStardateInput.addEventListener('input', tosStardateChanged)
+    this.#tosStardateInput.addEventListener('change', tosStardateChanged)
+    tosDateChanged()
 
     this.querySelector('button.use-tos')?.addEventListener('click', () => {
-      const value = tosResultEl.textContent?.trim() ?? ''
-      this.#resolve(value)
-    })
-
-    this.querySelector('button.use-manual')?.addEventListener('click', () => {
-      const input = /** @type {HTMLInputElement} */ (this.querySelector('input.manual-stardate'))
-      const value = input?.value?.trim() ?? ''
-      this.#resolve(value)
+      this.#resolve(this.#tosStardateInput?.value?.trim() ?? '')
     })
 
     this.addEventListener('close', () => {
@@ -130,10 +172,27 @@ export class StardateDialogElement extends HTMLDialogElement {
   }
 
   /**
-   * Switch the visible mode panel (tng, tos, or manual).
+   * The currently active mode ('tng' or 'tos').
+   * @returns {string}
+   */
+  get activeMode () {
+    return this.#activeMode
+  }
+
+  /**
+   * Whether the active mode uses the TOS stardate system.
+   * @returns {boolean}
+   */
+  get isTOS () {
+    return this.#activeMode === 'tos'
+  }
+
+  /**
+   * Switch the visible mode panel ('tng' or 'tos').
    * @param {string} mode - The mode identifier matching a data-mode attribute
    */
   #switchMode (mode) {
+    this.#activeMode = mode
     this.querySelectorAll('.mode-btn').forEach(b => {
       b.classList.toggle('active', /** @type {HTMLElement} */ (b).dataset.mode === mode)
     })
@@ -168,42 +227,67 @@ export class StardateDialogElement extends HTMLDialogElement {
 
   /**
    * Show the dialog and return the chosen stardate.
-   * Pre-fills the appropriate calculator from the current value so
-   * the displayed result always matches what is currently set.
+   * Pre-fills the appropriate calculator from the current value and resets
+   * the other calculator to its defaults to prevent stale state.
    * @param {string} [currentStardate] - The currently set stardate to pre-fill
+   * @param {boolean} [isTOS] - Whether the current stardate uses the TOS system
    * @returns {Promise<string|null>} The new stardate, or null if cancelled
    */
-  async editStardate (currentStardate = '') {
+  async editStardate (currentStardate = '', isTOS = false) {
     const currentEl = /** @type {HTMLElement} */ (this.querySelector('.current-value'))
     if (currentEl) {
       currentEl.textContent = currentStardate?.trim() || '—'
     }
 
-    const manualInput = /** @type {HTMLInputElement} */ (this.querySelector('input.manual-stardate'))
-    if (manualInput) {
-      manualInput.value = currentStardate?.trim() ?? ''
-    }
-
-    // Pre-fill the correct calculator from the current stardate value
     const num = parseFloat(currentStardate)
-    if (!isNaN(num)) {
-      // TNG conversion: if the resulting year is in TNG range, pre-fill TNG calc
-      const tngDate = stardateToDate(num)
-      if (tngDate.year >= TNG_EPOCH_YEAR) {
-        this.#yearInput.value = String(tngDate.year)
-        this.#monthInput.value = String(tngDate.month)
-        this.#dayInput.value = String(tngDate.day)
-        this.#yearInput.dispatchEvent(new Event('change'))
-        this.#switchMode('tng')
+
+    if (isTOS) {
+      // Reset TNG calculator to defaults
+      this.#yearInput.value = '2371'
+      this.#monthInput.value = '1'
+      this.#dayInput.value = '1'
+      this.#yearInput.dispatchEvent(new Event('change'))
+
+      // Pre-fill TOS stardate input (exact stored value), then sync to date fields
+      this.#tosStardateInput.value = !isNaN(num) ? (currentStardate?.trim() ?? '') : ''
+      if (!isNaN(num)) {
+        this.#tosStardateInput.dispatchEvent(new Event('change'))
       } else {
-        // Treat as TOS stardate
-        const tosDate = tosStardateToDate(num)
-        this.#tosYearInput.value = String(Math.min(2322, Math.max(2265, tosDate.year)))
-        this.#tosMonthInput.value = String(tosDate.month)
-        this.#tosDayInput.value = String(tosDate.day)
+        // No stored value — reset to defaults
+        this.#tosYearInput.value = '2266'
+        this.#tosMonthInput.value = '1'
+        this.#tosDayInput.value = '1'
         this.#tosYearInput.dispatchEvent(new Event('change'))
-        this.#switchMode('tos')
       }
+      this.#switchMode('tos')
+    } else {
+      // Reset TOS calculator to defaults
+      this.#tosYearInput.value = '2266'
+      this.#tosMonthInput.value = '1'
+      this.#tosDayInput.value = '1'
+      this.#tosYearInput.dispatchEvent(new Event('change'))
+
+      // Pre-fill TNG stardate input (exact stored value), then sync to date fields
+      this.#tngStardateInput.value = !isNaN(num) ? (currentStardate?.trim() ?? '') : ''
+      if (!isNaN(num)) {
+        const d = stardateToDate(num)
+        if (d.year >= TNG_EPOCH_YEAR) {
+          this.#tngStardateInput.dispatchEvent(new Event('change'))
+        } else {
+          // Value out of TNG range — reset to defaults
+          this.#yearInput.value = '2371'
+          this.#monthInput.value = '1'
+          this.#dayInput.value = '1'
+          this.#yearInput.dispatchEvent(new Event('change'))
+        }
+      } else {
+        // No stored value — reset to defaults
+        this.#yearInput.value = '2371'
+        this.#monthInput.value = '1'
+        this.#dayInput.value = '1'
+        this.#yearInput.dispatchEvent(new Event('change'))
+      }
+      this.#switchMode('tng')
     }
 
     this.returnValue = ''

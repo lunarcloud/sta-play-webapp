@@ -61,25 +61,16 @@
                         gap: 0.5em;
                         font-size: 1em;
 
-                        & .result-value {
+                        & .stardate-input {
+                            flex: 1;
+                            padding: 0.2em 0.4em;
+                            font-size: 1.1em;
                             font-weight: bold;
-                            font-size: 1.2em;
+                            text-align: right;
                         }
 
                         & button {
                             margin-left: auto;
-                        }
-                    }
-
-                    .manual-row {
-                        display: flex;
-                        align-items: center;
-                        gap: 0.5em;
-
-                        & input {
-                            flex: 1;
-                            padding: 0.25em 0.4em;
-                            font-size: 1.1em;
                         }
                     }
 
@@ -139,7 +130,6 @@
                 <div class="mode-switcher">
                     <button class="mode-btn active" data-mode="tng" type="button">TNG Era</button>
                     <button class="mode-btn" data-mode="tos" type="button">TOS Era</button>
-                    <button class="mode-btn" data-mode="manual" type="button">Manual</button>
                 </div>
 
                 <fieldset data-mode="tng" class="active">
@@ -159,8 +149,8 @@
                         </label>
                     </div>
                     <div class="calc-result">
-                        <span>Stardate:</span>
-                        <span class="result-value">—</span>
+                        <label>Stardate:</label>
+                        <input type="text" class="tng-stardate stardate-input" placeholder="—" inputmode="decimal">
                         <button class="use-calculated" type="button">Use</button>
                     </div>
                     <div class="era-context" hidden>
@@ -186,8 +176,8 @@
                         </label>
                     </div>
                     <div class="calc-result">
-                        <span>Stardate:</span>
-                        <span class="tos-result-value">—</span>
+                        <label>Stardate:</label>
+                        <input type="text" class="tos-stardate stardate-input" placeholder="—" inputmode="decimal">
                         <button class="use-tos" type="button">Use</button>
                     </div>
                     <div class="tos-era-context" hidden>
@@ -196,13 +186,6 @@
                     </div>
                 </fieldset>
 
-                <fieldset data-mode="manual">
-                    <legend>Manual Entry</legend>
-                    <div class="manual-row">
-                        <input type="text" class="manual-stardate" placeholder="e.g. 48315.6">
-                        <button class="use-manual" type="button">Use</button>
-                    </div>
-                </fieldset>
             </main>
             <footer>
                 <button class="close" role="button">Close</button>

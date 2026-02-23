@@ -84,6 +84,12 @@ export class IndexController {
   #shipAlertTransitionID = 0
 
   /**
+   * Whether the current stardate uses the TOS system.
+   * @type {boolean}
+   */
+  #stardateIsTOS = false
+
+  /**
    * @type {MessageDialogElement|undefined}
    */
   messageDialog
@@ -580,24 +586,24 @@ export class IndexController {
       return
     }
     const current = this.#getStardateValue()
-    const result = await stardateDialog.editStardate(current)
+    const result = await stardateDialog.editStardate(current, this.#stardateIsTOS)
     if (result !== null) {
+      this.#stardateIsTOS = stardateDialog.isTOS
       this.#setStardate(result)
-      await this.#suggestThemeForStardate(result)
+      await this.#suggestThemeForStardate(result, this.#stardateIsTOS)
     }
   }
 
   /**
    * Suggest a theme switch if the chosen stardate is outside the current theme's era.
    * @param {string} stardateValue  The newly-set stardate string
+   * @param {boolean} isTOS  Whether the stardate uses the TOS system
    */
-  async #suggestThemeForStardate (stardateValue) {
+  async #suggestThemeForStardate (stardateValue, isTOS) {
     const num = parseFloat(stardateValue)
     if (!stardateValue || isNaN(num)) return
 
-    // Negative stardates are TOS-era (before TOS_EPOCH_YEAR 2265); use TOS conversion.
-    // Non-negative values are treated as TNG-era stardates (the common/default calculator).
-    const dateInfo = num < 0 ? tosStardateToDate(num) : stardateToDate(num)
+    const dateInfo = isTOS ? tosStardateToDate(num) : stardateToDate(num)
     const year = dateInfo.year
 
     // Get the active theme from the select element
@@ -842,6 +848,7 @@ export class IndexController {
     this.#setLegacyTaskTrackers(gameInfo?.legacyTrackers ?? false)
     this.#setShowStardate(gameInfo?.showStardate ?? false)
     this.#setStardate(gameInfo?.stardate ?? '')
+    this.#stardateIsTOS = gameInfo?.stardateIsTOS ?? false
 
     /** @type {SceneInfo} */
     let firstSceneInfo
@@ -973,7 +980,8 @@ export class IndexController {
       legacyTrackersCheckbox.checked,
       this.shipModel2,
       this.#getStardateValue(),
-      document.getElementById('show-stardate-toggle')?.checked ?? false
+      document.getElementById('show-stardate-toggle')?.checked ?? false,
+      this.#stardateIsTOS
     )
     const savedGameId = await this.db.saveGameInfo(gameInfo)
     if (savedGameId !== undefined) {
