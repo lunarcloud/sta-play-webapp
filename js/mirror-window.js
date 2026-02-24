@@ -160,6 +160,23 @@ export class MirrorWindow {
 
       // Make the mirror window read-only
       MirrorWindow.#disableInteractivity(doc)
+
+      // Perform an initial full sync once the mirror window's scripts have finished
+      // loading, to capture state not preserved in the HTML snapshot (form values set
+      // via JavaScript, shadow DOM state, model-viewer properties, etc.).
+      let syncedOnce = false
+      const doInitialSync = () => {
+        if (syncedOnce || !MirrorWindow.isOpen()) return
+        syncedOnce = true
+        MirrorWindow.#syncAll()
+      }
+      if (targetWindow.document.readyState === 'complete') {
+        doInitialSync()
+      } else {
+        targetWindow.addEventListener('load', doInitialSync, { once: true })
+        // Fallback in case the load event does not fire (e.g. scripts blocked)
+        setTimeout(doInitialSync, 3000)
+      }
     }
 
     initialize()
@@ -579,6 +596,19 @@ export class MirrorWindow {
     if ('fieldOfView' in sourceViewer && sourceViewer['fieldOfView']) {
       targetViewer.setAttribute('field-of-view', /** @type {string} */ (sourceViewer['fieldOfView']))
     }
+  }
+
+  /**
+   * Performs a complete sync of all sections to the mirror window.
+   * Sets every sync flag to true and immediately calls {@link #sync}, then resets the flags.
+   * Used for the initial sync after the mirror window finishes loading.
+   */
+  static #syncAll () {
+    if (!MirrorWindow.isOpen()) return
+    const keys = Object.keys(MirrorWindow.#syncsNeeded)
+    MirrorWindow.#syncsNeeded = Object.fromEntries(keys.map(k => [k, true]))
+    MirrorWindow.#sync()
+    MirrorWindow.#syncsNeeded = Object.fromEntries(keys.map(k => [k, false]))
   }
 
   /**
