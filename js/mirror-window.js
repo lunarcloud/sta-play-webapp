@@ -598,10 +598,11 @@ export class MirrorWindow {
     const sourceImgs = sourceContainer.querySelectorAll('img')
     const mirrorImgs = mirrorContainer.querySelectorAll('img')
     sourceImgs.forEach((srcImg, index) => {
-      if (mirrorImgs[index] && srcImg.src && srcImg.src.startsWith('blob:')) {
+      const mirrorImg = mirrorImgs[index]
+      if (mirrorImg && srcImg.src && srcImg.src.startsWith('blob:')) {
         MirrorWindow.#transferBlobUrl(srcImg.src).then(mirrorUrl => {
-          if (MirrorWindow.isOpen() && mirrorImgs[index]) {
-            mirrorImgs[index].src = mirrorUrl
+          if (MirrorWindow.isOpen()) {
+            mirrorImg.src = mirrorUrl
           }
         })
       }
