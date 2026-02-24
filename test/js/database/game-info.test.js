@@ -88,6 +88,11 @@ describe('GameInfo', () => {
       const gameInfo = new GameInfo(1, 'Test', 'Ship', 0, 0, '', 'lcars-24', '2', undefined, false, true)
       expect(gameInfo.legacyTrackers).to.be.true
     })
+
+    it('should default showStardate to true', () => {
+      const gameInfo = new GameInfo(undefined, undefined, 'Voyager')
+      expect(gameInfo.showStardate).to.be.true
+    })
   })
 
   describe('assign', () => {
@@ -135,6 +140,20 @@ describe('GameInfo', () => {
       expect(gameInfo.edition).to.equal('2')
       expect(gameInfo.altFont).to.be.false
       expect(gameInfo.legacyTrackers).to.be.false
+      expect(gameInfo.showStardate).to.be.true
+    })
+
+    it('should preserve showStardate false when explicitly set', () => {
+      const obj = {
+        id: 4,
+        name: 'Test',
+        shipName: 'Ship',
+        showStardate: false
+      }
+
+      const gameInfo = GameInfo.assign(obj)
+
+      expect(gameInfo.showStardate).to.be.false
     })
 
     it('should handle shipModel in object', () => {

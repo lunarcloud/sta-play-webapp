@@ -846,7 +846,7 @@ export class IndexController {
     this.#useTheme(gameInfo?.theme ?? 'lcars-24', gameInfo?.altFont ?? false)
     this.#useEdition(gameInfo?.edition)
     this.#setLegacyTaskTrackers(gameInfo?.legacyTrackers ?? false)
-    this.#setShowStardate(gameInfo?.showStardate ?? false)
+    this.#setShowStardate(gameInfo?.showStardate ?? true)
     this.#setStardate(gameInfo?.stardate ?? '')
     this.#stardateIsTOS = gameInfo?.stardateIsTOS ?? false
 
