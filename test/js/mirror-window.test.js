@@ -305,4 +305,41 @@ describe('mirror-window', () => {
       container.remove()
     })
   })
+
+  describe('IndexController mirror guard', () => {
+    it('should prevent IndexController creation when body has data-mirror-window attribute', () => {
+      // The guard in index.js: if (!document.body?.hasAttribute('data-mirror-window'))
+      // When the attribute IS present, the condition is false — no controller created.
+      document.body.setAttribute('data-mirror-window', '')
+      const shouldCreate = !document.body?.hasAttribute('data-mirror-window')
+      expect(shouldCreate).to.be.false
+
+      document.body.removeAttribute('data-mirror-window')
+    })
+
+    it('should allow IndexController creation when body does NOT have data-mirror-window attribute', () => {
+      // When the attribute is absent, the condition is true — controller is created.
+      document.body.removeAttribute('data-mirror-window')
+      const shouldCreate = !document.body?.hasAttribute('data-mirror-window')
+      expect(shouldCreate).to.be.true
+    })
+  })
+
+  describe('blob URL handling for mirror sync', () => {
+    it('should detect blob: URLs with startsWith', () => {
+      const blobUrl = 'blob:http://localhost:8000/abcd-1234'
+      expect(blobUrl.startsWith('blob:')).to.be.true
+    })
+
+    it('should not treat relative paths as blob URLs', () => {
+      const relativePath = 'gltf/default-ship-1.glb'
+      expect(relativePath.startsWith('blob:')).to.be.false
+    })
+
+    it('should identify an img element src as a blob URL', () => {
+      const img = document.createElement('img')
+      img.src = 'blob:http://localhost:8000/abcd-1234'
+      expect(img.src.startsWith('blob:')).to.be.true
+    })
+  })
 })

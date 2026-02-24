@@ -59,6 +59,14 @@ export class MirrorWindow {
   }
 
   /**
+   * Cache mapping main-window blob URLs to mirror-window blob URLs.
+   * Blob URLs are scoped to their creating browsing context and may not be
+   * accessible from other windows (e.g. popup windows on itch.io).
+   * @type {Map<string, string>}
+   */
+  static #blobUrlCache = new Map()
+
+  /**
    * Opens a mirror window that reflects the current application state.
    * @returns {Window|null} The opened window or null if it failed to open
    */
@@ -164,19 +172,18 @@ export class MirrorWindow {
       // Perform an initial full sync once the mirror window's scripts have finished
       // loading, to capture state not preserved in the HTML snapshot (form values set
       // via JavaScript, shadow DOM state, model-viewer properties, etc.).
+      // We must wait for the 'load' event so that module scripts (which register
+      // custom elements) have executed first; checking readyState alone can trigger
+      // a sync before those scripts run, leaving sections un-rendered.
       let syncedOnce = false
       const doInitialSync = () => {
         if (syncedOnce || !MirrorWindow.isOpen()) return
         syncedOnce = true
         MirrorWindow.#syncAll()
       }
-      if (targetWindow.document.readyState === 'complete') {
-        doInitialSync()
-      } else {
-        targetWindow.addEventListener('load', doInitialSync, { once: true })
-        // Fallback in case the load event does not fire (e.g. scripts blocked)
-        setTimeout(doInitialSync, 3000)
-      }
+      targetWindow.addEventListener('load', doInitialSync, { once: true })
+      // Fallback in case the load event does not fire (e.g. scripts blocked)
+      setTimeout(doInitialSync, 3000)
     }
 
     initialize()
@@ -550,6 +557,58 @@ export class MirrorWindow {
   }
 
   /**
+   * Transfers a blob URL from the main window to the mirror window.
+   * Blob URLs created via {@link URL.createObjectURL} are scoped to the
+   * browsing context that created them.  In some environments (e.g. itch.io
+   * where the page runs inside a blob: iframe) the mirror popup cannot access
+   * blob URLs created by the opener.  This method fetches the blob data in the
+   * main window context and creates a new blob URL in the mirror window.
+   * @param {string} mainBlobUrl - The blob URL from the main window
+   * @returns {Promise<string>} A blob URL valid in the mirror window context
+   */
+  static async #transferBlobUrl (mainBlobUrl) {
+    if (MirrorWindow.#blobUrlCache.has(mainBlobUrl)) {
+      return /** @type {string} */ (MirrorWindow.#blobUrlCache.get(mainBlobUrl))
+    }
+
+    if (!MirrorWindow.#window || MirrorWindow.#window.closed) {
+      return mainBlobUrl
+    }
+
+    try {
+      const response = await fetch(mainBlobUrl)
+      const blob = await response.blob()
+      const mirrorUrl = MirrorWindow.#window.URL.createObjectURL(blob)
+      MirrorWindow.#blobUrlCache.set(mainBlobUrl, mirrorUrl)
+      return mirrorUrl
+    } catch (error) {
+      console.warn('Mirror: failed to transfer blob URL:', error)
+      return mainBlobUrl
+    }
+  }
+
+  /**
+   * Finds img elements with blob: src in a source container, transfers the
+   * blob data to the mirror window, and updates the corresponding mirror img
+   * elements with mirror-context blob URLs.
+   * @param {Element} sourceContainer - The source element containing images
+   * @param {Element} mirrorContainer - The mirror element whose images to update
+   */
+  static #transferBlobUrls (sourceContainer, mirrorContainer) {
+    const sourceImgs = sourceContainer.querySelectorAll('img')
+    const mirrorImgs = mirrorContainer.querySelectorAll('img')
+    sourceImgs.forEach((srcImg, index) => {
+      if (mirrorImgs[index] && srcImg.src && srcImg.src.startsWith('blob:')) {
+        MirrorWindow.#transferBlobUrl(srcImg.src).then(mirrorUrl => {
+          if (MirrorWindow.isOpen() && mirrorImgs[index]) {
+            mirrorImgs[index].src = mirrorUrl
+          }
+        })
+      }
+    })
+  }
+
+  /**
    * Synchronizes model-viewer properties and styles from source to target.
    * This is needed for cloaking effects which set opacity and exposure via JavaScript,
    * and for syncing camera orientation when users interact with the model.
@@ -559,9 +618,19 @@ export class MirrorWindow {
   static #syncModelViewerProperties (sourceViewer, targetViewer) {
     if (!sourceViewer || !targetViewer) return
 
-    // Sync src attribute
+    // Sync src attribute — blob URLs need special handling because they
+    // may not be accessible across browsing contexts.
     if ('src' in sourceViewer) {
-      targetViewer.setAttribute('src', /** @type {string} */ (sourceViewer['src']))
+      const srcUrl = /** @type {string} */ (sourceViewer['src'])
+      if (srcUrl && srcUrl.startsWith('blob:')) {
+        MirrorWindow.#transferBlobUrl(srcUrl).then(mirrorUrl => {
+          if (MirrorWindow.isOpen()) {
+            targetViewer.setAttribute('src', mirrorUrl)
+          }
+        })
+      } else {
+        targetViewer.setAttribute('src', srcUrl)
+      }
     }
 
     // Sync exposure property (used in cloaking effect)
@@ -875,6 +944,8 @@ export class MirrorWindow {
         MirrorWindow.#syncFormValues(player, mirrorPlayer)
         // Sync custom element attributes (e.g., input-progress) to trigger their attributeChangedCallback
         MirrorWindow.#syncCustomElementAttributes(player, mirrorPlayer)
+        // Transfer blob URLs for player portrait images
+        MirrorWindow.#transferBlobUrls(player, mirrorPlayer)
       } else {
         // Add new player by cloning with full content
         const newPlayer = /** @type {Element} */ (player.cloneNode(true))
@@ -882,6 +953,8 @@ export class MirrorWindow {
         // Sync form values and custom element attributes after adding
         MirrorWindow.#syncFormValues(player, newPlayer)
         MirrorWindow.#syncCustomElementAttributes(player, newPlayer)
+        // Transfer blob URLs for player portrait images
+        MirrorWindow.#transferBlobUrls(player, newPlayer)
         // Repeat sync on next frame to ensure DOM is fully settled
         // This prevents the image update issue when new players are added
         requestAnimationFrame(() => MirrorWindow.#sync())
@@ -1080,6 +1153,14 @@ export class MirrorWindow {
    * Closes the mirror window if it's open.
    */
   static close () {
+    // Revoke mirror-context blob URLs before closing
+    for (const mirrorUrl of MirrorWindow.#blobUrlCache.values()) {
+      try {
+        MirrorWindow.#window?.URL.revokeObjectURL(mirrorUrl)
+      } catch { /* window may already be closed */ }
+    }
+    MirrorWindow.#blobUrlCache.clear()
+
     if (MirrorWindow.#window && !MirrorWindow.#window.closed) {
       MirrorWindow.#window.close()
     }
