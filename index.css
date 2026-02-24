@@ -1082,10 +1082,12 @@ body.mirror {
 
     & > li:not(#shipname, #stardate-item) {
         display: none;
+
         & > * {
             color: transparent !important;
         }
     }
+
     & > li:is(#shipname, #stardate-item) {
         width: var(--stretch);
         max-height: 3em;
