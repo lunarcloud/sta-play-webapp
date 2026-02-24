@@ -1076,8 +1076,20 @@ body.mirror {
   }
 
   /* Hide navigation interaction buttons */
-  & nav ul > li:not(#shipname, #stardate-item) > * {
-    color: transparent !important;
+  & nav ul
+  {
+    width: auto;
+
+    & > li:not(#shipname, #stardate-item) {
+        display: none;
+        & > * {
+            color: transparent !important;
+        }
+    }
+    & > li:is(#shipname, #stardate-item) {
+        width: var(--stretch);
+        max-height: 3em;
+    }
   }
 
   /* Hide close/remove buttons on light DOM components */

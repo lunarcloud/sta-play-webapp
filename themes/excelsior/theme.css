@@ -307,6 +307,10 @@ body {
         }
     }
 
+    &.mirror nav {
+        text-shadow: none;
+    }
+
     & nav {
         grid-row: var(--controls-row);
         grid-column: var(--controls-2-col);
