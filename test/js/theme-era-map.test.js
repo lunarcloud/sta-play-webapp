@@ -86,12 +86,12 @@ describe('Theme Era Map', () => {
     })
 
     it('should handle era boundaries correctly', () => {
-      // 2322 = end of excelsior era
-      expect(getSuggestedTheme(2322, 'excelsior')).to.be.null
-      // 2323 = start of lcars-24
-      const r = getSuggestedTheme(2323, 'excelsior')
+      // 2316 = end of excelsior era
+      expect(getSuggestedTheme(2316, 'excelsior')).to.be.null
+      // 2317 = start of starfleet-early-24
+      const r = getSuggestedTheme(2317, 'excelsior')
       expect(r).to.not.be.null
-      expect(r.theme).to.equal('lcars-24')
+      expect(r.theme).to.equal('starfleet-early-24')
     })
   })
 })

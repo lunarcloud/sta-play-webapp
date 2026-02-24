@@ -89,7 +89,7 @@ export class GameInfo extends NamedInfo {
    * @param {boolean}             [showStardate]  whether to display the stardate
    * @param {boolean}             [stardateIsTOS] whether the stardate uses the TOS system
    */
-  constructor (id, name, shipName, momentum = 0, threat = 0, activeAlert = '', theme = 'lcars-24', edition = '2', shipModel = undefined, altFont = false, legacyTrackers = false, shipModel2 = undefined, stardate = '', showStardate = false, stardateIsTOS = false) {
+  constructor (id, name, shipName, momentum = 0, threat = 0, activeAlert = '', theme = 'lcars-24', edition = '2', shipModel = undefined, altFont = false, legacyTrackers = false, shipModel2 = undefined, stardate = '', showStardate = true, stardateIsTOS = false) {
     super(name ?? DefaultGameName, id)
     this.shipName = shipName
     this.momentum = typeof (momentum) === 'number' ? momentum : parseInt(momentum)
@@ -102,7 +102,7 @@ export class GameInfo extends NamedInfo {
     this.shipModel = shipModel
     this.shipModel2 = shipModel2
     this.stardate = stardate ?? ''
-    this.showStardate = showStardate ?? false
+    this.showStardate = showStardate ?? true
     this.stardateIsTOS = stardateIsTOS ?? false
   }
 
@@ -126,7 +126,7 @@ export class GameInfo extends NamedInfo {
       'legacyTrackers' in obj ? obj.legacyTrackers : false,
       'shipModel2' in obj ? obj.shipModel2 : undefined,
       'stardate' in obj ? obj.stardate : '',
-      'showStardate' in obj ? obj.showStardate : false,
+      'showStardate' in obj ? obj.showStardate : true,
       'stardateIsTOS' in obj ? obj.stardateIsTOS : false
     )
   }
