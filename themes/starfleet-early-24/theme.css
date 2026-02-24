@@ -2,21 +2,21 @@
 
 :root,
 ::backdrop {
-    /* Blue and Green Excelsion */
+    /* Blue and Green Excelsior */
     --main-font-body: "Roddenberry", sans-serif;
     --main-font-headers: "Roddenberry", sans-serif;
     --main-font-unitless: 11;
     --main-color-bg: hsl(0deg 0% 0%); /* black background */
-    --main-color-text: hsl(203, 100%, 60%); /* amber display color */
+    --main-color-text: hsl(203deg 100% 60%); /* amber display color */
     --nav-color-bg: hsl(0deg 0% 10%);
-    --nav-color-text: hsl(141, 100%, 60%);
+    --nav-color-text: hsl(141deg 100% 60%);
     --void-bg: hsl(0deg 0% 5%);
-    --trek-color-1: hsl(231, 100%, 60%);
-    --trek-color-2: hsl(145, 100%, 50%);
-    --trek-color-3: hsl(168, 100%, 70%);
-    --trek-color-4: hsl(212, 100%, 45%);
-    --trek-color-5: hsl(114, 74%, 30%);
-    --trek-color-6: hsl(102, 80%, 40%);
+    --trek-color-1: hsl(231deg 100% 60%);
+    --trek-color-2: hsl(145deg 100% 50%);
+    --trek-color-3: hsl(168deg 100% 70%);
+    --trek-color-4: hsl(212deg 100% 45%);
+    --trek-color-5: hsl(114deg 74% 30%);
+    --trek-color-6: hsl(102deg 80% 40%);
     --trek-color-highlight: var(--trek-color-3);
     --player-color-red: hsl(1deg 65% 38%);
     --player-color-blue: hsl(205deg 69% 49%);

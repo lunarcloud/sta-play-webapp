@@ -52,7 +52,7 @@ export class StardateDialogElement extends HTMLDialogElement {
     let tngSync = false
 
     /**
-     * @param {number} year
+     * @param {number} year     year to update as TNG
      */
     const tngUpdateEra = (year) => {
       const ctx = getEraContext(year)
@@ -135,7 +135,7 @@ export class StardateDialogElement extends HTMLDialogElement {
     let tosSync = false
 
     /**
-     * @param {number} year
+     * @param {number} year     year to update as TOS
      */
     const tosUpdateEra = (year) => {
       const ctx = getEraContext(year)
@@ -208,7 +208,7 @@ export class StardateDialogElement extends HTMLDialogElement {
 
   /**
    * The currently active mode ('tng' or 'tos').
-   * @returns {string}
+   * @returns {string}      either 'tng' or 'tos'
    */
   get activeMode () {
     return this.#activeMode
@@ -216,7 +216,7 @@ export class StardateDialogElement extends HTMLDialogElement {
 
   /**
    * Whether the active mode uses the TOS stardate system.
-   * @returns {boolean}
+   * @returns {boolean}     whether 'tos' or not
    */
   get isTOS () {
     return this.#activeMode === 'tos'
