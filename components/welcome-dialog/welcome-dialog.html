@@ -2,11 +2,12 @@
 <!DOCTYPE html>
 <html>
     <body>
-        <dialog>
+        <dialog is="welcome-dialog">
             <style>
                 @media screen and (min-width: 768px) {
                     main columns {
-                        columns: 2;
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
 
                         & #keyboard-shortcuts {
                             width: var(--stretch);
@@ -23,12 +24,15 @@
                         padding-bottom: unset;
                     }
                 }
+                @media screen and (max-width: 640px) {
+                    main columns {
+                        display: inline-block;
+                    }
+                }
                 p, ul {
                     padding-bottom: 1em;
                 }
-                main columns {
-                    display: inline-block;
-                }
+
                 main bottom {
                     border-top: 2px solid #666;
 
@@ -38,7 +42,8 @@
                 }
                 #keyboard-shortcuts {
                     break-inside: avoid;
-                    margin-bottom: 1em;
+                    break-before: avoid-column;
+                    margin: 0.5em 0;
                 }
                 #player-customizations {
                     -webkit-column-break-after: always;
@@ -59,82 +64,87 @@
             </header>
             <main>
                 <columns>
-                    <p>
-                        This is an unofficial, unaffiliated app for displaying game information for
-                        players of the <a href="https://www.startrekttrpg.com/">Star Trek Adventures</a> game
-                        by Modiphius® Entertainment (links: <a href="https://modiphius.us/">US</a> / <a href="https://modiphius.net">UK</a>).
-                    </p>
-                    <span id="player-customizations">
-                        <label>
-                            The players can be customized:
-                        </label>
-                        <ul>
-                            <li>department colors border (upper-left hidden selector)</li>
-                            <li>pips for rank</li>
-                            <li>current and maximum stress</li>
-                            <li>name</li>
-                            <li>photo (drag-and-drop an image or use the settings dialog)</li>
-                        </ul>
-                    </span>
-                    <table id="keyboard-shortcuts">
-                        <thead>
-                            <th colspan="2">Keyboard Shortcuts</th>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Ctrl + S</td>
-                                <td>Save Changes</td>
-                            </tr>
-                            <tr>
-                                <td>Ctrl + E</td>
-                                <td>Export Game to File</td>
-                            </tr>
-                            <tr>
-                                <td>Ctrl + I</td>
-                                <td>Import Game from File</td>
-                            </tr>
-                            <tr>
-                                <td>Ctrl + Comma (,)</td>
-                                <td>Open Settings</td>
-                            </tr>
-                            <tr>
-                                <td>F1</td>
-                                <td>Show Welcome Screen</td>
-                            </tr>
-                            <tr>
-                                <td>Ctrl + Alt + D</td>
-                                <td>Open Dice Roller</td>
-                            </tr>
-                            <tr>
-                                <td>Ctrl + Alt + T</td>
-                                <td>Open Roll Tables</td>
-                            </tr>
-                            <tr>
-                                <td>Ctrl + Alt + M</td>
-                                <td>Open Mirror Window</td>
-                            </tr>
-                            <tr>
-                                <td>Ctrl + Alt + ←</td>
-                                <td>Switch to Previous Scene</td>
-                            </tr>
-                            <tr>
-                                <td>Ctrl + Alt + →</td>
-                                <td>Switch to Next Scene</td>
-                            </tr>
-                            <tr>
-                                <td>Ctrl + Shift + F11</td>
-                                <td>View Ship Model Fullscreen</td>
-                            </tr>
-                            <tr>
-                                <td>Escape</td>
-                                <td>Hide any dialog</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <p>
-                        The starship's 3D model (.gltf/.glb) and player photos can be changed
-                        either via drag-and-drop or settings dialog.
-                    </p>
+                    <div>
+                        <p>
+                            This is an unofficial, unaffiliated app for displaying game information for
+                            players of the <a href="https://www.startrekttrpg.com/">Star Trek Adventures</a> game
+                            by Modiphius® Entertainment (links: <a href="https://modiphius.us/">US</a> / <a href="https://modiphius.net">UK</a>).
+                        </p>
+                        <span id="player-customizations">
+                            <label>
+                                The players can be customized:
+                            </label>
+                            <ul>
+                                <li>department colors border (upper-left hidden selector)</li>
+                                <li>pips for rank</li>
+                                <li>current and maximum stress</li>
+                                <li>name</li>
+                                <li>photo (drag-and-drop an image or use the settings dialog)</li>
+                            </ul>
+                        </span>
+
+                        <p>
+                            The starship's 3D models (.gltf/.glb) and player photos (any image file browsers can view) can be changed
+                            either via drag-and-drop or settings dialog.
+                        </p>
+                    </div>
+                    <div>
+                        <table id="keyboard-shortcuts">
+                            <thead>
+                                <th colspan="2">Keyboard Shortcuts</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Ctrl + S</td>
+                                    <td>Save Changes</td>
+                                </tr>
+                                <tr>
+                                    <td>Ctrl + E</td>
+                                    <td>Export Game to File</td>
+                                </tr>
+                                <tr>
+                                    <td>Ctrl + I</td>
+                                    <td>Import Game from File</td>
+                                </tr>
+                                <tr>
+                                    <td>Ctrl + Comma (,)</td>
+                                    <td>Open Settings</td>
+                                </tr>
+                                <tr>
+                                    <td>F1</td>
+                                    <td>Show Welcome Screen</td>
+                                </tr>
+                                <tr>
+                                    <td>Ctrl + Alt + D</td>
+                                    <td>Open Dice Roller</td>
+                                </tr>
+                                <tr>
+                                    <td>Ctrl + Alt + T</td>
+                                    <td>Open Roll Tables</td>
+                                </tr>
+                                <tr>
+                                    <td>Ctrl + Alt + M</td>
+                                    <td>Open Mirror Window</td>
+                                </tr>
+                                <tr>
+                                    <td>Ctrl + Alt + ←</td>
+                                    <td>Switch to Previous Scene</td>
+                                </tr>
+                                <tr>
+                                    <td>Ctrl + Alt + →</td>
+                                    <td>Switch to Next Scene</td>
+                                </tr>
+                                <tr>
+                                    <td>Ctrl + Shift + F11</td>
+                                    <td>View Ship Model Fullscreen</td>
+                                </tr>
+                                <tr>
+                                    <td>Escape</td>
+                                    <td>Hide any dialog</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </columns>
                 <bottom>
                     <p>

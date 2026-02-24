@@ -347,7 +347,7 @@ dialogs > dialog {
     }
 
     &[is="welcome-dialog"] {
-        max-width: 38em;
+        max-width: 90dvw;
 
         table {
             margin: 0 auto;

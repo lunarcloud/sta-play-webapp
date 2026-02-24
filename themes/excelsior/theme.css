@@ -575,6 +575,10 @@ dialogs > dialog {
         max-width: 30em;
     }
 
+    &[is="welcome-dialog"] main {
+        font-size: calc(var(--main-font-unitless) * 1pt);
+    }
+
     & > header, & > footer {
         background: var(--hex-pattern-bg);
         background-size: 12px 21px, 12px 21px, 12px 21px, 100% 100%;
@@ -602,7 +606,7 @@ dialogs > dialog {
     & > main {
         background: var(--gradient-bg);
         color: var(--main-color-text);
-        font-size: calc(var(--main-font-size) * 1.2);
+        font-size: calc(var(--main-font-unitless) * 1.2px);
 
         & hr {
             border-color: var(--trek-color-highlight);
