@@ -20,11 +20,13 @@ export class StardateDialogElement extends HTMLDialogElement {
   /** @type {HTMLInputElement|null} */ #yearInput = null
   /** @type {HTMLInputElement|null} */ #monthInput = null
   /** @type {HTMLInputElement|null} */ #dayInput = null
+  /** @type {HTMLInputElement|null} */ #hourInput = null
   /** @type {HTMLInputElement|null} */ #tngStardateInput = null
 
   /** @type {HTMLInputElement|null} */ #tosYearInput = null
   /** @type {HTMLInputElement|null} */ #tosMonthInput = null
   /** @type {HTMLInputElement|null} */ #tosDayInput = null
+  /** @type {HTMLInputElement|null} */ #tosHourInput = null
   /** @type {HTMLInputElement|null} */ #tosStardateInput = null
 
   /**
@@ -44,6 +46,7 @@ export class StardateDialogElement extends HTMLDialogElement {
     this.#yearInput = /** @type {HTMLInputElement} */ (this.querySelector('input.calc-year'))
     this.#monthInput = /** @type {HTMLInputElement} */ (this.querySelector('input.calc-month'))
     this.#dayInput = /** @type {HTMLInputElement} */ (this.querySelector('input.calc-day'))
+    this.#hourInput = /** @type {HTMLInputElement} */ (this.querySelector('input.calc-hour'))
     this.#tngStardateInput = /** @type {HTMLInputElement} */ (this.querySelector('input.tng-stardate'))
     const eraContextEl = /** @type {HTMLElement} */ (this.querySelector('.era-context'))
     const eraSeriesEl = /** @type {HTMLElement} */ (this.querySelector('.era-series'))
@@ -70,11 +73,13 @@ export class StardateDialogElement extends HTMLDialogElement {
       const year = parseInt(this.#yearInput.value)
       const month = parseInt(this.#monthInput.value)
       const day = parseInt(this.#dayInput.value)
+      const hour = parseInt(this.#hourInput.value)
       if (isNaN(year) || year < TNG_EPOCH_YEAR) return
       const m = Math.max(1, Math.min(12, isNaN(month) ? 1 : month))
       const d = Math.max(1, Math.min(31, isNaN(day) ? 1 : day))
+      const h = Math.max(0, Math.min(23, isNaN(hour) ? 0 : hour))
       tngSync = true
-      this.#tngStardateInput.value = formatStardate(dateToStardate(year, m, d))
+      this.#tngStardateInput.value = formatStardate(dateToStardate(year, m, d, h))
       tngUpdateEra(year)
       tngSync = false
     }
@@ -88,15 +93,17 @@ export class StardateDialogElement extends HTMLDialogElement {
       const year = Math.max(TNG_EPOCH_YEAR, parseInt(this.#yearInput.value) || 2371)
       const month = Math.max(1, Math.min(12, parseInt(this.#monthInput.value) || 1))
       const day = Math.max(1, Math.min(31, parseInt(this.#dayInput.value) || 1))
+      const hour = Math.max(0, Math.min(23, parseInt(this.#hourInput.value) || 0))
       this.#yearInput.value = String(year)
       this.#monthInput.value = String(month)
       this.#dayInput.value = String(day)
-      this.#tngStardateInput.value = formatStardate(dateToStardate(year, month, day))
+      this.#hourInput.value = String(hour)
+      this.#tngStardateInput.value = formatStardate(dateToStardate(year, month, day, hour))
       tngUpdateEra(year)
       tngSync = false
     }
 
-    ;[this.#yearInput, this.#monthInput, this.#dayInput].forEach(el => {
+    ;[this.#yearInput, this.#monthInput, this.#dayInput, this.#hourInput].forEach(el => {
       el.addEventListener('input', tngDateInput)
       el.addEventListener('change', tngDateChange)
     })
@@ -111,6 +118,7 @@ export class StardateDialogElement extends HTMLDialogElement {
         this.#yearInput.value = String(year)
         this.#monthInput.value = String(d.month)
         this.#dayInput.value = String(d.day)
+        this.#hourInput.value = String(d.hour)
         tngUpdateEra(year)
       }
       tngSync = false
@@ -127,6 +135,7 @@ export class StardateDialogElement extends HTMLDialogElement {
     this.#tosYearInput = /** @type {HTMLInputElement} */ (this.querySelector('input.tos-year'))
     this.#tosMonthInput = /** @type {HTMLInputElement} */ (this.querySelector('input.tos-month'))
     this.#tosDayInput = /** @type {HTMLInputElement} */ (this.querySelector('input.tos-day'))
+    this.#tosHourInput = /** @type {HTMLInputElement} */ (this.querySelector('input.tos-hour'))
     this.#tosStardateInput = /** @type {HTMLInputElement} */ (this.querySelector('input.tos-stardate'))
     const tosEraContextEl = /** @type {HTMLElement} */ (this.querySelector('.tos-era-context'))
     const tosEraSeriesEl = /** @type {HTMLElement} */ (this.querySelector('.tos-era-series'))
@@ -149,11 +158,13 @@ export class StardateDialogElement extends HTMLDialogElement {
       const year = parseInt(this.#tosYearInput.value)
       const month = parseInt(this.#tosMonthInput.value)
       const day = parseInt(this.#tosDayInput.value)
+      const hour = parseInt(this.#tosHourInput.value)
       if (isNaN(year) || year < TOS_EPOCH_YEAR) return
       const m = Math.max(1, Math.min(12, isNaN(month) ? 1 : month))
       const d = Math.max(1, Math.min(31, isNaN(day) ? 1 : day))
+      const h = Math.max(0, Math.min(23, isNaN(hour) ? 0 : hour))
       tosSync = true
-      this.#tosStardateInput.value = formatStardate(dateToTOSStardate(year, m, d))
+      this.#tosStardateInput.value = formatStardate(dateToTOSStardate(year, m, d, h))
       tosUpdateEra(year)
       tosSync = false
     }
@@ -164,10 +175,12 @@ export class StardateDialogElement extends HTMLDialogElement {
       const year = Math.min(2322, Math.max(TOS_EPOCH_YEAR, parseInt(this.#tosYearInput.value) || 2266))
       const month = Math.max(1, Math.min(12, parseInt(this.#tosMonthInput.value) || 1))
       const day = Math.max(1, Math.min(31, parseInt(this.#tosDayInput.value) || 1))
+      const hour = Math.max(0, Math.min(23, parseInt(this.#tosHourInput.value) || 0))
       this.#tosYearInput.value = String(year)
       this.#tosMonthInput.value = String(month)
       this.#tosDayInput.value = String(day)
-      this.#tosStardateInput.value = formatStardate(dateToTOSStardate(year, month, day))
+      this.#tosHourInput.value = String(hour)
+      this.#tosStardateInput.value = formatStardate(dateToTOSStardate(year, month, day, hour))
       tosUpdateEra(year)
       tosSync = false
     }
@@ -182,12 +195,13 @@ export class StardateDialogElement extends HTMLDialogElement {
         this.#tosYearInput.value = String(year)
         this.#tosMonthInput.value = String(d.month)
         this.#tosDayInput.value = String(d.day)
+        this.#tosHourInput.value = String(d.hour)
         tosUpdateEra(year)
       }
       tosSync = false
     }
 
-    ;[this.#tosYearInput, this.#tosMonthInput, this.#tosDayInput].forEach(el => {
+    ;[this.#tosYearInput, this.#tosMonthInput, this.#tosDayInput, this.#tosHourInput].forEach(el => {
       el.addEventListener('input', tosDateInput)
       el.addEventListener('change', tosDateChange)
     })
@@ -281,6 +295,7 @@ export class StardateDialogElement extends HTMLDialogElement {
       this.#yearInput.value = '2371'
       this.#monthInput.value = '1'
       this.#dayInput.value = '1'
+      this.#hourInput.value = '0'
       this.#yearInput.dispatchEvent(new Event('change'))
 
       // Pre-fill TOS stardate input (exact stored value), then sync to date fields
@@ -292,6 +307,7 @@ export class StardateDialogElement extends HTMLDialogElement {
         this.#tosYearInput.value = '2266'
         this.#tosMonthInput.value = '1'
         this.#tosDayInput.value = '1'
+        this.#tosHourInput.value = '0'
         this.#tosYearInput.dispatchEvent(new Event('change'))
       }
       this.#switchMode('tos')
@@ -300,6 +316,7 @@ export class StardateDialogElement extends HTMLDialogElement {
       this.#tosYearInput.value = '2266'
       this.#tosMonthInput.value = '1'
       this.#tosDayInput.value = '1'
+      this.#tosHourInput.value = '0'
       this.#tosYearInput.dispatchEvent(new Event('change'))
 
       // Pre-fill TNG stardate input (exact stored value), then sync to date fields
@@ -313,6 +330,7 @@ export class StardateDialogElement extends HTMLDialogElement {
           this.#yearInput.value = '2371'
           this.#monthInput.value = '1'
           this.#dayInput.value = '1'
+          this.#hourInput.value = '0'
           this.#yearInput.dispatchEvent(new Event('change'))
         }
       } else {
@@ -320,6 +338,7 @@ export class StardateDialogElement extends HTMLDialogElement {
         this.#yearInput.value = '2371'
         this.#monthInput.value = '1'
         this.#dayInput.value = '1'
+        this.#hourInput.value = '0'
         this.#yearInput.dispatchEvent(new Event('change'))
       }
       this.#switchMode('tng')
