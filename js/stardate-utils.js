@@ -87,26 +87,29 @@ export function dayOfYear (year, month, day) {
  * @param {number} year  - The in-universe year (e.g. 2364)
  * @param {number} month - The month (1–12)
  * @param {number} day   - The day (1–31)
+ * @param {number} [hour=0] - The hour of the day (0–23)
  * @returns {number} The corresponding stardate (e.g. 41153.7)
  */
-export function dateToStardate (year, month, day) {
+export function dateToStardate (year, month, day, hour = 0) {
   const doy = dayOfYear(year, month, day)
   const totalDays = daysInYear(year)
   return (year - TNG_EPOCH_YEAR) * STARDATE_UNITS_PER_YEAR +
-    ((doy - 1) / totalDays) * STARDATE_UNITS_PER_YEAR
+    ((doy - 1 + hour / 24) / totalDays) * STARDATE_UNITS_PER_YEAR
 }
 
 /**
  * Convert a TNG stardate to an approximate in-universe calendar date.
  * @param {number} stardate - The stardate value
- * @returns {{ year: number, month: number, day: number }} The approximate date
+ * @returns {{ year: number, month: number, day: number, hour: number }} The approximate date
  */
 export function stardateToDate (stardate) {
   const yearOffset = stardate / STARDATE_UNITS_PER_YEAR
   const year = Math.floor(yearOffset) + TNG_EPOCH_YEAR
   const fractionalYear = yearOffset - Math.floor(yearOffset)
   const totalDays = daysInYear(year)
-  const dayNum = Math.floor(fractionalYear * totalDays) + 1
+  const dayFraction = fractionalYear * totalDays
+  const dayNum = Math.floor(dayFraction) + 1
+  const hour = Math.min(23, Math.round((dayFraction % 1) * 24))
 
   const daysPerMonth = [31, isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
   let remaining = dayNum
@@ -120,7 +123,7 @@ export function stardateToDate (stardate) {
   }
   const day = Math.max(1, remaining)
 
-  return { year, month, day }
+  return { year, month, day, hour }
 }
 
 /**
@@ -140,26 +143,29 @@ export function formatStardate (stardate, decimals) {
  * @param {number} year  - The in-universe year (e.g. 2266)
  * @param {number} month - The month (1–12)
  * @param {number} day   - The day (1–31)
+ * @param {number} [hour=0] - The hour of the day (0–23)
  * @returns {number} The approximate TOS stardate (e.g. ~1000 for 2266-01-01)
  */
-export function dateToTOSStardate (year, month, day) {
+export function dateToTOSStardate (year, month, day, hour = 0) {
   const doy = dayOfYear(year, month, day)
   const totalDays = daysInYear(year)
   return (year - TOS_EPOCH_YEAR) * STARDATE_UNITS_PER_YEAR +
-    ((doy - 1) / totalDays) * STARDATE_UNITS_PER_YEAR
+    ((doy - 1 + hour / 24) / totalDays) * STARDATE_UNITS_PER_YEAR
 }
 
 /**
  * Convert a TOS-era stardate back to an approximate in-universe calendar date.
  * @param {number} stardate - The TOS stardate value
- * @returns {{ year: number, month: number, day: number }} The approximate date
+ * @returns {{ year: number, month: number, day: number, hour: number }} The approximate date
  */
 export function tosStardateToDate (stardate) {
   const yearOffset = stardate / STARDATE_UNITS_PER_YEAR
   const year = Math.floor(yearOffset) + TOS_EPOCH_YEAR
   const fractionalYear = yearOffset - Math.floor(yearOffset)
   const totalDays = daysInYear(year)
-  const dayNum = Math.floor(fractionalYear * totalDays) + 1
+  const dayFraction = fractionalYear * totalDays
+  const dayNum = Math.floor(dayFraction) + 1
+  const hour = Math.min(23, Math.round((dayFraction % 1) * 24))
 
   const daysPerMonth = [31, isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
   let remaining = dayNum
@@ -173,5 +179,5 @@ export function tosStardateToDate (stardate) {
   }
   const day = Math.max(1, remaining)
 
-  return { year, month, day }
+  return { year, month, day, hour }
 }

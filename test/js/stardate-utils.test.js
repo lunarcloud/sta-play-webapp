@@ -109,6 +109,24 @@ describe('Stardate Utils', () => {
       const sd2365 = dateToStardate(2365, 1, 1)
       expect(sd2365 - sd2364).to.be.closeTo(1000, 3)
     })
+
+    it('should return a higher stardate for hour=12 than hour=0 on the same day', () => {
+      const sd0 = dateToStardate(2364, 1, 1, 0)
+      const sd12 = dateToStardate(2364, 1, 1, 12)
+      expect(sd12).to.be.greaterThan(sd0)
+    })
+
+    it('should default to hour=0 when hour is not provided', () => {
+      expect(dateToStardate(2364, 1, 1)).to.equal(dateToStardate(2364, 1, 1, 0))
+    })
+
+    it('should produce stardate difference of ~1/24th of a day-unit for 1 hour', () => {
+      const sd0 = dateToStardate(2364, 1, 1, 0)
+      const sd1 = dateToStardate(2364, 1, 1, 1)
+      const totalDays = daysInYear(2364)
+      const expected = (1 / 24) / totalDays * STARDATE_UNITS_PER_YEAR
+      expect(sd1 - sd0).to.be.closeTo(expected, 0.0001)
+    })
   })
 
   describe('stardateToDate', () => {
@@ -132,6 +150,22 @@ describe('Stardate Utils', () => {
       const result = stardateToDate(48000)
       expect(result.day).to.be.at.least(1)
       expect(result.day).to.be.at.most(31)
+    })
+
+    it('should return a valid hour (0-23)', () => {
+      const result = stardateToDate(48000)
+      expect(result.hour).to.be.at.least(0)
+      expect(result.hour).to.be.at.most(23)
+    })
+
+    it('should round-trip: date with hour → stardate → date with hour', () => {
+      const original = { year: 2371, month: 6, day: 15, hour: 14 }
+      const stardate = dateToStardate(original.year, original.month, original.day, original.hour)
+      const recovered = stardateToDate(stardate)
+      expect(recovered.year).to.equal(original.year)
+      expect(recovered.month).to.equal(original.month)
+      expect(recovered.day).to.equal(original.day)
+      expect(recovered.hour).to.equal(original.hour)
     })
   })
 
@@ -185,6 +219,16 @@ describe('Stardate Utils', () => {
     it('should return a non-negative stardate for years at or after TOS_EPOCH_YEAR', () => {
       expect(dateToTOSStardate(2255, 1, 1)).to.be.at.least(0)
     })
+
+    it('should return a higher stardate for hour=12 than hour=0 on the same day', () => {
+      const sd0 = dateToTOSStardate(2266, 1, 1, 0)
+      const sd12 = dateToTOSStardate(2266, 1, 1, 12)
+      expect(sd12).to.be.greaterThan(sd0)
+    })
+
+    it('should default to hour=0 when hour is not provided', () => {
+      expect(dateToTOSStardate(2266, 1, 1)).to.equal(dateToTOSStardate(2266, 1, 1, 0))
+    })
   })
 
   describe('tosStardateToDate', () => {
@@ -209,6 +253,22 @@ describe('Stardate Utils', () => {
       const result = tosStardateToDate(2500)
       expect(result.month).to.be.at.least(1)
       expect(result.month).to.be.at.most(12)
+    })
+
+    it('should return a valid hour (0-23)', () => {
+      const result = tosStardateToDate(2500)
+      expect(result.hour).to.be.at.least(0)
+      expect(result.hour).to.be.at.most(23)
+    })
+
+    it('should round-trip: date with hour → TOS stardate → date with hour', () => {
+      const original = { year: 2268, month: 6, day: 15, hour: 9 }
+      const stardate = dateToTOSStardate(original.year, original.month, original.day, original.hour)
+      const recovered = tosStardateToDate(stardate)
+      expect(recovered.year).to.equal(original.year)
+      expect(recovered.month).to.equal(original.month)
+      expect(recovered.day).to.equal(original.day)
+      expect(recovered.hour).to.equal(original.hour)
     })
   })
 })

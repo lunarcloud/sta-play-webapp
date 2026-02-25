@@ -34,7 +34,7 @@
 
                     .date-row {
                         display: grid;
-                        grid-template-columns: 2fr 1fr 1fr;
+                        grid-template-columns: 2fr 1fr 1fr 1fr;
                         gap: 0.5em;
                         align-items: end;
 
@@ -147,6 +147,10 @@
                             Day
                             <input type="number" class="calc-day" min="1" max="31" step="1" value="1">
                         </label>
+                        <label>
+                            Hour
+                            <input type="number" class="calc-hour" min="0" max="23" step="1" value="0">
+                        </label>
                     </div>
                     <div class="calc-result">
                         <label>Stardate:</label>
@@ -173,6 +177,10 @@
                         <label>
                             Day
                             <input type="number" class="tos-day" min="1" max="31" step="1" value="1">
+                        </label>
+                        <label>
+                            Hour
+                            <input type="number" class="tos-hour" min="0" max="23" step="1" value="0">
                         </label>
                     </div>
                     <div class="calc-result">
