@@ -50,7 +50,7 @@
         "typescript": "^5.9.3"
     },
     "version-constraints": {
-        "eslint": "Cannot upgrade to v10 until eslint-plugin-jsdoc adds support (currently supports ^7 || ^8 || ^9). Track: https://github.com/gajus/eslint-plugin-jsdoc/issues",
+        "eslint": "Cannot upgrade to v10 until neostandard adds support (currently supports ^9.0.0). Track: https://github.com/neostandard/neostandard/issues",
         "eslint-plugin-editorconfig": "^4.0.3 required for ESLint 9+ flat config compatibility",
         "notes": "Check 'npm outdated' regularly. Use 'npm audit' with caution - many vulnerabilities are in dev dependencies and don't affect production. See https://overreacted.io/npm-audit-broken-by-design/"
     }
