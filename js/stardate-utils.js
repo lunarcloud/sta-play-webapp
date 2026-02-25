@@ -87,7 +87,7 @@ export function dayOfYear (year, month, day) {
  * @param {number} year  - The in-universe year (e.g. 2364)
  * @param {number} month - The month (1–12)
  * @param {number} day   - The day (1–31)
- * @param {number} [hour=0] - The hour of the day (0–23)
+ * @param {number} [hour] - The hour of the day (0–23)
  * @returns {number} The corresponding stardate (e.g. 41153.7)
  */
 export function dateToStardate (year, month, day, hour = 0) {
@@ -143,7 +143,7 @@ export function formatStardate (stardate, decimals) {
  * @param {number} year  - The in-universe year (e.g. 2266)
  * @param {number} month - The month (1–12)
  * @param {number} day   - The day (1–31)
- * @param {number} [hour=0] - The hour of the day (0–23)
+ * @param {number} [hour] - The hour of the day (0–23)
  * @returns {number} The approximate TOS stardate (e.g. ~1000 for 2266-01-01)
  */
 export function dateToTOSStardate (year, month, day, hour = 0) {
