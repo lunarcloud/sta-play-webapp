@@ -37,9 +37,6 @@ describe('MyComponent', () => {
     it('should be defined as a custom element', () => {
       expect(customElements.get('my-component')).to.equal(MyComponent)
     })
-    it('should be accessible via globalThis', () => {
-      expect(globalThis.MyComponent).to.equal(MyComponent)
-    })
   })
 
   describe('constructor', () => {
@@ -125,7 +122,7 @@ When testing database-related changes:
 ## What to Test
 
 For each component or module, cover:
-1. **Registration** — custom element is defined and on `globalThis`
+1. **Registration** — custom element is defined
 2. **Constructor** — creates instance, shadow root exists
 3. **Attributes** — `observedAttributes` list is correct
 4. **Properties** — getters/setters work, handle edge cases (empty, null, undefined)

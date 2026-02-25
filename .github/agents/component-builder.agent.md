@@ -32,7 +32,7 @@ Key requirements:
 - Attach Shadow DOM (`mode: 'open'`)
 - Load external CSS via `<link>` element with relative path
 - Use `snakeToCamel()` from `js/string-utils.js` for attribute-to-property mapping
-- Register with `customElements.define()` and export to `globalThis`
+- Register with `customElements.define()`
 - Private fields use `#` prefix
 - All public methods/properties documented with JSDoc
 
@@ -97,7 +97,6 @@ Key requirements:
 - [ ] `attributeChangedCallback` uses `snakeToCamel()`
 - [ ] Custom events dispatch with `bubbles: true`
 - [ ] Registered via `customElements.define()`
-- [ ] Exported to `globalThis`
 - [ ] Test file created following project patterns
 - [ ] All linters pass
 - [ ] All tests pass

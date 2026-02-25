@@ -164,9 +164,6 @@ export class MyComponentElement extends HTMLElement {
 
 // Register custom element
 customElements.define('my-component', MyComponentElement)
-
-// Export to globalThis for testing and external access
-globalThis.MyComponentElement = MyComponentElement
 ```
 
 #### Template B: Dialog Component
@@ -233,7 +230,6 @@ const setup = async () => {
 
   // Register dialog (note the third parameter)
   customElements.define('my-dialog', MyDialogElement, { extends: 'dialog' })
-  globalThis.MyDialogElement = MyDialogElement
 }
 
 await setup()
@@ -344,9 +340,6 @@ describe('MyComponentElement', () => {
       expect(customElements.get('my-component')).to.equal(MyComponentElement)
     })
 
-    it('should be accessible via globalThis', () => {
-      expect(globalThis.MyComponentElement).to.equal(MyComponentElement)
-    })
   })
 
   describe('constructor', () => {

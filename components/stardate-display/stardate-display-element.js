@@ -97,4 +97,3 @@ export class StardateDisplayElement extends HTMLElement {
 }
 
 customElements.define('stardate-display', StardateDisplayElement)
-globalThis.StardateDisplayElement = StardateDisplayElement

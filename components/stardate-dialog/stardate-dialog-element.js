@@ -335,4 +335,3 @@ export class StardateDialogElement extends HTMLDialogElement {
 }
 
 customElements.define('stardate-dialog', StardateDialogElement, { extends: 'dialog' })
-globalThis.StardateDialogElement = StardateDialogElement

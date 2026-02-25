@@ -114,7 +114,6 @@ export class MyElement extends HTMLElement {
 
 // 6. Register the element
 customElements.define('my-element', MyElement)
-globalThis.MyElement = MyElement
 ```
 
 **Dialog Component (extends HTMLDialogElement):**
@@ -131,7 +130,6 @@ const setup = async () => {
   }
   
   customElements.define('my-dialog', MyDialogElement, { extends: 'dialog' })
-  globalThis.MyDialogElement = MyDialogElement
 }
 await setup()
 ```
