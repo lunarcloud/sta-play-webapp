@@ -578,7 +578,7 @@ export class MirrorWindow {
     try {
       const response = await fetch(mainBlobUrl)
       const blob = await response.blob()
-      const mirrorUrl = MirrorWindow.#window.URL.createObjectURL(blob)
+      const mirrorUrl = /** @type {Window & typeof globalThis} */ (MirrorWindow.#window).URL.createObjectURL(blob)
       MirrorWindow.#blobUrlCache.set(mainBlobUrl, mirrorUrl)
       return mirrorUrl
     } catch (error) {
@@ -1157,7 +1157,9 @@ export class MirrorWindow {
     // Revoke mirror-context blob URLs before closing
     for (const mirrorUrl of MirrorWindow.#blobUrlCache.values()) {
       try {
-        MirrorWindow.#window?.URL.revokeObjectURL(mirrorUrl)
+        if (MirrorWindow.#window) {
+          /** @type {Window & typeof globalThis} */ (MirrorWindow.#window).URL.revokeObjectURL(mirrorUrl)
+        }
       } catch { /* window may already be closed */ }
     }
     MirrorWindow.#blobUrlCache.clear()
