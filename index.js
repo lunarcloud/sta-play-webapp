@@ -1651,4 +1651,9 @@ export class IndexController {
   }
 }
 
-globalThis.App = new IndexController()
+// Only create the controller in the primary window.
+// Mirror windows (opened by MirrorWindow.open()) set a data attribute
+// before module scripts execute, so we can detect them here.
+if (!document.body?.hasAttribute('data-mirror-window')) {
+  new IndexController() // eslint-disable-line no-new
+}

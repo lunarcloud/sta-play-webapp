@@ -332,8 +332,6 @@ export class MyElement extends HTMLElement {
 
 // Register the custom element
 customElements.define('my-element', MyElement)
-// Export to globalThis for testing and external access
-globalThis.MyElement = MyElement
 ```
 
 ### Dialog Component Pattern
@@ -372,7 +370,6 @@ const setup = async () => {
   }
 
   customElements.define('my-dialog', MyDialogElement, { extends: 'dialog' })
-  globalThis.MyDialogElement = MyDialogElement
 }
 
 await setup()

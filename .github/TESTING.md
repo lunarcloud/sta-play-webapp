@@ -80,9 +80,6 @@ describe('custom element registration', () => {
     expect(customElements.get('my-component')).to.equal(MyComponent)
   })
 
-  it('should be accessible via globalThis', () => {
-    expect(globalThis.MyComponent).to.equal(MyComponent)
-  })
 })
 ```
 
