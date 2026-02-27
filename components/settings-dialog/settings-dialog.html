@@ -8,96 +8,123 @@
                 <button class="close" role="button">⤫</button>
             </header>
             <main>
-                <dl class="left actions">
-                    <dt>Actions</dt>
-                    <dd>
-                        <button class="clear-info">Clear Database</button>
-                        <button class="show-welcome">Show Welcome Screen</button>
-                        <button class="open-mirror">Open Mirror Window</button>
-                        <hr>
-                        <label>
-                            Backup
-                            <button class="export-game">Save & Export</button>
-                        </label>
-                        <br>
-                        <label>
-                            Import
-                            <input type="file" class="import-game-file" accept=".staplay"></input>
-                        </label>
-                    </dd>
-                </dl>
-                <dl class="left ship-model">
-                    <dt>Ship Model 1</dt>
-                    <dd>
-                        <input class="select-ship" type="file" accept=".gltf,.glb" />
-                        <wbr>>
-                        <button class="set-ship">Update</button>
-                        <button class="clear-ship">Clear</button>
-                    </dd>
-                </dl>
-                <dl class="left ship-model-2">
-                    <dt>Ship Model 2</dt>
-                    <dd>
-                        <input class="select-ship-2" type="file" accept=".gltf,.glb" />
-                        <wbr>>
-                        <button class="set-ship-2">Update</button>
-                        <button class="clear-ship-2">Clear</button>
-                    </dd>
-                </dl>
-                <dl class="right theme">
-                    <dt>Theme</dt>
-                    <dd>
-                        <select id="select-theme">
-                            <option value="klingon">Klingon</option>
-                            <option value="starfleet-22">22nd Century</option>
-                            <option value="starfleet-23">Mid-23rd Century</option>
-                            <option value="excelsior">Late-23rd Century</option>
-                            <option value="starfleet-early-24">Early-24th Century</option>
-                            <optgroup label="LCARS">
-                                <option value="lcars-24">Mid 24th</option>
-                                <option value="lcars-late-24">Late 24th</option>
-                                <option value="lcars-holo">Holographic</option>
-                                <option value="lcars-25">Early 25th</option>
-                            </optgroup>
-                            <option value="tcars">26–29th Century (TCARS)</option>
-                            <option value="starfleet-32">32nd Century</option>
-                        </select>
-                        <select id="select-edition">
-                            <option value="1">First Edition</option>
-                            <option value="captains-log">Captain's Log</option>
-                            <option value="2">Second Edition</option>
-                        </select>
-                        <div class="alt-font-available">
-                            <br>
-                            <label>
-                                Alternate Font
-                                <input id="alt-font-toggle" type="checkbox"></input>
+                <column>
+                    <dl class="actions">
+                        <dt>Actions</dt>
+                        <dd>
+                            <button class="show-welcome">
+                                <emoji>🛈</emoji> Show Help
+                            </button>
+                            <button class="open-mirror">
+                                <emoji>⎅</emoji> Open Mirror
+                            </button>
+                        </dd>
+                        <dt>Game</dt>
+                        <dd>
+                            <label class="btn">
+                                <emoji>📂</emoji> Import
+                                <input type="file" class="import-game-file" accept=".staplay" hidden></input>
                             </label>
-                        </div>
-                        <div>
+                            <button class="export-game">
+                                <emoji>💾</emoji> Export
+                            </button>
+                            <button class="clear-info">
+                                <emoji>💣</emoji> Clear
+                            </button>
+                        </dd>
+                    </dl>
+                    <dl class="uploads">
+                        <dt>Ship Model 1</dt>
+                        <dd>
+                            <input class="select-ship" type="file" accept=".gltf,.glb" hidden />
+                            <button class="set-ship">
+                                <emoji>📂</emoji> Upload
+                            </button>
+                            <button class="clear-ship">
+                                <emoji>⌧</emoji>
+                                Clear
+                            </button>
+                        </dd>
+                        <dt>Ship Model 2</dt>
+                        <dd>
+                            <input class="select-ship-2" type="file" accept=".gltf,.glb" hidden />
+                            <button class="set-ship-2">
+                                <emoji>📂</emoji> Upload
+                            </button>
+                            <button class="clear-ship-2">
+                                <emoji>⌧</emoji>
+                                Clear
+                            </button>
+                        </dd>
+                        <dt>Upload Player Image</dt>
+                        <dd class="player-image-upload">
+                            <input class="select" type="file" accept="image/*" hidden />
+                            #
+                            <input class="index" type="number" value="1" min="1" max="1">
+                            <button class="set">
+                                <emoji>📂</emoji> Upload
+                            </button>
+                        </dd>
+                    </dl>
+                </column>
+                <column>
+                    <dl class="options">
+                        <dt>Display Options</dt>
+                        <dd>
                             <label>
                                 Legacy Task Tracker
                                 <input id="legacy-task-tracker-toggle" type="checkbox"></input>
                             </label>
-                        </div>
-                        <div>
                             <label>
                                 Show Stardate
                                 <input id="show-stardate-toggle" type="checkbox"></input>
                             </label>
-                        </div>
-                    </dd>
-                </dl>
-                <dl class="right player-images">
-                    <dt>Upload Player Image</dt>
-                    <dd class="player-image-upload">
-                        <input class="select" type="file" accept="image/*" />
-                        <wbr>>
-                        <button class="set">Update</button>
-                        Player
-                        <input class="index" type="number" value="1" min="1" max="1">
-                    </dd>
-                </dl>
+                            <label>
+                                Show Player Ranks
+                                <input id="show-rank-toggle" type="checkbox"></input>
+                            </label>
+                            <label>
+                                Show Player Stress
+                                <input id="show-stress-toggle" type="checkbox"></input>
+                            </label>
+                        </dd>
+                    </dl>
+                    <dl class="theme">
+                        <dt>Theme</dt>
+                        <dd>
+                            <select id="select-theme">
+                                <option value="klingon">Klingon</option>
+                                <option value="starfleet-22">22nd Century</option>
+                                <option value="starfleet-23">Mid-23rd Century</option>
+                                <option value="excelsior">Late-23rd Century</option>
+                                <option value="starfleet-early-24">Early-24th Century</option>
+                                <optgroup label="LCARS">
+                                    <option value="lcars-24">Mid 24th</option>
+                                    <option value="lcars-late-24">Late 24th</option>
+                                    <option value="lcars-holo">Holographic</option>
+                                    <option value="lcars-25">Early 25th</option>
+                                </optgroup>
+                                <option value="tcars">26–29th Century (TCARS)</option>
+                                <option value="starfleet-32">32nd Century</option>
+                            </select>
+                            <div class="alt-font-available">
+                                <br>
+                                <label>
+                                    Alternate Font
+                                    <input id="alt-font-toggle" type="checkbox"></input>
+                                </label>
+                            </div>
+                        </dd>
+                        <dt>Edition</dt>
+                        <dd>
+                            <select id="select-edition">
+                                <option value="1">First Edition</option>
+                                <option value="captains-log">Captain's Log</option>
+                                <option value="2">Second Edition</option>
+                            </select>
+                        </dd>
+                    </dl>
+                </column>
             </main>
             <footer>
                 <button class="close" role="button">Close</button>

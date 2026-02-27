@@ -553,5 +553,11 @@ task-tracker::part(internal) {
 dialogs > dialog {
     &[is="settings-dialog"] {
         min-width: 37em;
+        font-size: 1em;
+
+        button,
+        label.btn {
+            font-size: 0.9em;
+        }
     }
 }

@@ -165,6 +165,18 @@ export class IndexController {
       showStardateCheckbox.addEventListener('change', () => this.#setShowStardate(showStardateCheckbox.checked))
     }
 
+    // Wire up Show Player Rank checkbox
+    const showRankCheckbox = document.getElementById('show-rank-toggle')
+    if (showRankCheckbox instanceof HTMLInputElement) {
+      showRankCheckbox.addEventListener('change', () => this.#setShowRank(showRankCheckbox.checked))
+    }
+
+    // Wire up Show Player Stress checkbox
+    const showStressCheckbox = document.getElementById('show-stress-toggle')
+    if (showStressCheckbox instanceof HTMLInputElement) {
+      showStressCheckbox.addEventListener('change', () => this.#setShowStress(showStressCheckbox.checked))
+    }
+
     // Wire up the stardate edit button
     const stardateBtnEl = document.getElementById('stardate-btn')
     if (stardateBtnEl instanceof HTMLElement) {
@@ -557,6 +569,32 @@ export class IndexController {
   }
 
   /**
+   * Toggle the player rank display visibility.
+   * @param {boolean} show  whether to show player ranks
+   */
+  #setShowRank (show) {
+    document.body.classList.toggle('hide-rank', !show)
+
+    const checkbox = document.getElementById('show-rank-toggle')
+    if (checkbox instanceof HTMLInputElement) {
+      checkbox.checked = show
+    }
+  }
+
+  /**
+   * Toggle the player stress display visibility.
+   * @param {boolean} show  whether to show player stress
+   */
+  #setShowStress (show) {
+    document.body.classList.toggle('hide-stress', !show)
+
+    const checkbox = document.getElementById('show-stress-toggle')
+    if (checkbox instanceof HTMLInputElement) {
+      checkbox.checked = show
+    }
+  }
+
+  /**
    * Set the displayed stardate value.
    * @param {string} value  the stardate string
    */
@@ -681,31 +719,13 @@ export class IndexController {
       await this.db.clear()
       this.#loadData()
     })
+
     const importEl = dialogEl.querySelector('input.import-game-file')
     if (importEl instanceof HTMLInputElement === false) {
       throw new Error('Page setup incorrect')
     }
 
-    importEl.addEventListener('change', async () => {
-      if (importEl.files.length === 0) {
-        return
-      }
-      busyDialog.show('The application is loading data...')
-      const file = importEl.files[0]
-      try {
-        if (!file.name.endsWith('.staplay')) {
-          throw new Error('Not an \'staplay\' game backup file')
-        }
-        await this.import(file)
-      } catch (ex) {
-        if (ex instanceof Error) {
-          this.messageDialog?.show(`Could not import ${file.name} \n${ex.message}`)
-        }
-      } finally {
-        importEl.value = null
-        busyDialog.close()
-      }
-    })
+    this.#setupFileImport(importEl, busyDialog, 'game', ['.staplay'], async (file) => {await this.import(file)})
 
     dialogEl.querySelector('button.export-game').addEventListener('click', async () => await this.saveAndExport())
 
@@ -713,9 +733,11 @@ export class IndexController {
     if (fileSelectShip instanceof HTMLInputElement === false) {
       throw new Error('Page setup incorrect')
     }
-    dialogEl.querySelector('button.set-ship').addEventListener('click', async () => {
-      await this.setShipModel(fileSelectShip.files[0], 1)
+    this.#setupFileImport(fileSelectShip, busyDialog, '3d model', ['.gltf', '.glb'], async (file) => {
+      await this.setShipModel(file, 1)
     })
+    dialogEl.querySelector('button.set-ship').addEventListener('click', () => fileSelectShip.click())
+
     dialogEl.querySelector('button.clear-ship').addEventListener('click', async () => {
       await this.setShipModel(undefined, 1)
     })
@@ -724,9 +746,10 @@ export class IndexController {
     if (fileSelectShip2 instanceof HTMLInputElement === false) {
       throw new Error('Page setup incorrect')
     }
-    dialogEl.querySelector('button.set-ship-2').addEventListener('click', async () => {
-      await this.setShipModel(fileSelectShip2.files[0], 2)
+    this.#setupFileImport(fileSelectShip2, busyDialog, '3d model', ['.gltf', '.glb'], async (file) => {
+      await this.setShipModel(file, 2)
     })
+    dialogEl.querySelector('button.set-ship-2').addEventListener('click', () => fileSelectShip2.click())
     dialogEl.querySelector('button.clear-ship-2').addEventListener('click', async () => {
       await this.setShipModel(undefined, 2)
     })
@@ -740,13 +763,16 @@ export class IndexController {
       throw new Error('Page setup incorrect')
     }
 
-    dialogEl.querySelector('.player-image-upload button.set').addEventListener('click', () => {
-      const index = parseInt(indexSelectPlayer.value)
-      const playerEl = document.querySelector(`.players li:nth-child(${index})`)
-      if (playerEl instanceof PlayerDisplayElement) {
-        playerEl.imageFile = fileSelectPlayer.files[0]
-      }
-    })
+    this.#setupFileImport(fileSelectPlayer, busyDialog, 'image',
+        ['apng', 'avif', 'gif', '.heic', '.jpg', '.jpeg', '.jxl', '.png', 'svg', 'webp'],
+         async (file) => {
+            const index = parseInt(indexSelectPlayer.value)
+            const playerEl = document.querySelector(`.players li:nth-child(${index})`)
+            if (playerEl instanceof PlayerDisplayElement) {
+                playerEl.imageFile = file
+            }
+        })
+    dialogEl.querySelector('.player-image-upload button.set').addEventListener('click', () => fileSelectPlayer.click())
 
     dialogEl.querySelector('button.show-welcome').addEventListener('click', () => welcomeDialogEl?.showModal())
 
@@ -765,6 +791,45 @@ export class IndexController {
 
     editionSelectEl.addEventListener('change', () => {
       this.#useEdition(editionSelectEl.value)
+    })
+  }
+
+  /**
+   * @callback  FileImportSetupAction   Action to perform when file is selected
+   * @param {File}      file            Selected file
+   * @async
+   */
+
+  /**
+   * Set up a file import button
+   * @param {HTMLInputElement}      fileSelect          File select element
+   * @param {BusyDialogElement}     busyDialog          Busy dialog
+   * @param {string}                fileDescription     what the file is (image, game, model, etc)
+   * @param {Array<string>}         requiredExtensions  File extensions to enforce
+   * @param {FileImportSetupAction} fileProcessor       function to do something with the imported file
+   */
+  async #setupFileImport(fileSelect, busyDialog, fileDescription, requiredExtensions, fileProcessor)
+  {
+    fileSelect.addEventListener('change', async () => {
+        if (fileSelect.files.length === 0) {
+        return
+        }
+        busyDialog.show(`Loading the ${fileDescription}...`)
+        const file = fileSelect.files[0]
+        try {
+
+            if (requiredExtensions.findIndex(ext => file.name.endsWith(ext)) < 0) {
+                throw new Error(`File is not a [${requiredExtensions.join(', ')}] ${fileDescription}.`)
+            }
+            await fileProcessor(file)
+        } catch (ex) {
+            if (ex instanceof Error) {
+                this.messageDialog?.show(`Could not load ${fileDescription}, ${file.name} \n${ex.message}`)
+            }
+        } finally {
+            fileSelect.value = null
+            busyDialog.close()
+        }
     })
   }
 
@@ -849,6 +914,8 @@ export class IndexController {
     this.#setShowStardate(gameInfo?.showStardate ?? true)
     this.#setStardate(gameInfo?.stardate ?? '')
     this.#stardateIsTOS = gameInfo?.stardateIsTOS ?? false
+    this.#setShowRank(gameInfo?.showRank ?? true)
+    this.#setShowStress(gameInfo?.showStress ?? true)
 
     /** @type {SceneInfo} */
     let firstSceneInfo
@@ -980,8 +1047,10 @@ export class IndexController {
       legacyTrackersCheckbox.checked,
       this.shipModel2,
       this.#getStardateValue(),
-      document.getElementById('show-stardate-toggle')?.checked ?? false,
-      this.#stardateIsTOS
+      document.getElementById('show-stardate-toggle')?.checked ?? true,
+      this.#stardateIsTOS,
+      document.getElementById('show-rank-toggle')?.checked ?? true,
+      document.getElementById('show-stress-toggle')?.checked ?? true
     )
     const savedGameId = await this.db.saveGameInfo(gameInfo)
     if (savedGameId !== undefined) {

@@ -276,8 +276,8 @@ h1, h2, h3, h4, h5, h6, .player-image-upload input {
     color: var(--menu-text-brightest) !important;
 }
 
-/* Modern button styling */
-button {
+button,
+label.btn {
     border-radius: var(--border-radius-md);
     border: 1px solid var(--trek-color-1);
     background: linear-gradient(135deg, 
@@ -485,6 +485,11 @@ dialogs > dialog {
 
     &[is="settings-dialog"] {
         max-width: 30em;
+
+        & button,
+        & label.btn {
+            color: unset !important;
+        }
     }
 
     & > header, & > footer {

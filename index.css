@@ -6,6 +6,8 @@
     --secondary-color-bg: hsl(273.6deg 17.48% 10%);  /* colored-nearly-black */
     --nav-color-bg: var(--main-color-text);
     --nav-color-text: var(--main-color-bg);
+    --settings-btn-text: #111111;
+    --settings-btn-bg: #eeefef;
     --main-font-body: sans-serif;
     --main-font-headers: sans-serif;
     --emoji-font: 'Noto Emoji', monospace;
@@ -310,37 +312,70 @@ dialogs > dialog {
     }
 
     &[is="settings-dialog"] {
+        --max-settings-size: 80dvw;
         font-size: calc(var(--main-font-size) * 1.1);
-        max-width: 25em;
+        width: 30em;
+        width: fit-content;
 
         dd input[type="file"] {
+            break-inside: avoid;
+            margin-bottom: 0.25em;
+        }
+
+        dd label {
             display: block;
+
+            &.btn {
+                cursor: pointer;
+                display: inline-block;
+            }
         }
 
         main {
-            display: grid;
-            grid-template-rows: 4fr 1fr 2fr;
-            grid-template-columns: 4fr 3fr;
+            display: flex;
+            padding-top: 0.5em;
+            gap: 0.5em;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: space-around;
 
-            & .left {
-                grid-column: 1;
+            column {
+                display: block;
+                break-inside: avoid;
             }
 
-            & .right {
-                grid-column: 2;
-            }
+            button,
+            label.btn {
+                border-radius: 3px;
+                border: 1px solid #767676;
+                background-color: var(--settings-btn-bg);
+                color: var(--settings-btn-text);
+                width: fit-content;
+                padding: 0.25em 0.25em;
+                overflow: hidden;
+                vertical-align: text-bottom;
+                line-height: 1em;
 
-            & .actions {
-                grid-row: 1 / 3;
-            }
+                &:hover {
+                    filter: brightness(1.1);
+                }
+                &:active {
+                    filter: brightness(0.8);
+                }
 
-            & .theme {
-                grid-row: 1;
-            }
+                &.clear-info {
+                    background-color: #ed3c3c;
+                }
+                &.show-welcome {
+                    background-color: #83e28d;
+                }
+                &.open-mirror {
+                    background-color: #83e2e2;
+                }
 
-            & .ship-model,
-            & .player-images {
-                grid-row: 3;
+                & emoji {
+                    font-size: 0.8em;
+                }
             }
         }
 

@@ -172,3 +172,16 @@ li[is="player-display"] {
         }
     }
 }
+
+.hide-rank li[is="player-display"] div.rank {
+    display: none;
+}
+
+.hide-stress li[is="player-display"] stress {
+    display: none;
+}
+
+.hide-rank li[is="player-display"],
+.hide-stress li[is="player-display"] {
+    border-bottom: 0.5em solid black;
+}

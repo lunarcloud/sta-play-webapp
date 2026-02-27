@@ -577,6 +577,13 @@ dialogs > dialog {
 
     &[is="settings-dialog"] {
         max-width: 30em;
+
+
+        button,
+        label.btn {
+            background-color: unset !important;
+            color: unset !important;
+        }
     }
 
     &[is="welcome-dialog"] main {

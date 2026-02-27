@@ -72,24 +72,38 @@ export class GameInfo extends NamedInfo {
   stardateIsTOS
 
   /**
-   * Create a new General Info object
-   * @param {number|undefined}    id              database entry id or undefined if new
-   * @param {string|undefined}    name            name of the game
-   * @param {string}              shipName        name of the ship
-   * @param {number|string}       [momentum]      amount of momentum in the player's pool
-   * @param {number|string}       [threat]        amount of threat in the GM's pool
-   * @param {string}              [activeAlert]   which alert is active
-   * @param {string}              [theme]         which theme is active
-   * @param {string}              [edition]       which edition is active
-   * @param {File}                [shipModel]     ship's 3D model
-   * @param {boolean}             [altFont]       whether to use a theme's alternate font
-   * @param {boolean}             [legacyTrackers]       whether to use the legacy trackers controls
-   * @param {File}                [shipModel2]    second ship's 3D model
-   * @param {string}              [stardate]      the current in-universe stardate
-   * @param {boolean}             [showStardate]  whether to display the stardate
-   * @param {boolean}             [stardateIsTOS] whether the stardate uses the TOS system
+   * @type {boolean}
    */
-  constructor (id, name, shipName, momentum = 0, threat = 0, activeAlert = '', theme = 'lcars-24', edition = '2', shipModel = undefined, altFont = false, legacyTrackers = false, shipModel2 = undefined, stardate = '', showStardate = true, stardateIsTOS = false) {
+  showRank
+
+  /**
+   * @type {boolean}
+   */
+  showStress
+
+  /**
+   * Create a new General Info object
+   * @param {number|undefined}    id                database entry id or undefined if new
+   * @param {string|undefined}    name              name of the game
+   * @param {string}              shipName          name of the ship
+   * @param {number|string}       [momentum]        amount of momentum in the player's pool
+   * @param {number|string}       [threat]          amount of threat in the GM's pool
+   * @param {string}              [activeAlert]     which alert is active
+   * @param {string}              [theme]           which theme is active
+   * @param {string}              [edition]         which edition is active
+   * @param {File}                [shipModel]       ship's 3D model
+   * @param {boolean}             [altFont]         whether to use a theme's alternate font
+   * @param {boolean}             [legacyTrackers]  whether to use the legacy trackers controls
+   * @param {File}                [shipModel2]      second ship's 3D model
+   * @param {string}              [stardate]        the current in-universe stardate
+   * @param {boolean}             [showStardate]    whether to display the stardate
+   * @param {boolean}             [stardateIsTOS]   whether the stardate uses the TOS system
+   * @param {boolean}             [showRank]        whether to display player ranks
+   * @param {boolean}             [showStress]      whether to display player stress
+   */
+  constructor (id, name, shipName, momentum = 0, threat = 0, activeAlert = '', theme = 'lcars-24',
+        edition = '2', shipModel = undefined, altFont = false, legacyTrackers = false, shipModel2 = undefined,
+        stardate = '', showStardate = true, stardateIsTOS = false, showRank = true, showStress = true) {
     super(name ?? DefaultGameName, id)
     this.shipName = shipName
     this.momentum = typeof (momentum) === 'number' ? momentum : parseInt(momentum)
@@ -104,6 +118,8 @@ export class GameInfo extends NamedInfo {
     this.stardate = stardate ?? ''
     this.showStardate = showStardate ?? true
     this.stardateIsTOS = stardateIsTOS ?? false
+    this.showRank = showRank ?? true
+    this.showStress = showStress ?? true
   }
 
   /**
@@ -127,7 +143,9 @@ export class GameInfo extends NamedInfo {
       'shipModel2' in obj ? obj.shipModel2 : undefined,
       'stardate' in obj ? obj.stardate : '',
       'showStardate' in obj ? obj.showStardate : true,
-      'stardateIsTOS' in obj ? obj.stardateIsTOS : false
+      'stardateIsTOS' in obj ? obj.stardateIsTOS : false,
+      'showRank' in obj ? obj.showRank : true,
+      'showStress' in obj ? obj.showStress : true
     )
   }
 

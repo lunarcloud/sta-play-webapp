@@ -38,6 +38,11 @@ html.alt-font {
     --main-font-headers: "LCARS", sans-serif;
     --headers-weight: normal;
     --headers-text-transform: uppercase;
+
+    & .nav-alt-font-shrink {
+        font-size: 0.8em;
+        margin-top: 0.4em;
+    }
 }
 
 .alt-font-available {
