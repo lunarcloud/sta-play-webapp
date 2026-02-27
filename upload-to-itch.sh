@@ -8,7 +8,6 @@ mkdir $EXPORT
 cp index.* $EXPORT
 cp *.webmanifest $EXPORT
 cp -r components $EXPORT
-cp -r lib $EXPORT
 cp -r fonts $EXPORT
 cp -r gltf $EXPORT
 cp -r img $EXPORT
