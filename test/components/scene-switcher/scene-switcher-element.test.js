@@ -152,8 +152,10 @@ describe('SceneSwitcherElement', () => {
       const firstSceneActions = element.querySelector('.scene-actions')
       const buttons = firstSceneActions.querySelectorAll('button')
       expect(buttons.length).to.equal(2)
-      expect(buttons[0].textContent).to.equal('Rename')
-      expect(buttons[1].textContent).to.equal('Delete')
+      expect(buttons[0].textContent).to.equal('✏')
+      expect(buttons[0].title).to.equal('Rename')
+      expect(buttons[1].textContent).to.equal('⌫')
+      expect(buttons[1].title).to.equal('Delete')
     })
   })
 
