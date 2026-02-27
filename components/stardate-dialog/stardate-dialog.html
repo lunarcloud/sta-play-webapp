@@ -11,24 +11,19 @@
                     main {
                         display: flex;
                         flex-direction: column;
-                        gap: 1em;
-                        padding: 1em;
+                        gap: 0.25em;
                     }
 
                     fieldset {
-                        border: 1px solid currentcolor;
-                        border-radius: 4px;
-                        padding: 0.75em;
                         display: none;
+                        border: unset;
 
                         &.active {
                             display: block;
                         }
 
                         & legend {
-                            font-weight: bold;
-                            font-size: 0.9em;
-                            padding: 0 0.4em;
+                            display: none;
                         }
                     }
 
@@ -58,7 +53,9 @@
                     .calc-result {
                         display: flex;
                         align-items: center;
-                        gap: 0.5em;
+                        margin-top: 0.25em;
+                        margin-bottom: 0.25em;
+                        gap: 0.25em;
                         font-size: 1em;
 
                         & .stardate-input {
@@ -92,7 +89,7 @@
 
                         & button.active {
                             opacity: 1;
-                            background: color-mix(in srgb, currentcolor 15%, transparent);
+                            background: color-mix(in srgb, var(--trek-color-highlight) 15%, transparent);
                         }
                     }
 
@@ -100,6 +97,8 @@
                         text-align: center;
                         font-size: 0.9em;
                         opacity: 0.7;
+                        padding: 0;
+                        margin: 0.25em auto;
                     }
 
                     .era-context,

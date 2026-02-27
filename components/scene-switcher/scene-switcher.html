@@ -30,11 +30,12 @@
                                 cursor: pointer;
 
                                 &:hover {
-                                    background-color: rgba(255, 255, 255, 0.1);
+                                    background-color: var(--trek-color-highlight);
                                 }
 
                                 &.current {
-                                    background-color: rgba(255, 255, 255, 0.2);
+                                    border-width: 4px;
+                                    border-color: var(--trek-color-1);
                                     font-weight: bold;
                                 }
 
@@ -84,7 +85,6 @@
             <main>
                 <ul class="scene-list"></ul>
                 <div class="scene-input-area">
-                    <label class="scene-input-label">New scene name:</label>
                     <input type="text" class="scene-input" placeholder="Enter scene name...">
                     <button class="scene-action-btn" role="button">Add Scene</button>
                     <button class="scene-cancel-btn" role="button" style="display: none;">Cancel</button>

@@ -81,16 +81,15 @@ export class SceneSwitcherElement extends HTMLDialogElement {
   #switchToAddMode () {
     this.#renameSceneId = null
     const inputArea = this.querySelector('.scene-input-area')
-    const label = this.querySelector('.scene-input-label')
     const input = /** @type {HTMLInputElement|null} */ (this.querySelector('input.scene-input'))
     const actionBtn = /** @type {HTMLElement|null} */ (this.querySelector('button.scene-action-btn'))
     const cancelBtn = /** @type {HTMLElement|null} */ (this.querySelector('button.scene-cancel-btn'))
 
     inputArea?.classList.remove('rename-mode')
-    if (label) label.textContent = 'New scene name:'
     if (input) {
       input.value = ''
-      input.placeholder = 'Enter scene name...'
+      input.placeholder = 'Enter new scene name...'
+      input.title = 'New scene name'
     }
     if (actionBtn) actionBtn.textContent = 'Add Scene'
     if (cancelBtn) cancelBtn.style.display = 'none'
@@ -104,16 +103,15 @@ export class SceneSwitcherElement extends HTMLDialogElement {
   #switchToRenameMode (sceneId, currentName) {
     this.#renameSceneId = sceneId
     const inputArea = this.querySelector('.scene-input-area')
-    const label = this.querySelector('.scene-input-label')
     const input = /** @type {HTMLInputElement|null} */ (this.querySelector('input.scene-input'))
     const actionBtn = /** @type {HTMLElement|null} */ (this.querySelector('button.scene-action-btn'))
     const cancelBtn = /** @type {HTMLElement|null} */ (this.querySelector('button.scene-cancel-btn'))
 
     inputArea?.classList.add('rename-mode')
-    if (label) label.textContent = 'Rename scene:'
     if (input) {
       input.value = currentName
       input.placeholder = 'Enter new name...'
+      input.title = 'Rename name'
       setTimeout(() => {
         input.focus()
         input.select()
@@ -244,7 +242,9 @@ export class SceneSwitcherElement extends HTMLDialogElement {
       actionsDiv.className = 'scene-actions'
 
       const renameBtn = document.createElement('button')
-      renameBtn.textContent = 'Rename'
+      renameBtn.textContent = '✏'
+      renameBtn.title = 'Rename'
+      renameBtn.classList.add('emoji')
       renameBtn.addEventListener('click', async (e) => {
         e.stopPropagation()
         await this.#handleRenameScene(scene.id)
@@ -252,7 +252,9 @@ export class SceneSwitcherElement extends HTMLDialogElement {
       actionsDiv.appendChild(renameBtn)
 
       const deleteBtn = document.createElement('button')
-      deleteBtn.textContent = 'Delete'
+      deleteBtn.textContent = '⌫'
+      deleteBtn.title = 'Delete'
+      deleteBtn.classList.add('emoji')
       deleteBtn.addEventListener('click', async (e) => {
         e.stopPropagation()
         await this.#handleDeleteScene(scene.id)

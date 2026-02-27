@@ -142,7 +142,9 @@ html {
     font-variant: proportional-width;
 }
 
+
 emoji,
+.emoji,
 .text-n-symbol-btn symbol {
     display: inline;
     font-family: var(--emoji-font);
@@ -318,17 +320,28 @@ dialogs > dialog {
         width: 30em;
         width: fit-content;
 
-        dd input[type="file"] {
-            break-inside: avoid;
-            margin-bottom: 0.25em;
-        }
+        dd {
+            & input:not([type="checkbox"]) {
+                break-inside: avoid;
+                vertical-align: text-bottom;
+                margin-bottom: 0.125em;
+            }
 
-        dd label {
-            display: block;
+            & input[type="checkbox"] {
+                scale: 1.2;
 
-            &.btn {
-                cursor: pointer;
-                display: inline-block;
+                &:hover:not(:active) {
+                    scale: 1.4;
+                }
+            }
+
+            & label {
+                display: block;
+
+                &.btn {
+                    cursor: pointer;
+                    display: inline-block;
+                }
             }
         }
 
@@ -673,6 +686,10 @@ menu-items {
     & > label > input {
       float: inline-end;
       scale: 1.5;
+
+        &:hover:not(:active) {
+            scale: 1.7;
+        }
     }
 
     & > input {
