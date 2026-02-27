@@ -30,6 +30,7 @@ packagejson
 pixelsagas
 stylelint
 ungap
+apng
 
 # Code Identifiers
 IDBP

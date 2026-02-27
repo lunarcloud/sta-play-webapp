@@ -6,7 +6,7 @@
     --secondary-color-bg: hsl(273.6deg 17.48% 10%);  /* colored-nearly-black */
     --nav-color-bg: var(--main-color-text);
     --nav-color-text: var(--main-color-bg);
-    --settings-btn-text: #111111;
+    --settings-btn-text: #111;
     --settings-btn-bg: #eeefef;
     --main-font-body: sans-serif;
     --main-font-headers: sans-serif;
@@ -313,6 +313,7 @@ dialogs > dialog {
 
     &[is="settings-dialog"] {
         --max-settings-size: 80dvw;
+
         font-size: calc(var(--main-font-size) * 1.1);
         width: 30em;
         width: fit-content;
@@ -335,8 +336,7 @@ dialogs > dialog {
             display: flex;
             padding-top: 0.5em;
             gap: 0.5em;
-            flex-direction: row;
-            flex-wrap: nowrap;
+            flex-flow: row nowrap;
             justify-content: space-around;
 
             column {
@@ -351,7 +351,7 @@ dialogs > dialog {
                 background-color: var(--settings-btn-bg);
                 color: var(--settings-btn-text);
                 width: fit-content;
-                padding: 0.25em 0.25em;
+                padding: 0.25em;
                 overflow: hidden;
                 vertical-align: text-bottom;
                 line-height: 1em;
@@ -359,6 +359,7 @@ dialogs > dialog {
                 &:hover {
                     filter: brightness(1.1);
                 }
+
                 &:active {
                     filter: brightness(0.8);
                 }
@@ -366,9 +367,11 @@ dialogs > dialog {
                 &.clear-info {
                     background-color: #ed3c3c;
                 }
+
                 &.show-welcome {
                     background-color: #83e28d;
                 }
+
                 &.open-mirror {
                     background-color: #83e2e2;
                 }

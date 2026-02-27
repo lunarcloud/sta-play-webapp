@@ -102,8 +102,8 @@ export class GameInfo extends NamedInfo {
    * @param {boolean}             [showStress]      whether to display player stress
    */
   constructor (id, name, shipName, momentum = 0, threat = 0, activeAlert = '', theme = 'lcars-24',
-        edition = '2', shipModel = undefined, altFont = false, legacyTrackers = false, shipModel2 = undefined,
-        stardate = '', showStardate = true, stardateIsTOS = false, showRank = true, showStress = true) {
+    edition = '2', shipModel = undefined, altFont = false, legacyTrackers = false, shipModel2 = undefined,
+    stardate = '', showStardate = true, stardateIsTOS = false, showRank = true, showStress = true) {
     super(name ?? DefaultGameName, id)
     this.shipName = shipName
     this.momentum = typeof (momentum) === 'number' ? momentum : parseInt(momentum)

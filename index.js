@@ -725,7 +725,7 @@ export class IndexController {
       throw new Error('Page setup incorrect')
     }
 
-    this.#setupFileImport(importEl, busyDialog, 'game', ['.staplay'], async (file) => {await this.import(file)})
+    this.#setupFileImport(importEl, busyDialog, 'game', ['.staplay'], async (file) => { await this.import(file) })
 
     dialogEl.querySelector('button.export-game').addEventListener('click', async () => await this.saveAndExport())
 
@@ -764,14 +764,14 @@ export class IndexController {
     }
 
     this.#setupFileImport(fileSelectPlayer, busyDialog, 'image',
-        ['apng', 'avif', 'gif', '.heic', '.jpg', '.jpeg', '.jxl', '.png', 'svg', 'webp'],
-         async (file) => {
-            const index = parseInt(indexSelectPlayer.value)
-            const playerEl = document.querySelector(`.players li:nth-child(${index})`)
-            if (playerEl instanceof PlayerDisplayElement) {
-                playerEl.imageFile = file
-            }
-        })
+      ['apng', 'avif', 'gif', '.heic', '.jpg', '.jpeg', '.jxl', '.png', 'svg', 'webp'],
+      async (file) => {
+        const index = parseInt(indexSelectPlayer.value)
+        const playerEl = document.querySelector(`.players li:nth-child(${index})`)
+        if (playerEl instanceof PlayerDisplayElement) {
+          playerEl.imageFile = file
+        }
+      })
     dialogEl.querySelector('.player-image-upload button.set').addEventListener('click', () => fileSelectPlayer.click())
 
     dialogEl.querySelector('button.show-welcome').addEventListener('click', () => welcomeDialogEl?.showModal())
@@ -808,28 +808,26 @@ export class IndexController {
    * @param {Array<string>}         requiredExtensions  File extensions to enforce
    * @param {FileImportSetupAction} fileProcessor       function to do something with the imported file
    */
-  async #setupFileImport(fileSelect, busyDialog, fileDescription, requiredExtensions, fileProcessor)
-  {
+  async #setupFileImport (fileSelect, busyDialog, fileDescription, requiredExtensions, fileProcessor) {
     fileSelect.addEventListener('change', async () => {
-        if (fileSelect.files.length === 0) {
+      if (fileSelect.files.length === 0) {
         return
+      }
+      busyDialog.show(`Loading the ${fileDescription}...`)
+      const file = fileSelect.files[0]
+      try {
+        if (requiredExtensions.findIndex(ext => file.name.endsWith(ext)) < 0) {
+          throw new Error(`File is not a [${requiredExtensions.join(', ')}] ${fileDescription}.`)
         }
-        busyDialog.show(`Loading the ${fileDescription}...`)
-        const file = fileSelect.files[0]
-        try {
-
-            if (requiredExtensions.findIndex(ext => file.name.endsWith(ext)) < 0) {
-                throw new Error(`File is not a [${requiredExtensions.join(', ')}] ${fileDescription}.`)
-            }
-            await fileProcessor(file)
-        } catch (ex) {
-            if (ex instanceof Error) {
-                this.messageDialog?.show(`Could not load ${fileDescription}, ${file.name} \n${ex.message}`)
-            }
-        } finally {
-            fileSelect.value = null
-            busyDialog.close()
+        await fileProcessor(file)
+      } catch (ex) {
+        if (ex instanceof Error) {
+          this.messageDialog?.show(`Could not load ${fileDescription}, ${file.name} \n${ex.message}`)
         }
+      } finally {
+        fileSelect.value = null
+        busyDialog.close()
+      }
     })
   }
 
