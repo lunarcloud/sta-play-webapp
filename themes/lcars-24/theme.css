@@ -412,25 +412,16 @@ dialogs > dialog {
         position: relative;
         z-index: 100;
 
-        &::before,
-        &::after {
+        &::before {
             content: '';
             height: 1em;
             aspect-ratio: 1;
             position: absolute;
             top: 0;
             left: 0;
-        }
-
-        &::before {
             z-index: 101;
             background-color: var(--lcars-color-main);
-        }
-
-        &::after {
-            z-index: 102;
-            border-top-left-radius: 50%;
-            background-color: var(--main-color-bg);
+            mask: radial-gradient(circle 1em at bottom right, transparent 100%, black) top left;
         }
     }
 
