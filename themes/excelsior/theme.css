@@ -578,11 +578,11 @@ dialogs > dialog {
     &[is="settings-dialog"] {
         max-width: 30em;
 
-
-        button,
-        label.btn {
-            background-color: unset !important;
-            color: unset !important;
+        & button,
+        & label.btn {
+            background: var(--gradient-bg) !important;
+            color: var(--main-color-text) !important;
+            border: 1px solid var(--trek-color-1) !important;
         }
     }
 
@@ -594,7 +594,7 @@ dialogs > dialog {
         background: var(--hex-pattern-bg);
         background-size: 12px 21px, 12px 21px, 12px 21px, 100% 100%;
         background-position: 0 0, 0 0, 0 0, 0 0;
-        color: black;
+
         font-weight: bold;
 
         & button.close {
