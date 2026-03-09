@@ -357,7 +357,7 @@ dialogs > dialog {
     --dialog-shadow-color: #6e848f;
     --left-bar-width: 2.5em;
     --lcars-color-main: var(--trek-color-1);
-    --lcars-color-mid: var(--trek-color-6);
+    --lcars-color-mid: var(--trek-color-2);
     --lcars-color-top-close: var(--trek-color-3);
     --backdrop-color: color-mix(var(--dialog-shadow-color) 20%, #000000bf 80%);
 
@@ -375,14 +375,28 @@ dialogs > dialog {
     & header {
         --gradient-stop-1: 15%;
         --gradient-stop-2: 75%;
+        --gradient-stop-3: calc(100% - 1.75em);
 
-        background-color: var(--lcars-color-main);
+        color: black;
+        background: var(--lcars-color-main);
         background: linear-gradient(90deg,
-            var(--lcars-color-main) 0, var(--lcars-color-main) var(--gradient-stop-1),
-            rgb(0 0 0 / 100%) var(--gradient-stop-1), rgb(0 0 0 / 100%) calc(var(--gradient-stop-1) + 0.25em),
-            var(--trek-color-6) 0, var(--trek-color-6) var(--gradient-stop-2),
-            rgb(0 0 0 / 100%) var(--gradient-stop-2), rgb(0 0 0 / 100%) calc(var(--gradient-stop-2) + 0.25em),
-            var(--lcars-color-main) 0);
+            var(--lcars-color-main) 0,
+            var(--lcars-color-main) var(--gradient-stop-1),
+
+            rgb(0 0 0 / 0%) var(--gradient-stop-1),
+            rgb(0 0 0 / 0%) calc(var(--gradient-stop-1) + 0.25em),
+
+            var(--lcars-color-mid) 0,
+            var(--lcars-color-mid) var(--gradient-stop-2),
+
+            rgb(0 0 0 / 0%) var(--gradient-stop-2),
+            rgb(0 0 0 / 0%) calc(var(--gradient-stop-2) + 0.25em),
+
+            var(--lcars-color-main) 0,
+            var(--lcars-color-main) var(--gradient-stop-3),
+
+            rgb(0 0 0 / 0%) calc(var(--gradient-stop-3))
+        );
         border-bottom: 0;
 
         & button.close {
@@ -390,7 +404,6 @@ dialogs > dialog {
             margin: 0;
             padding: 0.125em;
             width: 1.5em;
-            border-left: 0.25em solid black;
         }
     }
 

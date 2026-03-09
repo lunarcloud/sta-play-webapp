@@ -40,6 +40,7 @@
     --player-color-brown: oklab(45.985% 0.05659 0.09122);
     --player-color-black: oklab(24.75% 0 -0.00003);
     --player-color-white: oklab(78.9% 0 -0.00009);
+    --stardate-mode-switch-button-color: var(--main-color-text, white);
 
     @supports (width: -moz-available) { --stretch: -moz-available; }
 
@@ -412,6 +413,124 @@ dialogs > dialog {
         padding: 1em;
         min-height: unset;
       }
+    }
+
+    &[is="stardate-dialog"] {
+        width: fit-content;
+        max-width: max(340px, 55%);
+        min-width: 280px;
+
+        main {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25em;
+        }
+
+        fieldset {
+            display: none;
+            border: unset;
+
+            &.active {
+                display: block;
+            }
+
+            & legend {
+                display: none;
+            }
+        }
+
+        .date-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 0.5em;
+            align-items: end;
+
+            & label {
+                display: flex;
+                flex-direction: column;
+                font-size: 0.9em;
+                font-weight: bold;
+                gap: 0.25em;
+            }
+
+            & input {
+                padding: 0.25em;
+                font-size: 1em;
+                text-align: center;
+                width: 100%;
+                box-sizing: border-box;
+            }
+        }
+
+        .calc-result {
+            display: flex;
+            align-items: center;
+            margin-top: 0.25em;
+            margin-bottom: 0.25em;
+            gap: 0.25em;
+            font-size: 1em;
+
+            & .stardate-input {
+                flex: 1;
+                padding: 0.2em 0.4em;
+                font-size: 1.1em;
+                font-weight: bold;
+                text-align: right;
+            }
+
+            & button {
+                margin-left: auto;
+            }
+        }
+
+        .mode-switcher {
+            display: flex;
+            gap: 0.4em;
+
+            & button {
+                flex: 1;
+                padding: 0.4em 0.6em;
+                font-size: 0.85em;
+                font-weight: bold;
+                cursor: pointer;
+                border: 1px solid currentcolor;
+                border-radius: 4px;
+                background: transparent;
+                opacity: 0.55;
+                color: var(--stardate-mode-switch-button-color);
+
+                &.active {
+                    opacity: 1;
+                    background: color-mix(in srgb, var(--trek-color-highlight) 25%, transparent);
+                }
+            }
+
+        }
+
+        .current-stardate {
+            text-align: center;
+            font-size: 0.9em;
+            opacity: 0.7;
+            padding: 0;
+            margin: 0.25em auto;
+        }
+
+        .era-context,
+        .tos-era-context {
+            font-size: 0.88em;
+            border-left: 3px solid currentcolor;
+            padding: 0.4em 0.6em;
+            opacity: 0.85;
+
+            & .era-series {
+                font-weight: bold;
+                margin-bottom: 0.2em;
+            }
+
+            & .era-events {
+                font-style: italic;
+            }
+        }
     }
 
     &::backdrop {

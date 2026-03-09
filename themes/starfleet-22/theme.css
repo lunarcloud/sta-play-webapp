@@ -31,6 +31,7 @@
     --player-color-brown: hsl(32deg 43% 29%);
     --player-color-black: hsl(260deg 12% 25%);
     --player-color-white: hsl(261deg 19% 77%);
+    --stardate-mode-switch-button-color: black;
     --traits-display-width: 12em;
     --controls-height: 10em;
     --ship-display-height: 8em;
