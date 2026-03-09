@@ -85,12 +85,14 @@
                             border-radius: 4px;
                             background: transparent;
                             opacity: 0.55;
+                            color: var(--main-color-text, white);
+
+                            &.active {
+                                opacity: 1;
+                                background: color-mix(in srgb, var(--trek-color-highlight) 15%, transparent);
+                            }
                         }
 
-                        & button.active {
-                            opacity: 1;
-                            background: color-mix(in srgb, var(--trek-color-highlight) 15%, transparent);
-                        }
                     }
 
                     .current-stardate {

@@ -594,7 +594,6 @@ dialogs > dialog {
         background: var(--hex-pattern-bg);
         background-size: 12px 21px, 12px 21px, 12px 21px, 100% 100%;
         background-position: 0 0, 0 0, 0 0, 0 0;
-
         font-weight: bold;
 
         & button.close {

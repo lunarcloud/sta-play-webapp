@@ -492,6 +492,11 @@ dialogs > dialog {
         padding: 0 0 4px;
         background-color: hsl(0deg 0% 8%);
 
+        & > button {
+            width: fit-content;
+            align-self: center;
+        }
+
         & > button.close,
         & > button.cancel,
         & > button.confirm {

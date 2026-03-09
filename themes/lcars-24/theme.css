@@ -359,28 +359,29 @@ dialogs > dialog {
     --lcars-color-main: var(--trek-color-1);
     --lcars-color-mid: var(--trek-color-6);
     --lcars-color-top-close: var(--trek-color-3);
-
     --backdrop-color: color-mix(var(--dialog-shadow-color) 20%, #000000bf 80%);
-    width: 100em;
+
     background-color: var(--main-color-bg);
     color: var(--main-color-text);
     border: 0;
-    box-shadow: -1px -1px 10px 0px var(--dialog-shadow-color);
+    box-shadow: -1px -1px 10px 0 var(--dialog-shadow-color);
+    min-width: 20em !important;
 
     &,
     & header {
-        border-radius: 24px 0 0 0;
+        border-radius: 24px 0 0;
     }
 
     & header {
         --gradient-stop-1: 15%;
         --gradient-stop-2: 75%;
+
         background-color: var(--lcars-color-main);
         background: linear-gradient(90deg,
             var(--lcars-color-main) 0, var(--lcars-color-main) var(--gradient-stop-1),
-            rgba(0, 0, 0, 1) var(--gradient-stop-1), rgba(0, 0, 0, 1) calc(var(--gradient-stop-1) + 0.25em),
+            rgb(0 0 0 / 100%) var(--gradient-stop-1), rgb(0 0 0 / 100%) calc(var(--gradient-stop-1) + 0.25em),
             var(--trek-color-6) 0, var(--trek-color-6) var(--gradient-stop-2),
-            rgba(0, 0, 0, 1) var(--gradient-stop-2), rgba(0, 0, 0, 1) calc(var(--gradient-stop-2) + 0.25em),
+            rgb(0 0 0 / 100%) var(--gradient-stop-2), rgb(0 0 0 / 100%) calc(var(--gradient-stop-2) + 0.25em),
             var(--lcars-color-main) 0);
         border-bottom: 0;
 
@@ -424,7 +425,7 @@ dialogs > dialog {
         border-top: 0.25em solid black;
         background-color: transparent;
         padding: 0;
-        margin: 0.25em 0 0.25em 0;
+        margin: 0.25em 0;
         border: 0;
         border-left: var(--left-bar-width) solid var(--trek-color-3);
 
@@ -441,10 +442,19 @@ dialogs > dialog {
         }
     }
 
-    &[is="settings-dialog"] {
-        & footer {
-            height: 0;
-            display: none;
+    &[is="settings-dialog"] footer {
+        height: 0;
+        display: none;
+    }
+
+    &[is="message-dialog"] {
+        min-width: 10em !important;
+
+        header {
+            background: linear-gradient(90deg,
+                var(--lcars-color-main) 0, var(--lcars-color-main) var(--gradient-stop-2),
+                rgb(0 0 0 / 100%) var(--gradient-stop-2), rgb(0 0 0 / 100%) calc(var(--gradient-stop-2) + 0.25em),
+                var(--trek-color-6) 0);
         }
     }
 }
