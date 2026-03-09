@@ -51,7 +51,7 @@ html {
 }
 
 body, decoration {
-    grid-template-columns: 1fr 1fr var(--traits-display-width);
+    grid-template-columns: 26.5em 1fr var(--traits-display-width);
     grid-template-rows: var(--ship-display-height) 1fr var(--controls-height);
     gap: 0;
     height: 100dvh;
@@ -59,7 +59,7 @@ body, decoration {
     inset: 0;
     margin: 0;
     padding: 0;
-    min-width: 50em;
+    min-width: 42em;
     min-height: 30em;
 }
 

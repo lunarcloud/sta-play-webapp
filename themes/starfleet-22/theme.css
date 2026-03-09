@@ -35,6 +35,7 @@
     --traits-display-width: 12em;
     --controls-height: 10em;
     --ship-display-height: 8em;
+    --ship-display-width: 27em;
     --ship-display-col-1: 1;
     --ship-display-col-2: 2;
     --ship-display-row: 1;
@@ -76,21 +77,26 @@ html {
 }
 
 body, decoration {
-    grid-template-columns: repeat(2, 27em) 1fr var(--traits-display-width);
+    grid-template-columns: repeat(2, var(--ship-display-width)) 1fr var(--traits-display-width);
     grid-template-rows: var(--ship-display-height) 1fr var(--controls-height);
     gap: 0;
-    height: 100dvh;
+    height: calc(100dvh - 1em);
     width: 100vw;
     inset: 0;
     margin: 0;
     padding: 0;
     min-width: 66em;
-    min-height: 30em;
+    min-height: 28em;
 }
 
 body:not(.edition-captains-log) {
-    & ul > li > a {
-        line-height: 2.25em;
+    & nav ul > li {
+        display: flex;
+        align-items: center;
+
+        & > a {
+            padding: 0 0 0 1em;
+        }
     }
 }
 
@@ -101,7 +107,7 @@ body.edition-captains-log {
     --controls-row: 4;
 
     &, & decoration {
-        grid-template-columns: repeat(2, 27em) 1fr;
+        grid-template-columns: repeat(2, var(--ship-display-width)) 1fr;
         grid-template-rows: var(--ship-display-height) 4em 1fr var(--controls-height);
     }
 
@@ -353,11 +359,6 @@ body {
         padding-top: 0.75em;
         height: calc(100% - 1.25em);
         transition: filter 2s ease-in-out 0.25s;
-    }
-
-    #shipname {
-        height: 1.125em;
-        height: fit-content;
     }
 
     & > main {

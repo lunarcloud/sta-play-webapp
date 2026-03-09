@@ -339,7 +339,7 @@ body.mirror {
 
 dialogs > dialog {
     --dialog-shadow-color: #6e848f;
-    --left-bar-width: 2.5em;
+    --left-bar-width: 2em;
     --lcars-color-main: var(--trek-color-1);
     --lcars-color-mid: var(--trek-color-2);
     --lcars-color-top-close: var(--trek-color-3);
@@ -367,19 +367,19 @@ dialogs > dialog {
             var(--lcars-color-main) 0,
             var(--lcars-color-main) var(--gradient-stop-1),
 
-            rgb(0 0 0 / 0%) var(--gradient-stop-1),
-            rgb(0 0 0 / 0%) calc(var(--gradient-stop-1) + 0.25em),
+            transparent var(--gradient-stop-1),
+            transparent calc(var(--gradient-stop-1) + 0.25em),
 
             var(--lcars-color-mid) 0,
             var(--lcars-color-mid) var(--gradient-stop-2),
 
-            rgb(0 0 0 / 0%) var(--gradient-stop-2),
-            rgb(0 0 0 / 0%) calc(var(--gradient-stop-2) + 0.25em),
+            transparent var(--gradient-stop-2),
+            transparent calc(var(--gradient-stop-2) + 0.25em),
 
             var(--lcars-color-main) 0,
             var(--lcars-color-main) var(--gradient-stop-3),
 
-            rgb(0 0 0 / 0%) calc(var(--gradient-stop-3))
+            transparent calc(var(--gradient-stop-3))
         );
         border-bottom: 0;
 
@@ -430,9 +430,17 @@ dialogs > dialog {
         }
     }
 
-    &[is="settings-dialog"] footer {
-        height: 0;
-        display: none;
+    &[is="welcome-dialog"],
+    &[is="settings-dialog"],
+    &[is="dice-dialog"],
+    &[is="roll-tables-dialog"],
+    &[is="message-dialog"],
+    &[is="scene-switcher"],
+    &[is="stardate-dialog"] {
+        & footer {
+            height: 0;
+            display: none;
+        }
     }
 
     &[is="message-dialog"] {
@@ -441,7 +449,7 @@ dialogs > dialog {
         header {
             background: linear-gradient(90deg,
                 var(--lcars-color-main) 0, var(--lcars-color-main) var(--gradient-stop-2),
-                rgb(0 0 0 / 100%) var(--gradient-stop-2), rgb(0 0 0 / 100%) calc(var(--gradient-stop-2) + 0.25em),
+                transparent var(--gradient-stop-2), transparent calc(var(--gradient-stop-2) + 0.25em),
                 var(--trek-color-6) 0);
         }
     }
