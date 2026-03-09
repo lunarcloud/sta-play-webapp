@@ -37,6 +37,11 @@ trait-display {
     --trek-color-6: hsl(260deg   38%    32% /    var(--trait-color-opacity));
 }
 
+@keyframes move-gradient {
+    0% {background-position: 100% 0%}
+    100% {background-position: 0% 100%}
+}
+
 body {
   background: linear-gradient(45deg,
     var(--main-color-bg),
@@ -55,15 +60,15 @@ body {
   background-size: 200% 200%;
   animation: move-gradient 30s linear 0s infinite normal;
 
+  & dialogs > dialog {
+      background: color-mix(in srgb, var(--main-color-bg) 90%, transparent);
+      animation: move-gradient 30s linear 0s infinite normal;
+  }
+
   &[alert="grey"], &[alert="cloak"] {
     decoration {
         filter: grayscale(.8) brightness(0.66);
     }
-}
-
-@keyframes move-gradient {
-    0% {background-position: 100% 0%}
-    100% {background-position: 0% 100%}
 }
 
 decoration > ul {
