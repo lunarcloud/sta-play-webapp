@@ -66,45 +66,16 @@ body {
   }
 
   &[alert="grey"], &[alert="cloak"] {
-    decoration {
-        filter: grayscale(.8) brightness(0.66);
-    }
-}
-
-decoration > ul {
-    opacity: 0.45; /* This is the important "holographic" part */
-}
-
-nav > ul {
-    filter: grayscale(0.3);
-}
-
-/* Because of transparency, replace the inner curves with angles */
-decoration > ul li {
-    &.curve-bottom-right, &.curve-top-right {
-        & li:nth-of-type(1)::before {
-            width: 0;
-            border-width: 1.5em 2.5em 1.5em 0;
-            border-style: solid;
-            background: unset !important;
-            border-color: transparent;
-        }
-
-        & li:nth-of-type(1)::after {
-            content: unset;
+        decoration {
+            filter: grayscale(.8) brightness(0.66);
         }
     }
 
-    &.curve-bottom-right {
-        & li:nth-of-type(1)::before {
-            border-bottom-color: var(--trek-color-2);
-        }
+    decoration > ul {
+        opacity: 0.45; /* This is the important "holographic" part */
     }
 
-    &.curve-top-right {
-        & li:nth-of-type(1)::before {
-            border-top-color: var(--trek-color-1);
-        }
+    nav > ul {
+        filter: grayscale(0.3);
     }
-}
 }

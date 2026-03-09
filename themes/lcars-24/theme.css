@@ -231,17 +231,6 @@ decoration {
                     left: 0;
                 }
 
-                & li:nth-of-type(1)::after {
-                    content: '';
-                    z-index: -1;
-                    background-color: var(--main-color-bg);
-                    height: 100%;
-                    width: var(--curve-section-height);
-                    position: absolute;
-                    left: 0;
-                    border-radius: 50%;
-                }
-
                 & li:last-of-type > a {
                     width: 100vw;
                     height: 50%;
@@ -275,10 +264,7 @@ decoration {
                 & li:nth-of-type(1)::before {
                     background-color: var(--trek-color-2);
                     bottom: 50%;
-                }
-
-                & li:nth-of-type(1)::after {
-                    bottom: 50%;
+                    mask: radial-gradient(circle calc(var(--curve-section-height) / 2) at top right, transparent 100%, black) top left;
                 }
 
                 & li:last-of-type > a {
@@ -300,10 +286,8 @@ decoration {
                 & li:nth-of-type(1)::before {
                     background-color: var(--trek-color-1);
                     top: 50%;
-                }
+                    mask: radial-gradient(circle calc(var(--curve-section-height) / 2) at bottom right, transparent 100%, black) top left;
 
-                & li:nth-of-type(1)::after {
-                    top: 50%;
                 }
 
                 & li:nth-of-type(odd) a {
