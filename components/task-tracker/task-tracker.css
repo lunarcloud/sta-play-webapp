@@ -9,6 +9,11 @@ task-tracker-internal {
     border-width: var(--tracker-border-width, 6px);
     border-style: var(--tracker-border-style, outset);
     border-color: var(--tracker-border-color, black white white black);
+    animation: element-appear 200ms ease-out backwards;
+
+    &.removing {
+        animation: element-disappear 300ms ease-in forwards;
+    }
 
     & * {
         font-family: inherit;
@@ -234,5 +239,29 @@ task-tracker-internal {
         input& {
             width: 1.35em;
         }
+    }
+}
+
+@keyframes element-appear {
+    from {
+        opacity: 0;
+        scale: 0.9;
+    }
+
+    to {
+        opacity: 1;
+        scale: 1;
+    }
+}
+
+@keyframes element-disappear {
+    from {
+        opacity: 1;
+        scale: 1;
+    }
+
+    to {
+        opacity: 0;
+        scale: 0.9;
     }
 }

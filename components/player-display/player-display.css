@@ -13,6 +13,11 @@ li[is="player-display"] {
     position: relative;
     flex-direction: column-reverse;
     text-shadow: 1px 1px 1px black;
+    animation: element-appear 200ms ease-out backwards;
+
+    &.removing {
+        animation: element-disappear 300ms ease-in forwards;
+    }
 
     & select {
         user-select: none;
@@ -166,6 +171,7 @@ li[is="player-display"] {
 
     &[draggable="true"] {
         cursor: grab;
+        transition: border-color 300ms ease-out, opacity 200ms ease-out;
 
         &:active {
             cursor: grabbing;
@@ -184,4 +190,28 @@ li[is="player-display"] {
 .hide-rank li[is="player-display"],
 .hide-stress li[is="player-display"] {
     border-bottom: 0.5em solid black;
+}
+
+@keyframes element-appear {
+    from {
+        opacity: 0;
+        scale: 0.9;
+    }
+
+    to {
+        opacity: 1;
+        scale: 1;
+    }
+}
+
+@keyframes element-disappear {
+    from {
+        opacity: 1;
+        scale: 1;
+    }
+
+    to {
+        opacity: 0;
+        scale: 0.9;
+    }
 }

@@ -1,5 +1,6 @@
 import { setupNumberInputScrollForParent, handleScrollOnNumberInput } from '../../js/scrollable-inputs.js'
 import { snakeToCamel } from '../../js/string-utils.js'
+import { animateRemove } from '../../js/dialog-utils.js'
 
 /**
  * Extended Task / Combat Tracking Widget
@@ -176,7 +177,8 @@ export class TaskTrackerElement extends HTMLElement {
     this.#removeBtnEl.textContent = '⤫'
     this.#removeBtnEl.addEventListener('click', () => {
       this.dispatchEvent(new CustomEvent('removed'))
-      this.remove()
+      const internalEl = /** @type {HTMLElement} */ (this.shadowRoot.querySelector('task-tracker-internal'))
+      animateRemove(this, internalEl)
     })
 
     // name element
@@ -320,6 +322,24 @@ export class TaskTrackerElement extends HTMLElement {
     // Create internal element
     const internalEls = document.createElement('task-tracker-internal')
     internalEls.setAttribute('part', 'internal')
+
+    // Hide until CSS loads to prevent flash before animation applies
+    internalEls.style.opacity = '0'
+    internalEls.style.margin = '0'
+    internalEls.style.height = '1px'
+    internalEls.style.width = '1px'
+    internalEls.style.visibility = 'hidden'
+    internalEls.style.overflow = 'hidden'
+    const showInternal = () => {
+        internalEls.style.opacity = ''
+        internalEls.style.margin = ''
+        internalEls.style.height = ''
+        internalEls.style.width = ''
+        internalEls.style.visibility = ''
+        internalEls.style.overflow = ''
+    }
+    linkElem.addEventListener('load', showInternal, { once: true })
+    linkElem.addEventListener('error', showInternal, { once: true })
 
     // Put it together
     internalEls.appendChild(this.#removeBtnEl)

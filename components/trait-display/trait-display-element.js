@@ -1,3 +1,5 @@
+import { animateRemove } from '../../js/dialog-utils.js'
+
 /**
  * Element that represents a scene trait.
  * @tagname trait-display
@@ -42,6 +44,25 @@ export class TraitDisplayElement extends HTMLElement {
 
     const internalEl = document.createElement('trait-display-internal')
     internalEl.setAttribute('part', 'internal')
+
+    // Hide until CSS loads to prevent flash before animation applies
+    internalEl.style.opacity = '0'
+    internalEl.style.margin = '0'
+    internalEl.style.height = '1px'
+    internalEl.style.width = '1px'
+    internalEl.style.visibility = 'hidden'
+    internalEl.style.overflow = 'hidden'
+    const showInternal = () => {
+        internalEl.style.opacity = ''
+        internalEl.style.margin = ''
+        internalEl.style.height = ''
+        internalEl.style.width = ''
+        internalEl.style.visibility = ''
+        internalEl.style.overflow = ''
+    }
+    linkElem.addEventListener('load', showInternal, { once: true })
+    linkElem.addEventListener('error', showInternal, { once: true })
+
     this.#textEl = document.createElement('span')
 
     this.#textEl.textContent = ''
@@ -58,7 +79,8 @@ export class TraitDisplayElement extends HTMLElement {
     this.#removeBtnEl.textContent = '⤫'
     this.#removeBtnEl.addEventListener('click', () => {
       this.dispatchEvent(new CustomEvent('removed'))
-      this.remove()
+      const internalEl = /** @type {HTMLElement} */ (this.shadowRoot.querySelector('trait-display-internal'))
+      animateRemove(this, internalEl)
     })
 
     internalEl.appendChild(this.#textEl)

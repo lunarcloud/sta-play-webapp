@@ -197,14 +197,18 @@ describe('PlayerDisplayElement', () => {
       removeButton.click()
     })
 
-    it('should remove element from DOM when remove button is clicked', () => {
+    it('should remove element from DOM when remove button is clicked', (done) => {
       const element = document.createElement('li', { is: 'player-display' })
       document.body.appendChild(element)
 
       const removeButton = element.querySelector('button.remove')
       removeButton.click()
 
-      expect(element.parentNode).to.be.null
+      // animateRemove delays DOM removal for animation
+      setTimeout(() => {
+        expect(element.parentNode).to.be.null
+        done()
+      }, 350)
     })
   })
 

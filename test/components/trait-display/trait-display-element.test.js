@@ -122,14 +122,18 @@ describe('TraitDisplayElement', () => {
       removeButton.click()
     })
 
-    it('should remove element from DOM when remove button is clicked', () => {
+    it('should remove element from DOM when remove button is clicked', (done) => {
       const element = new TraitDisplayElement()
       document.body.appendChild(element)
 
       const removeButton = element.shadowRoot.querySelector('button.close')
       removeButton.click()
 
-      expect(element.parentNode).to.be.null
+      // animateRemove delays DOM removal for animation
+      setTimeout(() => {
+        expect(element.parentNode).to.be.null
+        done()
+      }, 350)
     })
   })
 

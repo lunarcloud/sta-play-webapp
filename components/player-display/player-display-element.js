@@ -2,6 +2,7 @@ import { setupDropOnly } from '../../js/drop-nodrag-setup.js'
 import { InputProgressElement } from '../input-progress/input-progress-element.js'
 import { snakeToCamel } from '../../js/string-utils.js'
 import { setupNumberInputScrollForParent } from '../../js/scrollable-inputs.js'
+import { animateRemove } from '../../js/dialog-utils.js'
 
 /**
  * Player Information Display
@@ -252,6 +253,24 @@ export class PlayerDisplayElement extends HTMLLIElement {
     linkElem.setAttribute('rel', 'stylesheet')
     linkElem.setAttribute('href', 'components/player-display/player-display.css')
 
+    // Hide until CSS loads to prevent flash before animation applies
+    this.style.opacity = '0'
+    this.style.margin = '0'
+    this.style.height = '1px'
+    this.style.width = '1px'
+    this.style.visibility = 'hidden'
+    this.style.overflow = 'hidden'
+    const showElement = () => {
+        this.style.opacity = ''
+        this.style.margin = ''
+        this.style.height = ''
+        this.style.width = ''
+        this.style.visibility = ''
+        this.style.overflow = ''
+    }
+    linkElem.addEventListener('load', showElement, { once: true })
+    linkElem.addEventListener('error', showElement, { once: true })
+
     // Attach the created element
     this.appendChild(linkElem)
 
@@ -261,7 +280,7 @@ export class PlayerDisplayElement extends HTMLLIElement {
     this.#removeBtnEl.textContent = '⤫'
     this.#removeBtnEl.addEventListener('click', () => {
       this.dispatchEvent(new CustomEvent('removed'))
-      this.remove()
+      animateRemove(this)
     })
 
     // select 'color'

@@ -22,3 +22,25 @@ export function animateClose (dialogEl) {
     dialogEl.close()
   }, animationDuration)
 }
+
+/**
+ * Animate an element being removed from the DOM.
+ * @param {HTMLElement} element      element to animate and remove
+ * @param {HTMLElement} [animTarget] optional inner element to apply the class to (e.g. shadow DOM internal)
+ */
+export function animateRemove (element, animTarget) {
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  if (prefersReducedMotion) {
+    element.remove()
+    return
+  }
+
+  const target = animTarget ?? element
+  target.classList.add('removing')
+
+  const animationDuration = 300 // matches CSS animation duration
+  setTimeout(() => {
+    element.remove()
+  }, animationDuration)
+}

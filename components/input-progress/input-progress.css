@@ -38,6 +38,7 @@ input-progress-internal {
         appearance: none;
         color: black;
         opacity: 0;
+        transition: opacity 200ms ease-out;
 
         &:hover {
             opacity: 0.8;
