@@ -53,12 +53,12 @@ export class TraitDisplayElement extends HTMLElement {
     internalEl.style.visibility = 'hidden'
     internalEl.style.overflow = 'hidden'
     const showInternal = () => {
-        internalEl.style.opacity = ''
-        internalEl.style.margin = ''
-        internalEl.style.height = ''
-        internalEl.style.width = ''
-        internalEl.style.visibility = ''
-        internalEl.style.overflow = ''
+      internalEl.style.opacity = ''
+      internalEl.style.margin = ''
+      internalEl.style.height = ''
+      internalEl.style.width = ''
+      internalEl.style.visibility = ''
+      internalEl.style.overflow = ''
     }
     linkElem.addEventListener('load', showInternal, { once: true })
     linkElem.addEventListener('error', showInternal, { once: true })

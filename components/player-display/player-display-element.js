@@ -261,12 +261,12 @@ export class PlayerDisplayElement extends HTMLLIElement {
     this.style.visibility = 'hidden'
     this.style.overflow = 'hidden'
     const showElement = () => {
-        this.style.opacity = ''
-        this.style.margin = ''
-        this.style.height = ''
-        this.style.width = ''
-        this.style.visibility = ''
-        this.style.overflow = ''
+      this.style.opacity = ''
+      this.style.margin = ''
+      this.style.height = ''
+      this.style.width = ''
+      this.style.visibility = ''
+      this.style.overflow = ''
     }
     linkElem.addEventListener('load', showElement, { once: true })
     linkElem.addEventListener('error', showElement, { once: true })
