@@ -1004,6 +1004,10 @@ body {
         & traits {
           font-size: 1.5em;
           margin-top: 0;
+
+          & > span {
+            line-height: 2em;
+          }
         }
 
         & traits, & mission-tracker {
