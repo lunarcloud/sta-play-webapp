@@ -418,9 +418,9 @@ body {
     }
 
     &.edition-captains-log > nav > ul > li {
-        &:first-child,
-        &:nth-child(2) {
-            width: 7em;
+        &:first-child {
+            width: 10em;
+            line-height: 1.5em;
         }
 
         &:not(#stardate-item) text {
@@ -451,13 +451,16 @@ body {
                     line-height: unset;
                 }
 
-                &:first-child,
+                &:first-child {
+                    width: 7em;
+                }
+
                 &:nth-child(2) {
-                    width: 6em;
+                    width: 8em;
                 }
 
                 &:nth-child(3) {
-                    width: 5em;
+                    width: 7em;
                 }
 
                 &#stardate-item {
@@ -474,17 +477,46 @@ body {
 }
 
 dialogs > dialog {
+    --tcars-color-main: var(--trek-color-1);
+    --tcars-close-color: var(--trek-color-2);
+
+    z-index: 100;
+    position: relative;
+
     &[is="settings-dialog"] {
         max-width: 30em;
     }
 
+    &::before,
+    &::after {
+        content: '';
+        position: absolute;
+        z-index: 101;
+        aspect-ratio: 1;
+    }
+    &::before {
+        top: 1.56em;
+        right: 0;
+        height: 2em;
+        background-color: var(--tcars-close-color);
+        mask: radial-gradient(circle 2em at bottom left, transparent 100%, black) top left;
+    }
+    &::after {
+        bottom: 0;
+        left: 0;
+        height: 3em;
+        background-color: var(--tcars-color-main);
+        mask: radial-gradient(circle 3em at top right, transparent 100%, black) top left;
+    }
+
     & > header, & > footer {
-        background: var(--trek-color-1);
         color: black;
         font-weight: bold;
+        border: unset;
+        line-height: 1em;
 
         & button.close {
-            background: var(--trek-color-2);
+            background: var(--tcars-close-color);
             text-transform: capitalize;
 
             &:hover {
@@ -493,25 +525,31 @@ dialogs > dialog {
         }
     }
 
+    & > header {
+        background: var(--tcars-color-main);
+        border-radius: 8px 0 8px 0;
+    }
+
     & > footer {
         padding: 0.5em 0;
 
         & button.close {
             padding: 0.25em 2.25em;
         }
+
+        & button {
+            font-weight: normal;
+        }
     }
 
     & > main {
+        position: relative;
         background: var(--secondary-color-bg);
         color: white;
         font-size: calc(var(--main-font-size) * 1.2);
 
         & dt {
-            font-weight: bold;
-        }
-
-        & dd br {
-            /* display: none; /* inline what otherwise is new-lined */
+            color: var(--trek-color-5);
         }
 
         & button,
@@ -547,6 +585,19 @@ dialogs > dialog {
                 border-color: var(--tcars-accent);
                 box-shadow: 0 0 10px hsl(190deg 75% 55% / 40%);
             }
+        }
+    }
+
+    &[is="welcome-dialog"],
+    &[is="settings-dialog"],
+    &[is="dice-dialog"],
+    &[is="roll-tables-dialog"],
+    &[is="message-dialog"],
+    &[is="scene-switcher"],
+    &[is="stardate-dialog"] {
+        & footer {
+            height: 0;
+            display: none;
         }
     }
 }
