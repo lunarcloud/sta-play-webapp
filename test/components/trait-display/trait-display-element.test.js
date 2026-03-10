@@ -2,6 +2,11 @@ import { expect } from '@esm-bundle/chai'
 import { TraitDisplayElement } from '../../../components/trait-display/trait-display-element.js'
 
 describe('TraitDisplayElement', () => {
+  afterEach(() => {
+    // Clean up any trait-display elements left in the DOM
+    document.querySelectorAll('trait-display').forEach(el => el.remove())
+  })
+
   describe('custom element registration', () => {
     it('should be defined as a custom element', () => {
       expect(customElements.get('trait-display')).to.equal(TraitDisplayElement)
@@ -122,18 +127,15 @@ describe('TraitDisplayElement', () => {
       removeButton.click()
     })
 
-    it('should remove element from DOM when remove button is clicked', (done) => {
+    it('should remove element from DOM when remove button is clicked', () => {
       const element = new TraitDisplayElement()
       document.body.appendChild(element)
 
       const removeButton = element.shadowRoot.querySelector('button.close')
       removeButton.click()
 
-      // animateRemove delays DOM removal for animation
-      setTimeout(() => {
-        expect(element.parentNode).to.be.null
-        done()
-      }, 350)
+      // With prefers-reduced-motion: reduce, animateRemove removes immediately
+      expect(element.parentNode).to.be.null
     })
   })
 
@@ -181,6 +183,12 @@ describe('TraitDisplayElement', () => {
       const element = new TraitDisplayElement()
       document.body.appendChild(element)
 
+      // Ensure the internal element is visible before focusing.
+      // Focusing a contentEditable inside a visibility:hidden container
+      // hangs headless Chromium.
+      const internal = element.shadowRoot.querySelector('trait-display-internal')
+      internal.style.visibility = ''
+
       element.focus()
 
       expect(document.activeElement).to.equal(element)
@@ -191,6 +199,9 @@ describe('TraitDisplayElement', () => {
     it('should accept focus options', () => {
       const element = new TraitDisplayElement()
       document.body.appendChild(element)
+
+      const internal = element.shadowRoot.querySelector('trait-display-internal')
+      internal.style.visibility = ''
 
       // Should not throw error
       expect(() => element.focus({ preventScroll: true })).to.not.throw()

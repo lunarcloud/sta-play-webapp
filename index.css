@@ -266,10 +266,6 @@ decoration a,
 nav li > a {
     text-transform: uppercase;
     user-select: none;
-
-    &.squeeze, & .squeeze {
-      letter-spacing: 1px;
-    }
 }
 
 *[contenteditable="true"] {

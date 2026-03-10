@@ -32,8 +32,19 @@ export default {
 
   // Browser configuration - using Chromium via Playwright
   browsers: [
-    playwrightLauncher({ product: 'chromium' })
+    playwrightLauncher({
+      product: 'chromium',
+      // Reduce motion to skip CSS animations in tests, avoiding
+      // pending setTimeout delays from animateRemove/animateClose
+      // and preventing browser session hangs from animation timers.
+      createBrowserContext: ({ browser }) => browser.newContext({
+        reducedMotion: 'reduce'
+      })
+    })
   ],
+
+  // Maximum time for a test file to finish after all tests complete
+  testsFinishTimeout: 60000,
 
   // Test framework configuration
   testFramework: {
