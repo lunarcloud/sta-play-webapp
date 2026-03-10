@@ -416,12 +416,12 @@ dialogs > dialog {
     }
 
 
-    &[is=input-dialog] {
+    &[is="input-dialog"] {
         width: fit-content;
         max-width: max(320px, 90%);
 
         main {
-            padding: 0 1em 0.5em 1em;
+            padding: 0 1em 0.5em;
             display: flex;
             flex-direction: column;
             gap: 0.25em;
