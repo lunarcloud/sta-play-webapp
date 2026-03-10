@@ -210,6 +210,7 @@ dialog input {
 a,
 a:any-link {
   color: var(--main-a-link-color);
+  transition: color 150ms ease-out;
 }
 
 a:any-link:hover {
@@ -330,6 +331,7 @@ dialogs > dialog {
 
             & input[type="checkbox"] {
                 scale: 1.2;
+                transition: scale 150ms ease-out;
 
                 &:hover:not(:active) {
                     scale: 1.4;
@@ -369,6 +371,7 @@ dialogs > dialog {
                 overflow: hidden;
                 vertical-align: text-bottom;
                 line-height: 1em;
+                transition: filter 150ms ease-out;
 
                 &:hover {
                     filter: brightness(1.1);
@@ -662,6 +665,7 @@ dialogs > dialog {
             border-radius: 8px;
             padding: 2px 20px;
             background-color: var(--trek-color-2);
+            transition: filter 150ms ease-out;
 
             &:hover {
                 filter: hue-rotate(-10deg);
@@ -785,6 +789,7 @@ menu-items {
     & img.symbol, symbol {
         height: 1em;
         aspect-ratio: 1;
+        transition: filter 150ms ease-out;
     }
 }
 
@@ -794,6 +799,7 @@ menu-items {
 
     & img.symbol {
         filter: invert(1);
+        transition: filter 150ms ease-out;
     }
 
     &:hover, &:focus {
@@ -1074,7 +1080,7 @@ body {
                 flex: 1 0 29%;
                 border-radius: 8px;
                 font-size: calc(var(--main-font-size) * 0.8);
-
+                transition: filter 200ms ease-out;
 
                 & a {
                     display: block;

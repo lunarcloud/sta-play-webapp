@@ -38,6 +38,7 @@ li[is="player-display"] {
         padding: 0;
         margin: -1em;
         border-top-left-radius: 50%;
+        transition: color 150ms ease-out;
         
         &:not(:hover) {
             color: transparent;
@@ -54,6 +55,7 @@ li[is="player-display"] {
         position: absolute; 
         top: -1.4em; 
         right: 0;
+        transition: filter 150ms ease-out;
 
         &:hover {
             filter: drop-shadow(2px 4px 6px black);
@@ -166,6 +168,7 @@ li[is="player-display"] {
 
     &[draggable="true"] {
         cursor: grab;
+        transition: opacity 200ms ease-out;
 
         &:active {
             cursor: grabbing;

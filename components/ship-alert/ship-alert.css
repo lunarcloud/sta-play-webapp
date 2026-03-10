@@ -9,6 +9,7 @@ ship-alert-internal {
     align-items: center;
     flex-flow: column nowrap;
     text-shadow: -1px 1px 4px black;
+    transition: filter 300ms ease-out;
 
     & > * {
         margin: 0;
