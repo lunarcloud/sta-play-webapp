@@ -40,10 +40,10 @@ trait-display-internal {
         background-color: transparent;
         border: 0 solid transparent;
         outline: 0;
-        transition: opacity 150ms ease-out;
+        transition: filter 150ms ease-out;
 
         &:hover {
-            opacity: 0.7;
+            filter: brightness(0.7);
         }
     }
 
