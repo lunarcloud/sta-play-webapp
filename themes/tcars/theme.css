@@ -418,9 +418,11 @@ body {
     }
 
     &.edition-captains-log > nav > ul > li {
-        &:first-child {
+
+        &:first-child,
+        &#stardate-item {
             width: 10em;
-            line-height: 1.5em;
+            line-height: 1.35em;
         }
 
         &:not(#stardate-item) text {
@@ -464,7 +466,7 @@ body {
                 }
 
                 &#stardate-item {
-                    width: 9em
+                    width: 10em;
                 }
 
                 &.shipname {
