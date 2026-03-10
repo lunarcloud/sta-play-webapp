@@ -13,6 +13,12 @@ li[is="player-display"] {
     position: relative;
     flex-direction: column-reverse;
     text-shadow: 1px 1px 1px black;
+    transition: border-color 300ms ease-out;
+    animation: element-appear 200ms ease-out;
+
+    &.removing {
+        animation: element-disappear 300ms ease-in forwards;
+    }
 
     & select {
         user-select: none;
@@ -38,7 +44,6 @@ li[is="player-display"] {
         padding: 0;
         margin: -1em;
         border-top-left-radius: 50%;
-        transition: color 150ms ease-out;
         
         &:not(:hover) {
             color: transparent;
@@ -55,7 +60,6 @@ li[is="player-display"] {
         position: absolute; 
         top: -1.4em; 
         right: 0;
-        transition: filter 150ms ease-out;
 
         &:hover {
             filter: drop-shadow(2px 4px 6px black);
@@ -187,4 +191,28 @@ li[is="player-display"] {
 .hide-rank li[is="player-display"],
 .hide-stress li[is="player-display"] {
     border-bottom: 0.5em solid black;
+}
+
+@keyframes element-appear {
+    from {
+        opacity: 0;
+        scale: 0.9;
+    }
+
+    to {
+        opacity: 1;
+        scale: 1;
+    }
+}
+
+@keyframes element-disappear {
+    from {
+        opacity: 1;
+        scale: 1;
+    }
+
+    to {
+        opacity: 0;
+        scale: 0.9;
+    }
 }

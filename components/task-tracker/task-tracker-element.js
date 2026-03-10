@@ -1,5 +1,6 @@
 import { setupNumberInputScrollForParent, handleScrollOnNumberInput } from '../../js/scrollable-inputs.js'
 import { snakeToCamel } from '../../js/string-utils.js'
+import { animateRemove } from '../../js/dialog-utils.js'
 
 /**
  * Extended Task / Combat Tracking Widget
@@ -176,7 +177,8 @@ export class TaskTrackerElement extends HTMLElement {
     this.#removeBtnEl.textContent = '⤫'
     this.#removeBtnEl.addEventListener('click', () => {
       this.dispatchEvent(new CustomEvent('removed'))
-      this.remove()
+      const internalEl = this.shadowRoot.querySelector('task-tracker-internal')
+      animateRemove(this, internalEl)
     })
 
     // name element

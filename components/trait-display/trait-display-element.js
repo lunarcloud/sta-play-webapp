@@ -1,3 +1,5 @@
+import { animateRemove } from '../../js/dialog-utils.js'
+
 /**
  * Element that represents a scene trait.
  * @tagname trait-display
@@ -58,7 +60,8 @@ export class TraitDisplayElement extends HTMLElement {
     this.#removeBtnEl.textContent = '⤫'
     this.#removeBtnEl.addEventListener('click', () => {
       this.dispatchEvent(new CustomEvent('removed'))
-      this.remove()
+      const internalEl = this.shadowRoot.querySelector('trait-display-internal')
+      animateRemove(this, internalEl)
     })
 
     internalEl.appendChild(this.#textEl)

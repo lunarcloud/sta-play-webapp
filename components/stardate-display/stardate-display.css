@@ -22,7 +22,6 @@ stardate-display-internal {
     font-size: 1.1em;
     line-height: 1;
     margin-left: auto;
-    transition: opacity 150ms ease-out;
 
     &:hover {
         opacity: 0.8;

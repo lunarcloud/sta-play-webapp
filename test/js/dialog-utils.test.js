@@ -1,5 +1,5 @@
 import { expect } from '@esm-bundle/chai'
-import { animateClose } from '../../js/dialog-utils.js'
+import { animateClose, animateRemove } from '../../js/dialog-utils.js'
 
 // Animation duration constant matching the CSS animation
 const ANIMATION_DURATION = 300
@@ -116,6 +116,107 @@ describe('Dialog Utils', () => {
 
       // Should not throw error
       expect(() => animateClose(dialog)).to.not.throw()
+
+      window.matchMedia = originalMatchMedia
+    })
+  })
+
+  describe('animateRemove', () => {
+    let element
+
+    beforeEach(() => {
+      element = document.createElement('div')
+      document.body.appendChild(element)
+    })
+
+    afterEach(() => {
+      if (element && element.parentNode) {
+        element.parentNode.removeChild(element)
+      }
+    })
+
+    it('should remove element immediately with reduced motion preference', () => {
+      const originalMatchMedia = window.matchMedia
+      window.matchMedia = (query) => ({
+        matches: query.includes('prefers-reduced-motion'),
+        media: query,
+        onchange: null,
+        addListener: () => {},
+        removeListener: () => {},
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        dispatchEvent: () => true
+      })
+
+      animateRemove(element)
+
+      expect(element.parentNode).to.be.null
+      window.matchMedia = originalMatchMedia
+    })
+
+    it('should add removing class when animations are enabled', () => {
+      const originalMatchMedia = window.matchMedia
+      window.matchMedia = (query) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: () => {},
+        removeListener: () => {},
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        dispatchEvent: () => true
+      })
+
+      animateRemove(element)
+
+      expect(element.classList.contains('removing')).to.be.true
+      expect(element.parentNode).to.not.be.null
+
+      window.matchMedia = originalMatchMedia
+    })
+
+    it('should remove element from DOM after animation duration', (done) => {
+      const originalMatchMedia = window.matchMedia
+      window.matchMedia = (query) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: () => {},
+        removeListener: () => {},
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        dispatchEvent: () => true
+      })
+
+      animateRemove(element)
+
+      setTimeout(() => {
+        expect(element.parentNode).to.be.null
+        window.matchMedia = originalMatchMedia
+        done()
+      }, ANIMATION_DURATION + ANIMATION_BUFFER)
+    })
+
+    it('should apply removing class to animTarget when provided', () => {
+      const inner = document.createElement('span')
+      element.appendChild(inner)
+
+      const originalMatchMedia = window.matchMedia
+      window.matchMedia = (query) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: () => {},
+        removeListener: () => {},
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        dispatchEvent: () => true
+      })
+
+      animateRemove(element, inner)
+
+      expect(inner.classList.contains('removing')).to.be.true
+      expect(element.classList.contains('removing')).to.be.false
 
       window.matchMedia = originalMatchMedia
     })

@@ -665,7 +665,6 @@ dialogs > dialog {
             border-radius: 8px;
             padding: 2px 20px;
             background-color: var(--trek-color-2);
-            transition: filter 150ms ease-out;
 
             &:hover {
                 filter: hue-rotate(-10deg);
@@ -789,7 +788,6 @@ menu-items {
     & img.symbol, symbol {
         height: 1em;
         aspect-ratio: 1;
-        transition: filter 150ms ease-out;
     }
 }
 

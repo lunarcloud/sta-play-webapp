@@ -2,6 +2,7 @@ import { setupDropOnly } from '../../js/drop-nodrag-setup.js'
 import { InputProgressElement } from '../input-progress/input-progress-element.js'
 import { snakeToCamel } from '../../js/string-utils.js'
 import { setupNumberInputScrollForParent } from '../../js/scrollable-inputs.js'
+import { animateRemove } from '../../js/dialog-utils.js'
 
 /**
  * Player Information Display
@@ -261,7 +262,7 @@ export class PlayerDisplayElement extends HTMLLIElement {
     this.#removeBtnEl.textContent = '⤫'
     this.#removeBtnEl.addEventListener('click', () => {
       this.dispatchEvent(new CustomEvent('removed'))
-      this.remove()
+      animateRemove(this)
     })
 
     // select 'color'
