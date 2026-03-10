@@ -47,7 +47,19 @@ export class TraitDisplayElement extends HTMLElement {
 
     // Hide until CSS loads to prevent flash before animation applies
     internalEl.style.opacity = '0'
-    const showInternal = () => { internalEl.style.opacity = '' }
+    internalEl.style.margin = '0'
+    internalEl.style.height = '1px'
+    internalEl.style.width = '1px'
+    internalEl.style.visibility = 'hidden'
+    internalEl.style.overflow = 'hidden'
+    const showInternal = () => {
+        internalEl.style.opacity = ''
+        internalEl.style.margin = ''
+        internalEl.style.height = ''
+        internalEl.style.width = ''
+        internalEl.style.visibility = ''
+        internalEl.style.overflow = ''
+    }
     linkElem.addEventListener('load', showInternal, { once: true })
     linkElem.addEventListener('error', showInternal, { once: true })
 

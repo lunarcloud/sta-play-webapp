@@ -255,7 +255,19 @@ export class PlayerDisplayElement extends HTMLLIElement {
 
     // Hide until CSS loads to prevent flash before animation applies
     this.style.opacity = '0'
-    const showElement = () => { this.style.opacity = '' }
+    this.style.margin = '0'
+    this.style.height = '1px'
+    this.style.width = '1px'
+    this.style.visibility = 'hidden'
+    this.style.overflow = 'hidden'
+    const showElement = () => {
+        this.style.opacity = ''
+        this.style.margin = ''
+        this.style.height = ''
+        this.style.width = ''
+        this.style.visibility = ''
+        this.style.overflow = ''
+    }
     linkElem.addEventListener('load', showElement, { once: true })
     linkElem.addEventListener('error', showElement, { once: true })
 

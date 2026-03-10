@@ -325,7 +325,19 @@ export class TaskTrackerElement extends HTMLElement {
 
     // Hide until CSS loads to prevent flash before animation applies
     internalEls.style.opacity = '0'
-    const showInternal = () => { internalEls.style.opacity = '' }
+    internalEls.style.margin = '0'
+    internalEls.style.height = '1px'
+    internalEls.style.width = '1px'
+    internalEls.style.visibility = 'hidden'
+    internalEls.style.overflow = 'hidden'
+    const showInternal = () => {
+        internalEls.style.opacity = ''
+        internalEls.style.margin = ''
+        internalEls.style.height = ''
+        internalEls.style.width = ''
+        internalEls.style.visibility = ''
+        internalEls.style.overflow = ''
+    }
     linkElem.addEventListener('load', showInternal, { once: true })
     linkElem.addEventListener('error', showInternal, { once: true })
 
