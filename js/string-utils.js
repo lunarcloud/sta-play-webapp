@@ -1,5 +1,5 @@
 /**
- * Convert a string from snake_case or kebob-case to CamelCase
+ * Convert a string from snake_case or kebab-case to CamelCase
  * @param {string} value string to modify
  * @returns {string} modified string
  */

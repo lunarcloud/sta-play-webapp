@@ -18,7 +18,7 @@
  */
 
 /**
- * Write text to file.
+ * Write blob to file.
  * @param {string} filename                     suggested filename
  * @param {Blob} blobData                       data to write
  */

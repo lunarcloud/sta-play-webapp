@@ -352,7 +352,6 @@ export class IndexController {
 
     // Load Info and Images from Database
     this.#loadData()
-    // .catch(e => console.error(e))
 
     // Mouse scrolling to update number inputs
     setupNumberInputScrollForParent(document)
