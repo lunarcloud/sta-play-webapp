@@ -325,7 +325,9 @@ export class TaskTrackerElement extends HTMLElement {
 
     // Hide until CSS loads to prevent flash before animation applies
     internalEls.style.opacity = '0'
-    linkElem.addEventListener('load', () => { internalEls.style.opacity = '' }, { once: true })
+    const showInternal = () => { internalEls.style.opacity = '' }
+    linkElem.addEventListener('load', showInternal, { once: true })
+    linkElem.addEventListener('error', showInternal, { once: true })
 
     // Put it together
     internalEls.appendChild(this.#removeBtnEl)

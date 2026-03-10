@@ -47,7 +47,9 @@ export class TraitDisplayElement extends HTMLElement {
 
     // Hide until CSS loads to prevent flash before animation applies
     internalEl.style.opacity = '0'
-    linkElem.addEventListener('load', () => { internalEl.style.opacity = '' }, { once: true })
+    const showInternal = () => { internalEl.style.opacity = '' }
+    linkElem.addEventListener('load', showInternal, { once: true })
+    linkElem.addEventListener('error', showInternal, { once: true })
 
     this.#textEl = document.createElement('span')
 
