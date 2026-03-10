@@ -9,7 +9,7 @@ task-tracker-internal {
     border-width: var(--tracker-border-width, 6px);
     border-style: var(--tracker-border-style, outset);
     border-color: var(--tracker-border-color, black white white black);
-    animation: element-appear 200ms ease-out;
+    animation: element-appear 200ms ease-out backwards;
 
     &.removing {
         animation: element-disappear 300ms ease-in forwards;

@@ -13,8 +13,7 @@ li[is="player-display"] {
     position: relative;
     flex-direction: column-reverse;
     text-shadow: 1px 1px 1px black;
-    transition: border-color 300ms ease-out;
-    animation: element-appear 200ms ease-out;
+    animation: element-appear 200ms ease-out backwards;
 
     &.removing {
         animation: element-disappear 300ms ease-in forwards;
@@ -172,7 +171,7 @@ li[is="player-display"] {
 
     &[draggable="true"] {
         cursor: grab;
-        transition: opacity 200ms ease-out;
+        transition: border-color 300ms ease-out, opacity 200ms ease-out;
 
         &:active {
             cursor: grabbing;

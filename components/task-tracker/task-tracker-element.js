@@ -177,7 +177,7 @@ export class TaskTrackerElement extends HTMLElement {
     this.#removeBtnEl.textContent = '⤫'
     this.#removeBtnEl.addEventListener('click', () => {
       this.dispatchEvent(new CustomEvent('removed'))
-      const internalEl = this.shadowRoot.querySelector('task-tracker-internal')
+      const internalEl = /** @type {HTMLElement} */ (this.shadowRoot.querySelector('task-tracker-internal'))
       animateRemove(this, internalEl)
     })
 

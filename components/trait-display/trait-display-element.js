@@ -60,7 +60,7 @@ export class TraitDisplayElement extends HTMLElement {
     this.#removeBtnEl.textContent = '⤫'
     this.#removeBtnEl.addEventListener('click', () => {
       this.dispatchEvent(new CustomEvent('removed'))
-      const internalEl = this.shadowRoot.querySelector('trait-display-internal')
+      const internalEl = /** @type {HTMLElement} */ (this.shadowRoot.querySelector('trait-display-internal'))
       animateRemove(this, internalEl)
     })
 

@@ -6,7 +6,7 @@ trait-display-internal {
     margin: 0.2em;
     position: relative;
     background-color: var(--trait-bg-color, gray);
-    animation: element-appear 200ms ease-out;
+    animation: element-appear 200ms ease-out backwards;
 
     &.removing {
         animation: element-disappear 300ms ease-in forwards;

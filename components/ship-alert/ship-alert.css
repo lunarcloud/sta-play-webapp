@@ -26,7 +26,7 @@ ship-alert-internal {
         display: inline-flex;
         background-image: url('../../img/red-alert.webp');
         color: #910200; /* Base image is red */
-        animation: alert-appear 300ms ease-out;
+        animation: alert-appear 300ms ease-out backwards;
     }
 
     &.yellow {
