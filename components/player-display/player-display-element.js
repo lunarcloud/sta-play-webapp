@@ -253,6 +253,10 @@ export class PlayerDisplayElement extends HTMLLIElement {
     linkElem.setAttribute('rel', 'stylesheet')
     linkElem.setAttribute('href', 'components/player-display/player-display.css')
 
+    // Hide until CSS loads to prevent flash before animation applies
+    this.style.opacity = '0'
+    linkElem.addEventListener('load', () => { this.style.opacity = '' }, { once: true })
+
     // Attach the created element
     this.appendChild(linkElem)
 

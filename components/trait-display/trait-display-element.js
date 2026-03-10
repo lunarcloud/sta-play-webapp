@@ -44,6 +44,11 @@ export class TraitDisplayElement extends HTMLElement {
 
     const internalEl = document.createElement('trait-display-internal')
     internalEl.setAttribute('part', 'internal')
+
+    // Hide until CSS loads to prevent flash before animation applies
+    internalEl.style.opacity = '0'
+    linkElem.addEventListener('load', () => { internalEl.style.opacity = '' }, { once: true })
+
     this.#textEl = document.createElement('span')
 
     this.#textEl.textContent = ''
