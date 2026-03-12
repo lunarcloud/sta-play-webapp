@@ -26,7 +26,7 @@
         "outdated:patch": "npx npm-check-updates --target patch"
     },
     "dependencies": {
-        "@google/model-viewer": "^4.1.0",
+        "@google/model-viewer": "^4.2.0",
         "@ungap/custom-elements": "^1.3.0",
         "fflate": "^0.8.2",
         "idb": "^8.0.3"
@@ -41,7 +41,7 @@
         "custom-element-vs-code-integration": "^1.5.0",
         "eslint": "^9.39.4",
         "eslint-plugin-editorconfig": "^4.0.3",
-        "eslint-plugin-jsdoc": "^62.7.1",
+        "eslint-plugin-jsdoc": "^62.8.0",
         "neostandard": "^0.13.0",
         "npm-check-updates": "^19.6.3",
         "serve": "^14.2.6",
