@@ -10,6 +10,7 @@ jobs:
   quality:
     name: Run Code Quality Checks and Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
       security-events: write
@@ -29,7 +30,21 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install Playwright Browsers
-        run: npx playwright install chromium
+        run: |
+          for attempt in 1 2 3; do
+            echo "Playwright install attempt ${attempt}/3"
+            if timeout 10m npx playwright install chromium; then
+              exit 0
+            fi
+
+            if [ "$attempt" -lt 3 ]; then
+              echo "Playwright install attempt ${attempt} failed or timed out; retrying in 10 seconds..."
+              sleep 10
+            fi
+          done
+
+          echo "Playwright browser installation failed after 3 attempts." >&2
+          exit 1
 
       - name: Copy Dependencies
         run: npm run copy-deps

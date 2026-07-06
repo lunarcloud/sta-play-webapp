@@ -6,8 +6,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "thursday"
+      interval: "monthly"
     open-pull-requests-limit: 10
     ignore:
       # eslint v10 is not compatible with eslint-plugin-jsdoc until it adds support
@@ -27,8 +26,7 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "monday"
+      interval: "monthly"
     open-pull-requests-limit: 10
     groups:
       github-actions-dependencies:
