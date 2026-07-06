@@ -47,11 +47,12 @@
         "serve": "^14.2.6",
         "stylelint": "^17.14.0",
         "stylelint-config-standard": "^40.0.0",
-        "typescript": "^5.9.3"
+        "typescript": "^6.0.3"
     },
     "version-constraints": {
         "eslint": "Cannot upgrade to v10 until neostandard adds support (currently supports ^9.0.0). Track: https://github.com/neostandard/neostandard/issues",
         "eslint-plugin-editorconfig": "^4.0.3 required for ESLint 9+ flat config compatibility",
+        "typescript": "jsconfig.json sets \"strict\": false explicitly since TS 6.0 defaults strict mode on, which broke typecheck against this JSDoc-typed codebase",
         "notes": "Check 'npm outdated' regularly. Use 'npm audit' with caution - many vulnerabilities are in dev dependencies and don't affect production. See https://overreacted.io/npm-audit-broken-by-design/"
     }
 }
