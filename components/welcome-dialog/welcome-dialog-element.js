@@ -13,7 +13,9 @@ export class WelcomeDialogElement extends HTMLDialogElement {
   constructor () {
     super()
     this.innerHTML = dialogEl.innerHTML
+
     this.querySelectorAll('button.close').forEach(el => el.addEventListener('click', () => animateClose(this)))
+    this.querySelector('currentyear').innerHTML = `${new Date().getFullYear()}`
   }
 }
 customElements.define('welcome-dialog', WelcomeDialogElement, { extends: 'dialog' })
