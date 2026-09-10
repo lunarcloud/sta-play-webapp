@@ -41,6 +41,7 @@ shipname
 tinypop
 unitless
 émojis
+currentyear
 
 # Test Values
 alreadylowercase
