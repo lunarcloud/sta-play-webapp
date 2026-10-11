@@ -900,18 +900,6 @@ menu-items {
     display: unset;
 }
 
-[mode="map"] {
-    .mode-map-only {
-        opacity: 1;
-        display: unset;
-    }
-
-    .mode-text-only {
-        opacity: 0;
-        display: none;
-    }
-}
-
 #play-field {
     display: none;
     position: absolute;
@@ -959,6 +947,16 @@ menu-items {
 }
 
 [mode="map"] {
+    .mode-map-only {
+        opacity: 1;
+        display: unset;
+    }
+
+    .mode-text-only {
+        opacity: 0;
+        display: none;
+    }
+
     #play-field {
         display: block;
     }
