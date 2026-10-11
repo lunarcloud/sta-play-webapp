@@ -418,12 +418,12 @@ export class IndexController {
         } else if (e.ctrlKey && e.key === ',') {
           e.preventDefault()
           settingsDialog.showModal()
-        } else if (e.ctrlKey && e.key === 'm') {
-          e.preventDefault()
-          this.#switchToMap()
         } else if (e.ctrlKey && e.altKey && e.key === 'm') {
           e.preventDefault()
           MirrorWindow.open()
+        } else if (e.ctrlKey && e.key === 'm') {
+          e.preventDefault()
+          this.#switchToMap()
         } else if (e.ctrlKey && e.altKey && e.key === 'd') {
           e.preventDefault()
           diceDialog.showModal()

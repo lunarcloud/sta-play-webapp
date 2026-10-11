@@ -913,7 +913,7 @@ menu-items {
 }
 
 #play-field {
-    display: block;
+    display: none;
     position: absolute;
     inset: 0;
     top: 3.125em;
@@ -944,6 +944,12 @@ menu-items {
             background: var(--nav-color-bg);
             color: var(--nav-color-text);
         }
+    }
+}
+
+[mode="map"] {
+    #play-field {
+        display: block;
     }
 }
 
