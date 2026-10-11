@@ -121,6 +121,7 @@ export class BackupData {
 
     const scenes = []
     for (const scene of data.Scenes) {
+      if (scene.image) { scene.image = await convertFile(scene.image) }
       scenes.push(SceneInfo.assign(scene))
     }
 
@@ -157,63 +158,44 @@ export class BackupData {
     const files = new Map()
     const zipData = {}
 
+    const imageFunction = function () {
+      /** @type {AppEncodedFileObject} */
+      const value = {
+        lastModified: this.lastModified,
+        name: this.name,
+        size: this.size,
+        type: this.type,
+        webkitRelativePath: this.webkitRelativePath,
+        isReferencedFile: true,
+        reference: crypto.randomUUID()
+      }
+      files[value.reference] = this
+      return value
+    }
+
     if (this.GameInfo.shipModel instanceof File) {
       // @ts-ignore
-      this.GameInfo.shipModel.toJSON = function () {
-        /** @type {AppEncodedFileObject} */
-        const value = {
-          lastModified: this.lastModified,
-          name: this.name,
-          size: this.size,
-          type: this.type,
-          webkitRelativePath: this.webkitRelativePath,
-          isReferencedFile: true,
-          reference: crypto.randomUUID()
-        }
-        files[value.reference] = this
-        return value
-      }
+      this.GameInfo.shipModel.toJSON = imageFunction
     }
 
     if (this.GameInfo.shipModel2 instanceof File) {
       // @ts-ignore
-      this.GameInfo.shipModel2.toJSON = function () {
-        /** @type {AppEncodedFileObject} */
-        const value = {
-          lastModified: this.lastModified,
-          name: this.name,
-          size: this.size,
-          type: this.type,
-          webkitRelativePath: this.webkitRelativePath,
-          isReferencedFile: true,
-          reference: crypto.randomUUID()
-        }
-        files[value.reference] = this
-        return value
-      }
+      this.GameInfo.shipModel2.toJSON = imageFunction
     }
 
     for (let i = 0; i < this.Players.length; i++) {
       if (this.Players[i].image instanceof File === false) { continue }
 
       // @ts-ignore
-      this.Players[i].image.toJSON = function () {
-        /** @type {AppEncodedFileObject} */
-        const value = {
-          lastModified: this.lastModified,
-          name: this.name,
-          size: this.size,
-          type: this.type,
-          webkitRelativePath: this.webkitRelativePath,
-          isReferencedFile: true,
-          reference: crypto.randomUUID()
-        }
-        files[value.reference] = this
-        return value
-      }
+      this.Players[i].image.toJSON = imageFunction
     }
 
-    // TODO image file in scene?
+    for (let i = 0; i < this.Scenes.length; i++) {
+      if (this.Scenes[i].image instanceof File === false) { continue }
+
+      // @ts-ignore
+      this.Scenes[i].image.toJSON = imageFunction
+    }
 
     const text = JSON.stringify(this)
 
