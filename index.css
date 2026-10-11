@@ -889,22 +889,25 @@ menu-items {
 #play-field, #play-field > *, #general-text {
     transition: all 400ms ease-in-out;
 }
+
 .mode-map-only {
-    opacity: 0%;
+    opacity: 0;
     display: none;
 }
+
 .mode-text-only {
-    opacity: 100%;
+    opacity: 1;
     display: unset;
 }
 
-[mode=map] {
+[mode="map"] {
     .mode-map-only {
-        opacity: 100%;
+        opacity: 1;
     display: unset;
     }
+
     .mode-text-only {
-        opacity: 0%;
+        opacity: 0;
         display: none;
     }
 }

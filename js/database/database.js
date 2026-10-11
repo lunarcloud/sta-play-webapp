@@ -68,9 +68,9 @@ export class Database {
    * @param {IDBPDatabase} db the database
    */
   async #upgrade (db) {
-    if (db.version === 16 && DB_VERSION == 17) {
-       console.debug('no migration logic needed')
-       return
+    if (db.version === 16 && DB_VERSION === 17) {
+      console.debug('no migration logic needed')
+      return
     }
 
     // fallback to wiping the database

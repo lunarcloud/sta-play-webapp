@@ -32,7 +32,7 @@ import { Interpolate, lerp } from './js/math-utils.js'
 import { MirrorWindow } from './js/mirror-window.js'
 
 const DefaultShipUrl = 'gltf/default-ship-1.glb'
-const ImageFileExtensions = ['.apng', '.avif', '.gif', '.heic', '.jpg', '.jpeg', '.jxl', '.png', '.svg', '.webp'];
+const ImageFileExtensions = ['.apng', '.avif', '.gif', '.heic', '.jpg', '.jpeg', '.jxl', '.png', '.svg', '.webp']
 
 /**
  * Controller for the Main, Index, Page.
@@ -279,9 +279,9 @@ export class IndexController {
     document.getElementById('map-btn').addEventListener('click', () => this.#switchToMap())
 
     // Map Image Drop
-    let mapEl = document.querySelector('#play-field > bg')
+    const mapEl = document.querySelector('#play-field > bg')
     setupDropOnly(mapEl, event => {
-      let image = event.dataTransfer.files?.[0];
+      const image = event.dataTransfer.files?.[0]
       if (!event.dataTransfer.items?.[0].type.startsWith('image/') || !image) {
         return false
       }
@@ -289,8 +289,8 @@ export class IndexController {
       this.#setMapImage(image)
       return true
     })
-    let mapSelectProxyEl = document.querySelector('#play-field > .image-change')
-    let mapSelectEl = mapSelectProxyEl.querySelector('input')
+    const mapSelectProxyEl = document.querySelector('#play-field > .image-change')
+    const mapSelectEl = mapSelectProxyEl.querySelector('input')
     mapSelectProxyEl.addEventListener('click', () => mapSelectEl.click())
     this.#setupFileImport(mapSelectEl, busyDialog, 'image', ImageFileExtensions, async (file) => { await this.#setMapImage(file) })
 
@@ -854,7 +854,6 @@ export class IndexController {
       } catch (ex) {
         if (ex instanceof Error) {
           this.messageDialog?.show(`Could not load ${fileDescription}, ${file.name} \n${ex.message}`)
-          debugger
         }
       } finally {
         fileSelect.value = null
@@ -1094,7 +1093,6 @@ export class IndexController {
     const currentScene = scenes.find(s => s.id === this.currentSceneId)
     const sceneName = currentScene ? currentScene.name : undefined
 
-    debugger
     const sceneInfo = new SceneInfo(
       this.currentSceneId,
       this.currentGameId,
@@ -1757,30 +1755,27 @@ export class IndexController {
   }
 
   #switchToMap () {
-    console.debug("switch to map!")
+    console.debug('switch to map!')
 
-    if (this.mode === 'text')
-        this.mode = 'map'
-    else
-      this.mode = 'text'
+    if (this.mode === 'text') { this.mode = 'map' } else { this.mode = 'text' }
 
     document.body.setAttribute('mode', this.mode)
   }
 
   /**
    * Set map to the image file
-   * @param {File} imageFile
+   * @param {File|undefined} imageFile    the file to set
    */
   async #setMapImage (imageFile) {
-      this.#mapImage = imageFile
-      let mapEl = document.querySelector('#play-field > bg')
+    this.#mapImage = imageFile
+    const mapEl = document.querySelector('#play-field > bg')
 
-      if (this.#mapImage instanceof File) {
-        let imgUrl = URL.createObjectURL(this.#mapImage)
-        mapEl.style.backgroundImage = `url(${imgUrl})`
-      } else {
-        mapEl.style.backgroundImage = ''
-      }
+    if (this.#mapImage instanceof File) {
+      const imgUrl = URL.createObjectURL(this.#mapImage)
+      mapEl.style.backgroundImage = `url(${imgUrl})`
+    } else {
+      mapEl.style.backgroundImage = ''
+    }
   }
 }
 

@@ -1,7 +1,6 @@
 import { animateRemove } from '../../js/dialog-utils.js'
 import { snakeToCamel } from '../../js/string-utils.js'
 
-
 export class MapTokenElement extends HTMLDivElement {
   /**
    * [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements#responding_to_attribute_changes)
@@ -13,12 +12,10 @@ export class MapTokenElement extends HTMLDivElement {
     ]
   }
 
-
   /**
    * @type {HTMLButtonElement}
    */
   #removeBtnEl
-
 
   /**
    * @type {File} Image file
@@ -94,27 +91,23 @@ export class MapTokenElement extends HTMLDivElement {
       event.dataTransfer.dropEffect = 'move'
 
       // Get the dragging element
-      const draggingElement = document.querySelector('[is=map-token].dragging')
-      if (!draggingElement) {
-        return
-      }
-
+      // const draggingElement = document.querySelector('[is=map-token].dragging')
       // TODO
     })
   }
 
-    /**
-     * Called when an attribute changes.
-     * [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements#responding_to_attribute_changes)
-     * @param {string} name     attribute name
-     * @param {any} _oldValue   the previous value
-     * @param {any} newValue    the new value
-     */
-    attributeChangedCallback (name, _oldValue, newValue) {
-      if (MapTokenElement.observedAttributes.includes(name)) {
-        this[snakeToCamel(name)] = newValue
-      }
+  /**
+   * Called when an attribute changes.
+   * [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements#responding_to_attribute_changes)
+   * @param {string} name     attribute name
+   * @param {any} _oldValue   the previous value
+   * @param {any} newValue    the new value
+   */
+  attributeChangedCallback (name, _oldValue, newValue) {
+    if (MapTokenElement.observedAttributes.includes(name)) {
+      this[snakeToCamel(name)] = newValue
     }
+  }
 
   /**
    * The token's image.
@@ -133,7 +126,6 @@ export class MapTokenElement extends HTMLDivElement {
     // URL.createObjectURL(this.#imageFile)
     // TODO
   }
-
 }
 
 // Register element
