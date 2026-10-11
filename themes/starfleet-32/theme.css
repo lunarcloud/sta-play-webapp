@@ -342,10 +342,15 @@ body::before {
 #settings-btn,
 #save-btn,
 #dice-btn,
+#map-btn,
 #tables-btn,
 #font-up-btn,
 #font-down-btn {
     color: var(--menu-text-bright) !important;
+
+    & text {
+        width: 2.5em;
+    }
 
     & text,
     & symbol {
@@ -362,7 +367,8 @@ body::before {
 }
 
 #dice-btn,
-#tables-btn {
+#tables-btn,
+#map-btn {
     & text {
         display: unset;
     }
@@ -390,6 +396,14 @@ body::before {
 
 #tables-btn {
     top: calc(var(--main-font-size)* 11.75);
+}
+
+#map-btn {
+    top: calc(var(--main-font-size)* 13);
+}
+
+#tables-btn,
+#map-btn {
     filter: sepia(1) saturate(2) hue-rotate(150deg);
 
     &:hover, &:focus {
@@ -424,6 +438,7 @@ body::before {
 #font-up-btn,
 #font-down-btn,
 #dice-btn,
+#map-btn,
 #tables-btn,
 #momentum-section,
 #threat-section {

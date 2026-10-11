@@ -213,6 +213,8 @@ export class BackupData {
       }
     }
 
+    // TODO image file in scene?
+
     const text = JSON.stringify(this)
 
     // Add info.json to zip data

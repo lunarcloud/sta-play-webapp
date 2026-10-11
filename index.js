@@ -32,6 +32,7 @@ import { Interpolate, lerp } from './js/math-utils.js'
 import { MirrorWindow } from './js/mirror-window.js'
 
 const DefaultShipUrl = 'gltf/default-ship-1.glb'
+const ImageFileExtensions = ['.apng', '.avif', '.gif', '.heic', '.jpg', '.jpeg', '.jxl', '.png', '.svg', '.webp'];
 
 /**
  * Controller for the Main, Index, Page.
@@ -56,6 +57,11 @@ export class IndexController {
   currentSceneId
 
   /**
+   * @type {string}
+   */
+  mode = 'text'
+
+  /**
    * @type {object|undefined}
    */
   shipModel = undefined
@@ -64,6 +70,11 @@ export class IndexController {
    * @type {object|undefined}
    */
   shipModel2 = undefined
+
+  /**
+   * @type {File|undefined}
+   */
+  #mapImage = undefined
 
   /**
    * Current model displayed in fullscreen (1 or 2)
@@ -264,6 +275,25 @@ export class IndexController {
 
     this.#setupSettings(settingsDialog, welcomeDialog, busyDialog)
 
+    // Wire up the map switcher
+    document.getElementById('map-btn').addEventListener('click', () => this.#switchToMap())
+
+    // Map Image Drop
+    let mapEl = document.querySelector('#play-field > bg')
+    setupDropOnly(mapEl, event => {
+      let image = event.dataTransfer.files?.[0];
+      if (!event.dataTransfer.items?.[0].type.startsWith('image/') || !image) {
+        return false
+      }
+      event.preventDefault()
+      this.#setMapImage(image)
+      return true
+    })
+    let mapSelectProxyEl = document.querySelector('#play-field > .image-change')
+    let mapSelectEl = mapSelectProxyEl.querySelector('input')
+    mapSelectProxyEl.addEventListener('click', () => mapSelectEl.click())
+    this.#setupFileImport(mapSelectEl, busyDialog, 'image', ImageFileExtensions, async (file) => { await this.#setMapImage(file) })
+
     // Setup Model-Viewer fullscreen view buttons
     const enterShipFullscreenBtn = document.getElementById('ship-enter-fullscreen')
     enterShipFullscreenBtn.addEventListener('click', () => document.body.classList.add('ship-fullscreen'))
@@ -388,6 +418,9 @@ export class IndexController {
         } else if (e.ctrlKey && e.key === ',') {
           e.preventDefault()
           settingsDialog.showModal()
+        } else if (e.ctrlKey && e.key === 'm') {
+          e.preventDefault()
+          this.#switchToMap()
         } else if (e.ctrlKey && e.altKey && e.key === 'm') {
           e.preventDefault()
           MirrorWindow.open()
@@ -762,8 +795,7 @@ export class IndexController {
       throw new Error('Page setup incorrect')
     }
 
-    this.#setupFileImport(fileSelectPlayer, busyDialog, 'image',
-      ['apng', 'avif', 'gif', '.heic', '.jpg', '.jpeg', '.jxl', '.png', 'svg', 'webp'],
+    this.#setupFileImport(fileSelectPlayer, busyDialog, 'image', ImageFileExtensions,
       async (file) => {
         const index = parseInt(indexSelectPlayer.value)
         const playerEl = document.querySelector(`.players li:nth-child(${index})`)
@@ -822,6 +854,7 @@ export class IndexController {
       } catch (ex) {
         if (ex instanceof Error) {
           this.messageDialog?.show(`Could not load ${fileDescription}, ${file.name} \n${ex.message}`)
+          debugger
         }
       } finally {
         fileSelect.value = null
@@ -925,6 +958,8 @@ export class IndexController {
 
       // Load ship alert/condition from the first scene, with backwards compatibility
       this.#setShipAlert((firstSceneInfo?.activeAlert ?? gameInfo?.activeAlert ?? '').trim())
+
+      this.#setMapImage(firstSceneInfo.image)
 
       // Get all players
       const players = await this.db.getPlayers(gameInfo?.id)
@@ -1059,6 +1094,7 @@ export class IndexController {
     const currentScene = scenes.find(s => s.id === this.currentSceneId)
     const sceneName = currentScene ? currentScene.name : undefined
 
+    debugger
     const sceneInfo = new SceneInfo(
       this.currentSceneId,
       this.currentGameId,
@@ -1069,7 +1105,8 @@ export class IndexController {
         missionTrackerEl.act2,
         missionTrackerEl.act3
       ],
-      shipAlertEl.color
+      shipAlertEl.color,
+      this.#mapImage
     )
     const savedSceneId = await this.db.saveSceneInfo(sceneInfo)
     if (savedSceneId !== undefined) {
@@ -1564,6 +1601,8 @@ export class IndexController {
       for (const trait of traits) {
         this.addTrait(trait)
       }
+
+      this.#setMapImage(scene.image)
     }
   }
 
@@ -1636,7 +1675,8 @@ export class IndexController {
         missionTrackerEl.act2,
         missionTrackerEl.act3
       ],
-      shipAlertEl.color
+      shipAlertEl.color,
+      this.#mapImage
     )
     await this.db.saveSceneInfo(sceneInfo)
 
@@ -1714,6 +1754,33 @@ export class IndexController {
         await this.#switchToScene(remainingScenes[0].id)
       }
     }
+  }
+
+  #switchToMap () {
+    console.debug("switch to map!")
+
+    if (this.mode === 'text')
+        this.mode = 'map'
+    else
+      this.mode = 'text'
+
+    document.body.setAttribute('mode', this.mode)
+  }
+
+  /**
+   * Set map to the image file
+   * @param {File} imageFile
+   */
+  async #setMapImage (imageFile) {
+      this.#mapImage = imageFile
+      let mapEl = document.querySelector('#play-field > bg')
+
+      if (this.#mapImage instanceof File) {
+        let imgUrl = URL.createObjectURL(this.#mapImage)
+        mapEl.style.backgroundImage = `url(${imgUrl})`
+      } else {
+        mapEl.style.backgroundImage = ''
+      }
   }
 }
 

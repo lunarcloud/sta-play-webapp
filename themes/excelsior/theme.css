@@ -339,6 +339,7 @@ body {
         grid-row: var(--main-content-row);
         grid-column: var(--main-content-col-start) / var(--main-content-col-end);
         overflow: auto;
+        position: unset;
         margin-left: 1em;
 
         & content,
@@ -349,6 +350,11 @@ body {
         & #general-text {
             overflow-wrap: anywhere;
             word-break: normal;
+        }
+
+        & #play-field {
+            position: relative;
+            inset: 0;
         }
 
         & traits {

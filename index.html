@@ -33,37 +33,42 @@
             </div>
 
             <!-- General Buttons -->
-            <a id="settings-btn" class="text-n-symbol-btn">
+            <a id="settings-btn" class="text-n-symbol-btn" title="edit settings">
                 <text>Menu</text>
                 <symbol>☰</symbol>
             </a>
 
-            <a id="save-btn" class="text-n-symbol-btn">
+            <a id="save-btn" class="text-n-symbol-btn" title="save game">
                 <text>Save</text>
                 <symbol>💾</symbol>
             </a>
 
-            <a id="dice-btn" class="text-n-symbol-btn">
+            <a id="dice-btn" class="text-n-symbol-btn" title="dice roller">
                 <text>Roll</text>
                 <img class="symbol" alt="roll d20 dice" src="img/d20-icon.svg">
             </a>
 
-            <a id="tables-btn" class="text-n-symbol-btn">
+            <a id="map-btn" class="text-n-symbol-btn" title="image mode">
+                <text>Map</text>
+                <symbol>🗺️</symbol>
+            </a>
+
+            <a id="tables-btn" class="text-n-symbol-btn" title="random tables">
                 <text>Tables</text>
                 <symbol>📋</symbol>
             </a>
 
-            <a id="fullscreen-btn" class="text-n-symbol-btn">
+            <a id="fullscreen-btn" class="text-n-symbol-btn" title="Toggle Fullscreen">
                 <img class="symbol enter" alt="enter fullscreen" src="img/fullscreen-icon.svg">
                 <img class="symbol exit" hidden alt="return from fullscreen" src="img/fullscreen-return-icon.svg">
             </a>
 
-            <a id="font-up-btn" class="text-n-symbol-btn">
+            <a id="font-up-btn" class="text-n-symbol-btn" title="increase font size">
                 <text>font</text>
                 <symbol>++</symbol>
             </a>
 
-            <a id="font-down-btn" class="text-n-symbol-btn">
+            <a id="font-down-btn" class="text-n-symbol-btn" title="decrease font size">
                 <text>font</text>
                 <symbol>--</symbol>
             </a>
@@ -175,13 +180,34 @@
                 <traits class="edition-1 edition-2"><span>TRAITS: </span></traits>
                 <ship-alert></ship-alert>
                 <task-trackers></task-trackers>
-                <div id="general-text" contenteditable="true">
+                <div id="general-text" class="mode-text-only" contenteditable="true">
                     <h1>Story Notes</h1>
                     <p>The story so far...</p>
                 </div>
+                <div id="play-field" class="mode-map-only">
+                    <!-- linthtml-disable attr-bans -->
+                    <svg class="bg" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <pattern id="holodeck-grid" patternUnits="userSpaceOnUse" width="56" height="56">
+                                <rect fill="transparent" width="56" height="56"/>
+                                <line x1="0" y1="0" x2="0" y2="56" stroke="#E5D908" stroke-width="2"/>
+                                <line x1="0" y1="0" x2="56" y2="0" stroke="#E5D908" stroke-width="2"/>
+                            </pattern>
+                        </defs>
+                        <rect fill="url(#holodeck-grid)" width="100%" height="100%"/>
+                    </svg>
+                    <!-- linthtml-enable attr-bans -->
+                    <bg></bg>
+                    <button class="image-change" role="option">
+                        <input class="select" type="file" accept="image/*" hidden />
+                        <emoji>📂</emoji>
+                    </button>
+                    <span id="player-tokens"></span>
+                    <span id="npc-tokens"></span>
+                </div>
             </content>
-            <select-only>Players: </select-only>
-            <ul class="players"></ul>
+            <select-only class="mode-text-only">Players: </select-only>
+            <ul id="text-mode-players" class="players mode-text-only"></ul>
         </main>
 
         <theme></theme>

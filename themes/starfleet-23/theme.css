@@ -88,6 +88,10 @@ html > body {
         padding: 0.5em;
         overflow: auto;
         height: auto;
+
+        #play-field {
+            inset: 3.75em 0 0.5em;
+        }
     }
 
     & > nav {
@@ -130,6 +134,7 @@ html > body {
 #save-btn,
 #fullscreen-btn,
 #dice-btn,
+#map-btn,
 #tables-btn,
 #font-up-btn,
 #font-down-btn  {
@@ -177,6 +182,11 @@ html > body {
 
 #tables-btn {
     left: 3.75em;
+    right: unset;
+}
+
+#map-btn {
+    left: 5em;
     right: unset;
 }
 

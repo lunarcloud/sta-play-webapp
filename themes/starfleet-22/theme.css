@@ -362,6 +362,7 @@ body {
     }
 
     & > main {
+        position: static;
         grid-row: var(--main-content-row);
         grid-column: var(--main-content-col-start) / var(--main-content-col-end);
         overflow: auto;
@@ -378,6 +379,11 @@ body {
         & #general-text {
             overflow-wrap: anywhere;
             word-break: normal;
+        }
+
+        & #play-field {
+            position: relative;
+            top: 0;
         }
 
         & traits {

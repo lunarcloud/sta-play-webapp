@@ -22,7 +22,7 @@ import { BackupData } from './backup-data.js'
  */
 
 const DB_NAME = 'STAPlayApp'
-const DB_VERSION = 16
+const DB_VERSION = 17
 const STORE = {
   GAMES: 'games',
   SCENES: 'scenes',
@@ -68,14 +68,14 @@ export class Database {
    * @param {IDBPDatabase} db the database
    */
   async #upgrade (db) {
-    // if (db.version === ??) {
-    //    console.debug('add logic here for migration')
-    //    return
-    // }
+    if (db.version === 16 && DB_VERSION == 17) {
+       console.debug('no migration logic needed')
+       return
+    }
 
     // fallback to wiping the database
     console.warn('clearing db for upgrade')
-    await this.#create(db)
+    this.#create(db)
   }
 
   /**

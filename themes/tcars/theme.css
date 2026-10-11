@@ -243,10 +243,16 @@ body {
     & > main {
         grid-row: 2;
         grid-column: 3 / 7;
+        position: relative;
 
         content {
             #general-text h1 {
                 text-indent: 0.5em;
+            }
+
+            & #play-field {
+                position: relative;
+                top: 0;
             }
 
             traits {
@@ -254,8 +260,8 @@ body {
                 display: flex;
                 flex-direction: column;
                 width: 6em;
-                left: 0.5em;
-                top: 2.75em;
+                left: -9em;
+                top: -0.5em;
 
                 & > trait-display::part(internal) {
                     --trait-display-white-space: normal;
@@ -329,6 +335,7 @@ body {
             width: fit-content;
             height: 2em;
             line-height: 3em;
+            z-index: 10; /* otherwise the "main content" is on top */
         }
 
         #font-down-btn {
@@ -347,6 +354,16 @@ body {
             top: unset;
             bottom: 8.5em;
             right: 2em;
+            font-size: var(--main-font-size);
+            width: fit-content;
+            height: 2em;
+        }
+
+        #map-btn {
+            left: unset;
+            top: unset;
+            bottom: 10.45em;
+            right: 3.5em;
             font-size: var(--main-font-size);
             width: fit-content;
             height: 2em;

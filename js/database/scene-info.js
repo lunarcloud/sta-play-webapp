@@ -31,6 +31,11 @@ export class SceneInfo extends NamedInfo {
   activeAlert
 
   /**
+   * @type {File|undefined}
+   */
+  image
+
+  /**
    * Create a Player info
    * @param {number|undefined}    id              database entry id or undefined if new
    * @param {number}              game            The id of the game it is for
@@ -38,13 +43,15 @@ export class SceneInfo extends NamedInfo {
    * @param {string}              [description]   description of the scene
    * @param {Array<string>}       [missionTrack]  mission tracker
    * @param {string}              [activeAlert]   active alert/condition for this scene
+   * @param {File|undefined}      [image]         image to use for map mode
    */
-  constructor (id, game, name = DefaultSceneName, description = DefaultSceneDescription, missionTrack = [], activeAlert = '') {
+  constructor (id, game, name = DefaultSceneName, description = DefaultSceneDescription, missionTrack = [], activeAlert = '', image = undefined) {
     super(name, id)
     this.game = game
     this.description = description
     this.missionTrack = missionTrack
     this.activeAlert = activeAlert
+    this.image = image
   }
 
   /**
@@ -59,7 +66,8 @@ export class SceneInfo extends NamedInfo {
       'name' in obj ? obj.name : DefaultSceneName,
       'description' in obj ? obj.description : DefaultSceneDescription,
       'missionTrack' in obj ? obj.missionTrack : [],
-      'activeAlert' in obj ? obj.activeAlert : ''
+      'activeAlert' in obj ? obj.activeAlert : '',
+      'image' in obj ? obj.image : undefined
     )
   }
 
@@ -70,6 +78,7 @@ export class SceneInfo extends NamedInfo {
   validate () {
     return typeof (this.game) === 'number' &&
             typeof (this.name) === 'string' &&
-            typeof (this.description) === 'string'
+            typeof (this.description) === 'string' &&
+            (this.image === undefined || this.image instanceof File)
   }
 }
