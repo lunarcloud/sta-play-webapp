@@ -903,7 +903,7 @@ menu-items {
 [mode="map"] {
     .mode-map-only {
         opacity: 1;
-    display: unset;
+        display: unset;
     }
 
     .mode-text-only {
@@ -933,9 +933,19 @@ menu-items {
     }
 
     & > .image-change {
-        position: absolute;
-        right: 0.125em;
+        top: 1.25em;
+    }
+
+    & > .image-clear {
         top: 0.125em;
+    }
+
+    & > .image-change,
+    & > .image-clear {
+        position: absolute;
+        width: 1.25em;
+        right: 0.5em;
+        text-align: center;
         background: var(--main-color-bg);
         color: var(--main-color-text);
         border-radius: 1em;
@@ -943,6 +953,7 @@ menu-items {
         &:hover {
             background: var(--nav-color-bg);
             color: var(--nav-color-text);
+            cursor: pointer;
         }
     }
 }

@@ -293,6 +293,8 @@ export class IndexController {
     const mapSelectEl = mapSelectProxyEl.querySelector('input')
     mapSelectProxyEl.addEventListener('click', () => mapSelectEl.click())
     this.#setupFileImport(mapSelectEl, busyDialog, 'image', ImageFileExtensions, async (file) => { await this.#setMapImage(file) })
+    const mapClearEl = document.querySelector('#play-field > .image-clear')
+    mapClearEl.addEventListener('click', () => this.#setMapImage(undefined))
 
     // Setup Model-Viewer fullscreen view buttons
     const enterShipFullscreenBtn = document.getElementById('ship-enter-fullscreen')
