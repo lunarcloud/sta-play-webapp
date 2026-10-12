@@ -4,6 +4,7 @@ import { GameInfo } from '../../../js/database/game-info.js'
 import { PlayerInfo } from '../../../js/database/player-info.js'
 import { SceneInfo } from '../../../js/database/scene-info.js'
 import { TrackerInfo } from '../../../js/database/tracker-info.js'
+import { TokenInfo } from '../../../js/database/token-info.js'
 
 describe('BackupData', () => {
   describe('constructor', () => {
@@ -41,6 +42,15 @@ describe('BackupData', () => {
       expect(backup.Trackers).to.be.an('array').that.is.empty
       expect(backup.Traits).to.be.an('object')
       expect(Object.keys(backup.Traits)).to.be.empty
+      expect(backup.Tokens).to.be.an('array').that.is.empty
+    })
+
+    it('should accept tokens', () => {
+      const gameInfo = new GameInfo(1, 'Test Game', 'USS Enterprise')
+      const tokens = [new TokenInfo(1, 'Token One')]
+      const backup = new BackupData(gameInfo, [], [], [], {}, [], tokens)
+
+      expect(backup.Tokens).to.equal(tokens)
     })
   })
 
@@ -222,6 +232,37 @@ describe('BackupData', () => {
       expect(importedBackup.Players[0].image).to.be.instanceOf(File)
       expect(importedBackup.Players[0].image.name).to.equal('player.png')
       expect(importedBackup.Players[0].image.type).to.equal('image/png')
+    })
+
+    it('should import backup data with tokens', async () => {
+      const gameInfo = new GameInfo(1, 'Test Game', 'USS Enterprise')
+      const tokens = [new TokenInfo(1, 'Token One')]
+      const originalBackup = new BackupData(gameInfo, [], [], [], {}, [], tokens)
+
+      const blob = await originalBackup.getZip()
+      const file = new File([blob], 'test-backup.staplay', { type: 'application/staplay' })
+
+      const importedBackup = await BackupData.import(file)
+
+      expect(importedBackup.Tokens).to.be.an('array').with.lengthOf(1)
+      expect(importedBackup.Tokens[0]).to.be.instanceOf(TokenInfo)
+      expect(importedBackup.Tokens[0].name).to.equal('Token One')
+    })
+
+    it('should import backup data with token images', async () => {
+      const gameInfo = new GameInfo(1, 'Test Game', 'USS Enterprise')
+      const tokenImage = new File(['mock image data'], 'token.png', { type: 'image/png' })
+      const tokens = [new TokenInfo(1, 'Token One', tokenImage)]
+      const originalBackup = new BackupData(gameInfo, [], [], [], {}, [], tokens)
+
+      const blob = await originalBackup.getZip()
+      const file = new File([blob], 'test-backup.staplay', { type: 'application/staplay' })
+
+      const importedBackup = await BackupData.import(file)
+
+      expect(importedBackup.Tokens[0].image).to.be.instanceOf(File)
+      expect(importedBackup.Tokens[0].image.name).to.equal('token.png')
+      expect(importedBackup.Tokens[0].image.type).to.equal('image/png')
     })
 
     it('should handle empty backup data', async () => {

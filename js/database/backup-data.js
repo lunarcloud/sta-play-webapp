@@ -3,6 +3,7 @@ import { PlayerInfo } from './player-info.js'
 import { TrackerInfo } from './tracker-info.js'
 import { RollTableInfo } from './roll-table-info.js'
 import { SceneInfo } from './scene-info.js'
+import { TokenInfo } from './token-info.js'
 import { zipSync, unzipSync, strToU8, strFromU8 } from '../lib/fflate.js'
 
 /**
@@ -48,6 +49,11 @@ export class BackupData {
   RollTables
 
   /**
+   * @type {Array<TokenInfo>}
+   */
+  Tokens
+
+  /**
    * @type {Map<number, Array<string>>}
    */
   Traits
@@ -60,14 +66,16 @@ export class BackupData {
    * @param {Array<TrackerInfo>} trackers             list of trackers
    * @param {Map<number, Array<string>>} traits       list of traits for scenes
    * @param {Array<RollTableInfo>} rollTables         list of roll tables
+   * @param {Array<TokenInfo>} tokens                 list of (non-player) tokens
    */
-  constructor (gameInfo, players, scenes, trackers, traits, rollTables = []) {
+  constructor (gameInfo, players, scenes, trackers, traits, rollTables = [], tokens = []) {
     this.GameInfo = gameInfo
     this.Players = players
     this.Scenes = scenes
     this.Trackers = trackers
     this.Traits = traits
     this.RollTables = rollTables
+    this.Tokens = tokens
   }
 
   /**
@@ -137,13 +145,22 @@ export class BackupData {
       }
     }
 
+    const tokens = []
+    if (data.Tokens) {
+      for (const token of data.Tokens) {
+        if (token.image) { token.image = await convertFile(token.image) }
+        tokens.push(TokenInfo.assign(token))
+      }
+    }
+
     const backupData = new BackupData(
       GameInfo.assign(data.GameInfo),
       players,
       scenes,
       trackers,
       data.Traits,
-      rollTables
+      rollTables,
+      tokens
     )
 
     // Put it all into the object
@@ -195,6 +212,13 @@ export class BackupData {
 
       // @ts-ignore
       this.Scenes[i].image.toJSON = imageFunction
+    }
+
+    for (let i = 0; i < this.Tokens.length; i++) {
+      if (this.Tokens[i].image instanceof File === false) { continue }
+
+      // @ts-ignore
+      this.Tokens[i].image.toJSON = imageFunction
     }
 
     const text = JSON.stringify(this)

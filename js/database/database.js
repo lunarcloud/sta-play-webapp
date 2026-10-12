@@ -7,6 +7,7 @@ import { TrackerInfo } from './tracker-info.js'
 import { TraitInfo } from './trait-info.js'
 import { SceneInfo } from './scene-info.js'
 import { RollTableInfo } from './roll-table-info.js'
+import { TokenInfo } from './token-info.js'
 import { BackupData } from './backup-data.js'
 
 /**
@@ -22,14 +23,15 @@ import { BackupData } from './backup-data.js'
  */
 
 const DB_NAME = 'STAPlayApp'
-const DB_VERSION = 17
+const DB_VERSION = 18
 const STORE = {
   GAMES: 'games',
   SCENES: 'scenes',
   TRAITS: 'traits',
   PLAYERS: 'players',
   TRACKERS: 'trackers',
-  ROLL_TABLES: 'rollTables'
+  ROLL_TABLES: 'rollTables',
+  TOKENS: 'tokens'
 }
 const INDEX = {
   ID: 'id',
@@ -55,7 +57,7 @@ export class Database {
    */
   async open () {
     try {
-      return await openDB(DB_NAME, DB_VERSION, { upgrade: async db => await this.#upgrade(db) })
+      return await openDB(DB_NAME, DB_VERSION, { upgrade: async (db, oldVersion) => await this.#upgrade(db, oldVersion) })
     } catch (e) {
       console.error('Downgrade detected, wiping database', e)
       await this.clear()
@@ -65,11 +67,16 @@ export class Database {
 
   /**
    * Upgrade the database
-   * @param {IDBPDatabase} db the database
+   * @param {IDBPDatabase} db          the database
+   * @param {number} oldVersion        the version being upgraded from
    */
-  async #upgrade (db) {
-    if (db.version === 16 && DB_VERSION === 17) {
-      console.debug('no migration logic needed')
+  async #upgrade (db, oldVersion) {
+    if (oldVersion === 17 && DB_VERSION === 18) {
+      // Purely additive: add the new tokens store, leaving all existing data untouched.
+      // Existing scenes simply lack a tokenPositions entry until re-saved (treated as {} at runtime).
+      const tokenStore = db.createObjectStore(STORE.TOKENS, { keyPath: INDEX.ID, autoIncrement: true })
+      tokenStore.createIndex(INDEX.NAME, INDEX.NAME, { unique: false })
+      tokenStore.createIndex(INDEX.GAME, INDEX.GAME, { unique: false })
       return
     }
 
@@ -101,6 +108,9 @@ export class Database {
     if (db.objectStoreNames.contains(STORE.ROLL_TABLES)) {
       db.deleteObjectStore(STORE.ROLL_TABLES)
     }
+    if (db.objectStoreNames.contains(STORE.TOKENS)) {
+      db.deleteObjectStore(STORE.TOKENS)
+    }
 
     console.warn('cleared db for upgrade')
     const gameStore = db.createObjectStore(STORE.GAMES, { keyPath: INDEX.ID, autoIncrement: true })
@@ -125,6 +135,10 @@ export class Database {
     const rollTablesStore = db.createObjectStore(STORE.ROLL_TABLES, { keyPath: INDEX.ID, autoIncrement: true })
     rollTablesStore.createIndex(INDEX.NAME, INDEX.NAME, { unique: false })
     rollTablesStore.createIndex(INDEX.GAME, INDEX.GAME, { unique: false })
+
+    const tokenStore = db.createObjectStore(STORE.TOKENS, { keyPath: INDEX.ID, autoIncrement: true })
+    tokenStore.createIndex(INDEX.NAME, INDEX.NAME, { unique: false })
+    tokenStore.createIndex(INDEX.GAME, INDEX.GAME, { unique: false })
   }
 
   /**
@@ -255,6 +269,28 @@ export class Database {
     const data = rows.map(e => {
       /** @type {RollTableInfo} */
       const item = Object.create(RollTableInfo.prototype)
+      Object.assign(item, e)
+      return item
+    })
+    return data
+  }
+
+  /**
+   * Get the tokens from the database
+   * @param {number}  [gameId]                    the id of the game to filter by
+   * @param {IDBPDatabase|undefined} [db]         the database (else we'll open a new one)
+   * @returns {Promise<TokenInfo[]>}              the information for all (non-player) tokens
+   */
+  async getTokens (gameId, db = undefined) {
+    const andClose = typeof (db) === 'undefined'
+    db ??= await this.open()
+
+    const rows = await db.getAllFromIndex(STORE.TOKENS, INDEX.GAME, gameId)
+    if (andClose) db.close()
+    /** @type {TokenInfo[]} */
+    const data = rows.map(e => {
+      /** @type {TokenInfo} */
+      const item = Object.create(TokenInfo.prototype)
       Object.assign(item, e)
       return item
     })
@@ -425,6 +461,22 @@ export class Database {
   }
 
   /**
+   * Replace the tokens in the database with new ones
+   * @param {TokenInfo[]} tokens              all the current (non-player) token infos
+   * @param {IDBPDatabase|IDBDatabase} [db]   the database
+   */
+  async replaceTokens (tokens = [], db = undefined) {
+    const invalidTokens = tokens.filter(t => !t.validate())
+    if (invalidTokens.length > 0) {
+      console.error('Invalid tokens provided: %o', invalidTokens)
+      return
+    }
+
+    tokens.forEach(t => { if (t.id === undefined) delete t.id })
+    await this.#replaceData(STORE.TOKENS, INDEX.NAME, undefined, tokens, db)
+  }
+
+  /**
    * Export the database info for a  game to a backup data object.
    * @param {string|number}  [nameOrId]   the name of the game to load
    * @param {IDBPDatabase} [db]           the database
@@ -439,6 +491,7 @@ export class Database {
     const players = await this.getPlayers(gameInfo.id, db)
     const trackers = await this.getTrackers(gameInfo.id, db)
     const rollTables = await this.getRollTables(gameInfo.id, db)
+    const tokens = await this.getTokens(gameInfo.id, db)
     const scenes = await this.getScenes(gameInfo.id, db)
     const traits = new Map()
 
@@ -446,7 +499,7 @@ export class Database {
       traits[scene.id] = await this.getTraits(scene.id, db)
     }
 
-    const data = new BackupData(gameInfo, players, scenes, trackers, traits, rollTables)
+    const data = new BackupData(gameInfo, players, scenes, trackers, traits, rollTables, tokens)
 
     if (andClose) db.close()
     return data.getZip()
@@ -466,6 +519,7 @@ export class Database {
     await this.replacePlayers(data.Players, db)
     await this.replaceTrackers(data.Trackers, db)
     await this.replaceRollTables(data.RollTables || [], db)
+    await this.replaceTokens(data.Tokens || [], db)
 
     for (const scene of data.Scenes) {
       await this.saveSceneInfo(scene, db)

@@ -47,6 +47,17 @@ describe('SceneInfo', () => {
       const info = new SceneInfo(0, 2, 'Scene')
       expect(info.id).to.equal(0)
     })
+
+    it('should use empty object for tokenPositions when not provided', () => {
+      const info = new SceneInfo(1, 2)
+      expect(info.tokenPositions).to.deep.equal({})
+    })
+
+    it('should accept custom tokenPositions', () => {
+      const positions = { 'player-0': { x: 0.5, y: 0.5 } }
+      const info = new SceneInfo(1, 2, 'Scene', 'Desc', [], '', undefined, positions)
+      expect(info.tokenPositions).to.deep.equal(positions)
+    })
   })
 
   describe('assign', () => {
@@ -91,6 +102,19 @@ describe('SceneInfo', () => {
       const info = SceneInfo.assign(obj)
       expect(info.activeAlert).to.equal('')
     })
+
+    it('should use empty object when tokenPositions not in object', () => {
+      const obj = { id: 1, game: 2 }
+      const info = SceneInfo.assign(obj)
+      expect(info.tokenPositions).to.deep.equal({})
+    })
+
+    it('should assign tokenPositions when present in object', () => {
+      const positions = { 'player-1': { x: 0.2, y: 0.8 } }
+      const obj = { id: 1, game: 2, tokenPositions: positions }
+      const info = SceneInfo.assign(obj)
+      expect(info.tokenPositions).to.deep.equal(positions)
+    })
   })
 
   describe('validate', () => {
@@ -125,6 +149,18 @@ describe('SceneInfo', () => {
     it('should return true with default values', () => {
       const info = new SceneInfo(1, 2)
       expect(info.validate()).to.be.true
+    })
+
+    it('should return false when tokenPositions is not an object', () => {
+      const info = new SceneInfo(1, 2, 'Scene', 'Description')
+      info.tokenPositions = 'not an object'
+      expect(info.validate()).to.be.false
+    })
+
+    it('should return false when tokenPositions is null', () => {
+      const info = new SceneInfo(1, 2, 'Scene', 'Description')
+      info.tokenPositions = null
+      expect(info.validate()).to.be.false
     })
   })
 

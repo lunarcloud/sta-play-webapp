@@ -918,6 +918,10 @@ menu-items {
         width: calc(100% - 2em);
         height: calc(100% - 2em);
         object-fit: contain;
+
+        &[hidden] {
+            display: none;
+        }
     }
 
     & > .image-change {

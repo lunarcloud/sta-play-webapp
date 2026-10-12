@@ -15,6 +15,10 @@ img[is="map-token"] {
 
     filter: var(--shadow);
 
+    &[hidden] {
+        display: none;
+    }
+
     &:hover {
         scale: 1.1;
         filter: drop-shadow(5px 5px 5px oklab(57.95% 0 0 / 100%));

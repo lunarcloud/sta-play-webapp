@@ -4,6 +4,12 @@ export const DefaultSceneName = 'Scene Notes'
 export const DefaultSceneDescription = 'The story so far...'
 
 /**
+ * @typedef {object} TokenPosition
+ * @property {number} x   normalized horizontal position (0-1) within the map image's rendered bounds
+ * @property {number} y   normalized vertical position (0-1) within the map image's rendered bounds
+ */
+
+/**
  * Scene Named Information Object.
  */
 export class SceneInfo extends NamedInfo {
@@ -36,6 +42,13 @@ export class SceneInfo extends NamedInfo {
   image
 
   /**
+   * Map token positions for this scene, keyed by token key (e.g. `player-0`, `token-5`).
+   * A token with no entry here is not placed on this scene's map.
+   * @type {Record<string, TokenPosition>}
+   */
+  tokenPositions
+
+  /**
    * Create a Player info
    * @param {number|undefined}    id              database entry id or undefined if new
    * @param {number}              game            The id of the game it is for
@@ -44,14 +57,16 @@ export class SceneInfo extends NamedInfo {
    * @param {Array<string>}       [missionTrack]  mission tracker
    * @param {string}              [activeAlert]   active alert/condition for this scene
    * @param {File|undefined}      [image]         image to use for map mode
+   * @param {Record<string, TokenPosition>} [tokenPositions]   map token positions, keyed by token key
    */
-  constructor (id, game, name = DefaultSceneName, description = DefaultSceneDescription, missionTrack = [], activeAlert = '', image = undefined) {
+  constructor (id, game, name = DefaultSceneName, description = DefaultSceneDescription, missionTrack = [], activeAlert = '', image = undefined, tokenPositions = {}) {
     super(name, id)
     this.game = game
     this.description = description
     this.missionTrack = missionTrack
     this.activeAlert = activeAlert
     this.image = image
+    this.tokenPositions = tokenPositions
   }
 
   /**
@@ -67,7 +82,8 @@ export class SceneInfo extends NamedInfo {
       'description' in obj ? obj.description : DefaultSceneDescription,
       'missionTrack' in obj ? obj.missionTrack : [],
       'activeAlert' in obj ? obj.activeAlert : '',
-      'image' in obj ? obj.image : undefined
+      'image' in obj ? obj.image : undefined,
+      'tokenPositions' in obj ? obj.tokenPositions : {}
     )
   }
 
@@ -79,6 +95,7 @@ export class SceneInfo extends NamedInfo {
     return typeof (this.game) === 'number' &&
             typeof (this.name) === 'string' &&
             typeof (this.description) === 'string' &&
-            (this.image === undefined || this.image instanceof File)
+            (this.image === undefined || this.image instanceof File) &&
+            typeof (this.tokenPositions) === 'object' && this.tokenPositions !== null
   }
 }

@@ -969,6 +969,9 @@ export class IndexController {
         this.addPlayer(player)
       }
 
+      // Apply this scene's saved token positions now that player tokens exist
+      this.#applyTokenPositions(firstSceneInfo?.tokenPositions)
+
       // Get all trackers
       const trackers = await this.db.getTrackers(gameInfo?.id)
       for (const tracker of trackers) {
@@ -1107,7 +1110,8 @@ export class IndexController {
         missionTrackerEl.act3
       ],
       shipAlertEl.color,
-      this.#mapImage
+      this.#mapImage,
+      this.#captureTokenPositions()
     )
     const savedSceneId = await this.db.saveSceneInfo(sceneInfo)
     if (savedSceneId !== undefined) {
@@ -1297,6 +1301,7 @@ export class IndexController {
     if (playerTokenEl instanceof MapTokenElement === false) { throw new Error(`Failed to create a map token element for player ${playerIndex}`) }
 
     playerTokenEl.setAttribute('player', playerIndex)
+    // Default position; overridden by #applyTokenPositions if this scene has a saved position
     playerTokenEl.x = 0.1 + ((playerCount - 1) % 6) * 0.12
     playerTokenEl.y = 0.1
 
@@ -1574,6 +1579,49 @@ export class IndexController {
   }
 
   /**
+   * Capture the current map token positions, keyed by token key (e.g. `player-0`).
+   * @returns {Record<string, {x: number, y: number}>} current token positions
+   */
+  #captureTokenPositions () {
+    /** @type {Record<string, {x: number, y: number}>} */
+    const tokenPositions = {}
+
+    document.querySelectorAll('#player-tokens > [is="map-token"]').forEach(el => {
+      if (el instanceof MapTokenElement === false) return
+      const playerIndex = el.getAttribute('player')
+      tokenPositions[`player-${playerIndex}`] = { x: el.x, y: el.y }
+    })
+
+    return tokenPositions
+  }
+
+  /**
+   * Apply saved map token positions to the current player tokens. Player tokens are always
+   * shown on every scene; a token without a recorded position for this scene falls back to the
+   * same default placement used when it was first created, rather than keeping a stale position
+   * left over from whichever scene was previously displayed.
+   * @param {Record<string, {x: number, y: number}>} [tokenPositions] positions to apply, keyed by token key
+   */
+  #applyTokenPositions (tokenPositions = {}) {
+    const tokenEls = [...document.querySelectorAll('#player-tokens > [is="map-token"]')]
+      .filter(el => el instanceof MapTokenElement)
+
+    tokenEls.forEach((el, index) => {
+      const playerIndex = el.getAttribute('player')
+      const position = tokenPositions[`player-${playerIndex}`]
+
+      if (position !== undefined) {
+        el.x = position.x
+        el.y = position.y
+      } else {
+        // No saved position for this scene: use the same default placement as a newly created token
+        el.x = 0.1 + (index % 6) * 0.12
+        el.y = 0.1
+      }
+    })
+  }
+
+  /**
    * Switch to a different scene
    * @param {number} sceneId - The scene ID to switch to
    */
@@ -1616,6 +1664,7 @@ export class IndexController {
       }
 
       this.#setMapImage(scene.image)
+      this.#applyTokenPositions(scene.tokenPositions)
     }
   }
 
@@ -1689,7 +1738,8 @@ export class IndexController {
         missionTrackerEl.act3
       ],
       shipAlertEl.color,
-      this.#mapImage
+      this.#mapImage,
+      this.#captureTokenPositions()
     )
     await this.db.saveSceneInfo(sceneInfo)
 
@@ -1785,9 +1835,15 @@ export class IndexController {
     this.#mapImage = imageFile
     const mapEl = document.querySelector('#play-field > img.bg')
 
-    mapEl.src = this.#mapImage instanceof File
-      ? URL.createObjectURL(this.#mapImage)
-      : ''
+    if (this.#mapImage instanceof File) {
+      mapEl.src = URL.createObjectURL(this.#mapImage)
+      mapEl.alt = 'scene map background'
+      mapEl.hidden = false
+    } else {
+      mapEl.src = ''
+      mapEl.alt = ''
+      mapEl.hidden = true
+    }
   }
 }
 

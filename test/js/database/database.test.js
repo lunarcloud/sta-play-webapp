@@ -3,8 +3,13 @@ import { Database } from '../../../js/database/database.js'
 import { PlayerInfo } from '../../../js/database/player-info.js'
 import { TrackerInfo } from '../../../js/database/tracker-info.js'
 import { RollTableInfo } from '../../../js/database/roll-table-info.js'
+import { TokenInfo } from '../../../js/database/token-info.js'
 import { GameInfo } from '../../../js/database/game-info.js'
+import { SceneInfo } from '../../../js/database/scene-info.js'
 import { BackupData } from '../../../js/database/backup-data.js'
+import { openDB, deleteDB } from '../../../js/lib/idb.js'
+
+const DB_NAME = 'STAPlayApp'
 
 /**
  * Database integration tests
@@ -22,11 +27,12 @@ describe('Database', () => {
     if (db) {
       const idb = await db.open()
       // Delete all data
-      const tx = idb.transaction(['games', 'players', 'trackers', 'rollTables'], 'readwrite')
+      const tx = idb.transaction(['games', 'players', 'trackers', 'rollTables', 'tokens'], 'readwrite')
       await tx.objectStore('games').clear()
       await tx.objectStore('players').clear()
       await tx.objectStore('trackers').clear()
       await tx.objectStore('rollTables').clear()
+      await tx.objectStore('tokens').clear()
       await tx.done
       idb.close()
     }
@@ -305,6 +311,222 @@ describe('Database', () => {
     })
   })
 
+  describe('replaceTokens', () => {
+    it('should replace tokens in database', async () => {
+      const idb = await db.open()
+
+      // Create a game first
+      const gameInfo = new GameInfo(undefined, 'Test Game', 'USS Test')
+      delete gameInfo.id
+      const gameTx = idb.transaction('games', 'readwrite')
+      const gameId = await gameTx.store.add(gameInfo)
+      await gameTx.done
+
+      // Add initial tokens
+      const initialTokens = [
+        new TokenInfo(gameId, 'Initial Token')
+      ]
+      initialTokens.forEach(t => delete t.id)
+
+      const tx1 = idb.transaction('tokens', 'readwrite')
+      for (const token of initialTokens) {
+        await tx1.store.add(token)
+      }
+      await tx1.done
+
+      // Replace with new tokens
+      const newTokens = [
+        new TokenInfo(gameId, 'New Token 1'),
+        new TokenInfo(gameId, 'New Token 2')
+      ]
+
+      await db.replaceTokens(newTokens, idb)
+
+      // Verify new tokens are in database
+      const tx2 = idb.transaction('tokens', 'readonly')
+      const tokens = await tx2.store.getAll()
+      await tx2.done
+
+      expect(tokens).to.have.lengthOf(2)
+      expect(tokens[0].name).to.equal('New Token 1')
+      expect(tokens[1].name).to.equal('New Token 2')
+
+      idb.close()
+    })
+
+    it('should reject invalid tokens', async () => {
+      const idb = await db.open()
+
+      // Create a game first
+      const gameInfo = new GameInfo(undefined, 'Test Game', 'USS Test')
+      delete gameInfo.id
+      const gameTx = idb.transaction('games', 'readwrite')
+      const gameId = await gameTx.store.add(gameInfo)
+      await gameTx.done
+
+      const invalidTokens = [
+        new TokenInfo(gameId, 'Temp Name')
+      ]
+      invalidTokens[0].name = '' // Empty name is invalid
+
+      await db.replaceTokens(invalidTokens, idb)
+
+      // Verify tokens were NOT added due to validation failure
+      const tx = idb.transaction('tokens', 'readonly')
+      const count = await tx.store.count()
+      await tx.done
+      expect(count).to.equal(0)
+
+      idb.close()
+    })
+
+    it('should clear all existing tokens before adding new ones', async () => {
+      const idb = await db.open()
+
+      // Create a game first
+      const gameInfo = new GameInfo(undefined, 'Test Game', 'USS Test')
+      delete gameInfo.id
+      const gameTx = idb.transaction('games', 'readwrite')
+      const gameId = await gameTx.store.add(gameInfo)
+      await gameTx.done
+
+      // Add old tokens
+      const oldTokens = [
+        new TokenInfo(gameId, 'Old Token')
+      ]
+      oldTokens.forEach(t => delete t.id)
+
+      const tx1 = idb.transaction('tokens', 'readwrite')
+      for (const token of oldTokens) {
+        await tx1.store.add(token)
+      }
+      await tx1.done
+
+      // Replace with empty array
+      await db.replaceTokens([], idb)
+
+      // Verify all tokens were removed
+      const tx2 = idb.transaction('tokens', 'readonly')
+      const count = await tx2.store.count()
+      await tx2.done
+      expect(count).to.equal(0)
+
+      idb.close()
+    })
+  })
+
+  describe('migration from v17 to v18', () => {
+    afterEach(async () => {
+      // The outer afterEach doesn't clear `scenes`, which only this suite populates
+      const idb = await db.open()
+      await idb.clear('scenes')
+      idb.close()
+    })
+
+    /**
+     * Build a legacy (pre-tokens) v17 database with some existing data, matching the
+     * schema that was in place before the "tokens" store and SceneInfo.tokenPositions
+     * field were introduced.
+     * @returns {Promise<{gameId: number, sceneId: number}>} ids of the seeded records
+     */
+    async function seedLegacyV17Database () {
+      await deleteDB(DB_NAME)
+
+      const legacyDb = await openDB(DB_NAME, 17, {
+        upgrade (legacyDbInstance) {
+          const gameStore = legacyDbInstance.createObjectStore('games', { keyPath: 'id', autoIncrement: true })
+          gameStore.createIndex('name', 'name', { unique: true })
+
+          const traitStore = legacyDbInstance.createObjectStore('traits', { keyPath: 'id', autoIncrement: true })
+          traitStore.createIndex('name', 'name', { unique: false })
+          traitStore.createIndex('scene', 'scene', { unique: false })
+
+          const playerStore = legacyDbInstance.createObjectStore('players', { keyPath: 'id', autoIncrement: true })
+          playerStore.createIndex('name', 'name', { unique: false })
+          playerStore.createIndex('game', 'game', { unique: false })
+
+          const trackerStore = legacyDbInstance.createObjectStore('trackers', { keyPath: 'id', autoIncrement: true })
+          trackerStore.createIndex('name', 'name', { unique: true })
+          trackerStore.createIndex('game', 'game', { unique: false })
+
+          const sceneStore = legacyDbInstance.createObjectStore('scenes', { keyPath: 'id', autoIncrement: true })
+          sceneStore.createIndex('name', 'name', { unique: false })
+          sceneStore.createIndex('game', 'game', { unique: false })
+
+          const rollTablesStore = legacyDbInstance.createObjectStore('rollTables', { keyPath: 'id', autoIncrement: true })
+          rollTablesStore.createIndex('name', 'name', { unique: false })
+          rollTablesStore.createIndex('game', 'game', { unique: false })
+        }
+      })
+
+      const gameTx = legacyDb.transaction('games', 'readwrite')
+      const gameId = await gameTx.store.add({ name: 'Legacy Game', shipName: 'USS Legacy' })
+      await gameTx.done
+
+      // Legacy scene row has no `tokenPositions` field at all
+      const sceneTx = legacyDb.transaction('scenes', 'readwrite')
+      const sceneId = await sceneTx.store.add({ game: gameId, name: 'Legacy Scene', description: 'Old scene', missionTrack: [], activeAlert: '' })
+      await sceneTx.done
+
+      legacyDb.close()
+
+      return { gameId, sceneId }
+    }
+
+    it('should add the tokens store without deleting existing data', async () => {
+      const { gameId, sceneId } = await seedLegacyV17Database()
+
+      // Opening with the current Database class triggers the 17 -> 18 upgrade
+      db = new Database()
+      const idb = await db.open()
+
+      expect(idb.objectStoreNames.contains('tokens')).to.be.true
+
+      const games = await idb.transaction('games', 'readonly').store.getAll()
+      expect(games).to.have.lengthOf(1)
+      expect(games[0].id).to.equal(gameId)
+      expect(games[0].name).to.equal('Legacy Game')
+
+      const scenes = await idb.transaction('scenes', 'readonly').store.getAll()
+      expect(scenes).to.have.lengthOf(1)
+      expect(scenes[0].id).to.equal(sceneId)
+      expect(scenes[0].name).to.equal('Legacy Scene')
+
+      idb.close()
+    })
+
+    it('should treat a migrated scene without tokenPositions as having none placed', async () => {
+      const { gameId } = await seedLegacyV17Database()
+
+      db = new Database()
+      const idb = await db.open()
+
+      const scenes = await db.getScenes(gameId, idb)
+      const scene = scenes.find(s => s.name === 'Legacy Scene')
+
+      expect(scene.tokenPositions).to.be.undefined
+      // SceneInfo.assign() fills in the default, as index.js does when reading scenes
+      expect(SceneInfo.assign(scene).tokenPositions).to.deep.equal({})
+
+      idb.close()
+    })
+
+    it('should allow saving tokens for a migrated game', async () => {
+      const { gameId } = await seedLegacyV17Database()
+
+      db = new Database()
+      const idb = await db.open()
+
+      await db.replaceTokens([new TokenInfo(gameId, 'Migrated Token')], idb)
+
+      const tokens = await db.getTokens(gameId, idb)
+      expect(tokens).to.have.lengthOf(1)
+      expect(tokens[0].name).to.equal('Migrated Token')
+
+      idb.close()
+    })
+  })
+
   describe('import/export integration', () => {
     it('should successfully import exported data with players and roll tables', async () => {
       // This test verifies the bug fix - import should work without IDBKeyRange errors
@@ -474,6 +696,54 @@ describe('Database', () => {
       expect(importedTables).to.have.lengthOf(2)
       expect(importedTables[0].name).to.equal('Test Table 1')
       expect(importedTables[1].name).to.equal('Test Table 2')
+
+      idb.close()
+    })
+
+    it('should successfully import data with tokens', async () => {
+      const idb = await db.open()
+
+      // Create game and tokens
+      const gameInfo = new GameInfo(undefined, 'Tokens Test', 'USS Tokens')
+      delete gameInfo.id
+      const gameTx = idb.transaction('games', 'readwrite')
+      const gameId = await gameTx.store.add(gameInfo)
+      await gameTx.done
+
+      const tokens = [
+        new TokenInfo(gameId, 'Test Token 1'),
+        new TokenInfo(gameId, 'Test Token 2')
+      ]
+      tokens.forEach(t => delete t.id)
+
+      const tx1 = idb.transaction('tokens', 'readwrite')
+      for (const token of tokens) {
+        await tx1.store.add(token)
+      }
+      await tx1.done
+
+      // Export
+      const blob = await db.export('Tokens Test', idb)
+      const file = new File([blob], 'tokens-test.staplay', { type: 'application/staplay' })
+      const backupData = await BackupData.import(file)
+
+      // Clear database
+      const clearTx = idb.transaction(['games', 'tokens'], 'readwrite')
+      await clearTx.objectStore('games').clear()
+      await clearTx.objectStore('tokens').clear()
+      await clearTx.done
+
+      // Import back
+      await db.import(backupData, idb)
+
+      // Verify tokens were imported
+      const tx2 = idb.transaction('tokens', 'readonly')
+      const importedTokens = await tx2.store.getAll()
+      await tx2.done
+
+      expect(importedTokens).to.have.lengthOf(2)
+      expect(importedTokens[0].name).to.equal('Test Token 1')
+      expect(importedTokens[1].name).to.equal('Test Token 2')
 
       idb.close()
     })
