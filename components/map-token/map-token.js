@@ -1,4 +1,3 @@
-import { animateRemove } from '../../js/dialog-utils.js'
 import { snakeToCamel } from '../../js/string-utils.js'
 import { getContainedImageRectRelativeTo } from '../../js/image-rect-utils.js'
 import { clamp } from '../../js/math-utils.js'
@@ -6,6 +5,14 @@ import { clamp } from '../../js/math-utils.js'
 // Fraction of the map image's smaller dimension used for a token's size,
 // so tokens scale up/down together with the image instead of the viewport.
 const TOKEN_SIZE_FRACTION = 0.08
+
+// Minimum allowed value for a token's custom scale multiplier, so a token never shrinks small
+// enough that it becomes hard to click again to change its scale back. There is no maximum,
+// since a user may deliberately want a token much larger than its default size (e.g. a capital ship).
+export const MIN_SCALE = 0.25
+
+// How long a press/touch must be held to count as a long-press, in milliseconds.
+const LONG_PRESS_DURATION_MS = 500
 
 export class MapTokenElement extends HTMLImageElement {
   /**
@@ -59,11 +66,6 @@ export class MapTokenElement extends HTMLImageElement {
   }
 
   /**
-   * @type {HTMLButtonElement}
-   */
-  #removeBtnEl
-
-  /**
    * @type {File} Image file
    */
   #imageFile
@@ -81,6 +83,12 @@ export class MapTokenElement extends HTMLImageElement {
   #normalizedY = 0.5
 
   /**
+   * Custom size multiplier applied on top of the map-relative base size.
+   * @type {number}
+   */
+  #scale = 1
+
+  /**
    * Offset between the cursor and this token's center, in pixels, captured at drag start
    * so the point grabbed stays under the cursor for the whole drag.
    * @type {number}
@@ -91,6 +99,12 @@ export class MapTokenElement extends HTMLImageElement {
    * @type {number}
    */
   #dragOffsetY = 0
+
+  /**
+   * Timer id for the in-progress long-press detection, if any.
+   * @type {ReturnType<typeof setTimeout>|undefined}
+   */
+  #longPressTimer
 
   /**
    * Constructor.
@@ -125,17 +139,11 @@ export class MapTokenElement extends HTMLImageElement {
     // Attach the created element
     this.appendChild(linkElem)
 
-    // remove button ⤫
-    this.#removeBtnEl = document.createElement('button')
-    this.#removeBtnEl.classList.add('remove')
-    this.#removeBtnEl.textContent = '⤫'
-    this.#removeBtnEl.addEventListener('click', () => {
-      this.dispatchEvent(new CustomEvent('removed'))
-      animateRemove(this)
-    })
-
     // Setup drag and drop for positioning
     this.#setupDragAndDrop()
+
+    // Setup right-click/long-press to open the edit (scale/remove) dialog
+    this.#setupEditTrigger()
   }
 
   /**
@@ -211,6 +219,33 @@ export class MapTokenElement extends HTMLImageElement {
   }
 
   /**
+   * Setup right-click (desktop) and long-press (touch) handlers that both request this
+   * token's edit dialog (scale/remove), since neither gesture is otherwise used by the token.
+   */
+  #setupEditTrigger () {
+    this.addEventListener('contextmenu', event => {
+      event.preventDefault()
+      this.dispatchEvent(new CustomEvent('edit-requested', { bubbles: true }))
+    })
+
+    const cancelLongPress = () => {
+      clearTimeout(this.#longPressTimer)
+      this.#longPressTimer = undefined
+    }
+
+    this.addEventListener('touchstart', () => {
+      cancelLongPress()
+      this.#longPressTimer = setTimeout(() => {
+        this.#longPressTimer = undefined
+        this.dispatchEvent(new CustomEvent('edit-requested', { bubbles: true }))
+      }, LONG_PRESS_DURATION_MS)
+    }, { passive: true })
+    this.addEventListener('touchend', cancelLongPress)
+    this.addEventListener('touchmove', cancelLongPress)
+    this.addEventListener('touchcancel', cancelLongPress)
+  }
+
+  /**
    * Set the token's position from a client-space point (e.g. a pointer/drag event),
    * translating it into a position normalized to the map image's rendered bounds.
    * @param {number} clientX    the x coordinate, in client (viewport) space
@@ -245,7 +280,7 @@ export class MapTokenElement extends HTMLImageElement {
 
     const imageRect = getContainedImageRectRelativeTo(bgImageEl, map)
 
-    const size = Math.min(imageRect.width, imageRect.height) * TOKEN_SIZE_FRACTION
+    const size = Math.min(imageRect.width, imageRect.height) * TOKEN_SIZE_FRACTION * this.#scale
 
     this.style.left = `${imageRect.x + (this.#normalizedX * imageRect.width)}px`
     this.style.top = `${imageRect.y + (this.#normalizedY * imageRect.height)}px`
@@ -284,6 +319,23 @@ export class MapTokenElement extends HTMLImageElement {
    */
   set y (value) {
     this.#normalizedY = clamp(Number(value))
+    this.#reposition()
+  }
+
+  /**
+   * Custom size multiplier applied on top of the map-relative base size.
+   * @returns {number}    the scale multiplier
+   */
+  get scale () {
+    return this.#scale
+  }
+
+  /**
+   * Set the custom size multiplier applied on top of the map-relative base size.
+   * @param {number} value    the scale multiplier, floored to the minimum allowed value
+   */
+  set scale (value) {
+    this.#scale = Math.max(Number(value) || 1, MIN_SCALE)
     this.#reposition()
   }
 

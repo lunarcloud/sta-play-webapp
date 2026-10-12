@@ -8,6 +8,7 @@ import { InputDialogElement } from './components/input-dialog/input-dialog-eleme
 import { DiceDialogElement } from './components/dice-dialog/dice-dialog-element.js'
 import { RollTablesDialogElement } from './components/roll-tables-dialog/roll-tables-dialog-element.js'
 import { TokensDialogElement } from './components/tokens-dialog/tokens-dialog-element.js'
+import { TokenEditDialogElement } from './components/token-edit-dialog/token-edit-dialog-element.js'
 import { SceneSwitcherElement } from './components/scene-switcher/scene-switcher-element.js'
 import { MapTokenElement } from './components/map-token/map-token.js'
 import { MissionTrackerElement } from './components/mission-tracker/mission-tracker-element.js'
@@ -35,6 +36,9 @@ import { MirrorWindow } from './js/mirror-window.js'
 
 const DefaultShipUrl = 'gltf/default-ship-1.glb'
 const ImageFileExtensions = ['.apng', '.avif', '.gif', '.heic', '.jpg', '.jpeg', '.jxl', '.png', '.svg', '.webp']
+// Transparent placeholder shown in place of a map image, so a scene with no chosen background
+// still has a 4:3 area (its aspect ratio) for tokens to be placed in.
+const BlankMapImageUrl = 'img/transparent-4x3.png'
 
 /**
  * Controller for the Main, Index, Page.
@@ -288,6 +292,16 @@ export class IndexController {
           this.#placeToken(entry.token, index)
         }
       })
+    })
+
+    // Wire up the token edit dialog (scale/remove), opened by right-clicking/long-pressing a placed token
+    const tokenEditDialog = document.querySelector('dialog[is="token-edit-dialog"]')
+    if (tokenEditDialog instanceof TokenEditDialogElement === false) {
+      throw new Error('Token edit dialog not setup!')
+    }
+    document.getElementById('play-field').addEventListener('edit-requested', event => {
+      if (event.target instanceof MapTokenElement === false) return
+      tokenEditDialog.edit(event.target)
     })
 
     // Wire up the scene switcher dialog
@@ -1604,24 +1618,24 @@ export class IndexController {
    * Any number of independent copies ("instances") of a player or NPC/other token may be placed
    * at once (e.g. several "shuttlepod" tokens, or a cloned player character), each captured
    * under its own `instance` suffix.
-   * @returns {Record<string, {x: number, y: number}>} current token positions
+   * @returns {Record<string, import('./js/database/scene-info.js').TokenPosition>} current token positions
    */
   #captureTokenPositions () {
-    /** @type {Record<string, {x: number, y: number}>} */
+    /** @type {Record<string, import('./js/database/scene-info.js').TokenPosition>} */
     const tokenPositions = {}
 
     document.querySelectorAll('#player-tokens > [is="map-token"]').forEach(el => {
       if (el instanceof MapTokenElement === false) return
       const playerIndex = el.getAttribute('player')
       const instance = el.getAttribute('instance') ?? '0'
-      tokenPositions[`player-${playerIndex}-${instance}`] = { x: el.x, y: el.y }
+      tokenPositions[`player-${playerIndex}-${instance}`] = { x: el.x, y: el.y, scale: el.scale }
     })
 
     document.querySelectorAll('#npc-tokens > [is="map-token"]').forEach(el => {
       if (el instanceof MapTokenElement === false) return
       const tokenId = el.getAttribute('token-id')
       const instance = el.getAttribute('instance') ?? '0'
-      tokenPositions[`token-${tokenId}-${instance}`] = { x: el.x, y: el.y }
+      tokenPositions[`token-${tokenId}-${instance}`] = { x: el.x, y: el.y, scale: el.scale }
     })
 
     return tokenPositions
@@ -1634,7 +1648,7 @@ export class IndexController {
    * may be placed (e.g. cloned player characters, or several "shuttlepod" tokens), so both
    * containers' on-map elements are fully recreated here to match the scene's saved instances
    * exactly.
-   * @param {Record<string, {x: number, y: number}>} [tokenPositions] positions to apply, keyed by token key
+   * @param {Record<string, import('./js/database/scene-info.js').TokenPosition>} [tokenPositions] positions to apply, keyed by token key
    */
   async #applyTokenPositions (tokenPositions = {}) {
     this.#applyInstancedPositions('player-tokens', 'player-', tokenPositions,
@@ -1654,7 +1668,7 @@ export class IndexController {
    * since any number of independent copies of the same player/token may be placed.
    * @param {string}                                                   containerId    id of the container element (e.g. `player-tokens`)
    * @param {string}                                                   keyPrefix      prefix of `tokenPositions` keys belonging to this container (e.g. `player-`)
-   * @param {Record<string, {x: number, y: number}>}                   tokenPositions positions to apply, keyed by token key
+   * @param {Record<string, import('./js/database/scene-info.js').TokenPosition>} tokenPositions positions to apply, keyed by token key
    * @param {(id: string, instance: string) => MapTokenElement|undefined} createElement creates the on-map element for one saved instance
    */
   #applyInstancedPositions (containerId, keyPrefix, tokenPositions, createElement) {
@@ -1673,6 +1687,7 @@ export class IndexController {
 
       tokenEl.x = position.x
       tokenEl.y = position.y
+      tokenEl.scale = position.scale ?? 1
     }
   }
 
@@ -2014,11 +2029,9 @@ export class IndexController {
     if (this.#mapImage instanceof File) {
       mapEl.src = URL.createObjectURL(this.#mapImage)
       mapEl.alt = 'scene map background'
-      mapEl.hidden = false
     } else {
-      mapEl.src = ''
-      mapEl.alt = ''
-      mapEl.hidden = true
+      mapEl.src = BlankMapImageUrl
+      mapEl.alt = 'blank scene background'
     }
   }
 }

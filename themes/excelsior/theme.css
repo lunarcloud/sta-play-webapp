@@ -21,6 +21,7 @@
     --trek-color-6: hsl(32deg 80% 40%);
     --trek-color-highlight: var(--trek-color-3);
     --player-color-red: hsl(1deg 65% 38%);
+    --danger-color: hsl(1deg 65% 38%);
     --player-color-blue: hsl(205deg 69% 49%);
     --player-color-yellow: hsl(48deg 100% 42%);
     --player-color-brown: hsl(17deg 78% 76%);

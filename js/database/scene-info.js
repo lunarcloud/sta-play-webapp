@@ -5,8 +5,9 @@ export const DefaultSceneDescription = 'The story so far...'
 
 /**
  * @typedef {object} TokenPosition
- * @property {number} x   normalized horizontal position (0-1) within the map image's rendered bounds
- * @property {number} y   normalized vertical position (0-1) within the map image's rendered bounds
+ * @property {number} x       normalized horizontal position (0-1) within the map image's rendered bounds
+ * @property {number} y       normalized vertical position (0-1) within the map image's rendered bounds
+ * @property {number} [scale] custom size multiplier applied on top of the token's base size (defaults to 1)
  */
 
 /**

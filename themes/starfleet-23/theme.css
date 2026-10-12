@@ -19,6 +19,7 @@
     --header-outer-bg: var(--main-color-bg);
     --trek-color-highlight: var(--trek-color-4);
     --player-color-red: hsl(5deg 92% 31%);
+    --danger-color: hsl(5deg 92% 31%);
     --player-color-blue: hsl(221deg 71% 30%);
     --player-color-yellow: hsl(53deg 78% 39%);
     --player-color-brown: hsl(32deg 43% 29%);

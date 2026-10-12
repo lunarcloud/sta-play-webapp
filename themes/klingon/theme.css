@@ -20,6 +20,7 @@
     --ship-name-color-bg: hsl(0deg 0% 0% / 79.9%);
     --ship-name-color-border: transparent;
     --player-color-red: hsl(5deg 70% 25%);
+    --danger-color: hsl(5deg 70% 25%);
     --player-color-blue: hsl(221deg 36% 28%);
     --player-color-yellow: hsl(53deg 40% 46%);
     --player-color-brown: hsl(32deg 43% 29%);

@@ -8,6 +8,7 @@
     --trait-color-opacity: 0.20;
     --saturation-adjust: 20%;
     --player-color-red: hsl(0deg 58% 52% / var(--player-color-opacity));
+    --danger-color: hsl(0deg 58% 52%);
     --player-color-blue: hsl(249deg 84% 47% / var(--player-color-opacity));
     --player-color-yellow: hsl(50deg 73% 58% / var(--player-color-opacity));
     --player-color-brown: hsl(23deg 55% 64% / var(--player-color-opacity));

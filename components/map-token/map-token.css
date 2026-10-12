@@ -30,4 +30,20 @@ img[is="map-token"] {
         scale: 1;
         filter: var(--shadow);
     }
+
+    &.removing {
+        animation: element-disappear 300ms ease-in forwards;
+    }
+}
+
+@keyframes element-disappear {
+    from {
+        opacity: 1;
+        scale: 1;
+    }
+
+    to {
+        opacity: 0;
+        scale: 0.5;
+    }
 }
