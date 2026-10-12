@@ -940,7 +940,7 @@ menu-items {
     }
 }
 
-[mode="map"] {
+body[mode="map"] {
     .mode-map-only {
         opacity: 1;
         display: unset !important;
@@ -951,8 +951,11 @@ menu-items {
         display: none !important;
     }
 
+    /* "unset" above is unreliable across themes (behaves like "revert" rather than
+       resolving to the "inline" spec value), so #play-field needs its own explicit,
+       higher-priority override to reliably end up "block" rather than "inline". */
     #play-field {
-        display: block;
+        display: block !important;
     }
 
     /* These two buttons share a <li> with their text-mode counterpart (Player/Tracker), so they
