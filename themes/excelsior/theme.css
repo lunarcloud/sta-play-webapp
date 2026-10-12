@@ -419,6 +419,7 @@ body {
 #font-up-btn,
 #font-down-btn,
 #dice-btn,
+#map-btn,
 #tables-btn {
     background-color: hsl(0deg 0% 10%);
     color: var(--trek-color-1);
@@ -430,11 +431,8 @@ body {
 
 #settings-btn,
 #save-btn,
-#fullscreen-btn,
 #font-up-btn,
-#font-down-btn,
-#dice-btn,
-#tables-btn {
+#font-down-btn {
     top: unset !important;
     right: unset;
     bottom: 7em;
@@ -451,22 +449,12 @@ body {
     left: 9.25em;
 }
 
-
-#fullscreen-btn {
-    left: 16.5em;
-    width: 1.25em;
-
-    & img.symbol {
-        filter: unset;
-    }
-}
-
 #font-down-btn {
-    left: 19em;
+    left: 16.5em;
 }
 
 #font-up-btn {
-    left: 26em;
+    left: 23.75em;
 }
 
 #font-up-btn,
@@ -483,11 +471,21 @@ body {
     }
 }
 
+/* 2x2 grid: dice/fullscreen on top, tables/map below */
+#dice-btn,
+#tables-btn,
+#fullscreen-btn,
+#map-btn {
+    top: unset !important;
+    right: unset;
+    height: 1.125em;
+    width: 1.25em;
+    justify-content: space-evenly;
+}
+
 #dice-btn,
 #tables-btn {
-    left: 15.5em;
-    bottom: 4em;
-    width: 1.25em;
+    left: 13.94em;
 
     & text {
         display: none;
@@ -510,11 +508,24 @@ body {
     }
 }
 
-#dice-btn {
+#fullscreen-btn,
+#map-btn {
+    left: 16.49em;
+}
+
+#fullscreen-btn {
+    & img.symbol {
+        filter: unset;
+    }
+}
+
+#dice-btn,
+#fullscreen-btn {
     bottom: 4em;
 }
 
-#tables-btn {
+#tables-btn,
+#map-btn {
     bottom: 2em;
 }
 
@@ -524,7 +535,7 @@ body {
     right: unset;
     bottom: 2em;
     left: 14em;
-    width: 12em;
+    width: 10.7em;
 }
 
 #momentum-section {
@@ -532,7 +543,7 @@ body {
 }
 
 #threat-section {
-    left: 18em;
+    left: 19.05em;
 }
 
 #settings-btn,
