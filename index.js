@@ -8,6 +8,7 @@ import { InputDialogElement } from './components/input-dialog/input-dialog-eleme
 import { DiceDialogElement } from './components/dice-dialog/dice-dialog-element.js'
 import { RollTablesDialogElement } from './components/roll-tables-dialog/roll-tables-dialog-element.js'
 import { SceneSwitcherElement } from './components/scene-switcher/scene-switcher-element.js'
+import { MapTokenElement } from './components/map-token/map-token.js'
 import { MissionTrackerElement } from './components/mission-tracker/mission-tracker-element.js'
 import { TraitDisplayElement } from './components/trait-display/trait-display-element.js'
 import { PlayerDisplayElement } from './components/player-display/player-display-element.js'
@@ -279,7 +280,7 @@ export class IndexController {
     document.getElementById('map-btn').addEventListener('click', () => this.#switchToMap())
 
     // Map Image Drop
-    const mapEl = document.querySelector('#play-field > bg')
+    const mapEl = document.querySelector('#play-field > img.bg')
     setupDropOnly(mapEl, event => {
       const image = event.dataTransfer.files?.[0]
       if (!event.dataTransfer.items?.[0].type.startsWith('image/') || !image) {
@@ -1290,6 +1291,18 @@ export class IndexController {
     if (typeof (info) === 'undefined') {
       newPlayerEl.focusNameEdit()
     }
+
+    // Ensure the map tokens for the player exist
+    const playerTokenEl = document.createElement('img', { is: 'map-token' })
+    if (playerTokenEl instanceof MapTokenElement === false) { throw new Error(`Failed to create a map token element for player ${playerIndex}`) }
+
+    playerTokenEl.setAttribute('player', playerIndex)
+    playerTokenEl.x = 0.1 + ((playerCount - 1) % 6) * 0.12
+    playerTokenEl.y = 0.1
+
+    playerTokenEl.image = newPlayerEl.imageFile
+    const allPlayerTokensEl = document.getElementById('player-tokens')
+    allPlayerTokensEl.appendChild(playerTokenEl)
   }
 
   /**
@@ -1770,14 +1783,11 @@ export class IndexController {
    */
   async #setMapImage (imageFile) {
     this.#mapImage = imageFile
-    const mapEl = document.querySelector('#play-field > bg')
+    const mapEl = document.querySelector('#play-field > img.bg')
 
-    if (this.#mapImage instanceof File) {
-      const imgUrl = URL.createObjectURL(this.#mapImage)
-      mapEl.style.backgroundImage = `url(${imgUrl})`
-    } else {
-      mapEl.style.backgroundImage = ''
-    }
+    mapEl.src = this.#mapImage instanceof File
+      ? URL.createObjectURL(this.#mapImage)
+      : ''
   }
 }
 

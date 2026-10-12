@@ -907,17 +907,17 @@ menu-items {
     top: 3.125em;
     height: stretch;
 
-    & > bg {
-        position: absolute;
-        inset: 0;
-        background-repeat: no-repeat;
-        background-size: contain;
-        background-position: center center;
-    }
-
-    & > .bg {
+    & > svg.bg {
         width: 100%;
         height: 100%;
+    }
+
+    & > img.bg {
+        position: absolute;
+        inset: 1em;
+        width: calc(100% - 2em);
+        height: calc(100% - 2em);
+        object-fit: contain;
     }
 
     & > .image-change {

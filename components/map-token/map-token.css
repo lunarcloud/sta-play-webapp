@@ -1,4 +1,30 @@
-div[is="map-token"] {
+img[is="map-token"] {
     display: block;
     position: absolute;
+    top: 55%;
+    left: 55%;
+    transform: translate(-50%, -50%);
+    cursor: grab;
+    height: 4vh;
+    width: 4vh;
+    background-size: contain;
+    background-repeat: no-repeat;
+    transition: filter,scale 400ms ease-out;
+
+    --shadow: drop-shadow(5px 5px 5px oklab(57.95% 0 0 / 25%));
+
+    filter: var(--shadow);
+
+    &:hover {
+        scale: 1.1;
+        filter: drop-shadow(5px 5px 5px oklab(57.95% 0 0 / 100%));
+    }
+
+    &.dragging {
+        opacity: 0;
+
+        /* Override :hover so the dragged token doesn't scale/glow, which wouldn't match its dropped look */
+        scale: 1;
+        filter: var(--shadow);
+    }
 }

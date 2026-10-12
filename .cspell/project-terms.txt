@@ -35,6 +35,7 @@ apng
 # Code Identifiers
 IDBP
 lerp
+letterboxed
 nodrag
 pdestroy
 shipname
