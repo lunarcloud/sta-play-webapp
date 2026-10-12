@@ -130,11 +130,29 @@ export class TokensDialogElement extends HTMLDialogElement {
     qtyBadge.className = 'token-qty'
     card.appendChild(qtyBadge)
 
+    const decrementBtn = document.createElement('button')
+    decrementBtn.className = 'token-qty-dec'
+    decrementBtn.textContent = '−'
+    decrementBtn.title = `Remove one ${name} from selection`
+    decrementBtn.addEventListener('click', event => {
+      event.stopPropagation()
+      const existing = this.#selected.get(key)
+      if (!existing) return
+      if (existing.count <= 1) {
+        this.#selected.delete(key)
+      } else {
+        this.#selected.set(key, { ...existing, count: existing.count - 1 })
+      }
+      updateSelectedState()
+      this.#updatePlaceButton()
+    })
+
     const updateSelectedState = () => {
       const count = this.#selected.get(key)?.count ?? 0
       card.classList.toggle('selected', count > 0)
       qtyBadge.textContent = `×${count}`
       qtyBadge.hidden = count < 2
+      decrementBtn.hidden = count < 1
     }
 
     card.addEventListener('click', () => {
@@ -159,22 +177,6 @@ export class TokensDialogElement extends HTMLDialogElement {
     nameEl.textContent = name
     card.appendChild(nameEl)
 
-    const decrementBtn = document.createElement('button')
-    decrementBtn.className = 'token-qty-dec'
-    decrementBtn.textContent = '−'
-    decrementBtn.title = `Remove one ${name} from selection`
-    decrementBtn.addEventListener('click', event => {
-      event.stopPropagation()
-      const existing = this.#selected.get(key)
-      if (!existing) return
-      if (existing.count <= 1) {
-        this.#selected.delete(key)
-      } else {
-        this.#selected.set(key, { ...existing, count: existing.count - 1 })
-      }
-      updateSelectedState()
-      this.#updatePlaceButton()
-    })
     card.appendChild(decrementBtn)
 
     if (onRemove) {
