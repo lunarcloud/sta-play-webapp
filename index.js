@@ -334,8 +334,8 @@ export class IndexController {
     const mapSelectEl = mapSelectProxyEl.querySelector('input')
     mapSelectProxyEl.addEventListener('click', () => mapSelectEl.click())
     this.#setupFileImport(mapSelectEl, busyDialog, 'image', ImageFileExtensions, async (file) => { await this.#setMapImage(file) })
-    const mapClearEl = document.querySelector('#play-field > .image-clear')
-    mapClearEl.addEventListener('click', () => this.#setMapImage(undefined))
+    const mapClearEl = document.querySelector('#play-field > .map-clear')
+    mapClearEl.addEventListener('click', () => this.#clearMap())
 
     // Setup Model-Viewer fullscreen view buttons
     const enterShipFullscreenBtn = document.getElementById('ship-enter-fullscreen')
@@ -2033,6 +2033,20 @@ export class IndexController {
       mapEl.src = BlankMapImageUrl
       mapEl.alt = 'blank scene background'
     }
+  }
+
+  /**
+   * Reset the scene map to blank: clears the background image and removes all placed tokens.
+   */
+  async #clearMap () {
+    const confirmed = await this.confirmDialog.confirm(
+      'Clear the map? This removes the background image and all placed tokens.'
+    )
+    if (!confirmed) return
+
+    await this.#setMapImage(undefined)
+    document.querySelectorAll('#player-tokens > [is="map-token"]').forEach(el => el.remove())
+    document.querySelectorAll('#npc-tokens > [is="map-token"]').forEach(el => el.remove())
   }
 }
 

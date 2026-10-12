@@ -922,7 +922,7 @@ menu-items {
         object-fit: contain;
     }
 
-    & > .image-clear {
+    & > .map-clear {
         position: absolute;
         top: 0.125em;
         width: 1.25em;
