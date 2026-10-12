@@ -57,7 +57,7 @@ export class Database {
    */
   async open () {
     try {
-      return await openDB(DB_NAME, DB_VERSION, { upgrade: async (db, oldVersion) => await this.#upgrade(db, oldVersion) })
+      return await openDB(DB_NAME, DB_VERSION, { upgrade: async (db, oldVersion, newVersion, transaction) => await this.#upgrade(db, oldVersion, transaction) })
     } catch (e) {
       console.error('Downgrade detected, wiping database', e)
       await this.clear()
@@ -67,20 +67,27 @@ export class Database {
 
   /**
    * Upgrade the database
-   * @param {IDBPDatabase} db          the database
-   * @param {number} oldVersion        the version being upgraded from
+   * @param {IDBPDatabase} db                  the database
+   * @param {number} oldVersion                the version being upgraded from
+   * @param {IDBPTransaction} transaction      the versionchange transaction, for altering existing stores
    */
-  async #upgrade (db, oldVersion) {
-    if (oldVersion < 16 || oldVersion > DB_VERSION) {
+  async #upgrade (db, oldVersion, transaction) {
+    if (oldVersion < 14 || oldVersion > DB_VERSION) {
       // too old to migrate, or too new for this version
       // fallback to wiping the database
       console.warn('clearing db for upgrade')
       this.#create(db)
     }
 
-    if (oldVersion === 16) {
-      // Should not need any new stores or indexes
+    if (oldVersion === 14) {
+      // Traits' name index is no longer unique (duplicate trait names are allowed across scenes),
+      // leaving all existing data untouched.
+      const traitStore = transaction.objectStore(STORE.TRAITS)
+      traitStore.deleteIndex(INDEX.NAME)
+      traitStore.createIndex(INDEX.NAME, INDEX.NAME, { unique: false })
     }
+
+    // NOTE: 15 and 16 require no migration actions
 
     if (oldVersion <= 17) {
       // Purely additive: add the new tokens store, leaving all existing data untouched.

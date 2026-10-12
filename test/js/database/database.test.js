@@ -415,6 +415,94 @@ describe('Database', () => {
     })
   })
 
+  describe('migration from v14 to v16', () => {
+    afterEach(async () => {
+      // The outer afterEach doesn't clear `traits`, which only this suite populates
+      const idb = await db.open()
+      await idb.clear('traits')
+      idb.close()
+    })
+
+    /**
+     * Build a legacy v14 database with some existing data, matching the schema that was
+     * in place before the traits' name index was changed from unique to non-unique.
+     * @returns {Promise<{sceneId: number}>} ids of the seeded records
+     */
+    async function seedLegacyV14Database () {
+      await deleteDB(DB_NAME)
+
+      const legacyDb = await openDB(DB_NAME, 14, {
+        upgrade (legacyDbInstance) {
+          const gameStore = legacyDbInstance.createObjectStore('games', { keyPath: 'id', autoIncrement: true })
+          gameStore.createIndex('name', 'name', { unique: true })
+
+          const traitStore = legacyDbInstance.createObjectStore('traits', { keyPath: 'id', autoIncrement: true })
+          traitStore.createIndex('name', 'name', { unique: true })
+          traitStore.createIndex('scene', 'scene', { unique: false })
+
+          const playerStore = legacyDbInstance.createObjectStore('players', { keyPath: 'id', autoIncrement: true })
+          playerStore.createIndex('name', 'name', { unique: false })
+          playerStore.createIndex('game', 'game', { unique: false })
+
+          const trackerStore = legacyDbInstance.createObjectStore('trackers', { keyPath: 'id', autoIncrement: true })
+          trackerStore.createIndex('name', 'name', { unique: true })
+          trackerStore.createIndex('game', 'game', { unique: false })
+
+          const sceneStore = legacyDbInstance.createObjectStore('scenes', { keyPath: 'id', autoIncrement: true })
+          sceneStore.createIndex('name', 'name', { unique: false })
+          sceneStore.createIndex('game', 'game', { unique: false })
+
+          const rollTablesStore = legacyDbInstance.createObjectStore('rollTables', { keyPath: 'id', autoIncrement: true })
+          rollTablesStore.createIndex('name', 'name', { unique: false })
+          rollTablesStore.createIndex('game', 'game', { unique: false })
+        }
+      })
+
+      const sceneTx = legacyDb.transaction('traits', 'readwrite')
+      const sceneId = await sceneTx.store.add({ scene: 1, name: 'Duplicate Trait' })
+      await sceneTx.done
+
+      legacyDb.close()
+
+      return { sceneId }
+    }
+
+    it('should loosen the traits name index to non-unique without deleting existing data', async () => {
+      const { sceneId } = await seedLegacyV14Database()
+
+      // Opening with the current Database class triggers the 14 -> 18 upgrade
+      db = new Database()
+      const idb = await db.open()
+
+      const traitStoreIndexes = idb.transaction('traits', 'readonly').store.indexNames
+      expect(Array.from(traitStoreIndexes)).to.include('name')
+
+      const traits = await idb.transaction('traits', 'readonly').store.getAll()
+      expect(traits).to.have.lengthOf(1)
+      expect(traits[0].id).to.equal(sceneId)
+      expect(traits[0].name).to.equal('Duplicate Trait')
+
+      idb.close()
+    })
+
+    it('should allow adding a trait with a duplicate name after migrating', async () => {
+      await seedLegacyV14Database()
+
+      db = new Database()
+      const idb = await db.open()
+
+      // Before the fix, a second trait with the same name would throw a ConstraintError
+      const tx = idb.transaction('traits', 'readwrite')
+      await tx.store.add({ scene: 2, name: 'Duplicate Trait' })
+      await tx.done
+
+      const traits = await idb.transaction('traits', 'readonly').store.getAll()
+      expect(traits).to.have.lengthOf(2)
+
+      idb.close()
+    })
+  })
+
   describe('migration from v17 to v18', () => {
     afterEach(async () => {
       // The outer afterEach doesn't clear `scenes`, which only this suite populates
