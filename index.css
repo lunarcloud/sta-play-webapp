@@ -893,7 +893,7 @@ menu-items {
 
 .mode-map-only {
     opacity: 0;
-    display: none;
+    display: none !important;
 }
 
 .mode-text-only {
@@ -922,22 +922,9 @@ menu-items {
         object-fit: contain;
     }
 
-    & > .image-change {
-        top: 1.25em;
-    }
-
     & > .image-clear {
-        top: 0.125em;
-    }
-
-    & > .tokens-list-btn {
-        top: 2.375em;
-    }
-
-    & > .image-change,
-    & > .image-clear,
-    & > .tokens-list-btn {
         position: absolute;
+        top: 0.125em;
         width: 1.25em;
         right: 0.5em;
         text-align: center;
@@ -956,16 +943,23 @@ menu-items {
 [mode="map"] {
     .mode-map-only {
         opacity: 1;
-        display: unset;
+        display: unset !important;
     }
 
     .mode-text-only {
         opacity: 0;
-        display: none;
+        display: none !important;
     }
 
     #play-field {
         display: block;
+    }
+
+    /* These two buttons share a <li> with their text-mode counterpart (Player/Tracker), so they
+       need to stay "block" (not just "unset", which resets to inline) to keep proper alignment. */
+    nav a.image-change,
+    nav a.tokens-list-btn {
+        display: block !important;
     }
 }
 
@@ -1183,6 +1177,19 @@ body {
 
                     /* ensure icons or emoji aren't colorful here */
                     filter: grayscale(1) contrast(1.25);
+                }
+
+                /*
+                 * Nav buttons that swap between text/map mode (e.g. "Player"/"Map Image") share a
+                 * single <li>, so its background color (set by position below) stays the same
+                 * regardless of which mode's button is showing.
+                 */
+                & a.mode-map-only {
+                    display: none !important;
+                }
+
+                & a.mode-text-only {
+                    display: block !important;
                 }
 
                 & #alert-dropdown {

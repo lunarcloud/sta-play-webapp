@@ -134,15 +134,20 @@
         </header>
         <nav>
             <ul>
-                <li title="Add a new player character">
-                    <a id="player-add">
+                <li>
+                    <a id="player-add" class="mode-text-only" title="Add a new player character">
                         ＋
                         <span class="edition-1 edition-2"> Player</span>
                         <span class="edition-captains-log"> Character</span>
                     </a>
+                    <a class="image-change mode-map-only" title="Set the scene map image">
+                        <input class="select" type="file" accept="image/*" hidden />
+                        📂 Map
+                    </a>
                 </li>
-                <li class="edition-1 edition-2" title="Add a combat or extended task tracker">
-                    <a id="task-tracker-add">＋ Tracker</a>
+                <li>
+                    <a id="task-tracker-add" class="edition-1 edition-2 mode-text-only" title="Add a combat or extended task tracker">＋ Tracker</a>
+                    <a class="tokens-list-btn mode-map-only" title="Add tokens to the map">＋ Tokens</a>
                 </li>
                 <li class="edition-1 edition-2" title="Add a scene trait">
                     <a id="trait-add">＋ Trait</a>
@@ -198,15 +203,8 @@
                     </svg>
                     <!-- linthtml-enable attr-bans, attr-name-style, indent-style -->
                     <img src="img/transparent-4x3.png" alt="blank scene background" class="bg">
-                    <a class="image-change">
-                        <input class="select" type="file" accept="image/*" hidden />
-                        <emoji>📂</emoji>
-                    </a>
                     <a class="image-clear">
                         <emoji>⌫</emoji>
-                    </a>
-                    <a class="tokens-list-btn" title="tokens">
-                        <emoji>🧩</emoji>
                     </a>
                     <span id="npc-tokens"></span>
                     <span id="player-tokens"></span>

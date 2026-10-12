@@ -274,7 +274,7 @@ export class IndexController {
     if (tokensDialog instanceof TokensDialogElement === false) {
       throw new Error('Tokens dialog not setup!')
     }
-    document.querySelector('#play-field > .tokens-list-btn').addEventListener('click', () => {
+    document.querySelector('nav .tokens-list-btn').addEventListener('click', () => {
       this.#loadTokensDialog(tokensDialog)
       tokensDialog.showModal()
     })
@@ -330,7 +330,7 @@ export class IndexController {
       this.#setMapImage(image)
       return true
     })
-    const mapSelectProxyEl = document.querySelector('#play-field > .image-change')
+    const mapSelectProxyEl = document.querySelector('nav .image-change')
     const mapSelectEl = mapSelectProxyEl.querySelector('input')
     mapSelectProxyEl.addEventListener('click', () => mapSelectEl.click())
     this.#setupFileImport(mapSelectEl, busyDialog, 'image', ImageFileExtensions, async (file) => { await this.#setMapImage(file) })
