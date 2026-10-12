@@ -314,8 +314,7 @@ export class MapTokenElement extends HTMLImageElement {
    */
   set image (file) {
     this.#imageFile = file
-    this.src = URL.createObjectURL(this.#imageFile)
-    // TODO
+    this.src = file instanceof File ? URL.createObjectURL(file) : ''
   }
 }
 

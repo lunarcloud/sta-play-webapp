@@ -675,6 +675,16 @@ export class PlayerDisplayElement extends HTMLLIElement {
   }
 
   /**
+   * The portrait's current rendered image source, whether from an uploaded
+   * file or a default image. Useful for mirroring the portrait elsewhere
+   * (e.g. an on-map token) when no uploaded `File` is available.
+   * @returns {string} the portrait `<img>`'s current `src`
+   */
+  get portraitSrc () {
+    return this.#portraitEl.src
+  }
+
+  /**
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/HTMLElement/focus)
    * @param {FocusOptions} [options]  An optional object for controlling aspects of the focusing process
    */

@@ -932,8 +932,13 @@ menu-items {
         top: 0.125em;
     }
 
+    & > .tokens-list-btn {
+        top: 2.375em;
+    }
+
     & > .image-change,
-    & > .image-clear {
+    & > .image-clear,
+    & > .tokens-list-btn {
         position: absolute;
         width: 1.25em;
         right: 0.5em;

@@ -7,6 +7,7 @@ import { ConfirmDialogElement } from './components/confirm-dialog/confirm-dialog
 import { InputDialogElement } from './components/input-dialog/input-dialog-element.js'
 import { DiceDialogElement } from './components/dice-dialog/dice-dialog-element.js'
 import { RollTablesDialogElement } from './components/roll-tables-dialog/roll-tables-dialog-element.js'
+import { TokensDialogElement } from './components/tokens-dialog/tokens-dialog-element.js'
 import { SceneSwitcherElement } from './components/scene-switcher/scene-switcher-element.js'
 import { MapTokenElement } from './components/map-token/map-token.js'
 import { MissionTrackerElement } from './components/mission-tracker/mission-tracker-element.js'
@@ -262,6 +263,31 @@ export class IndexController {
     })
     rollTablesDialog.addEventListener('tables-changed', () => {
       this.#saveRollTablesFromDialog(rollTablesDialog)
+    })
+
+    // Wire up the tokens dialog
+    const tokensDialog = document.querySelector('dialog[is="tokens-dialog"]')
+    if (tokensDialog instanceof TokensDialogElement === false) {
+      throw new Error('Tokens dialog not setup!')
+    }
+    document.querySelector('#play-field > .tokens-list-btn').addEventListener('click', () => {
+      this.#loadTokensDialog(tokensDialog)
+      tokensDialog.showModal()
+    })
+    tokensDialog.addEventListener('tokens-changed', async () => {
+      await this.#saveTokensFromDialog(tokensDialog)
+      // Refresh from the DB so newly added tokens pick up their generated ids,
+      // which the on-map placement/position tracking keys on.
+      await this.#loadTokensDialog(tokensDialog)
+    })
+    tokensDialog.addEventListener('tokens-place', event => {
+      event.detail.entries.forEach((entry, index) => {
+        if (entry.kind === 'player') {
+          this.#placePlayerToken(entry.player.playerIndex, index)
+        } else {
+          this.#placeToken(entry.token, index)
+        }
+      })
     })
 
     // Wire up the scene switcher dialog
@@ -908,6 +934,8 @@ export class IndexController {
     document.querySelectorAll('trait-display').forEach(el => el.parentNode.removeChild(el))
     document.querySelectorAll('.players li').forEach(el => el.parentNode.removeChild(el))
     document.querySelectorAll('task-tracker').forEach(el => el.parentNode.removeChild(el))
+    document.querySelectorAll('#player-tokens > [is="map-token"]').forEach(el => el.remove())
+    document.querySelectorAll('#npc-tokens > [is="map-token"]').forEach(el => el.remove())
 
     // If no game exists (fresh database), create a default game and scene
     if (gameInfo === undefined) {
@@ -970,7 +998,7 @@ export class IndexController {
       }
 
       // Apply this scene's saved token positions now that player tokens exist
-      this.#applyTokenPositions(firstSceneInfo?.tokenPositions)
+      await this.#applyTokenPositions(firstSceneInfo?.tokenPositions)
 
       // Get all trackers
       const trackers = await this.db.getTrackers(gameInfo?.id)
@@ -1284,6 +1312,12 @@ export class IndexController {
       })
     }
 
+    // Remove all of the player's on-map token copies, if placed, when the player is removed
+    newPlayerEl.addEventListener('removed', () => {
+      document.querySelectorAll(`#player-tokens > [is="map-token"][player="${playerIndex}"]`)
+        .forEach(el => el.remove())
+    })
+
     // Add 2 threat for the new player (if not just loading)
     const threatEl = document.getElementById('threat-pool')
     if (typeof (info) === 'undefined' && threatEl instanceof HTMLInputElement) {
@@ -1295,19 +1329,6 @@ export class IndexController {
     if (typeof (info) === 'undefined') {
       newPlayerEl.focusNameEdit()
     }
-
-    // Ensure the map tokens for the player exist
-    const playerTokenEl = document.createElement('img', { is: 'map-token' })
-    if (playerTokenEl instanceof MapTokenElement === false) { throw new Error(`Failed to create a map token element for player ${playerIndex}`) }
-
-    playerTokenEl.setAttribute('player', playerIndex)
-    // Default position; overridden by #applyTokenPositions if this scene has a saved position
-    playerTokenEl.x = 0.1 + ((playerCount - 1) % 6) * 0.12
-    playerTokenEl.y = 0.1
-
-    playerTokenEl.image = newPlayerEl.imageFile
-    const allPlayerTokensEl = document.getElementById('player-tokens')
-    allPlayerTokensEl.appendChild(playerTokenEl)
   }
 
   /**
@@ -1579,7 +1600,10 @@ export class IndexController {
   }
 
   /**
-   * Capture the current map token positions, keyed by token key (e.g. `player-0`).
+   * Capture the current map token positions, keyed by token key (e.g. `player-0-0`, `token-3-0`).
+   * Any number of independent copies ("instances") of a player or NPC/other token may be placed
+   * at once (e.g. several "shuttlepod" tokens, or a cloned player character), each captured
+   * under its own `instance` suffix.
    * @returns {Record<string, {x: number, y: number}>} current token positions
    */
   #captureTokenPositions () {
@@ -1589,36 +1613,188 @@ export class IndexController {
     document.querySelectorAll('#player-tokens > [is="map-token"]').forEach(el => {
       if (el instanceof MapTokenElement === false) return
       const playerIndex = el.getAttribute('player')
-      tokenPositions[`player-${playerIndex}`] = { x: el.x, y: el.y }
+      const instance = el.getAttribute('instance') ?? '0'
+      tokenPositions[`player-${playerIndex}-${instance}`] = { x: el.x, y: el.y }
+    })
+
+    document.querySelectorAll('#npc-tokens > [is="map-token"]').forEach(el => {
+      if (el instanceof MapTokenElement === false) return
+      const tokenId = el.getAttribute('token-id')
+      const instance = el.getAttribute('instance') ?? '0'
+      tokenPositions[`token-${tokenId}-${instance}`] = { x: el.x, y: el.y }
     })
 
     return tokenPositions
   }
 
   /**
-   * Apply saved map token positions to the current player tokens. Player tokens are always
-   * shown on every scene; a token without a recorded position for this scene falls back to the
-   * same default placement used when it was first created, rather than keeping a stale position
-   * left over from whichever scene was previously displayed.
+   * Apply saved map token positions to the current scene. Tokens are only shown on scenes where
+   * they have a recorded position, since they aren't placed on every scene by default - they're
+   * placed explicitly via the tokens dialog. Any number of copies of a player or NPC/other token
+   * may be placed (e.g. cloned player characters, or several "shuttlepod" tokens), so both
+   * containers' on-map elements are fully recreated here to match the scene's saved instances
+   * exactly.
    * @param {Record<string, {x: number, y: number}>} [tokenPositions] positions to apply, keyed by token key
    */
-  #applyTokenPositions (tokenPositions = {}) {
-    const tokenEls = [...document.querySelectorAll('#player-tokens > [is="map-token"]')]
-      .filter(el => el instanceof MapTokenElement)
+  async #applyTokenPositions (tokenPositions = {}) {
+    this.#applyInstancedPositions('player-tokens', 'player-', tokenPositions,
+      (playerIndex, instance) => this.#createPlayerTokenElement(playerIndex, instance))
 
-    tokenEls.forEach((el, index) => {
-      const playerIndex = el.getAttribute('player')
-      const position = tokenPositions[`player-${playerIndex}`]
+    const npcKeys = Object.keys(tokenPositions).filter(key => key.startsWith('token-'))
+    const gameTokens = npcKeys.length > 0 ? await this.db.getTokens(this.currentGameId || 0) : []
 
-      if (position !== undefined) {
-        el.x = position.x
-        el.y = position.y
-      } else {
-        // No saved position for this scene: use the same default placement as a newly created token
-        el.x = 0.1 + (index % 6) * 0.12
-        el.y = 0.1
-      }
+    this.#applyInstancedPositions('npc-tokens', 'token-', tokenPositions, (tokenId, instance) => {
+      const tokenInfo = gameTokens.find(t => `${t.id}` === tokenId)
+      return tokenInfo ? this.#createNpcTokenElement(tokenInfo, instance) : undefined
     })
+  }
+
+  /**
+   * Recreate one container's on-map token elements to exactly match a scene's saved instances,
+   * since any number of independent copies of the same player/token may be placed.
+   * @param {string}                                                   containerId    id of the container element (e.g. `player-tokens`)
+   * @param {string}                                                   keyPrefix      prefix of `tokenPositions` keys belonging to this container (e.g. `player-`)
+   * @param {Record<string, {x: number, y: number}>}                   tokenPositions positions to apply, keyed by token key
+   * @param {(id: string, instance: string) => MapTokenElement|undefined} createElement creates the on-map element for one saved instance
+   */
+  #applyInstancedPositions (containerId, keyPrefix, tokenPositions, createElement) {
+    const containerEl = document.getElementById(containerId)
+    containerEl.querySelectorAll('[is="map-token"]').forEach(el => el.remove())
+
+    for (const [key, position] of Object.entries(tokenPositions)) {
+      if (!key.startsWith(keyPrefix)) continue
+
+      const match = key.substring(keyPrefix.length).match(/^(.+)-(\d+)$/)
+      if (!match) continue
+
+      const [, id, instance] = match
+      const tokenEl = createElement(id, instance)
+      if (!tokenEl) continue
+
+      tokenEl.x = position.x
+      tokenEl.y = position.y
+    }
+  }
+
+  /**
+   * Create a new on-map element for one copy ("instance") of a player. Any number of independent
+   * copies of the same player may exist on a scene's map at once (e.g. a cloned character), each
+   * tracked by its own instance number.
+   * @param {string|number} playerIndex player index this copy represents
+   * @param {string|number} instance    instance number, unique per player index within the scene
+   * @returns {MapTokenElement} the new on-map element
+   */
+  #createPlayerTokenElement (playerIndex, instance) {
+    const playerTokensEl = document.getElementById('player-tokens')
+
+    const tokenEl = document.createElement('img', { is: 'map-token' })
+    if (tokenEl instanceof MapTokenElement === false) {
+      throw new Error(`Failed to create a map token element for player ${playerIndex}`)
+    }
+    tokenEl.setAttribute('player', `${playerIndex}`)
+    tokenEl.setAttribute('instance', `${instance}`)
+
+    const playerDisplayEl = document.getElementById(`player-${playerIndex}`)
+    if (playerDisplayEl instanceof PlayerDisplayElement) {
+      if (playerDisplayEl.imageFile instanceof File) {
+        tokenEl.image = playerDisplayEl.imageFile
+      } else {
+        tokenEl.src = playerDisplayEl.portraitSrc
+      }
+    }
+
+    playerTokensEl.appendChild(tokenEl)
+    return tokenEl
+  }
+
+  /**
+   * Create a new on-map element for one copy ("instance") of an NPC/other token definition.
+   * Any number of independent copies of the same token definition may exist on a scene's map at
+   * once (e.g. several "shuttlepod" tokens), each tracked by its own instance number.
+   * @param {import('./js/database/token-info.js').TokenInfo} tokenInfo token to create an element for
+   * @param {string|number} instance instance number, unique per token id within the scene
+   * @returns {MapTokenElement} the new on-map element
+   */
+  #createNpcTokenElement (tokenInfo, instance) {
+    const npcTokensEl = document.getElementById('npc-tokens')
+
+    const tokenEl = document.createElement('img', { is: 'map-token' })
+    if (tokenEl instanceof MapTokenElement === false) {
+      throw new Error(`Failed to create a map token element for token ${tokenInfo.id}`)
+    }
+    tokenEl.setAttribute('token-id', `${tokenInfo.id}`)
+    tokenEl.setAttribute('instance', `${instance}`)
+    tokenEl.image = tokenInfo.image
+    npcTokensEl.appendChild(tokenEl)
+
+    return tokenEl
+  }
+
+  /**
+   * Get the next free instance number for a token/player id in a container, based on the copies
+   * currently on the map, so a newly placed copy doesn't collide with an existing one.
+   * @param {string}        containerId id of the container element (e.g. `player-tokens`)
+   * @param {string}        attrName    attribute identifying the token/player id (e.g. `player`)
+   * @param {number|string} id          id of the token definition or player index
+   * @returns {number} the next free instance number
+   */
+  #nextInstance (containerId, attrName, id) {
+    const instances = [...document.querySelectorAll(`#${containerId} > [is="map-token"][${attrName}="${id}"]`)]
+      .map(el => parseInt(el.getAttribute('instance') ?? '0', 10))
+    return instances.length > 0 ? Math.max(...instances) + 1 : 0
+  }
+
+  /**
+   * Load tokens and players for the current game into the tokens dialog
+   * @param {TokensDialogElement} dialog - The tokens dialog
+   */
+  async #loadTokensDialog (dialog) {
+    const gameId = this.currentGameId || 0
+    const tokens = await this.db.getTokens(gameId)
+    const players = [...document.querySelectorAll('.players li[is="player-display"]')]
+      .filter(el => el instanceof PlayerDisplayElement)
+      .map(el => ({ playerIndex: el.playerIndex, name: el.name, image: el.imageFile }))
+    dialog.loadTokens(gameId, tokens, players)
+  }
+
+  /**
+   * Save tokens from the dialog to the database
+   * @param {TokensDialogElement} dialog - The tokens dialog
+   */
+  async #saveTokensFromDialog (dialog) {
+    const tokens = dialog.getTokens()
+
+    if (this.currentGameId) {
+      tokens.forEach(token => { token.game = this.currentGameId })
+    }
+
+    await this.db.replaceTokens(tokens)
+  }
+
+  /**
+   * Place a new copy of an NPC/other token from the tokens dialog onto the map, at a default
+   * staggered position. Each call creates an independent on-map copy, so the same token
+   * definition (e.g. a generic "shuttlepod") can be placed more than once in a scene.
+   * @param {import('./js/database/token-info.js').TokenInfo} token token being placed
+   * @param {number}                                          index stagger index, so multiple tokens placed at once don't overlap
+   */
+  #placeToken (token, index) {
+    const tokenEl = this.#createNpcTokenElement(token, this.#nextInstance('npc-tokens', 'token-id', token.id))
+    tokenEl.x = 0.1 + (index % 6) * 0.12
+    tokenEl.y = 0.1
+  }
+
+  /**
+   * Place a new copy of a player's token from the tokens dialog onto the map, at a default
+   * staggered position. Each call creates an independent on-map copy, so the same player
+   * can be placed more than once in a scene (e.g. a cloned character).
+   * @param {string|number} playerIndex player being placed
+   * @param {number}        index       stagger index, so multiple tokens placed at once don't overlap
+   */
+  #placePlayerToken (playerIndex, index) {
+    const tokenEl = this.#createPlayerTokenElement(playerIndex, this.#nextInstance('player-tokens', 'player', playerIndex))
+    tokenEl.x = 0.1 + (index % 6) * 0.12
+    tokenEl.y = 0.1
   }
 
   /**
@@ -1664,7 +1840,7 @@ export class IndexController {
       }
 
       this.#setMapImage(scene.image)
-      this.#applyTokenPositions(scene.tokenPositions)
+      await this.#applyTokenPositions(scene.tokenPositions)
     }
   }
 

@@ -71,18 +71,25 @@ export class Database {
    * @param {number} oldVersion        the version being upgraded from
    */
   async #upgrade (db, oldVersion) {
-    if (oldVersion === 17 && DB_VERSION === 18) {
+    if (oldVersion < 16 || oldVersion > DB_VERSION)
+    {
+        // too old to migrate, or too new for this version
+        // fallback to wiping the database
+        console.warn('clearing db for upgrade')
+        this.#create(db)
+    }
+
+    if (oldVersion === 16) {
+        // Should not need any new stores or indexes
+    }
+
+    if (oldVersion <= 17) {
       // Purely additive: add the new tokens store, leaving all existing data untouched.
       // Existing scenes simply lack a tokenPositions entry until re-saved (treated as {} at runtime).
       const tokenStore = db.createObjectStore(STORE.TOKENS, { keyPath: INDEX.ID, autoIncrement: true })
       tokenStore.createIndex(INDEX.NAME, INDEX.NAME, { unique: false })
       tokenStore.createIndex(INDEX.GAME, INDEX.GAME, { unique: false })
-      return
     }
-
-    // fallback to wiping the database
-    console.warn('clearing db for upgrade')
-    this.#create(db)
   }
 
   /**

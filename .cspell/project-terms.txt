@@ -43,6 +43,8 @@ tinypop
 unitless
 émojis
 currentyear
+flexbox
 
 # Test Values
 alreadylowercase
+stackable

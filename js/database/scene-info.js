@@ -42,8 +42,10 @@ export class SceneInfo extends NamedInfo {
   image
 
   /**
-   * Map token positions for this scene, keyed by token key (e.g. `player-0`, `token-5`).
-   * A token with no entry here is not placed on this scene's map.
+   * Map token positions for this scene, keyed by token key (e.g. `player-0-0`, `token-5-0`).
+   * Any number of independent copies ("instances") of a player or NPC/other token may be placed
+   * at once (e.g. a cloned player character, or several "shuttlepod" tokens), each key carrying
+   * its own instance number suffix. A token with no entry here is not placed on this scene's map.
    * @type {Record<string, TokenPosition>}
    */
   tokenPositions

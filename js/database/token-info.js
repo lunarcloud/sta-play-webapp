@@ -4,7 +4,8 @@ import { NamedInfo } from './named-info.js'
  * Database Token Information Object.
  * Represents a reusable "other" (non-player, e.g. NPC) map token's definition,
  * usable across any scene of its game. Its on-map position is stored per-scene,
- * on the scene's `tokenPositions` field, keyed as `token-{id}`.
+ * on the scene's `tokenPositions` field, keyed as `token-{id}-{instance}` since any number of
+ * copies of the same token definition may be placed at once.
  */
 export class TokenInfo extends NamedInfo {
   /**
