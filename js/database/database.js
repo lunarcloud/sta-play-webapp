@@ -71,16 +71,15 @@ export class Database {
    * @param {number} oldVersion        the version being upgraded from
    */
   async #upgrade (db, oldVersion) {
-    if (oldVersion < 16 || oldVersion > DB_VERSION)
-    {
-        // too old to migrate, or too new for this version
-        // fallback to wiping the database
-        console.warn('clearing db for upgrade')
-        this.#create(db)
+    if (oldVersion < 16 || oldVersion > DB_VERSION) {
+      // too old to migrate, or too new for this version
+      // fallback to wiping the database
+      console.warn('clearing db for upgrade')
+      this.#create(db)
     }
 
     if (oldVersion === 16) {
-        // Should not need any new stores or indexes
+      // Should not need any new stores or indexes
     }
 
     if (oldVersion <= 17) {
