@@ -793,7 +793,7 @@ menu-items {
         height: 1em;
         aspect-ratio: 1;
         text-fit: shrink;
-        font-size-adjust: ch-width 1;
+        font-size-adjust: ch-width 0.5;
     }
 }
 
