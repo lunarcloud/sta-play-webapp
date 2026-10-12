@@ -4,6 +4,7 @@ input-progress-internal {
     position: relative;
     display: block;
     min-height: 1em;
+    height: stretch;
 
     & > * {
         background-color: transparent;
