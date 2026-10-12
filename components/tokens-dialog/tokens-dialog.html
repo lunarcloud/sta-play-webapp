@@ -93,10 +93,12 @@
                         width: 1.25em;
                         height: 1.25em;
                         padding: 0;
-                        border: 1px solid var(--main-color-bg);
+                        border: 1px solid var(--trek-color-2);
                         border-radius: 50%;
-                        background-color: var(--trek-color-2);
-                        color: var(--nav-color-text);
+
+                        /* use the main bg/text pair (not trek-color-2/nav-color-text) so the symbol always has enough contrast against its own background */
+                        background-color: var(--main-color-bg);
+                        color: var(--main-color-text);
                         line-height: 1;
                         cursor: pointer;
 
