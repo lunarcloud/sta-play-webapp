@@ -34,6 +34,7 @@ export class MirrorWindow {
    * @property {boolean} traits - Character traits
    * @property {boolean} missionTracker - Mission tracker
    * @property {boolean} players - Player displays
+   * @property {boolean} map - Scene map (background image and placed tokens)
    * @property {boolean} headerModels - Header ship models
    * @property {boolean} fullscreenShip - Fullscreen ship model
    * @property {boolean} navigation - Navigation element
@@ -50,6 +51,7 @@ export class MirrorWindow {
     traits: false,
     missionTracker: false,
     players: false,
+    map: false,
     headerModels: false,
     fullscreenShip: false,
     navigation: false,
@@ -356,6 +358,13 @@ export class MirrorWindow {
             MirrorWindow.#syncsNeeded.players = true
             continue
           }
+
+          // Scene map (background image and placed tokens)
+          if (target.id === 'play-field' ||
+              (target.closest && target.closest('#play-field'))) {
+            MirrorWindow.#syncsNeeded.map = true
+            continue
+          }
         }
       }
 
@@ -407,10 +416,10 @@ export class MirrorWindow {
       })
     }
 
-    // Also watch body attributes for edition, alert, and other changes
+    // Also watch body attributes for edition, alert, mode (text/map), and other changes
     MirrorWindow.#observer.observe(document.body, {
       attributes: true,
-      attributeFilter: ['class', 'alert', 'loaded-game-name', 'edition']
+      attributeFilter: ['class', 'alert', 'loaded-game-name', 'edition', 'mode']
     })
 
     // Watch for theme stylesheet changes
@@ -712,6 +721,7 @@ export class MirrorWindow {
         traits: false,
         missionTracker: false,
         players: false,
+        map: false,
         headerModels: false,
         fullscreenShip: false,
         navigation: false,
@@ -964,6 +974,88 @@ export class MirrorWindow {
   }
 
   /**
+   * Synchronizes the scene map: background image and placed player/NPC tokens.
+   * @param {Element} mainEl - Main element from source window
+   * @param {Element} mirrorMainEl - Main element from mirror window
+   */
+  static #syncMap (mainEl, mirrorMainEl) {
+    const playField = mainEl.querySelector('#play-field')
+    const mirrorPlayField = mirrorMainEl.querySelector('#play-field')
+    if (!playField || !mirrorPlayField) return
+
+    // Sync the background image (transferring its blob URL if needed)
+    const bgImg = playField.querySelector('img.bg')
+    const mirrorBgImg = mirrorPlayField.querySelector('img.bg')
+    if (bgImg && mirrorBgImg) {
+      mirrorBgImg.alt = bgImg.alt
+      if (bgImg.src.startsWith('blob:')) {
+        MirrorWindow.#transferBlobUrl(bgImg.src).then(mirrorUrl => {
+          if (MirrorWindow.isOpen()) mirrorBgImg.src = mirrorUrl
+        })
+      } else if (mirrorBgImg.src !== bgImg.src) {
+        mirrorBgImg.src = bgImg.src
+      }
+    }
+
+    // Sync placed tokens, keyed by their identifying attributes so moves/scales
+    // update in place instead of rebuilding the whole container.
+    MirrorWindow.#syncTokenContainer(playField.querySelector('#npc-tokens'), mirrorPlayField.querySelector('#npc-tokens'))
+    MirrorWindow.#syncTokenContainer(playField.querySelector('#player-tokens'), mirrorPlayField.querySelector('#player-tokens'))
+  }
+
+  /**
+   * Synchronizes one map-token container (npc or player tokens) between windows.
+   * @param {Element} sourceContainer - Source token container element
+   * @param {Element} mirrorContainer - Mirror token container element
+   */
+  static #syncTokenContainer (sourceContainer, mirrorContainer) {
+    if (!sourceContainer || !mirrorContainer) return
+
+    const sourceTokens = Array.from(sourceContainer.querySelectorAll('[is="map-token"]'))
+    const mirrorTokens = Array.from(mirrorContainer.querySelectorAll('[is="map-token"]'))
+
+    // Identify tokens by their player/token-id + instance attributes (unique per placed copy)
+    const keyOf = el => `${el.getAttribute('player') ?? ''}|${el.getAttribute('token-id') ?? ''}|${el.getAttribute('instance') ?? ''}`
+    const mirrorByKey = new Map(mirrorTokens.map(el => [keyOf(el), el]))
+
+    const seenKeys = new Set()
+    sourceTokens.forEach(sourceToken => {
+      const key = keyOf(sourceToken)
+      seenKeys.add(key)
+      let mirrorToken = mirrorByKey.get(key)
+
+      if (!mirrorToken) {
+        mirrorToken = /** @type {HTMLImageElement} */ (sourceToken.cloneNode(true))
+        mirrorContainer.appendChild(mirrorToken)
+      }
+
+      // Copy identifying/state attributes to trigger attributeChangedCallback
+      Array.from(sourceToken.attributes).forEach(attr => {
+        mirrorToken.setAttribute(attr.name, attr.value)
+      })
+
+      // Position/scale are plain properties (not reflected as attributes)
+      mirrorToken.x = sourceToken.x
+      mirrorToken.y = sourceToken.y
+      mirrorToken.scale = sourceToken.scale
+
+      // Transfer the token's image, which is a blob URL scoped to the main window
+      if (sourceToken.src.startsWith('blob:')) {
+        MirrorWindow.#transferBlobUrl(sourceToken.src).then(mirrorUrl => {
+          if (MirrorWindow.isOpen()) mirrorToken.src = mirrorUrl
+        })
+      } else if (mirrorToken.src !== sourceToken.src) {
+        mirrorToken.src = sourceToken.src
+      }
+    })
+
+    // Remove mirror tokens that no longer exist in the source
+    mirrorByKey.forEach((mirrorToken, key) => {
+      if (!seenKeys.has(key)) mirrorToken.remove()
+    })
+  }
+
+  /**
    * Synchronizes header ship models with cloaking effects.
    * @param {Document} mirrorDoc - Mirror window document
    */
@@ -1114,6 +1206,10 @@ export class MirrorWindow {
 
         if (MirrorWindow.#syncsNeeded.players) {
           MirrorWindow.#syncPlayers(mainEl, mirrorMainEl)
+        }
+
+        if (MirrorWindow.#syncsNeeded.map) {
+          MirrorWindow.#syncMap(mainEl, mirrorMainEl)
         }
       }
 

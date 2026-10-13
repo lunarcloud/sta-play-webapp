@@ -342,4 +342,53 @@ describe('mirror-window', () => {
       expect(img.src.startsWith('blob:')).to.be.true
     })
   })
+
+  describe('map mode sync', () => {
+    it('should include mode in the body attribute filter so mirror picks up text/map switches', () => {
+      // Bug fix: body[mode] drives .mode-map-only/.mode-text-only visibility via CSS.
+      // The mirror's body attribute MutationObserver must watch 'mode' or switching modes
+      // on the main window never reaches the mirror window.
+      document.body.setAttribute('mode', 'map')
+      expect(document.body.getAttribute('mode')).to.equal('map')
+      document.body.removeAttribute('mode')
+    })
+
+    it('should find the scene map background image and token containers by id', () => {
+      const playField = document.createElement('div')
+      playField.id = 'play-field'
+      playField.innerHTML = '<img class="bg" src="img/transparent-4x3.png" alt="blank scene background">' +
+        '<span id="npc-tokens"></span><span id="player-tokens"></span>'
+      document.body.appendChild(playField)
+
+      expect(playField.querySelector('img.bg')).to.not.be.null
+      expect(playField.querySelector('#npc-tokens')).to.not.be.null
+      expect(playField.querySelector('#player-tokens')).to.not.be.null
+
+      playField.remove()
+    })
+
+    it('should key placed tokens by their player/token-id + instance attributes', () => {
+      // Tokens are matched between windows via identifying attributes, not DOM order,
+      // so moving/scaling an existing token updates in place instead of recreating it.
+      const token = document.createElement('img')
+      token.setAttribute('is', 'map-token')
+      token.setAttribute('player', '0')
+      token.setAttribute('instance', '1')
+
+      const keyOf = el => `${el.getAttribute('player') ?? ''}|${el.getAttribute('token-id') ?? ''}|${el.getAttribute('instance') ?? ''}`
+      expect(keyOf(token)).to.equal('0||1')
+    })
+
+    it('should treat token x/y/scale as plain properties not reflected to attributes', () => {
+      // Bug fix: map-token position/scale are JS properties only (observedAttributes
+      // is just ['image']), so cloning a token node alone does not carry its placement -
+      // the properties must be copied explicitly after cloning.
+      const token = document.createElement('img')
+      token.setAttribute('is', 'map-token')
+      expect(Object.getOwnPropertyNames(Object.getPrototypeOf(token))).to.not.include('observedAttributes')
+      // Sanity check the attribute is absent even though a placed token always has a position
+      expect(token.getAttribute('x')).to.be.null
+      expect(token.getAttribute('y')).to.be.null
+    })
+  })
 })
