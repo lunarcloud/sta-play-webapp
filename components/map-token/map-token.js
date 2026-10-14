@@ -190,6 +190,7 @@ export class MapTokenElement extends HTMLImageElement {
       previewEl.style.top = '-9999px'
       previewEl.style.width = `${rect.width}px`
       previewEl.style.height = `${rect.height}px`
+      previewEl.style.objectFit = 'contain'
       document.body.appendChild(previewEl)
       event.dataTransfer.setDragImage(previewEl, event.clientX - rect.left, event.clientY - rect.top)
       // The browser captures the snapshot synchronously, so the copy can be removed right after

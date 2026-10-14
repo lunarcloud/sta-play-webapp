@@ -7,6 +7,7 @@ img[is="map-token"] {
     cursor: grab;
     height: 4vh;
     width: 4vh;
+    object-fit: contain;
     background-size: contain;
     background-repeat: no-repeat;
     transition: filter,scale 400ms ease-out;
