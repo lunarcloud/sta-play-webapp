@@ -427,10 +427,17 @@ dialogs > dialog {
             flex-direction: column;
             gap: 0.25em;
 
-            label {
-                padding-top: 0.25em;
-                text-align: center;
-            }
+        .preview-image {
+            align-self: center;
+            max-width: 8em;
+            max-height: 8em;
+            object-fit: contain;
+        }
+
+        label {
+            padding-top: 0.25em;
+            text-align: center;
+        }
 
             input {
                 padding: 0.5em;

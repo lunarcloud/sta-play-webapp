@@ -242,24 +242,31 @@ export class TokensDialogElement extends HTMLDialogElement {
   }
 
   /**
-   * Handle the "Add Token" file input, prompting for a name and adding the new token
+   * Handle the "Add Token" file input, prompting for a name per selected image and adding
+   * each as a new token. Multiple files may be selected at once.
    */
   async #addToken () {
-    const file = this.#addInputEl.files?.[0]
+    const files = Array.from(this.#addInputEl.files ?? []).filter(file => file.type.startsWith('image/'))
     this.#addInputEl.value = null
-    if (!file || !file.type.startsWith('image/')) return
+    if (files.length === 0) return
 
-    const defaultName = file.name.replace(/\.[^.]+$/, '')
     const inputDialog = document.querySelector('dialog[is="input-dialog"]')
-    const name = inputDialog instanceof InputDialogElement
-      ? await inputDialog.prompt('Name this token:', defaultName)
-      : defaultName
-    if (name === null) return // cancelled
+    let added = false
 
-    const token = new TokenInfo(this.#gameId, name || defaultName, file)
-    this.#tokens.push(token)
+    for (const file of files) {
+      const defaultName = file.name.replace(/\.[^.]+$/, '')
+      const name = inputDialog instanceof InputDialogElement
+        ? await inputDialog.prompt('Name this token:', defaultName, file)
+        : defaultName
+      if (name === null) continue // cancelled this one, keep going with the rest
+
+      this.#tokens.push(new TokenInfo(this.#gameId, name || defaultName, file))
+      added = true
+    }
+
+    if (!added) return
+
     this.#render()
-
     this.dispatchEvent(new CustomEvent('tokens-changed', { detail: { tokens: this.#tokens }, bubbles: true }))
   }
 }

@@ -13,6 +13,12 @@ export class InputDialogElement extends HTMLDialogElement {
   #resolvePromise = null
 
   /**
+   * Object URL of the currently shown preview image, so it can be revoked.
+   * @type {string|null}
+   */
+  #previewUrl = null
+
+  /**
    * Constructor.
    */
   constructor () {
@@ -23,10 +29,13 @@ export class InputDialogElement extends HTMLDialogElement {
     this.querySelector('button.cancel')?.addEventListener('click', () => this.#handleCancel())
     this.querySelector('button.confirm')?.addEventListener('click', () => this.#handleConfirm())
 
+    // Resolve the pending promise only once the dialog has actually finished closing
+    // (after the close animation), so a subsequent prompt() call doesn't try to
+    // showModal() a dialog that's still technically open.
     this.addEventListener('close', () => {
-      if (this.returnValue !== 'confirm') {
-        this.#handleCancel()
-      }
+      const resolve = this.#resolvePromise
+      this.#resolvePromise = null
+      resolve?.(this.returnValue === 'confirm' ? (this.querySelector('input')?.value ?? '') : null)
     })
 
     // Handle Enter key in input field
@@ -42,13 +51,25 @@ export class InputDialogElement extends HTMLDialogElement {
   }
 
   /**
+   * Clear and hide the preview image, revoking its object URL if any.
+   */
+  #clearPreview () {
+    const imgEl = /** @type {HTMLImageElement} */ (this.querySelector('.preview-image'))
+    if (imgEl) {
+      imgEl.hidden = true
+      imgEl.removeAttribute('src')
+    }
+    if (this.#previewUrl) {
+      URL.revokeObjectURL(this.#previewUrl)
+      this.#previewUrl = null
+    }
+  }
+
+  /**
    * Handle cancel action.
    */
   #handleCancel () {
-    if (this.#resolvePromise) {
-      this.#resolvePromise(null)
-      this.#resolvePromise = null
-    }
+    this.returnValue = ''
     animateClose(this)
   }
 
@@ -56,31 +77,35 @@ export class InputDialogElement extends HTMLDialogElement {
    * Handle confirm action.
    */
   #handleConfirm () {
-    if (this.#resolvePromise) {
-      const input = this.querySelector('input')
-      const value = input ? input.value : ''
-      this.#resolvePromise(value)
-      this.#resolvePromise = null
-    }
     this.returnValue = 'confirm'
     animateClose(this)
   }
 
   /**
    * Show the dialog with an input prompt.
-   * @param {string} message - The message to display
-   * @param {string} defaultValue - The default value for the input
+   * @param {string}            message      - The message to display
+   * @param {string}            defaultValue - The default value for the input
+   * @param {File|undefined}    [previewImage] - Optional image to preview above the input, e.g. to clarify which file is being named
    * @returns {Promise<string|null>} Promise that resolves to the input value, or null if cancelled
    */
-  async prompt (message, defaultValue) {
+  async prompt (message, defaultValue, previewImage = undefined) {
     const labelEl = this.querySelector('label')
     const inputEl = this.querySelector('input')
+    const imgEl = /** @type {HTMLImageElement} */ (this.querySelector('.preview-image'))
 
     if (labelEl) {
       labelEl.textContent = message
     }
     if (inputEl) {
       inputEl.value = defaultValue || ''
+    }
+
+    this.#clearPreview()
+    if (imgEl && previewImage instanceof File) {
+      this.#previewUrl = URL.createObjectURL(previewImage)
+      imgEl.src = this.#previewUrl
+      imgEl.alt = previewImage.name
+      imgEl.hidden = false
     }
 
     this.returnValue = ''
