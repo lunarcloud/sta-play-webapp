@@ -1,6 +1,7 @@
 import { snakeToCamel } from '../../js/string-utils.js'
 import { getContainedImageRectRelativeTo } from '../../js/image-rect-utils.js'
 import { clamp } from '../../js/math-utils.js'
+import { animateRemove } from '../../js/dialog-utils.js'
 
 // Fraction of the map image's smaller dimension used for a token's size,
 // so tokens scale up/down together with the image instead of the viewport.
@@ -222,12 +223,15 @@ export class MapTokenElement extends HTMLImageElement {
   /**
    * Setup right-click (desktop) and long-press (touch) handlers that both request this
    * token's edit dialog (scale/remove), since neither gesture is otherwise used by the token.
+   * Also setup double-click as a quick shortcut to remove the token outright.
    */
   #setupEditTrigger () {
     this.addEventListener('contextmenu', event => {
       event.preventDefault()
       this.dispatchEvent(new CustomEvent('edit-requested', { bubbles: true }))
     })
+
+    this.addEventListener('dblclick', () => animateRemove(this))
 
     const cancelLongPress = () => {
       clearTimeout(this.#longPressTimer)
