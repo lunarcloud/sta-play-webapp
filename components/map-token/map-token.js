@@ -15,6 +15,9 @@ export const MIN_SCALE = 0.25
 // How long a press/touch must be held to count as a long-press, in milliseconds.
 const LONG_PRESS_DURATION_MS = 500
 
+// Pointer movement (in pixels) beyond which a press is treated as a drag rather than a tap/long-press.
+const DRAG_THRESHOLD_PX = 10
+
 export class MapTokenElement extends HTMLImageElement {
   /**
    * All currently connected tokens, kept in sync with the rendered map image size/position.
@@ -108,6 +111,24 @@ export class MapTokenElement extends HTMLImageElement {
   #longPressTimer
 
   /**
+   * Client-space point where the current pointer press started, used to detect drag
+   * movement past {@link DRAG_THRESHOLD_PX} before committing to a drag.
+   * @type {number}
+   */
+  #dragStartX = 0
+
+  /**
+   * @type {number}
+   */
+  #dragStartY = 0
+
+  /**
+   * Whether the current pointer press has moved far enough to be treated as a drag.
+   * @type {boolean}
+   */
+  #dragging = false
+
+  /**
    * Constructor.
    */
   constructor () {
@@ -164,66 +185,77 @@ export class MapTokenElement extends HTMLImageElement {
   }
 
   /**
-   * Setup drag and drop functionality for reordering players
+   * Setup dragging via Pointer Events, which unifies mouse and touch input in a single code
+   * path (unlike the HTML5 drag-and-drop API, which touch devices never fire). A press that
+   * moves past {@link DRAG_THRESHOLD_PX} before the long-press timer fires is a drag; one
+   * released without moving far either opens the edit dialog (touch/pen) or does nothing,
+   * since desktop mice use right-click (contextmenu) for that instead.
    */
   #setupDragAndDrop () {
-    // Make this element draggable
-    this.setAttribute('draggable', 'true')
+    // Prevent the browser's native image drag (ghost/callout), now handled manually instead
+    this.draggable = false
 
-    this.addEventListener('dragstart', event => {
-      event.dataTransfer.effectAllowed = 'move'
-      // Required for Firefox compatibility
-      event.dataTransfer.setData('text/plain', '')
+    this.addEventListener('pointerdown', event => {
+      if (event.button !== 0) return // ignore right/middle mouse buttons
 
-      // Preserve the offset between the cursor and the token's center, so the
-      // point grabbed stays under the cursor for the whole drag, matching the preview.
+      this.setPointerCapture(event.pointerId)
+      this.#dragging = false
+      this.#dragStartX = event.clientX
+      this.#dragStartY = event.clientY
+
       const rect = this.getBoundingClientRect()
       this.#dragOffsetX = event.clientX - (rect.left + (rect.width / 2))
       this.#dragOffsetY = event.clientY - (rect.top + (rect.height / 2))
 
-      // Use a standalone, off-screen copy of the artwork as the drag preview, anchored
-      // at the grabbed point. A separate copy is needed because hiding the real token
-      // (below) would otherwise make the browser's drag-image snapshot invisible too.
-      const previewEl = document.createElement('img')
-      previewEl.src = this.src
-      previewEl.style.position = 'fixed'
-      previewEl.style.left = '-9999px'
-      previewEl.style.top = '-9999px'
-      previewEl.style.width = `${rect.width}px`
-      previewEl.style.height = `${rect.height}px`
-      previewEl.style.objectFit = 'contain'
-      document.body.appendChild(previewEl)
-      event.dataTransfer.setDragImage(previewEl, event.clientX - rect.left, event.clientY - rect.top)
-      // The browser captures the snapshot synchronously, so the copy can be removed right after
-      setTimeout(() => previewEl.remove(), 0)
-
-      this.classList.add('dragging')
+      // Touch/pen get a long-press timer to open the edit dialog if released without moving
+      if (event.pointerType !== 'mouse') {
+        this.#longPressTimer = setTimeout(() => {
+          this.#longPressTimer = undefined
+          this.dispatchEvent(new CustomEvent('edit-requested', { bubbles: true }))
+        }, LONG_PRESS_DURATION_MS)
+      }
     })
 
-    this.addEventListener('dragend', event => {
-      this.classList.remove('dragging')
-    })
+    this.addEventListener('pointermove', event => {
+      if (!this.hasPointerCapture(event.pointerId)) return
 
-    const map = document.getElementById('play-field')
-    if (!map) return
+      if (!this.#dragging) {
+        const movedX = event.clientX - this.#dragStartX
+        const movedY = event.clientY - this.#dragStartY
+        if (Math.hypot(movedX, movedY) < DRAG_THRESHOLD_PX) return
 
-    // You must listen for dragover on the parent container (the map)
-    map.addEventListener('dragover', event => {
-      // Required to allow a drop event to trigger
+        this.#cancelLongPress()
+        this.#dragging = true
+        this.classList.add('dragging')
+      }
+
+      // Stop touchscreens from scrolling the page while a token is being dragged
       event.preventDefault()
-      event.dataTransfer.dropEffect = 'move'
-
-      const token = document.querySelector('[is=map-token].dragging')
-      if (token instanceof MapTokenElement === false) return
-
-      token.#setNormalizedFromClientPoint(event.clientX - token.#dragOffsetX, event.clientY - token.#dragOffsetY)
+      this.#setNormalizedFromClientPoint(event.clientX - this.#dragOffsetX, event.clientY - this.#dragOffsetY)
     })
+
+    const endDrag = event => {
+      if (this.hasPointerCapture(event.pointerId)) this.releasePointerCapture(event.pointerId)
+      this.#cancelLongPress()
+      this.#dragging = false
+      this.classList.remove('dragging')
+    }
+    this.addEventListener('pointerup', endDrag)
+    this.addEventListener('pointercancel', endDrag)
   }
 
   /**
-   * Setup right-click (desktop) and long-press (touch) handlers that both request this
-   * token's edit dialog (scale/remove), since neither gesture is otherwise used by the token.
-   * Also setup double-click as a quick shortcut to remove the token outright.
+   * Cancel any in-progress long-press detection timer.
+   */
+  #cancelLongPress () {
+    clearTimeout(this.#longPressTimer)
+    this.#longPressTimer = undefined
+  }
+
+  /**
+   * Setup right-click (desktop) handler to open the edit (scale/remove) dialog, and
+   * double-click as a quick shortcut to remove the token outright. The equivalent touch
+   * gestures (long-press to edit, drag to move) are handled in {@link #setupDragAndDrop}.
    */
   #setupEditTrigger () {
     this.addEventListener('contextmenu', event => {
@@ -232,22 +264,6 @@ export class MapTokenElement extends HTMLImageElement {
     })
 
     this.addEventListener('dblclick', () => animateRemove(this))
-
-    const cancelLongPress = () => {
-      clearTimeout(this.#longPressTimer)
-      this.#longPressTimer = undefined
-    }
-
-    this.addEventListener('touchstart', () => {
-      cancelLongPress()
-      this.#longPressTimer = setTimeout(() => {
-        this.#longPressTimer = undefined
-        this.dispatchEvent(new CustomEvent('edit-requested', { bubbles: true }))
-      }, LONG_PRESS_DURATION_MS)
-    }, { passive: true })
-    this.addEventListener('touchend', cancelLongPress)
-    this.addEventListener('touchmove', cancelLongPress)
-    this.addEventListener('touchcancel', cancelLongPress)
   }
 
   /**

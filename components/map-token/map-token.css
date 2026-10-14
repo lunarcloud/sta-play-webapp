@@ -5,6 +5,7 @@ img[is="map-token"] {
     left: 55%;
     transform: translate(-50%, -50%);
     cursor: grab;
+    touch-action: none; /* let pointer events handle dragging instead of browser scroll/zoom gestures */
     height: 4vh;
     width: 4vh;
     object-fit: contain;
@@ -25,7 +26,7 @@ img[is="map-token"] {
     }
 
     &.dragging {
-        opacity: 0;
+        cursor: grabbing;
 
         /* Override :hover so the dragged token doesn't scale/glow, which wouldn't match its dropped look */
         scale: 1;
