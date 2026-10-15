@@ -436,6 +436,28 @@ export class Database {
   }
 
   /**
+   * Replace the scenes in the database with new ones, clearing out any scenes (and their
+   * associated traits) left over from whatever was previously stored. This matters most for
+   * importing a backup: without a full clear first, scenes missing from the backup (e.g.
+   * ones deleted after the backup was taken) would stay behind, merging with the import
+   * instead of replacing it.
+   * @param {SceneInfo[]} [scenes]             all the current scene infos
+   * @param {IDBPDatabase|IDBDatabase} [db]   the database
+   */
+  async replaceScenes (scenes = [], db = undefined) {
+    const andClose = typeof (db) === 'undefined'
+    db ??= await this.open()
+
+    // Clear every trait too, since they reference scene ids that are about to be replaced
+    await this.#replaceData(STORE.TRAITS, INDEX.NAME, undefined, [], db)
+
+    scenes.forEach(s => { if (s.id === undefined) delete s.id })
+    await this.#replaceData(STORE.SCENES, INDEX.NAME, undefined, scenes, db)
+
+    if (andClose) db.close()
+  }
+
+  /**
    * Replace the trackers in the database with new ones
    * @param {TrackerInfo[]} trackers          all the current tracker infos
    * @param {IDBPDatabase|IDBDatabase} [db]   the database
@@ -537,9 +559,9 @@ export class Database {
     await this.replaceTrackers(data.Trackers, db)
     await this.replaceRollTables(data.RollTables || [], db)
     await this.replaceTokens(data.Tokens || [], db)
+    await this.replaceScenes(data.Scenes, db)
 
     for (const scene of data.Scenes) {
-      await this.saveSceneInfo(scene, db)
       await this.replaceTraits(scene.id, data.Traits[scene.id], db)
     }
 

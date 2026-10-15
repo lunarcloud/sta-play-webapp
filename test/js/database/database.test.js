@@ -835,5 +835,50 @@ describe('Database', () => {
 
       idb.close()
     })
+
+    it('should remove stale scenes not present in the imported backup', async () => {
+      const idb = await db.open()
+
+      // Create a game with one scene and export it
+      const gameInfo = new GameInfo(undefined, 'Scenes Test', 'USS Scenes')
+      delete gameInfo.id
+      const gameTx = idb.transaction('games', 'readwrite')
+      const gameId = await gameTx.store.add(gameInfo)
+      await gameTx.done
+
+      const keptScene = new SceneInfo(undefined, gameId, 'Kept Scene')
+      delete keptScene.id
+      const sceneTx = idb.transaction('scenes', 'readwrite')
+      await sceneTx.store.add(keptScene)
+      await sceneTx.done
+
+      const blob = await db.export('Scenes Test', idb)
+      const file = new File([blob], 'scenes-test.staplay', { type: 'application/staplay' })
+      const backupData = await BackupData.import(file)
+
+      // Simulate the current game having gained an extra scene since the backup was taken
+      const staleScene = new SceneInfo(undefined, gameId, 'Stale Scene')
+      delete staleScene.id
+      const staleTx = idb.transaction('scenes', 'readwrite')
+      await staleTx.store.add(staleScene)
+      await staleTx.done
+
+      const beforeTx = idb.transaction('scenes', 'readonly')
+      const scenesBeforeImport = await beforeTx.store.getAll()
+      await beforeTx.done
+      expect(scenesBeforeImport).to.have.lengthOf(2)
+
+      // Re-import the backup - the stale scene should be removed, not merged in
+      await db.import(backupData, idb)
+
+      const afterTx = idb.transaction('scenes', 'readonly')
+      const scenesAfterImport = await afterTx.store.getAll()
+      await afterTx.done
+
+      expect(scenesAfterImport).to.have.lengthOf(1)
+      expect(scenesAfterImport[0].name).to.equal('Kept Scene')
+
+      idb.close()
+    })
   })
 })
