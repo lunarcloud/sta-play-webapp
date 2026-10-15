@@ -998,13 +998,14 @@ export class MirrorWindow {
     }
 
     // Sync placed tokens, keyed by their identifying attributes so moves/scales
-    // update in place instead of rebuilding the whole container.
-    MirrorWindow.#syncTokenContainer(playField.querySelector('#npc-tokens'), mirrorPlayField.querySelector('#npc-tokens'))
-    MirrorWindow.#syncTokenContainer(playField.querySelector('#player-tokens'), mirrorPlayField.querySelector('#player-tokens'))
+    // update in place instead of rebuilding the whole container. Re-appending every
+    // matched token (not just new ones) also keeps the mirror's DOM order - and so its
+    // visual stacking order - in sync with the source.
+    MirrorWindow.#syncTokenContainer(playField.querySelector('#map-tokens'), mirrorPlayField.querySelector('#map-tokens'))
   }
 
   /**
-   * Synchronizes one map-token container (npc or player tokens) between windows.
+   * Synchronizes the shared on-map tokens container between windows.
    * @param {Element} sourceContainer - Source token container element
    * @param {Element} mirrorContainer - Mirror token container element
    */
@@ -1026,8 +1027,11 @@ export class MirrorWindow {
 
       if (!mirrorToken) {
         mirrorToken = /** @type {HTMLImageElement} */ (sourceToken.cloneNode(true))
-        mirrorContainer.appendChild(mirrorToken)
       }
+
+      // Re-append every matched token in source order, not just newly created ones, so the
+      // mirror's DOM order (and thus its visual stacking order) always matches the source.
+      mirrorContainer.appendChild(mirrorToken)
 
       // Copy identifying/state attributes to trigger attributeChangedCallback
       Array.from(sourceToken.attributes).forEach(attr => {

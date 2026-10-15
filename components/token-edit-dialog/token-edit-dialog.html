@@ -43,6 +43,19 @@
                         }
                     }
 
+                    .order-row {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.75em;
+                        width: 100%;
+
+                        & button {
+                            flex: 1;
+                            padding: 0.4em 0.75em;
+                            cursor: pointer;
+                        }
+                    }
+
                     footer {
                         display: flex;
                         flex-direction: row;
@@ -88,6 +101,11 @@
                         <input id="token-scale-number" type="number" min="25" step="5" value="100" aria-label="Scale percentage">
                         <span>%</span>
                     </span>
+                </div>
+                <div class="order-row">
+                    <span>Layer order</span>
+                    <button type="button" class="send-backward" aria-label="Send backward, behind the previous token">⬇ Back</button>
+                    <button type="button" class="bring-forward" aria-label="Bring forward, in front of the next token">⬆ Front</button>
                 </div>
             </main>
             <footer>

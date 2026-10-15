@@ -353,16 +353,15 @@ describe('mirror-window', () => {
       document.body.removeAttribute('mode')
     })
 
-    it('should find the scene map background image and token containers by id', () => {
+    it('should find the scene map background image and token container by id', () => {
       const playField = document.createElement('div')
       playField.id = 'play-field'
       playField.innerHTML = '<img class="bg" src="img/transparent-4x3.png" alt="blank scene background">' +
-        '<span id="npc-tokens"></span><span id="player-tokens"></span>'
+        '<span id="map-tokens"></span>'
       document.body.appendChild(playField)
 
       expect(playField.querySelector('img.bg')).to.not.be.null
-      expect(playField.querySelector('#npc-tokens')).to.not.be.null
-      expect(playField.querySelector('#player-tokens')).to.not.be.null
+      expect(playField.querySelector('#map-tokens')).to.not.be.null
 
       playField.remove()
     })

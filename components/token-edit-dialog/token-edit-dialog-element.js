@@ -1,11 +1,12 @@
 import { animateClose, animateRemove } from '../../js/dialog-utils.js'
 import { loadElementFromFile } from '../../js/load-file-element.js'
+import { setupNumberInputScrollForParent } from '../../js/scrollable-inputs.js'
 import { MIN_SCALE } from '../map-token/map-token.js'
 
 const dialogEl = await loadElementFromFile('./components/token-edit-dialog/token-edit-dialog.html', 'dialog')
 
 /**
- * Dialog for editing a placed map token: adjust its scale, or remove it from the map.
+ * Dialog for editing a placed map token: adjust its scale or stacking order, or remove it from the map.
  * Opened via a token's right-click/long-press `edit-requested` event.
  * @tagname token-edit-dialog
  */
@@ -32,6 +33,16 @@ export class TokenEditDialogElement extends HTMLDialogElement {
   #scaleNumberEl
 
   /**
+   * @type {HTMLButtonElement}
+   */
+  #sendBackwardEl
+
+  /**
+   * @type {HTMLButtonElement}
+   */
+  #bringForwardEl
+
+  /**
    * Constructor.
    */
   constructor () {
@@ -41,6 +52,8 @@ export class TokenEditDialogElement extends HTMLDialogElement {
     this.#previewEl = this.querySelector('.token-preview')
     this.#scaleInputEl = this.querySelector('#token-scale-input')
     this.#scaleNumberEl = this.querySelector('#token-scale-number')
+    this.#sendBackwardEl = this.querySelector('.send-backward')
+    this.#bringForwardEl = this.querySelector('.bring-forward')
 
     this.querySelector('button.close')?.addEventListener('click', () => this.#handleClose())
     this.querySelector('button.confirm')?.addEventListener('click', () => this.#handleClose())
@@ -48,6 +61,10 @@ export class TokenEditDialogElement extends HTMLDialogElement {
 
     this.#scaleInputEl?.addEventListener('input', () => this.#applyScalePercent(Number(this.#scaleInputEl.value) * 100))
     this.#scaleNumberEl?.addEventListener('input', () => this.#applyScalePercent(Number(this.#scaleNumberEl.value)))
+    this.#sendBackwardEl?.addEventListener('click', () => this.#tokenEl?.sendBackward())
+    this.#bringForwardEl?.addEventListener('click', () => this.#tokenEl?.bringForward())
+
+    setupNumberInputScrollForParent(this)
 
     this.addEventListener('close', () => { this.#tokenEl = null })
   }
@@ -81,7 +98,7 @@ export class TokenEditDialogElement extends HTMLDialogElement {
   }
 
   /**
-   * Open the dialog to edit a placed map token's scale, or remove it.
+   * Open the dialog to edit a placed map token's scale, stacking order, or remove it.
    * @param {import('../map-token/map-token.js').MapTokenElement} tokenEl token being edited
    */
   edit (tokenEl) {

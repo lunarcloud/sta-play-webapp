@@ -948,8 +948,7 @@ export class IndexController {
     document.querySelectorAll('trait-display').forEach(el => el.parentNode.removeChild(el))
     document.querySelectorAll('.players li').forEach(el => el.parentNode.removeChild(el))
     document.querySelectorAll('task-tracker').forEach(el => el.parentNode.removeChild(el))
-    document.querySelectorAll('#player-tokens > [is="map-token"]').forEach(el => el.remove())
-    document.querySelectorAll('#npc-tokens > [is="map-token"]').forEach(el => el.remove())
+    document.querySelectorAll('#map-tokens > [is="map-token"]').forEach(el => el.remove())
 
     // If no game exists (fresh database), create a default game and scene
     if (gameInfo === undefined) {
@@ -1328,7 +1327,7 @@ export class IndexController {
 
     // Remove all of the player's on-map token copies, if placed, when the player is removed
     newPlayerEl.addEventListener('removed', () => {
-      document.querySelectorAll(`#player-tokens > [is="map-token"][player="${playerIndex}"]`)
+      document.querySelectorAll(`#map-tokens > [is="map-token"][player="${playerIndex}"]`)
         .forEach(el => el.remove())
     })
 
@@ -1617,25 +1616,26 @@ export class IndexController {
    * Capture the current map token positions, keyed by token key (e.g. `player-0-0`, `token-3-0`).
    * Any number of independent copies ("instances") of a player or NPC/other token may be placed
    * at once (e.g. several "shuttlepod" tokens, or a cloned player character), each captured
-   * under its own `instance` suffix.
+   * under its own `instance` suffix. Entries are captured in the tokens' current DOM order,
+   * which is also their visual stacking order (later siblings draw on top) - since plain object
+   * keys preserve insertion order, this is enough to restore the exact stacking later with no
+   * separate numeric field needed.
    * @returns {Record<string, import('./js/database/scene-info.js').TokenPosition>} current token positions
    */
   #captureTokenPositions () {
     /** @type {Record<string, import('./js/database/scene-info.js').TokenPosition>} */
     const tokenPositions = {}
 
-    document.querySelectorAll('#player-tokens > [is="map-token"]').forEach(el => {
+    document.querySelectorAll('#map-tokens > [is="map-token"]').forEach(el => {
       if (el instanceof MapTokenElement === false) return
-      const playerIndex = el.getAttribute('player')
-      const instance = el.getAttribute('instance') ?? '0'
-      tokenPositions[`player-${playerIndex}-${instance}`] = { x: el.x, y: el.y, scale: el.scale }
-    })
 
-    document.querySelectorAll('#npc-tokens > [is="map-token"]').forEach(el => {
-      if (el instanceof MapTokenElement === false) return
-      const tokenId = el.getAttribute('token-id')
       const instance = el.getAttribute('instance') ?? '0'
-      tokenPositions[`token-${tokenId}-${instance}`] = { x: el.x, y: el.y, scale: el.scale }
+      const playerIndex = el.getAttribute('player')
+      const key = playerIndex !== null
+        ? `player-${playerIndex}-${instance}`
+        : `token-${el.getAttribute('token-id')}-${instance}`
+
+      tokenPositions[key] = { x: el.x, y: el.y, scale: el.scale }
     })
 
     return tokenPositions
@@ -1645,50 +1645,50 @@ export class IndexController {
    * Apply saved map token positions to the current scene. Tokens are only shown on scenes where
    * they have a recorded position, since they aren't placed on every scene by default - they're
    * placed explicitly via the tokens dialog. Any number of copies of a player or NPC/other token
-   * may be placed (e.g. cloned player characters, or several "shuttlepod" tokens), so both
-   * containers' on-map elements are fully recreated here to match the scene's saved instances
-   * exactly.
+   * may be placed (e.g. cloned player characters, or several "shuttlepod" tokens), so the shared
+   * tokens container is fully recreated here, re-adding elements in the exact order they were
+   * saved so their DOM/stacking order matches exactly.
    * @param {Record<string, import('./js/database/scene-info.js').TokenPosition>} [tokenPositions] positions to apply, keyed by token key
    */
   async #applyTokenPositions (tokenPositions = {}) {
-    this.#applyInstancedPositions('player-tokens', 'player-', tokenPositions,
-      (playerIndex, instance) => this.#createPlayerTokenElement(playerIndex, instance))
+    const containerEl = document.getElementById('map-tokens')
+    containerEl.querySelectorAll('[is="map-token"]').forEach(el => el.remove())
 
     const npcKeys = Object.keys(tokenPositions).filter(key => key.startsWith('token-'))
     const gameTokens = npcKeys.length > 0 ? await this.db.getTokens(this.currentGameId || 0) : []
 
-    this.#applyInstancedPositions('npc-tokens', 'token-', tokenPositions, (tokenId, instance) => {
-      const tokenInfo = gameTokens.find(t => `${t.id}` === tokenId)
-      return tokenInfo ? this.#createNpcTokenElement(tokenInfo, instance) : undefined
-    })
-  }
-
-  /**
-   * Recreate one container's on-map token elements to exactly match a scene's saved instances,
-   * since any number of independent copies of the same player/token may be placed.
-   * @param {string}                                                   containerId    id of the container element (e.g. `player-tokens`)
-   * @param {string}                                                   keyPrefix      prefix of `tokenPositions` keys belonging to this container (e.g. `player-`)
-   * @param {Record<string, import('./js/database/scene-info.js').TokenPosition>} tokenPositions positions to apply, keyed by token key
-   * @param {(id: string, instance: string) => MapTokenElement|undefined} createElement creates the on-map element for one saved instance
-   */
-  #applyInstancedPositions (containerId, keyPrefix, tokenPositions, createElement) {
-    const containerEl = document.getElementById(containerId)
-    containerEl.querySelectorAll('[is="map-token"]').forEach(el => el.remove())
-
     for (const [key, position] of Object.entries(tokenPositions)) {
-      if (!key.startsWith(keyPrefix)) continue
-
-      const match = key.substring(keyPrefix.length).match(/^(.+)-(\d+)$/)
-      if (!match) continue
-
-      const [, id, instance] = match
-      const tokenEl = createElement(id, instance)
+      const tokenEl = this.#createTokenElementForKey(key, gameTokens)
       if (!tokenEl) continue
 
       tokenEl.x = position.x
       tokenEl.y = position.y
       tokenEl.scale = position.scale ?? 1
     }
+  }
+
+  /**
+   * Create the on-map element for one saved token key (e.g. `player-0-0`, `token-3-1`),
+   * as captured by {@link #captureTokenPositions}.
+   * @param {string} key saved token key identifying a player/token id and instance
+   * @param {Array<import('./js/database/token-info.js').TokenInfo>} gameTokens NPC/other token definitions available for this game, used to resolve `token-` keys
+   * @returns {MapTokenElement|undefined} the new on-map element, or undefined if the key doesn't match a known token
+   */
+  #createTokenElementForKey (key, gameTokens) {
+    const playerMatch = key.match(/^player-(.+)-(\d+)$/)
+    if (playerMatch) {
+      const [, playerIndex, instance] = playerMatch
+      return this.#createPlayerTokenElement(playerIndex, instance)
+    }
+
+    const npcMatch = key.match(/^token-(.+)-(\d+)$/)
+    if (npcMatch) {
+      const [, tokenId, instance] = npcMatch
+      const tokenInfo = gameTokens.find(t => `${t.id}` === tokenId)
+      return tokenInfo ? this.#createNpcTokenElement(tokenInfo, instance) : undefined
+    }
+
+    return undefined
   }
 
   /**
@@ -1700,7 +1700,7 @@ export class IndexController {
    * @returns {MapTokenElement} the new on-map element
    */
   #createPlayerTokenElement (playerIndex, instance) {
-    const playerTokensEl = document.getElementById('player-tokens')
+    const mapTokensEl = document.getElementById('map-tokens')
 
     const tokenEl = document.createElement('img', { is: 'map-token' })
     if (tokenEl instanceof MapTokenElement === false) {
@@ -1718,7 +1718,7 @@ export class IndexController {
       }
     }
 
-    playerTokensEl.appendChild(tokenEl)
+    mapTokensEl.appendChild(tokenEl)
     return tokenEl
   }
 
@@ -1731,7 +1731,7 @@ export class IndexController {
    * @returns {MapTokenElement} the new on-map element
    */
   #createNpcTokenElement (tokenInfo, instance) {
-    const npcTokensEl = document.getElementById('npc-tokens')
+    const mapTokensEl = document.getElementById('map-tokens')
 
     const tokenEl = document.createElement('img', { is: 'map-token' })
     if (tokenEl instanceof MapTokenElement === false) {
@@ -1740,21 +1740,20 @@ export class IndexController {
     tokenEl.setAttribute('token-id', `${tokenInfo.id}`)
     tokenEl.setAttribute('instance', `${instance}`)
     tokenEl.image = tokenInfo.image
-    npcTokensEl.appendChild(tokenEl)
+    mapTokensEl.appendChild(tokenEl)
 
     return tokenEl
   }
 
   /**
-   * Get the next free instance number for a token/player id in a container, based on the copies
-   * currently on the map, so a newly placed copy doesn't collide with an existing one.
-   * @param {string}        containerId id of the container element (e.g. `player-tokens`)
-   * @param {string}        attrName    attribute identifying the token/player id (e.g. `player`)
-   * @param {number|string} id          id of the token definition or player index
+   * Get the next free instance number for a token/player id, based on the copies currently on
+   * the map, so a newly placed copy doesn't collide with an existing one.
+   * @param {string}        attrName attribute identifying the token/player id (e.g. `player`)
+   * @param {number|string} id       id of the token definition or player index
    * @returns {number} the next free instance number
    */
-  #nextInstance (containerId, attrName, id) {
-    const instances = [...document.querySelectorAll(`#${containerId} > [is="map-token"][${attrName}="${id}"]`)]
+  #nextInstance (attrName, id) {
+    const instances = [...document.querySelectorAll(`#map-tokens > [is="map-token"][${attrName}="${id}"]`)]
       .map(el => parseInt(el.getAttribute('instance') ?? '0', 10))
     return instances.length > 0 ? Math.max(...instances) + 1 : 0
   }
@@ -1794,7 +1793,7 @@ export class IndexController {
    * @param {number}                                          index stagger index, so multiple tokens placed at once don't overlap
    */
   #placeToken (token, index) {
-    const tokenEl = this.#createNpcTokenElement(token, this.#nextInstance('npc-tokens', 'token-id', token.id))
+    const tokenEl = this.#createNpcTokenElement(token, this.#nextInstance('token-id', token.id))
     tokenEl.x = 0.1 + (index % 6) * 0.12
     tokenEl.y = 0.1
   }
@@ -1807,7 +1806,7 @@ export class IndexController {
    * @param {number}        index       stagger index, so multiple tokens placed at once don't overlap
    */
   #placePlayerToken (playerIndex, index) {
-    const tokenEl = this.#createPlayerTokenElement(playerIndex, this.#nextInstance('player-tokens', 'player', playerIndex))
+    const tokenEl = this.#createPlayerTokenElement(playerIndex, this.#nextInstance('player', playerIndex))
     tokenEl.x = 0.1 + (index % 6) * 0.12
     tokenEl.y = 0.1
   }
@@ -2045,8 +2044,7 @@ export class IndexController {
     if (!confirmed) return
 
     await this.#setMapImage(undefined)
-    document.querySelectorAll('#player-tokens > [is="map-token"]').forEach(el => el.remove())
-    document.querySelectorAll('#npc-tokens > [is="map-token"]').forEach(el => el.remove())
+    document.querySelectorAll('#map-tokens > [is="map-token"]').forEach(el => el.remove())
   }
 }
 

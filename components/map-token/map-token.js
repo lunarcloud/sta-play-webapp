@@ -166,6 +166,9 @@ export class MapTokenElement extends HTMLImageElement {
 
     // Setup right-click/long-press to open the edit (scale/remove) dialog
     this.#setupEditTrigger()
+
+    // Setup scroll-to-reorder (stacking order relative to other tokens)
+    this.#setupScrollReorder()
   }
 
   /**
@@ -264,6 +267,42 @@ export class MapTokenElement extends HTMLImageElement {
     })
 
     this.addEventListener('dblclick', () => animateRemove(this))
+  }
+
+  /**
+   * Setup scrolling over the token to change its stacking order relative to other tokens, by
+   * swapping places with the adjacent sibling in their shared container: scrolling down sends
+   * it one step lower (it may hide behind others), scrolling up brings it one step higher.
+   * Since later siblings draw on top, this directly controls visual stacking order and is
+   * always naturally bounded to the number of placed tokens.
+   */
+  #setupScrollReorder () {
+    this.addEventListener('wheel', event => {
+      event.preventDefault()
+      if (event.deltaY > 0) {
+        this.sendBackward()
+      } else {
+        this.bringForward()
+      }
+    }, { passive: false })
+  }
+
+  /**
+   * Move this token one step lower in the stacking order, swapping places with its
+   * previous sibling (if any) in their shared container.
+   */
+  sendBackward () {
+    const previous = this.previousElementSibling
+    if (previous) this.parentElement?.insertBefore(this, previous)
+  }
+
+  /**
+   * Move this token one step higher in the stacking order, swapping places with its
+   * next sibling (if any) in their shared container.
+   */
+  bringForward () {
+    const next = this.nextElementSibling
+    if (next) this.parentElement?.insertBefore(next, this)
   }
 
   /**
