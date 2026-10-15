@@ -1135,7 +1135,7 @@ export class IndexController {
       this.currentGameId = savedGameId
     }
 
-    // Get the current scene to preserve its name
+    // Get the current scene to preserve its name and order
     const scenes = await this.db.getScenes(this.currentGameId)
     const currentScene = scenes.find(s => s.id === this.currentSceneId)
     const sceneName = currentScene ? currentScene.name : undefined
@@ -1152,7 +1152,8 @@ export class IndexController {
       ],
       shipAlertEl.color,
       this.#mapImage,
-      this.#captureTokenPositions()
+      this.#captureTokenPositions(),
+      currentScene?.order ?? 0
     )
     const savedSceneId = await this.db.saveSceneInfo(sceneInfo)
     if (savedSceneId !== undefined) {
@@ -1610,6 +1611,13 @@ export class IndexController {
       // This ensures consistency but could be optimized by updating the list directly
       await this.#loadSceneSwitcherDialog(dialog)
     })
+
+    dialog.onSceneMove(async (sceneId, direction) => {
+      await this.#moveScene(sceneId, direction)
+      // Reload dialog to refresh the scene list
+      // This ensures consistency but could be optimized by updating the list directly
+      await this.#loadSceneSwitcherDialog(dialog)
+    })
   }
 
   /**
@@ -1912,7 +1920,7 @@ export class IndexController {
       return
     }
 
-    // Get the current scene to preserve its name
+    // Get the current scene to preserve its name and order
     const scenes = await this.db.getScenes(this.currentGameId)
     const currentScene = scenes.find(s => s.id === this.currentSceneId)
     const sceneName = currentScene ? currentScene.name : undefined
@@ -1929,7 +1937,8 @@ export class IndexController {
       ],
       shipAlertEl.color,
       this.#mapImage,
-      this.#captureTokenPositions()
+      this.#captureTokenPositions(),
+      currentScene?.order ?? 0
     )
     await this.db.saveSceneInfo(sceneInfo)
 
@@ -1952,12 +1961,19 @@ export class IndexController {
       return undefined
     }
 
+    const scenes = await this.db.getScenes(this.currentGameId)
+    const nextOrder = scenes.length > 0 ? Math.max(...scenes.map(s => s.order ?? 0)) + 1 : 0
+
     const sceneInfo = new SceneInfo(
       undefined,
       this.currentGameId,
       sceneName,
       this.fallbackText,
-      ['', '', '']
+      ['', '', ''],
+      '',
+      undefined,
+      {},
+      nextOrder
     )
 
     const newSceneId = await this.db.saveSceneInfo(sceneInfo)
@@ -1975,6 +1991,29 @@ export class IndexController {
 
     if (scene) {
       scene.name = newName
+      await this.db.saveSceneInfo(scene)
+    }
+  }
+
+  /**
+   * Move a scene earlier or later in the scene order, swapping places with its neighbor.
+   * All of the game's scenes are then renumbered to consecutive `order` values (0..N-1),
+   * so the order never grows unbounded and always matches the actual scene count.
+   * @param {number} sceneId    the scene ID to move
+   * @param {number} direction  -1 to move it earlier, 1 to move it later
+   */
+  async #moveScene (sceneId, direction) {
+    if (!this.currentGameId) return
+
+    const scenes = await this.db.getScenes(this.currentGameId)
+    const currentIndex = scenes.findIndex(s => s.id === sceneId)
+    const newIndex = currentIndex + direction
+    if (currentIndex === -1 || newIndex < 0 || newIndex >= scenes.length) return
+
+    // Swap the two scenes' positions in the list, then persist consecutive order values
+    ;[scenes[currentIndex], scenes[newIndex]] = [scenes[newIndex], scenes[currentIndex]]
+    for (const [index, scene] of scenes.entries()) {
+      scene.order = index
       await this.db.saveSceneInfo(scene)
     }
   }

@@ -185,7 +185,7 @@ export class Database {
    * Get the scene traits from the database
    * @param {number}  [gameId]                    the id of the game to filter by
    * @param {IDBPDatabase|undefined} [db]         the database (else we'll open a new one)
-   * @returns {Promise<SceneInfo[]>}              the list of scenes
+   * @returns {Promise<SceneInfo[]>}              the list of scenes, sorted by their `order`
    */
   async getScenes (gameId, db = undefined) {
     const andClose = typeof (db) === 'undefined'
@@ -200,6 +200,10 @@ export class Database {
       Object.assign(item, e)
       return item
     })
+
+    // Scenes saved before the `order` field existed fall back to their id (creation order),
+    // preserving their current relative order until they're explicitly reordered.
+    data.sort((a, b) => (a.order ?? a.id ?? 0) - (b.order ?? b.id ?? 0))
     return data
   }
 

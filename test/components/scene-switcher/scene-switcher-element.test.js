@@ -141,7 +141,7 @@ describe('SceneSwitcherElement', () => {
       expect(sceneActions.length).to.equal(2)
     })
 
-    it('should have rename and delete buttons for each scene', () => {
+    it('should have move, rename and delete buttons for each scene', () => {
       const element = document.createElement('dialog', { is: 'scene-switcher' })
       const scenes = [
         { id: 1, name: 'Scene 1' },
@@ -151,11 +151,61 @@ describe('SceneSwitcherElement', () => {
       element.setScenes(scenes, 1)
       const firstSceneActions = element.querySelector('.scene-actions')
       const buttons = firstSceneActions.querySelectorAll('button')
-      expect(buttons.length).to.equal(2)
-      expect(buttons[0].textContent).to.equal('✏')
-      expect(buttons[0].title).to.equal('Rename')
-      expect(buttons[1].textContent).to.equal('⌫')
-      expect(buttons[1].title).to.equal('Delete')
+      expect(buttons.length).to.equal(4)
+      expect(buttons[0].textContent).to.equal('▲')
+      expect(buttons[0].title).to.equal('Move earlier')
+      expect(buttons[1].textContent).to.equal('▼')
+      expect(buttons[1].title).to.equal('Move later')
+      expect(buttons[2].textContent).to.equal('✏')
+      expect(buttons[2].title).to.equal('Rename')
+      expect(buttons[3].textContent).to.equal('⌫')
+      expect(buttons[3].title).to.equal('Delete')
+    })
+
+    it('should disable move-earlier on the first scene and move-later on the last', () => {
+      const element = document.createElement('dialog', { is: 'scene-switcher' })
+      const scenes = [
+        { id: 1, name: 'Scene 1' },
+        { id: 2, name: 'Scene 2' },
+        { id: 3, name: 'Scene 3' }
+      ]
+
+      element.setScenes(scenes, 1)
+      const sceneItems = element.querySelectorAll('.scene-list li')
+
+      const firstButtons = sceneItems[0].querySelectorAll('button')
+      expect(firstButtons[0].disabled).to.be.true // move earlier
+      expect(firstButtons[1].disabled).to.be.false // move later
+
+      const lastButtons = sceneItems[2].querySelectorAll('button')
+      expect(lastButtons[0].disabled).to.be.false // move earlier
+      expect(lastButtons[1].disabled).to.be.true // move later
+    })
+
+    it('should have onSceneMove method', () => {
+      const element = document.createElement('dialog', { is: 'scene-switcher' })
+      expect(element.onSceneMove).to.be.a('function')
+    })
+
+    it('should call onSceneMove callback with the scene id and direction', async () => {
+      const element = document.createElement('dialog', { is: 'scene-switcher' })
+      const scenes = [
+        { id: 1, name: 'Scene 1' },
+        { id: 2, name: 'Scene 2' }
+      ]
+
+      element.setScenes(scenes, 1)
+
+      const calls = []
+      element.onSceneMove(async (sceneId, direction) => {
+        calls.push([sceneId, direction])
+      })
+
+      const sceneItems = element.querySelectorAll('.scene-list li')
+      const secondSceneButtons = sceneItems[1].querySelectorAll('button')
+      secondSceneButtons[0].click() // move Scene 2 earlier
+
+      expect(calls).to.deep.equal([[2, -1]])
     })
   })
 

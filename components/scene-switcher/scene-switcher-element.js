@@ -39,6 +39,11 @@ export class SceneSwitcherElement extends HTMLDialogElement {
   #onSceneDelete = null
 
   /**
+   * @type {((sceneId: number, direction: number) => Promise<void>)|null}
+   */
+  #onSceneMove = null
+
+  /**
    * @type {number|null}
    */
   #renameSceneId = null
@@ -227,7 +232,7 @@ export class SceneSwitcherElement extends HTMLDialogElement {
 
     listEl.innerHTML = ''
 
-    for (const scene of this.#scenes) {
+    this.#scenes.forEach((scene, index) => {
       const li = document.createElement('li')
       if (scene.id === this.#currentSceneId) {
         li.classList.add('current')
@@ -240,6 +245,28 @@ export class SceneSwitcherElement extends HTMLDialogElement {
 
       const actionsDiv = document.createElement('div')
       actionsDiv.className = 'scene-actions'
+
+      const moveUpBtn = document.createElement('button')
+      moveUpBtn.textContent = '▲'
+      moveUpBtn.title = 'Move earlier'
+      moveUpBtn.classList.add('emoji')
+      moveUpBtn.disabled = index === 0
+      moveUpBtn.addEventListener('click', async (e) => {
+        e.stopPropagation()
+        await this.#handleMoveScene(scene.id, -1)
+      })
+      actionsDiv.appendChild(moveUpBtn)
+
+      const moveDownBtn = document.createElement('button')
+      moveDownBtn.textContent = '▼'
+      moveDownBtn.title = 'Move later'
+      moveDownBtn.classList.add('emoji')
+      moveDownBtn.disabled = index === this.#scenes.length - 1
+      moveDownBtn.addEventListener('click', async (e) => {
+        e.stopPropagation()
+        await this.#handleMoveScene(scene.id, 1)
+      })
+      actionsDiv.appendChild(moveDownBtn)
 
       const renameBtn = document.createElement('button')
       renameBtn.textContent = '✏'
@@ -268,6 +295,17 @@ export class SceneSwitcherElement extends HTMLDialogElement {
       })
 
       listEl.appendChild(li)
+    })
+  }
+
+  /**
+   * Handle moving a scene earlier or later in the order.
+   * @param {number} sceneId   the scene ID to move
+   * @param {number} direction -1 to move it earlier, 1 to move it later
+   */
+  async #handleMoveScene (sceneId, direction) {
+    if (this.#onSceneMove) {
+      await this.#onSceneMove(sceneId, direction)
     }
   }
 
@@ -313,6 +351,14 @@ export class SceneSwitcherElement extends HTMLDialogElement {
    */
   onSceneDelete (callback) {
     this.#onSceneDelete = callback
+  }
+
+  /**
+   * Set the callback for when a scene is moved earlier or later in the order.
+   * @param {(sceneId: number, direction: number) => Promise<void>} callback - The callback
+   */
+  onSceneMove (callback) {
+    this.#onSceneMove = callback
   }
 }
 

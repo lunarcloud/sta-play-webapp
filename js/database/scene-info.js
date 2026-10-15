@@ -52,6 +52,13 @@ export class SceneInfo extends NamedInfo {
   tokenPositions
 
   /**
+   * Position of this scene relative to the game's other scenes (lower sorts earlier), used to
+   * order the scene manager list and next/previous scene navigation.
+   * @type {number}
+   */
+  order
+
+  /**
    * Create a Player info
    * @param {number|undefined}    id              database entry id or undefined if new
    * @param {number}              game            The id of the game it is for
@@ -61,8 +68,9 @@ export class SceneInfo extends NamedInfo {
    * @param {string}              [activeAlert]   active alert/condition for this scene
    * @param {File|undefined}      [image]         image to use for map mode
    * @param {Record<string, TokenPosition>} [tokenPositions]   map token positions, keyed by token key
+   * @param {number}              [order]         position relative to the game's other scenes (defaults to 0)
    */
-  constructor (id, game, name = DefaultSceneName, description = DefaultSceneDescription, missionTrack = [], activeAlert = '', image = undefined, tokenPositions = {}) {
+  constructor (id, game, name = DefaultSceneName, description = DefaultSceneDescription, missionTrack = [], activeAlert = '', image = undefined, tokenPositions = {}, order = 0) {
     super(name, id)
     this.game = game
     this.description = description
@@ -70,6 +78,7 @@ export class SceneInfo extends NamedInfo {
     this.activeAlert = activeAlert
     this.image = image
     this.tokenPositions = tokenPositions
+    this.order = order
   }
 
   /**
@@ -86,7 +95,8 @@ export class SceneInfo extends NamedInfo {
       'missionTrack' in obj ? obj.missionTrack : [],
       'activeAlert' in obj ? obj.activeAlert : '',
       'image' in obj ? obj.image : undefined,
-      'tokenPositions' in obj ? obj.tokenPositions : {}
+      'tokenPositions' in obj ? obj.tokenPositions : {},
+      'order' in obj ? obj.order : 0
     )
   }
 
