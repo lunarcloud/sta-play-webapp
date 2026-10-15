@@ -70,24 +70,31 @@ body {
     }
 }
 
+#fullscreen-btn,
+#map-btn,
+#dice-btn,
+#tables-btn {
+    width: 1.25em;
+}
+
 #fullscreen-btn {
     top: calc(var(--main-font-size) * 6.825);
-    left: calc(var(--main-font-size) * 9);
+    left: calc(var(--main-font-size) * 9.25);
 }
 
 #dice-btn {
     top: calc(var(--main-font-size) * 8.7);
-    left: calc(var(--main-font-size) * 5);
+    left: calc(var(--main-font-size) * 9.25);
 }
 
 #map-btn {
     top: calc(var(--main-font-size) * 6.85);
-    left: calc(var(--main-font-size) * 3.5);
+    left: calc(var(--main-font-size) * 7.5);
 }
 
 #tables-btn {
     top: calc(var(--main-font-size) * 8.85);
-    left: calc(var(--main-font-size) * 3.5);
+    left: calc(var(--main-font-size) * 7.5);
 }
 
 #font-up-btn,

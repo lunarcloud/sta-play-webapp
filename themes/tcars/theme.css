@@ -352,21 +352,21 @@ body {
         #dice-btn {
             left: unset;
             top: unset;
-            bottom: 8.5em;
-            right: 2em;
+            bottom: 9.25em;
+            right: 1.75em;
             font-size: var(--main-font-size);
             width: fit-content;
-            height: 2em;
+            height: 1.5em;
         }
 
         #map-btn {
             left: unset;
             top: unset;
-            bottom: 10.9em;
+            bottom: 11.4em;
             right: 3.5em;
             font-size: var(--main-font-size);
             width: fit-content;
-            height: 2em;
+            height: 1.5em;
         }
 
         #tables-btn {
@@ -376,7 +376,7 @@ body {
             right: 3em;
             font-size: var(--main-font-size);
             width: fit-content;
-            height: 2em;
+            height: 1.5em;
         }
 
         #fullscreen-btn {
@@ -384,6 +384,7 @@ body {
             top: 11.5em;
             bottom: unset;
             right: 0.5em;
+            width: 2em;
 
             & > symbol, & > img.symbol {
                 width: 2em;
