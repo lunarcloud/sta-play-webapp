@@ -12,6 +12,7 @@
                 <div class="mode-switcher">
                     <button class="mode-btn active" data-mode="tng" type="button">TNG Era</button>
                     <button class="mode-btn" data-mode="tos" type="button">TOS Era</button>
+                    <button class="mode-btn" data-mode="calendar" type="button">Pre-stardate</button>
                 </div>
 
                 <fieldset data-mode="tng" class="active">
@@ -73,6 +74,19 @@
                     <div class="tos-era-context" hidden>
                         <div class="era-series tos-era-series"></div>
                         <div class="era-events tos-era-events"></div>
+                    </div>
+                </fieldset>
+
+                <fieldset data-mode="calendar">
+                    <legend>Pre-stardate</legend>
+                    <label>
+                        Calendar date
+                        <input id="calendar-date" type="date" class="calendar-date stardate-input" required min="0001-01-01" max="9999-12-31" value="2063-04-05">
+                    </label>
+                    <div class="calc-result">
+                        <label for="calendar-preview">Date:</label>
+                        <output id="calendar-preview" class="calendar-preview" for="calendar-date"></output>
+                        <button class="use-calendar" type="button">Use</button>
                     </div>
                 </fieldset>
 

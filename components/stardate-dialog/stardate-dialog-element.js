@@ -1,6 +1,6 @@
 import { animateClose } from '../../js/dialog-utils.js'
 import { loadElementFromFile } from '../../js/load-file-element.js'
-import { dateToStardate, formatStardate, dateToTOSStardate, stardateToDate, tosStardateToDate, TNG_EPOCH_YEAR, TOS_EPOCH_YEAR } from '../../js/stardate-utils.js'
+import { dateToStardate, formatStardate, dateToTOSStardate, stardateToDate, tosStardateToDate, parseCalendarDate, formatCalendarDate, TNG_EPOCH_YEAR, TOS_EPOCH_YEAR } from '../../js/stardate-utils.js'
 import { getEraContext } from '../../js/stardate-eras.js'
 
 const dialogEl = await loadElementFromFile('./components/stardate-dialog/stardate-dialog.html', 'dialog')
@@ -28,6 +28,8 @@ export class StardateDialogElement extends HTMLDialogElement {
   /** @type {HTMLInputElement|null} */ #tosDayInput = null
   /** @type {HTMLInputElement|null} */ #tosHourInput = null
   /** @type {HTMLInputElement|null} */ #tosStardateInput = null
+
+  /** @type {HTMLInputElement|null} */ #calendarDateInput = null
 
   /**
    * Constructor.
@@ -213,6 +215,25 @@ export class StardateDialogElement extends HTMLDialogElement {
       this.#resolve(this.#tosStardateInput?.value?.trim() ?? '')
     })
 
+    // --- Pre-stardate calendar date ---
+    this.#calendarDateInput = /** @type {HTMLInputElement} */ (this.querySelector('input.calendar-date'))
+    const calendarPreview = /** @type {HTMLOutputElement} */ (this.querySelector('output.calendar-preview'))
+    const updateCalendarPreview = () => {
+      const value = this.#calendarDateInput.value
+      calendarPreview.value = this.#calendarDateInput.validity.valid && parseCalendarDate(value)
+        ? formatCalendarDate(value)
+        : ''
+    }
+    this.#calendarDateInput.addEventListener('input', updateCalendarPreview)
+    this.#calendarDateInput.addEventListener('change', updateCalendarPreview)
+    updateCalendarPreview()
+
+    this.querySelector('button.use-calendar')?.addEventListener('click', () => {
+      if (!this.#calendarDateInput.reportValidity()) return
+      const value = this.#calendarDateInput.value
+      this.#resolve(value)
+    })
+
     this.addEventListener('close', () => {
       if (this.returnValue !== 'confirm') {
         this.#handleCancel()
@@ -221,8 +242,8 @@ export class StardateDialogElement extends HTMLDialogElement {
   }
 
   /**
-   * The currently active mode ('tng' or 'tos').
-   * @returns {string}      either 'tng' or 'tos'
+   * The currently active mode ('tng', 'tos', or 'calendar').
+   * @returns {string}      either 'tng', 'tos', or 'calendar'
    */
   get activeMode () {
     return this.#activeMode
@@ -237,7 +258,7 @@ export class StardateDialogElement extends HTMLDialogElement {
   }
 
   /**
-   * Switch the visible mode panel ('tng' or 'tos').
+   * Switch the visible mode panel ('tng', 'tos', or 'calendar').
    * @param {string} mode - The mode identifier matching a data-mode attribute
    */
   #switchMode (mode) {
@@ -275,20 +296,26 @@ export class StardateDialogElement extends HTMLDialogElement {
   }
 
   /**
-   * Show the dialog and return the chosen stardate.
+   * Show the dialog and return the chosen stardate or ISO calendar date.
    * Pre-fills the appropriate calculator from the current value and resets
-   * the other calculator to its defaults to prevent stale state.
+   * the other calculators to their defaults to prevent stale state.
+   * Valid ISO calendar dates select Pre-stardate mode regardless of isTOS.
    * @param {string} [currentStardate] - The currently set stardate to pre-fill
    * @param {boolean} [isTOS] - Whether the current stardate uses the TOS system
-   * @returns {Promise<string|null>} The new stardate, or null if cancelled
+   * @returns {Promise<string|null>} The new stardate or YYYY-MM-DD date, or null if cancelled
    */
   async editStardate (currentStardate = '', isTOS = false) {
+    const calendarDate = parseCalendarDate(currentStardate.trim())
     const currentEl = /** @type {HTMLElement} */ (this.querySelector('.current-value'))
     if (currentEl) {
-      currentEl.textContent = currentStardate?.trim() || '—'
+      currentEl.textContent = calendarDate
+        ? formatCalendarDate(currentStardate.trim())
+        : currentStardate?.trim() || '—'
     }
 
-    const num = parseFloat(currentStardate)
+    const num = calendarDate ? NaN : parseFloat(currentStardate)
+    this.#calendarDateInput.value = calendarDate ? currentStardate.trim() : '2063-04-05'
+    this.#calendarDateInput.dispatchEvent(new Event('change'))
 
     if (isTOS) {
       // Reset TNG calculator to defaults
@@ -343,6 +370,8 @@ export class StardateDialogElement extends HTMLDialogElement {
       }
       this.#switchMode('tng')
     }
+
+    if (calendarDate) this.#switchMode('calendar')
 
     this.returnValue = ''
     this.showModal()

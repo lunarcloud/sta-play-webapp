@@ -49,6 +49,35 @@ export const TNG_EPOCH_YEAR = 2323
 export const STARDATE_UNITS_PER_YEAR = 1000
 
 /**
+ * Parse a stored calendar date without interpreting numeric stardates as dates.
+ * @param {string} value - A calendar date in YYYY-MM-DD format
+ * @returns {Date|null} The UTC date, or null if not a valid calendar date
+ */
+export function parseCalendarDate (value) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value) || value.startsWith('0000')) return null
+  const date = new Date(`${value}T00:00:00Z`)
+  return !isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value ? date : null
+}
+
+/**
+ * Format a calendar date in the user's locale, without a time.
+ * @param {string} value - A calendar date in YYYY-MM-DD format
+ * @param {string|string[]} [locales] - Locale override; defaults to the browser locale
+ * @returns {string} The short localized calendar date
+ * @throws {RangeError} If the calendar date is invalid
+ */
+export function formatCalendarDate (value, locales = undefined) {
+  const date = parseCalendarDate(value)
+  if (!date) throw new RangeError('Invalid calendar date')
+  return new Intl.DateTimeFormat(locales, {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    timeZone: 'UTC'
+  }).format(date)
+}
+
+/**
  * Determine whether a year is a leap year.
  * @param {number} year - The year to check
  * @returns {boolean} Whether the year is a leap year

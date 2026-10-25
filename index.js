@@ -16,7 +16,7 @@ import { TraitDisplayElement } from './components/trait-display/trait-display-el
 import { PlayerDisplayElement } from './components/player-display/player-display-element.js'
 import { TaskTrackerElement } from './components/task-tracker/task-tracker-element.js'
 import { StardateDialogElement } from './components/stardate-dialog/stardate-dialog-element.js'
-import { stardateToDate, tosStardateToDate } from './js/stardate-utils.js'
+import { stardateToDate, tosStardateToDate, parseCalendarDate, formatCalendarDate } from './js/stardate-utils.js'
 import { getSuggestedTheme } from './js/theme-era-map.js'
 import { Database } from './js/database/database.js'
 import { TrackerInfo } from './js/database/tracker-info.js'
@@ -105,6 +105,12 @@ export class IndexController {
    * @type {boolean}
    */
   #stardateIsTOS = false
+
+  /**
+   * Unformatted stardate or ISO calendar date for persistence and editing.
+   * @type {string}
+   */
+  #stardateValue = ''
 
   /**
    * @type {MessageDialogElement|undefined}
@@ -674,20 +680,24 @@ export class IndexController {
    * @param {string} value  the stardate string
    */
   #setStardate (value) {
+    this.#stardateValue = value?.trim() ?? ''
+    const isCalendarDate = parseCalendarDate(this.#stardateValue) !== null
+    document.getElementById('stardate-btn')?.toggleAttribute('data-calendar-date', isCalendarDate)
     const textEl = document.querySelector('#stardate-btn text')
     if (textEl instanceof HTMLElement) {
-      const display = value?.trim() || '—'
+      const display = isCalendarDate
+        ? formatCalendarDate(this.#stardateValue)
+        : this.#stardateValue || '—'
       textEl.textContent = ` ${display}`
     }
   }
 
   /**
-   * Get the current stardate value from the display button.
+   * Get the unformatted current stardate or calendar date.
    * @returns {string} the current stardate value, or empty string if unset
    */
   #getStardateValue () {
-    const raw = document.querySelector('#stardate-btn text')?.textContent?.trim() ?? ''
-    return raw === '—' ? '' : raw
+    return this.#stardateValue
   }
 
   /**
@@ -713,11 +723,13 @@ export class IndexController {
    * @param {boolean} isTOS  Whether the stardate uses the TOS system
    */
   async #suggestThemeForStardate (stardateValue, isTOS) {
+    const calendarDate = parseCalendarDate(stardateValue)
     const num = parseFloat(stardateValue)
     if (!stardateValue || isNaN(num)) return
 
-    const dateInfo = isTOS ? tosStardateToDate(num) : stardateToDate(num)
-    const year = dateInfo.year
+    const year = calendarDate
+      ? calendarDate.getUTCFullYear()
+      : (isTOS ? tosStardateToDate(num) : stardateToDate(num)).year
 
     // Get the active theme from the select element
     const themeSelectEl = document.getElementById('select-theme')

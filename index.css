@@ -1202,6 +1202,35 @@ body {
                     display: block !important;
                 }
 
+                & #stardate-btn {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.25em;
+                    padding-inline: 0.4em;
+                    white-space: nowrap;
+
+                    & emoji {
+                        flex: none;
+                    }
+
+                    & text {
+                        min-width: 0;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+
+                    &[data-calendar-date] {
+                        & emoji {
+                            font-size: 0.7em;
+                        }
+
+                        & text {
+                            font-size: 0.9em;
+                            letter-spacing: 0;
+                        }
+                    }
+                }
+
                 & #alert-dropdown {
                     z-index: 10;
                     position: absolute;

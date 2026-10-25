@@ -8,6 +8,8 @@ import {
   formatStardate,
   dateToTOSStardate,
   tosStardateToDate,
+  parseCalendarDate,
+  formatCalendarDate,
   TNG_EPOCH_YEAR,
   TOS_EPOCH_YEAR,
   TOS_SWITCHOVER_YEAR,
@@ -15,6 +17,126 @@ import {
 } from '../../js/stardate-utils.js'
 
 describe('Stardate Utils', () => {
+  describe('parseCalendarDate', () => {
+    it('should parse valid dates as UTC dates', () => {
+      const result = parseCalendarDate('2063-01-01')
+
+      expect(result).to.be.instanceof(Date)
+      expect(result.toISOString()).to.equal('2063-01-01T00:00:00.000Z')
+      expect(result.getUTCFullYear()).to.equal(2063)
+      expect(result.getUTCMonth()).to.equal(0)
+      expect(result.getUTCDate()).to.equal(1)
+    })
+
+    it('should accept leap days only in leap years', () => {
+      expect(parseCalendarDate('2000-02-29')?.toISOString()).to.equal('2000-02-29T00:00:00.000Z')
+      expect(parseCalendarDate('1900-02-29')).to.equal(null)
+      expect(parseCalendarDate('2001-02-29')).to.equal(null)
+    })
+
+    it('should accept the supported year boundaries without truncating low years', () => {
+      expect(parseCalendarDate('0001-01-01')?.toISOString()).to.equal('0001-01-01T00:00:00.000Z')
+      expect(parseCalendarDate('0099-12-31')?.toISOString()).to.equal('0099-12-31T00:00:00.000Z')
+      expect(parseCalendarDate('9999-12-31')?.toISOString()).to.equal('9999-12-31T00:00:00.000Z')
+    })
+
+    it('should reject impossible month and day values', () => {
+      for (const value of [
+        '2063-00-01',
+        '2063-13-01',
+        '2063-01-00',
+        '2063-04-31',
+        '2063-06-31',
+        '2063-02-30'
+      ]) {
+        expect(parseCalendarDate(value), value).to.equal(null)
+      }
+    })
+
+    it('should reject year zero and years below the supported range', () => {
+      expect(parseCalendarDate('0000-01-01')).to.equal(null)
+    })
+
+    it('should reject malformed strings, timestamps, and stardate values', () => {
+      for (const value of [
+        '',
+        ' 2063-01-01',
+        '2063-01-01 ',
+        '2063-1-01',
+        '2063-01-1',
+        '63-01-01',
+        '2063/01/01',
+        '2063-01-01T00:00:00Z',
+        '41153.7'
+      ]) {
+        expect(parseCalendarDate(value), value).to.equal(null)
+      }
+    })
+
+    it('should reject non-string values', () => {
+      expect(parseCalendarDate(null)).to.equal(null)
+      expect(parseCalendarDate(undefined)).to.equal(null)
+      expect(parseCalendarDate(20630101)).to.equal(null)
+    })
+  })
+
+  describe('formatCalendarDate', () => {
+    const dateOptions = {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      timeZone: 'UTC'
+    }
+
+    it('should format using the en-US numeric month/day/year order', () => {
+      const expected = new Intl.DateTimeFormat('en-US', dateOptions).format(parseCalendarDate('2063-01-02'))
+      expect(formatCalendarDate('2063-01-02', 'en-US')).to.equal(expected)
+      expect(formatCalendarDate('2063-01-02', 'en-US')).to.equal('1/2/2063')
+    })
+
+    it('should format using the en-GB numeric day/month/year order', () => {
+      const expected = new Intl.DateTimeFormat('en-GB', dateOptions).format(parseCalendarDate('2063-01-02'))
+      expect(formatCalendarDate('2063-01-02', 'en-GB')).to.equal(expected)
+      expect(formatCalendarDate('2063-01-02', 'en-GB')).to.equal('02/01/2063')
+    })
+
+    it('should format using the de-DE numeric day.month.year order', () => {
+      const expected = new Intl.DateTimeFormat('de-DE', dateOptions).format(parseCalendarDate('2063-01-02'))
+      expect(formatCalendarDate('2063-01-02', 'de-DE')).to.equal(expected)
+      expect(formatCalendarDate('2063-01-02', 'de-DE')).to.equal('2.1.2063')
+    })
+
+    it('should retain all digits of years below 100', () => {
+      const result = formatCalendarDate('0099-12-31', 'en-US')
+      expect(result).to.equal(new Intl.DateTimeFormat('en-US', dateOptions).format(parseCalendarDate('0099-12-31')))
+      expect(result).to.include('99')
+      expect(result).to.not.include('1999')
+    })
+
+    it('should retain the complete four-digit year at the upper boundary', () => {
+      const result = formatCalendarDate('9999-12-31', 'en-US')
+      expect(result).to.equal('12/31/9999')
+    })
+
+    it('should use the browser default locale when locales is omitted', () => {
+      const date = parseCalendarDate('2063-01-02')
+      const expected = new Intl.DateTimeFormat(undefined, dateOptions).format(date)
+      expect(formatCalendarDate('2063-01-02')).to.equal(expected)
+    })
+
+    it('should format in UTC without including a time or shifting the calendar day', () => {
+      const result = formatCalendarDate('2063-01-01', 'en-US')
+      expect(result).to.equal('1/1/2063')
+      expect(result).to.not.match(/\d:\d|AM|PM/)
+      expect(formatCalendarDate('2063-12-31', 'en-US')).to.equal('12/31/2063')
+    })
+
+    it('should throw RangeError for an invalid date', () => {
+      expect(() => formatCalendarDate('2063-04-31')).to.throw(RangeError)
+      expect(() => formatCalendarDate('41153.7')).to.throw(RangeError)
+    })
+  })
+
   describe('constants', () => {
     it('should export TNG_EPOCH_YEAR as 2323', () => {
       expect(TNG_EPOCH_YEAR).to.equal(2323)
