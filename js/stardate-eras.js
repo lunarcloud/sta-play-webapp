@@ -25,11 +25,107 @@
 /** @type {EraEntry[]} */
 const ERA_DATA = [
   {
+    startYear: 1893,
+    endYear: 1893,
+    context: {
+      series: "The Next Generation (TNG): Time's Arrow",
+      events: 'Temporal incursion in San Francisco, Devidian activity, encounter with Mark Twain'
+    }
+  },
+  {
+    startYear: 1930,
+    endYear: 1930,
+    context: {
+      series: 'The Original Series (TOS): The City on the Edge of Forever',
+      events: 'Great Depression-era New York, Edith Keeler, history threatened through the Guardian of Forever'
+    }
+  },
+  {
+    startYear: 1947,
+    endYear: 1947,
+    context: {
+      series: 'Deep Space Nine (DS9): Little Green Men',
+      events: 'Roswell incident involving time-displaced Ferengi'
+    }
+  },
+  {
+    startYear: 1968,
+    endYear: 1968,
+    context: {
+      series: 'The Original Series (TOS): Assignment: Earth',
+      events: 'Gary Seven operates on Earth, orbital nuclear weapons crisis'
+    }
+  },
+  {
+    startYear: 1969,
+    endYear: 1969,
+    context: {
+      series: 'The Original Series (TOS): Tomorrow Is Yesterday',
+      events: 'Enterprise detected by the US Air Force, temporal incident before the first Moon landing'
+    }
+  },
+  {
+    startYear: 1986,
+    endYear: 1986,
+    context: {
+      series: 'Star Trek IV: The Voyage Home',
+      events: 'Time-travel mission to San Francisco to retrieve humpback whales'
+    }
+  },
+  {
+    startYear: 1992,
+    endYear: 1995,
+    context: {
+      series: 'Pre-Enterprise era',
+      events: 'Eugenics Wars (original TOS chronology: 1992–1996; shifted to the 21st century in SNW), Augment rule'
+    }
+  },
+  {
+    startYear: 1996,
+    endYear: 1996,
+    context: {
+      series: "Voyager (VOY): Future's End / original Eugenics Wars chronology",
+      events: 'Voyager visits Los Angeles, 29th-century technology threatens history; Eugenics Wars end in the original TOS chronology (shifted to the 21st century in SNW)'
+    }
+  },
+  {
+    startYear: 2024,
+    endYear: 2024,
+    context: {
+      series: 'Deep Space Nine (DS9): Past Tense / Picard (PIC) Season 2',
+      events: 'Bell Riots in San Francisco, Europa Mission launch, temporal interference'
+    }
+  },
+  {
+    startYear: 2030,
+    endYear: 2039,
+    context: {
+      series: 'Pre-Enterprise era / Strange New Worlds revised chronology',
+      events: 'Eugenics Wars (approximate 2030s placement; exact revised dates uncertain), shifted from 1992–1996 by temporal interference'
+    }
+  },
+  {
+    startYear: 2063,
+    endYear: 2063,
+    context: {
+      series: 'Star Trek: First Contact',
+      events: 'First Contact Day (April 5): Phoenix warp flight, official first contact between humans and Vulcans'
+    }
+  },
+  {
     startYear: 2151,
+    endYear: 2151,
+    context: {
+      series: 'Enterprise (ENT) Season 1',
+      events: 'Enterprise NX-01 launches, early Starfleet deep-space exploration'
+    }
+  },
+  {
+    startYear: 2152,
     endYear: 2152,
     context: {
-      series: 'Enterprise (ENT) Seasons 1–2',
-      events: 'Early Starfleet deep-space exploration, first contact missions'
+      series: 'Enterprise (ENT) Season 2',
+      events: 'Deep-space exploration, first contact missions, mounting regional tensions'
     }
   },
   {
@@ -42,10 +138,18 @@ const ERA_DATA = [
   },
   {
     startYear: 2154,
+    endYear: 2155,
+    context: {
+      series: 'Enterprise (ENT) Season 4',
+      events: 'Xindi crisis aftermath, Vulcan reformation, Coalition of Planets talks'
+    }
+  },
+  {
+    startYear: 2156,
     endYear: 2161,
     context: {
-      series: 'Enterprise (ENT) Season 4 / Earth–Romulan War',
-      events: 'Coalition of Planets forms, Earth–Romulan War, UFP founded (2161)'
+      series: 'Post-Enterprise era / Enterprise finale (2161)',
+      events: 'Earth–Romulan War (2156–2160), UFP founded (2161)'
     }
   },
   {
@@ -392,7 +496,7 @@ export function getEraContext (year) {
     }
   }
 
-  if (year < ERA_DATA[0].startYear) {
+  if (year < 2151) {
     return { series: 'Pre-Enterprise era', events: 'Before Starfleet was founded' }
   }
 

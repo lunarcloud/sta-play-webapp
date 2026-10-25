@@ -27,6 +27,26 @@ describe('StardateDialogElement', () => {
   })
 
   describe('calendar mode structure', () => {
+    it('should show First Contact context by default and update historical eras with the date', () => {
+      const context = dialog.querySelector('.calendar-era-context')
+      const dateInput = dialog.querySelector('input.calendar-date')
+      expect(context.hidden).to.be.false
+      expect(context.querySelector('.era-events').textContent).to.include('April 5')
+      for (const [date, event] of [
+        ['1968-01-01', 'Gary Seven'],
+        ['1996-01-01', 'Eugenics Wars'],
+        ['2035-01-01', 'exact revised dates uncertain'],
+        ['2153-01-01', 'Xindi']
+      ]) {
+        dateInput.value = date
+        dateInput.dispatchEvent(new Event('input'))
+        expect(context.querySelector('.era-events').textContent).to.include(event)
+      }
+      dateInput.value = ''
+      dateInput.dispatchEvent(new Event('input'))
+      expect(context.hidden).to.be.true
+    })
+
     it('should provide a calendar mode button and native date input with supported bounds', () => {
       const modeButton = dialog.querySelector('.mode-btn[data-mode="calendar"]')
       const dateInput = dialog.querySelector('input.calendar-date')

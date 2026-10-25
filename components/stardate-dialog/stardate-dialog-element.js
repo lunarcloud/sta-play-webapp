@@ -218,11 +218,17 @@ export class StardateDialogElement extends HTMLDialogElement {
     // --- Pre-stardate calendar date ---
     this.#calendarDateInput = /** @type {HTMLInputElement} */ (this.querySelector('input.calendar-date'))
     const calendarPreview = /** @type {HTMLOutputElement} */ (this.querySelector('output.calendar-preview'))
+    const calendarContext = /** @type {HTMLElement} */ (this.querySelector('.calendar-era-context'))
     const updateCalendarPreview = () => {
       const value = this.#calendarDateInput.value
-      calendarPreview.value = this.#calendarDateInput.validity.valid && parseCalendarDate(value)
-        ? formatCalendarDate(value)
-        : ''
+      const date = this.#calendarDateInput.validity.valid ? parseCalendarDate(value) : null
+      calendarPreview.value = date ? formatCalendarDate(value) : ''
+      calendarContext.hidden = !date
+      if (date) {
+        const context = getEraContext(date.getUTCFullYear())
+        calendarContext.querySelector('.era-series').textContent = context.series
+        calendarContext.querySelector('.era-events').textContent = context.events
+      }
     }
     this.#calendarDateInput.addEventListener('input', updateCalendarPreview)
     this.#calendarDateInput.addEventListener('change', updateCalendarPreview)
