@@ -1,5 +1,6 @@
 import neostandard, { resolveIgnoresFromGitignore } from 'neostandard'
 import { jsdoc } from 'eslint-plugin-jsdoc'
+import editorconfig from 'eslint-plugin-editorconfig'
 
 /**
  * ESLint Configuration
@@ -18,6 +19,11 @@ import { jsdoc } from 'eslint-plugin-jsdoc'
  */
 
 const config = [
+  // Global ignores applied to every config object below (e.g. jsdoc)
+  {
+    ignores: resolveIgnoresFromGitignore()
+  },
+
   // Base neostandard configuration for browser environment
   ...neostandard({
     env: ['browser'],
@@ -48,6 +54,18 @@ const config = [
       }]
     }
   }),
+
+  // Enforce EditorConfig rules (equivalent to legacy plugin:editorconfig/all)
+  {
+    plugins: { editorconfig },
+    rules: {
+      ...editorconfig.configs.all.rules,
+      // Conflicts with neostandard's own indent rule (different SwitchCase handling)
+      'editorconfig/indent': 'off',
+      // Legacy preference: don't require braces around single-statement blocks
+      curly: 'off'
+    }
+  },
 
   // Special configuration for test files
   {
