@@ -147,8 +147,7 @@ Use these commands to perform common development tasks:
   - **Test Coverage Requirements**:
     - Components: Test registration, shadow DOM structure, attributes, properties, events, and methods
     - Utilities: Test all exported functions with edge cases
-    - Current test coverage includes ~5 components and ~5 utility modules
-    - Missing tests: busy-dialog, mission-tracker, player-display, settings-dialog, task-tracker, welcome-dialog components
+    - To find components or utilities currently lacking tests, compare `components/*/` and `js/*.js` against `test/components/*/` and `test/js/*.js` rather than relying on a fixed list here
 
   **See [TESTING.md](.github/TESTING.md) for comprehensive testing documentation.**
 
@@ -519,21 +518,8 @@ const DefaultPlayerImages = {
 
 ## Priority Areas for Contributions
 
-The following components need comprehensive test coverage:
-
-1. **High Priority** (complex, untested):
-   - `task-tracker-element.js` (723 lines, complex progress/resistance logic)
-   - `player-display-element.js` (678 lines, complex display logic) - has basic tests, needs expansion
-   - `roll-tables-dialog-element.js` (329 lines, complex table management) - **NO TESTS**
-
-2. **Medium Priority** (untested):
-   - `mission-tracker-element.js` (216 lines, mission/scene tracking)
-   - `scene-switcher-element.js` (233 lines, scene navigation)
-
-3. **Low Priority** (simpler, untested):
-   - `busy-dialog` (44 lines)
-   - `settings-dialog` (24 lines)
-   - `welcome-dialog` (24 lines)
+Favor adding tests for the most complex, highest-traffic, or completely untested components first.
+Find current gaps by comparing `components/*/` against `test/components/*/` rather than relying on a fixed list here.
 
 **When writing tests for these components, follow the pattern in:**
 `test/components/trait-display/trait-display-element.test.js` (for shadow DOM components)
