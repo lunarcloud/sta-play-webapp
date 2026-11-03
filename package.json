@@ -53,7 +53,6 @@
         "playwright-core": "^1.64.1"
     },
     "version-constraints": {
-        "typescript": "jsconfig.json sets \"strict\": false explicitly since TS 6.0 defaults strict mode on, which broke typecheck against this JSDoc-typed codebase",
         "playwright": "Pinned via overrides to ^1.64.1+ (above @web/test-runner-playwright's ^1.53.0 floor) for Ubuntu 26.04 GitHub Actions runner support",
         "notes": "Check 'npm outdated' regularly. Use 'npm audit' with caution - many vulnerabilities are in dev dependencies and don't affect production. See https://overreacted.io/npm-audit-broken-by-design/"
     }
