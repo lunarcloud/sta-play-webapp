@@ -313,7 +313,7 @@ export class MapTokenElement extends HTMLImageElement {
    */
   #setNormalizedFromClientPoint (clientX, clientY) {
     const map = document.getElementById('play-field')
-    const bgImageEl = map?.querySelector('img.bg')
+    const bgImageEl = /** @type {HTMLImageElement} */ (map?.querySelector('img.bg'))
     if (!map || !bgImageEl) return
 
     const imageRect = getContainedImageRectRelativeTo(bgImageEl, map)
@@ -335,7 +335,7 @@ export class MapTokenElement extends HTMLImageElement {
    */
   #reposition () {
     const map = document.getElementById('play-field')
-    const bgImageEl = map?.querySelector('img.bg')
+    const bgImageEl = /** @type {HTMLImageElement} */ (map?.querySelector('img.bg'))
     if (!map || !bgImageEl || !this.isConnected) return
 
     const imageRect = getContainedImageRectRelativeTo(bgImageEl, map)

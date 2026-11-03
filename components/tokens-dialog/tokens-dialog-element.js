@@ -119,7 +119,7 @@ export class TokensDialogElement extends HTMLDialogElement {
    * @param {string}             key         stable selection key for this entry (e.g. `player-0`, `npc-3`)
    * @param {string}             name        display name
    * @param {File|undefined}     image       thumbnail image
-   * @param {() => SelectedEntry} makeEntry  builds the selection entry this card represents
+   * @param {() => Omit<SelectedEntry, 'count'>} makeEntry  builds the selection entry this card represents, minus the count
    * @param {() => void}         [onRemove]  if provided, renders a remove button that calls this
    */
   #renderCard (key, name, image, makeEntry, onRemove = undefined) {
