@@ -10,6 +10,7 @@ Bolian
 Borg
 Cardassian
 Changeling
+Devidian
 Edo
 Ferengi
 Klingon
@@ -19,6 +20,7 @@ Risan
 Romulan
 Trill
 Vulcan
+Vulcans
 
 # Starfleet & Federation
 Starfleet

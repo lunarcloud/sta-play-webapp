@@ -984,8 +984,8 @@ export class MirrorWindow {
     if (!playField || !mirrorPlayField) return
 
     // Sync the background image (transferring its blob URL if needed)
-    const bgImg = playField.querySelector('img.bg')
-    const mirrorBgImg = mirrorPlayField.querySelector('img.bg')
+    const bgImg = /** @type {HTMLImageElement} */ (playField.querySelector('img.bg'))
+    const mirrorBgImg = /** @type {HTMLImageElement} */ (mirrorPlayField.querySelector('img.bg'))
     if (bgImg && mirrorBgImg) {
       mirrorBgImg.alt = bgImg.alt
       if (bgImg.src.startsWith('blob:')) {
@@ -1012,8 +1012,10 @@ export class MirrorWindow {
   static #syncTokenContainer (sourceContainer, mirrorContainer) {
     if (!sourceContainer || !mirrorContainer) return
 
-    const sourceTokens = Array.from(sourceContainer.querySelectorAll('[is="map-token"]'))
-    const mirrorTokens = Array.from(mirrorContainer.querySelectorAll('[is="map-token"]'))
+    const sourceTokens = /** @type {import('../components/map-token/map-token.js').MapTokenElement[]} */ (
+      Array.from(sourceContainer.querySelectorAll('[is="map-token"]')))
+    const mirrorTokens = /** @type {import('../components/map-token/map-token.js').MapTokenElement[]} */ (
+      Array.from(mirrorContainer.querySelectorAll('[is="map-token"]')))
 
     // Identify tokens by their player/token-id + instance attributes (unique per placed copy)
     const keyOf = el => `${el.getAttribute('player') ?? ''}|${el.getAttribute('token-id') ?? ''}|${el.getAttribute('instance') ?? ''}`
@@ -1026,7 +1028,7 @@ export class MirrorWindow {
       let mirrorToken = mirrorByKey.get(key)
 
       if (!mirrorToken) {
-        mirrorToken = /** @type {HTMLImageElement} */ (sourceToken.cloneNode(true))
+        mirrorToken = /** @type {import('../components/map-token/map-token.js').MapTokenElement} */ (sourceToken.cloneNode(true))
       }
 
       // Re-append every matched token in source order, not just newly created ones, so the
